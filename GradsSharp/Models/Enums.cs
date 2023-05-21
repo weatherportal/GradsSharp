@@ -157,3 +157,8 @@ public enum SmoothOption
     Off = 0,
     Linear = 2
 }
+
+public enum DataFormat
+{
+    GRIB2
+}

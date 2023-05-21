@@ -1,4 +1,6 @@
 ﻿using GradsSharp.Models;
+using NGrib;
+using NGrib.Grib2.Templates.GridDefinitions;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -872,11 +874,11 @@ internal class GaUser
             pcm.vdim[dim] = 0;
             var conv = pfi.ab2gr[dim];
             var vals = pfi.abvals[dim];
-            var v1 = conv(vals, pcm.dmin[dim]);
+            var v1 = conv(vals[0], vals[1], pcm.dmin[dim]);
             v1 = Math.Floor(v1 + 0.5);
             conv = pfi.gr2ab[dim];
             vals = pfi.grvals[dim];
-            pcm.dmin[dim] = conv(vals, v1);
+            pcm.dmin[dim] = conv(vals[0], vals[1], v1);
             pcm.dmax[dim] = pcm.dmin[dim];
         }
     }
@@ -921,8 +923,53 @@ internal class GaUser
     {
         
     }
-    
 
+
+    public void Open(string dataFile, DataFormat format)
+    {
+        if (format == DataFormat.GRIB2)
+        {
+            ReadGrib2File(dataFile);
+        }
+    }
+
+    private void ReadGrib2File(string dataFile)
+    {
+        GaGx.gaprnt(0, $"Loading datafile {dataFile}");
+
+        gafile gf = new gafile();
+        
+        
+        Grib2Reader rdr = new Grib2Reader(dataFile);
+        var datasets = rdr.ReadAllDataSets();
+        var dataset = datasets.First();
+
+        if (dataset.GridDefinitionSection.GridDefinition is LatLonGridDefinition gd)
+        {
+            gf.type = 1;
+            gf.dnum[0] = (int)gd.Nx;
+            gf.grvals[0] = new double[3] { gd.Lo1, gd.Lo1 - gd.Dx, -999.9 };
+            gf.abvals[0] = new double[3] { -1.0 * ((gd.Lo1 - gd.Dx) / gd.Dx), 1.0 / gd.Dx, -999.9 };
+            gf.ab2gr[0] = GaUtil.liconv;
+            gf.gr2ab[0] = GaUtil.liconv;
+            gf.linear[0] = 1;
+            
+            gf.dnum[1] = (int)gd.Ny;
+            gf.grvals[1] = new double[3] { gd.La1, gd.La1 - gd.Dy, -999.9 };
+            gf.abvals[1] = new double[3] { -1.0 * ((gd.La1 - gd.Dy) / gd.Dy), 1.0 / gd.Dy, -999.9 };
+            gf.ab2gr[1] = GaUtil.liconv;
+            gf.gr2ab[1] = GaUtil.liconv;
+            gf.linear[0] = 1;
+        }
+
+        if (_drawingContext.CommonData.pfi1 == null)
+        {
+            _drawingContext.CommonData.pfi1 = new List<gafile>();
+        }
+        _drawingContext.CommonData.pfi1.Add(gf);
+        _drawingContext.CommonData.pfid = gf;
+
+    }
     
     
 }

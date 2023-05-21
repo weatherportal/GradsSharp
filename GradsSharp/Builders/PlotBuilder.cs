@@ -36,4 +36,10 @@ public class PlotBuilder
         _plot.AspectRatio = aspect;
         return this;
     }
+
+    public PlotBuilder WithDataFile(string fileName, DataFormat format)
+    {
+        _plot.AddDataFile(new DataFile { FileName = fileName, Format = format});
+        return this;
+    }
 }

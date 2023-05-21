@@ -447,4 +447,7 @@ internal class GaUtil
             return (val);
         }
     }
+    public static  double liconv (double val1, double val2, double v) {
+        return ( (val1 * v) + val2);
+    }
 }

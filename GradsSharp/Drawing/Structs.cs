@@ -269,12 +269,12 @@ class gafile
 
     double[] ppw; /* Pointer to wind rotation array */
 
-    public Func<double[], double, double>[] gr2ab; /* Addresses of routines to do conversion
+    public Func<double, double, double, double>[] gr2ab; /* Addresses of routines to do conversion
                                   from grid coordinates to absolute
                                   coordinates for X, Y, Z.  All Date/time
                                   conversions handled by gr2t.          */
 
-    public Func<double[], double, double>[] ab2gr; /* Addresses of routines to do conversion
+    public Func<double, double, double, double>[] ab2gr; /* Addresses of routines to do conversion
                                   from absolute coordinates to grid
                                   coordinates for X,Y,Z.  All date/time
                                   conversions handled by t2gr.          */
@@ -286,7 +286,7 @@ class gafile
     public List<double[]> abvals = new(5); /* Pointers to conversion information for
                                   absolute-to-grid conversion routines. */
 
-    int[] linear; /* Indicates if a dimension has a linear
+    public int[] linear; /* Indicates if a dimension has a linear
                                   grid/absolute coord transformation
                                   (Time coordinate always linear).      */
 
@@ -387,11 +387,21 @@ class gafile
         ppi = new int[] { };
         ppf = new double[] { };
         ppw = new double[] { };
-        gr2ab = null;
-        ab2gr = null;
+        gr2ab = new Func<double, double, double, double>[5];
+        ab2gr = new Func<double, double, double, double>[5];
         grvals = new List<double[]>(5);
+        grvals.Add(new double[1]);
+        grvals.Add(new double[1]);
+        grvals.Add(new double[1]);
+        grvals.Add(new double[1]);
+        grvals.Add(new double[1]);
         abvals = new List<double[]>(5);
-        linear = new int[] { };
+        abvals.Add(new double[1]);
+        abvals.Add(new double[1]);
+        abvals.Add(new double[1]);
+        abvals.Add(new double[1]);
+        abvals.Add(new double[1]);
+        linear = new int[5];
         dimoff = new int[] { };
         climo = 0;
         cysiz = 0;

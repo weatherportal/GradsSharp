@@ -3047,8 +3047,8 @@ internal class GaGx
                     }
                     else
                     {
-                        gxproj(galnx);
-                        gxback(gaalnx);
+                        _drawingContext.GaSubs.gxproj(galnx);
+                        _drawingContext.GaSubs.gxback(gaalnx);
                         x1 = Math.Log(x1);
                         x2 = Math.Log(x2);
                     }
@@ -3063,8 +3063,8 @@ internal class GaGx
                     }
                     else
                     {
-                        gxproj(gaclx);
-                        gxback(gaaclx);
+                        _drawingContext.GaSubs.gxproj(gaclx);
+                        _drawingContext.GaSubs.gxback(gaaclx);
                         x1 = Math.Sin(x1 * d2r);
                         x2 = Math.Sin(x2 * d2r);
                     }
@@ -3089,8 +3089,8 @@ internal class GaGx
                     }
                     else
                     {
-                        gxproj(galny);
-                        gxback(gaalny);
+                        _drawingContext.GaSubs.gxproj(galny);
+                        _drawingContext.GaSubs.gxback(gaalny);
                         y1 = Math.Log(y1);
                         y2 = Math.Log(y2);
                     }
@@ -3105,8 +3105,8 @@ internal class GaGx
                     }
                     else
                     {
-                        gxproj(gacly);
-                        gxback(gaacly);
+                        _drawingContext.GaSubs.gxproj(gacly);
+                        _drawingContext.GaSubs.gxback(gaacly);
                         y1 = Math.Sin(y1 * d2r);
                         y2 = Math.Sin(y2 * d2r);
                     }
@@ -3152,7 +3152,7 @@ internal class GaGx
             jvars = pgr.jvals;
         }
 
-        gxgrid(gaconv);
+        _drawingContext.GaSubs.gxgrid(gaconv);
 
         if (idim == 5)
         {
@@ -8796,10 +8796,10 @@ internal class GaGx
    is provided.  This is scaling level 2, and is the level that
    mapping is done. */
 
-    void gxproj(Func<double, double, Tuple<double, double>> fproj)
-    {
-        fconv = fproj;
-    }
+    // void gxproj(Func<double, double, Tuple<double, double>> fproj)
+    // {
+    //     fconv = fproj;
+    // }
 
     /* Specify grid level scaling, typically used to convert a grid
    to lat-lon values that can be input to the projection or linear
@@ -8807,17 +8807,17 @@ internal class GaGx
    the possibly non-linear scaling.  This is scaling level 3, and
    is the level that contouring is done.  */
 
-    void gxgrid(Func<double, double, Tuple<double, double>> fproj)
-    {
-        gconv = fproj;
-    }
+    // void gxgrid(Func<double, double, Tuple<double, double>> fproj)
+    // {
+    //     gconv = fproj;
+    // }
 
     /* Allow caller to specify a routine to do the back transform from
    level 1 to level 2 coordinates. */
-    void gxback(Func<double, double, Tuple<double, double>> fproj)
-    {
-        bconv = fproj;
-    }
+    // void gxback(Func<double, double, Tuple<double, double>> fproj)
+    // {
+    //     bconv = fproj;
+    // }
 
 
 /* Grid fill -- using color ranges as in shaded contours */
