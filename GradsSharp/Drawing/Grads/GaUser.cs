@@ -1239,21 +1239,18 @@ internal class GaUser
         return (1);
     }
 
-    private int gapars(string, gastat pst, gacmn pcm) {
-        char *pos;
-        char *expr;
+    private int gapars(string cmd, gastat pst, gacmn pcm) {
+        int pos;
+        string expr;
         int num, i, rc;
-        size_t sz;
 
-        sz = (strlen(cmd) + 5) * sizeof(char);
-        expr = (char *) galloc(sz, "gapars");
-        strcpy(expr, cmd);
-
+        expr = cmd;
+        
         /* Convert all the ;'s to nulls and count the number of
          sub-expressions.                                           */
 
         num = 0;
-        pos = expr;
+        pos = 0;
         while (*pos != '\0') {
             if (*pos == ';') {
                 *pos = '\0';
