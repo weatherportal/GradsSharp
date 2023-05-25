@@ -9,6 +9,7 @@ public class Plot
 
     private List<Chart> _charts = new ();
     private List<DataFile> _dataFiles = new List<DataFile>();
+    private List<VariableDefinition> _variables = new List<VariableDefinition>();
 
     public IReadOnlyCollection<DataFile> DataFiles => _dataFiles.AsReadOnly();
     internal void AddChart(Chart chart)
@@ -21,6 +22,8 @@ public class Plot
     public float AspectRatio { get; internal set; } = -999;
 
     public void AddDataFile(DataFile file) => _dataFiles.Add(file);
+
+    public void AddVariableDefintition(VariableDefinition definition) => _variables.Add(definition);
 
 
 }

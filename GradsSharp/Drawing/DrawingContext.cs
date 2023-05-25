@@ -10,6 +10,7 @@ internal class DrawingContext
     
 
     public GaSubs GaSubs { get; set; }
+    public GaIO GaIO { get; set; }
     public GaUser GaUser { get; set; }
     public GxMeta GxMeta { get; set; }
     public GxShad GxShad { get; set; }
@@ -65,6 +66,7 @@ internal class DrawingContext
         GxChpl = new GxChpl(this);
         GxContour = new GxContour(this);
         GxMeta = new GxMeta(this);
+        GaIO = new GaIO();
         
         Colors.Add(Color.FromRgba(0,0,0,255));
         Colors.Add(Color.FromRgba(255,255,255,255));

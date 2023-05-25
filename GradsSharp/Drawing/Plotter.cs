@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using GradsSharp.Drawing.Grads;
 using GradsSharp.Models;
 using SixLabors.ImageSharp.Drawing;
 
@@ -63,7 +64,7 @@ public class Plotter
 
         var dataFile = context.Plot.DataFiles.First();
         context.GaUser.Open(dataFile.FileName, dataFile.Format);
-        context.CommonData.pfid = new gafile();
+        //context.CommonData.pfid = new gafile();
         context.GaUser.SetLat(48, 52);
         context.GaUser.SetLon(-3,4);
         context.GaUser.SetMProjection(Projection.Ortographic);
@@ -74,6 +75,7 @@ public class Plotter
             context.GaGx.gawmap(true);
         }
         
+        context.GaUser.Display("Temperature_2m");
         
         context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
     }
