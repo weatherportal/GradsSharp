@@ -189,7 +189,7 @@ internal class GaGx
    grid hung off gacmn to determine whether we are doing
    a 0-D, 1-D, or 2-D output.    */
 
-    void gaplot()
+    public void gaplot()
     {
         var pcm = _drawingContext.CommonData;
         gagrid pgr;

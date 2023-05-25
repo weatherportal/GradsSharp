@@ -2,6 +2,7 @@
 using GradsSharp.Models;
 using Microsoft.VisualBasic;
 using NGrib;
+using NGrib.Grib1;
 using NGrib.Grib2.Templates.GridDefinitions;
 using NGrib.Grib2.Templates.ProductDefinitions;
 
@@ -979,6 +980,23 @@ internal class GaUser
 
         ProductDefinition0000 pd;
 
+        List<double> levels = new List<double>();
+        
+        foreach (var ds in datasets)
+        {
+            var pdef = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
+            if (pdef.FirstFixedSurfaceType == NGrib.Grib2.CodeTables.FixedSurfaceType.IsobaricSurface)
+            {
+                if (!levels.Contains(pdef.FirstFixedSurfaceValue ?? 0))
+                {
+                    levels.Add(pdef.FirstFixedSurfaceValue ?? 0);
+                }
+            }
+        }
+
+
+        levels.Add(0);
+        levels = levels.OrderByDescending(x => x).ToList();
 
         if (dataset.GridDefinitionSection.GridDefinition is LatLonGridDefinition gd)
         {
@@ -996,6 +1014,21 @@ internal class GaUser
             gf.ab2gr[1] = GaUtil.liconv;
             gf.gr2ab[1] = GaUtil.liconv;
             gf.linear[0] = 1;
+
+
+            gf.dnum[2] = levels.Count;
+            gf.abvals[2] = levels.ToArray();
+            gf.grvals[2] = levels.ToArray();
+            gf.ab2gr[2] = GaUtil.lev2gr;
+            gf.gr2ab[2] = GaUtil.gr2lev;
+            gf.linear[2] = 0;
+
+            var dt = dataset.Message.IdentificationSection.ReferenceTime;
+            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, 0 };
+            gf.dnum[3] = 1; //TODO this can be multiple timesteps too
+            gf.grvals[3] = vals;
+            gf.abvals[3] = vals;
+            gf.linear[3] = 1;
         }
 
         if (_drawingContext.CommonData.pfi1 == null)
@@ -1017,7 +1050,7 @@ internal class GaUser
 
 
                 gavar gv = new gavar();
-                gv.abbrv = GetVarName(name, sfcType);
+                
                 gv.variableDefinition = new VariableDefinition
                 {
                     HeightType = sfcType,
@@ -1025,10 +1058,12 @@ internal class GaUser
                     VariableName = gv.abbrv,
                     VariableType = GetVarType(name)
                 };
-
+                gv.abbrv = gv.variableDefinition.GetVarName();
                 gf.pvar1.Add(gv);
             }
         }
+
+        gf.vnum = gf.pvar1.Count;
 
         gf.dataReader = new GfsGribDataReader();
     }
@@ -1043,13 +1078,13 @@ internal class GaUser
         gastat? pst;
         gafile pfi;
 
-        Func<double[], double, double>? conv;
+        Func<double[], double, double>? conv = null;
         double[] vals;
         double v;
         double xl, yl, s1, s2;
         int llen, rcode, labsv;
         int l, l1, l2, vcnt, i, lflg, ldim, rc;
-        string label;
+        string lab;
 
         int[] dcolor = { -1, 1, 3, 7, 2, 6, 9, 10, 11, 12 };
         // if (pcm.impflg > 0)
@@ -1095,10 +1130,10 @@ internal class GaUser
             }
 
             if (pcm.ccolor < 0) pcm.mcolor = 15;
-            rc = gapars(cmd, pst, pcm);
+            rc = gapars(variable, pst, pcm);
             if (rc > 0) goto retrn;
-            gaplot(pcm);
-            gagrel(pcm);
+            _drawingContext.GaGx.gaplot();
+            gagrel();
             pcm.pass++;
             pcm.ccolor = -9;
             pcm.cstyle = -9;
@@ -1180,31 +1215,31 @@ internal class GaUser
                     pst.dmax[ldim] = pst.dmin[ldim];
                 }
 
-                rc = gapars(cmd, pst, pcm);
+                rc = gapars(variable, pst, pcm);
                 if (rc > 0) goto retrn;
                 pcm.clab = 0;
                 if (l == l2) pcm.clab = labsv;
-                gaplot(pcm);
+                _drawingContext.GaGx.gaplot();
                 if (ldim == 3)
                 {
-                    snprintf(lab, 29, "%i:%i:%i:%i", pst.tmin.yr, pst.tmin.mo, pst.tmin.dy, pst.tmin.hr);
+                    lab  = $"{pst.tmin.yr}:{pst.tmin.mo}:{pst.tmin.dy}:{pst.tmin.hr}";
                 }
                 else
                 {
-                    snprintf(lab, 29, "%g", pst.dmin[ldim]);
+                    lab = pst.dmin[ldim].ToString("g2");
                 }
 
-                llen = 0;
-                while (lab[llen]) llen++;
+                llen = lab.Length;
+                
                 xl = pcm.xsiz - (0.11 * (double)(llen));
                 xl -= 0.02;
                 yl = 0.02;
                 s1 = 0.13;
                 s2 = 0.11;
-                gxwide(1);
-                gxchpl(lab, llen, xl, yl, s1, s2, 0.0);
-                gxfrme(2);
-                gagrel(pcm);
+                _drawingContext.GaSubs.gxwide(1);
+                _drawingContext.GaSubs.gxchpl(lab, llen, xl, yl, s1, s2, 0.0);
+                _drawingContext.GaSubs.gxfrme(2);
+                gagrel();
                 pcm.aflag = -1;
                 pcm.aflag2 = -1;
             }
@@ -1244,48 +1279,53 @@ internal class GaUser
         string expr;
         int num, i, rc;
 
-        expr = cmd;
+        expr = cmd.ToLower();
         
         /* Convert all the ;'s to nulls and count the number of
          sub-expressions.                                           */
 
-        num = 0;
-        pos = 0;
-        while (*pos != '\0') {
-            if (*pos == ';') {
-                *pos = '\0';
-                num++;
-            }
-            pos++;
-        }
-        num++;
-
+        string[] cmds = expr.Split(';');
+        
+        
         /* Evaluate all the subexpressions */
-        pos = expr;
-        for (i = 0; i < num; i++) {
-            rc = gaexpr(pos, pst);
-            if (!rc) rc = gaqsig();
-            if (rc) goto err;
-            pcm->type[i] = pst->type;
-            pcm->result[i] = pst->result;
-            while (*pos != '\0') pos++;
+        pos = 0;
+        for (i = 0; i < cmds.Length; i++) {
+            rc = _drawingContext.GaExpr.gaexpr(cmds[i], pst);
+            if (rc == 0) rc = _drawingContext.CommonData.sig;
+            if (rc > 0) goto err;
+            pcm.type[i] = pst.type;
+            pcm.result[i] = pst.result;
+            while (expr[pos] != '\0') pos++;
             pos++;
         }
-        pcm->numgrd = num;
-        pcm->relnum = num;
-        gree(expr, "f221");
+        pcm.numgrd = cmds.Length;
+        pcm.relnum = cmds.Length;
+        
         return (0);
 
         err:
-        gaprnt(0, "DISPLAY error:  Invalid expression \n");
-        gaprnt(0, "  Expression = ");
-        gaprnt(0, pos);
-        gaprnt(0, "\n");
-        pcm->numgrd = i;
-        pcm->relnum = i;
-        gagrel(pcm);
-        gree(expr, "f222");
+        GaGx.gaprnt(0, "DISPLAY error:  Invalid expression \n");
+        GaGx.gaprnt(0, "  Expression = ");
+        GaGx.gaprnt(0, cmds[i]);
+        GaGx.gaprnt(0, "\n");
+        pcm.numgrd = i;
+        pcm.relnum = i;
+        gagrel();
         return (1);
+    }
+    
+    void gagrel() {
+        int i;
+
+        for (i = 0; i < pcm.relnum; i++)
+        {
+            if (pcm.type[i] == 1)
+                pcm.result[i].pgr = null;
+            else
+                pcm.result[i].stn = null;
+        }
+        pcm.numgrd = 0;
+        pcm.relnum = 0;
     }
 
     private gastat? getpst(gacmn pcm)
@@ -1318,7 +1358,7 @@ internal class GaUser
 
         vcnt = 0;
         for (i = 0; i < 5; i++)
-            if (pcm.vdim[i > 0)
+            if (pcm.vdim[i] > 0)
                 vcnt++;
         lflg = pcm.loopflg;
         if (vcnt > 2) lflg = 1;

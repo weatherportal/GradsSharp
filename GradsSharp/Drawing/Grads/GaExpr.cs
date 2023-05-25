@@ -17,7 +17,7 @@ internal class GaExpr
    This routine is invoked recursively from functions in order
    to evaluate sub-expressions.                                  */
 
-    int gaexpr(string expression, gastat pst)
+    public int gaexpr(string expression, gastat pst)
     {
         gagrid pgr;
         gastn stn;
@@ -1005,7 +1005,7 @@ internal class GaExpr
         /* Get the variable or function name.  It must start with a
            letter, and consist of letters or numbers or underscore.  */
         i = 0;
-        while ((ch[ipos] >= 'a' && ch[ipos] <= 'z') || (ch[ipos] >= '0' && ch[ipos] <= '9') || (ch[ipos] == '_'))
+        while (i < ch.Length && ((ch[ipos] >= 'a' && ch[ipos] <= 'z') || (ch[ipos] >= '0' && ch[ipos] <= '9') || (ch[ipos] == '_')))
         {
             name[i] = ch[ipos];
             vnam[i] = ch[ipos];
@@ -1014,15 +1014,15 @@ internal class GaExpr
             if (i > 16) break;
         }
 
-        name[i] = '\0';
-        vnam[i] = '\0'; /* Save 'i' for next loop */
+        name = name.Take(i).ToArray();
+        vnam = vnam.Take(i).ToArray(); /* Save 'i' for next loop */
 
         /* Check for the data set number in the variable name.  If there,
            then this has to be a variable name.                            */
 
         fnum = pst.fnum;
         dotflg = 0;
-        if (ch[ipos] == '.')
+        if (ipos < ch.Length && ch[ipos] == '.')
         {
             dotflg = 1;
             ipos++;
@@ -1120,7 +1120,7 @@ internal class GaExpr
                If not, give an error message (if a file number was specified)
                or check for a function call via rtnprs.   */
                 pvar = pfi.pvar1.FirstOrDefault(x => x.abbrv == sName);
-                if (i >= pfi.vnum)
+                if (pvar == null)
                 {
                     if (dotflg > 0)
                     {
@@ -1676,10 +1676,12 @@ internal class GaExpr
         return (0);
     }
 
-    gafile getdfn(string name, gastat pst)
+    gafile? getdfn(string name, gastat pst)
     {
         gadefn pdf;
 
+        if (pst.pdf1 == null) return null;
+        
         /* See if the name is a defined grid */
         pdf = pst.pdf1.FirstOrDefault(x => x.abbrv == name);
         if (pdf == null) return (null);

@@ -26,7 +26,7 @@ internal class gastat {
     public gafile pfid;       /* Pointer to default gafile             */
     public List<gadefn> pdf1 = new List<gadefn>();       /* Pointer to first define block         */
     //gaclct pclct;     /* Pointer to the collection pointers    */
-    public gadata result;       /* Result goes here                      */
+    public gadata result = new gadata();       /* Result goes here                      */
     public dt tmin,tmax;
     public double[] dmin = new double[5],dmax = new double[5];  /* Range of absolute dimensions          */
     public int fnum;                /* Default file number                   */
@@ -428,17 +428,17 @@ internal class gafile
         gr2ab = new Func<double[], double, double>[5];
         ab2gr = new Func<double[], double, double>[5];
         grvals = new List<double[]>(5);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
         abvals = new List<double[]>(5);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
+        abvals.Add(new double[6]);
+        abvals.Add(new double[6]);
+        abvals.Add(new double[6]);
+        abvals.Add(new double[7]);
+        abvals.Add(new double[6]);
         linear = new int[5];
         dimoff = new int[] { };
         climo = 0;

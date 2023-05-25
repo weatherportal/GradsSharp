@@ -75,7 +75,7 @@ public class Plotter
             context.GaGx.gawmap(true);
         }
         
-        context.GaUser.Display("Temperature_2m");
+        context.GaUser.Display("tmp2m");
         
         context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
     }

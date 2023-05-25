@@ -1012,4 +1012,43 @@ internal class GaUtil
 
         return (pos);
     }
+    
+    public static double lev2gr(double[] vals, double lev) {
+        int i, num;
+        double gr;
+        
+        num = (int) (vals[0] + 0.1);
+        for (i = 1; i < num; i++) {
+            if ((lev >= vals[i] && lev <= vals[i+1]) ||
+                (lev <= vals[i] && lev >= vals[i+1])) {
+                gr = (double) i + (lev - vals[i]) / (vals[i+1] - vals[i]);
+                return (gr);
+            }
+        }
+        if (vals[1] < vals[num]) {
+            if (lev < vals[1]) {
+                gr = 1.0 + ((lev - vals[1]) / (vals[2] - vals[1]));
+                return (gr);
+            }
+            gr = (double) i + ((lev - vals[i]) / (vals[i] - vals[i-1]));
+            return (gr);
+        } else {
+            if (lev > vals[1]) {
+                gr = 1.0 + ((lev - vals[1]) / (vals[2] - vals[1]));
+                return (gr);
+            }
+            gr = (double) i + ((lev - vals[i]) / (vals[i] - vals[i-1]));
+            return (gr);
+        }
+    }
+    public static double gr2lev(double[] vals, double gr) {
+        int i;
+        if (gr < 1.0) return (vals[1] + (1.0 - gr) * (vals[1] - vals[2]));
+        if (gr > vals[0]) {
+            i = (int) (vals[0] + 0.1);
+            return (vals[i] + (gr - vals[0]) * (vals[i] - vals[i-1]));
+        }
+        i = (int) gr;
+        return (vals[i] + ((gr - (double) i) * (vals[i+1] - vals[i])));
+    }
 }
