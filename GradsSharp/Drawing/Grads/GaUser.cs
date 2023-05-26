@@ -989,7 +989,7 @@ internal class GaUser
             {
                 if (!levels.Contains(pdef.FirstFixedSurfaceValue ?? 0))
                 {
-                    levels.Add(pdef.FirstFixedSurfaceValue ?? 0);
+                    levels.Add(pdef.FirstFixedSurfaceValue ?? 0 / 100.0);
                 }
             }
         }
@@ -1000,20 +1000,36 @@ internal class GaUser
 
         if (dataset.GridDefinitionSection.GridDefinition is LatLonGridDefinition gd)
         {
+            var lonMin = gd.Lo1;
+            var lonMax = gd.Lo2;
+            if (lonMin > lonMax)
+            {
+                lonMin -= 360;
+            }
+            
+            
             gf.type = 1;
             gf.dnum[0] = (int)gd.Nx;
-            gf.grvals[0] = new double[] { gd.Lo1, gd.Lo1 - gd.Dx, -999.9 };
-            gf.abvals[0] = new double[] { -1.0 * ((gd.Lo1 - gd.Dx) / gd.Dx), 1.0 / gd.Dx, -999.9 };
+            gf.grvals[0] = new double[] { gd.Dx, lonMin - gd.Dx, -999.9 };
+            gf.abvals[0] = new double[] { 1.0 / gd.Dx, -1.0 * ((lonMin - gd.Dx) / gd.Dx), -999.9 };
             gf.ab2gr[0] = GaUtil.liconv;
             gf.gr2ab[0] = GaUtil.liconv;
             gf.linear[0] = 1;
 
+            double v1, v2;
+
+            v2 = gf.grvals[0][0];
+            v1 = gf.grvals[0][1] + v2;
+            double temp = v1 + ((double) (gf.dnum[0])) * v2;
+            temp = temp - 360.0;
+            if (Math.Abs(temp - v1) < 0.01) gf.wrap = 1;
+
             gf.dnum[1] = (int)gd.Ny;
-            gf.grvals[1] = new double[] { gd.La1, gd.La1 - gd.Dy, -999.9 };
-            gf.abvals[1] = new double[] { -1.0 * ((gd.La1 - gd.Dy) / gd.Dy), 1.0 / gd.Dy, -999.9 };
+            gf.grvals[1] = new double[] { gd.Dy, gd.La1 - gd.Dy, -999.9 };
+            gf.abvals[1] = new double[] { 1.0 / gd.Dy, -1.0 * ((gd.La1 - gd.Dy) / gd.Dy), -999.9 };
             gf.ab2gr[1] = GaUtil.liconv;
             gf.gr2ab[1] = GaUtil.liconv;
-            gf.linear[0] = 1;
+            gf.linear[1] = 1;
 
 
             gf.dnum[2] = levels.Count;
@@ -1024,11 +1040,35 @@ internal class GaUser
             gf.linear[2] = 0;
 
             var dt = dataset.Message.IdentificationSection.ReferenceTime;
-            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, 0 };
+            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0 };
             gf.dnum[3] = 1; //TODO this can be multiple timesteps too
             gf.grvals[3] = vals;
             gf.abvals[3] = vals;
             gf.linear[3] = 1;
+
+            gf.dnum[4] = 1;
+            v1 = 1;
+            v2 = 1;
+            vals = new double[] { v2, v2 - v1, -999.9 };
+            gf.grvals[4] = vals;
+            vals = new double[] { -1.0 * ((v1-v2)/v2), 1.0/v2, -999.9 };
+            gf.abvals[4] = vals;
+            gf.linear[4] = 1;
+            gf.ab2gr[4] = GaUtil.liconv;
+            gf.gr2ab[4] = GaUtil.liconv;
+            
+            gf.gsiz = gf.dnum[0] * gf.dnum[1];
+            if (gf.ppflag>0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
+            /* add the XY header/trailer to gsiz */
+            // if (pfi.xyhdr) {
+            //     if (pvar.dfrm == 1) {
+            //         pfi.xyhdr = pfi.xyhdr * 4 / 1;
+            //     } else if (pvar.dfrm == 2 || pvar.dfrm == -2) {
+            //         pfi.xyhdr = pfi.xyhdr * 4 / 2;
+            //     }
+            //     pfi.gsiz = pfi.gsiz + pfi.xyhdr;
+            // }
+            
         }
 
         if (_drawingContext.CommonData.pfi1 == null)
@@ -1288,15 +1328,13 @@ internal class GaUser
         
         
         /* Evaluate all the subexpressions */
-        pos = 0;
+        
         for (i = 0; i < cmds.Length; i++) {
             rc = _drawingContext.GaExpr.gaexpr(cmds[i], pst);
             if (rc == 0) rc = _drawingContext.CommonData.sig;
             if (rc > 0) goto err;
             pcm.type[i] = pst.type;
             pcm.result[i] = pst.result;
-            while (expr[pos] != '\0') pos++;
-            pos++;
         }
         pcm.numgrd = cmds.Length;
         pcm.relnum = cmds.Length;

@@ -65,19 +65,24 @@ public class Plotter
         var dataFile = context.Plot.DataFiles.First();
         context.GaUser.Open(dataFile.FileName, dataFile.Format);
         //context.CommonData.pfid = new gafile();
-        context.GaUser.SetLat(48, 52);
-        context.GaUser.SetLon(-3,4);
-        context.GaUser.SetMProjection(Projection.Ortographic);
+        context.GaUser.SetLat(40, 60);
+        context.GaUser.SetLon(-10,20);
+        context.GaUser.SetMPVals(OnOffSetting.On, -10, 20, 30, 60);
+        context.GaUser.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
+        context.GaUser.SetMProjection(Projection.Latlon);
         
         foreach (Chart c in context.Plot.Charts)
         {
             context.GaUser.SetMapResolution(c.Resolution);
-            context.GaGx.gawmap(true);
+            context.GaUser.SetCInt(1);
+            context.GaUser.SetCCols(new []{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14});
+            context.GaUser.Display("tmp2m");
+            context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
         }
         
-        context.GaUser.Display("tmp2m");
         
-        context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
+        
+        
     }
     
     

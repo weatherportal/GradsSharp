@@ -510,8 +510,17 @@ internal class SixLaborsDrawingEngine : IDrawingEngine
     public void gxpdrw(double xpos, double ypos)
     {
         float x, y;
-        gxCxycnv( xpos, xpos, out x, out y);
-        _image.Mutate(d => d.DrawLines(_currentColor, _lineWidth, _moveTo, new PointF(x, y)));
+        gxCxycnv( xpos, ypos, out x, out y);
+
+        double dist = Math.Sqrt(Math.Pow(x - _moveTo.X, 2) + Math.Pow(y - _moveTo.Y, 2));
+
+        
+        if (dist > 15)
+        {
+            Console.WriteLine($"Draw line from ({_moveTo.X},{_moveTo.Y}) to ({x},{y})=({xpos},{ypos})");    
+        }
+
+        _image.Mutate(d => d.DrawLines(Color.Azure, _lineWidth, _moveTo, new PointF(x, y)));
         _moveTo = new PointF(x, y);
     }
 

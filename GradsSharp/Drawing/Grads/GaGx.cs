@@ -3,7 +3,7 @@
 internal class GaGx
 {
     static string pout; /* Build error msgs here */
-    static mapprj mpj; /* Common map projection structure */
+    static mapprj mpj = new mapprj(); /* Common map projection structure */
     static double wxymin, wxymax; /* wx symbol limits */
 
     static double[] ivars, jvars;
@@ -16,8 +16,8 @@ internal class GaGx
     Func<double, double, Tuple<double, double>> gconv;
     Func<double, double, Tuple<double, double>> bconv;
 
-    private Func<double[], double, double> iconv;
-    private Func<double[], double, double> jconv;
+    private Func<double[], double, double>? iconv;
+    private Func<double[], double, double>? jconv;
 
 
     int[] strt = new int[]

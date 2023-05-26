@@ -14,7 +14,7 @@ internal class smem {
         
     }
 
-    public sobj obj;
+    public sobj obj = new();
 };
 
 
@@ -27,7 +27,7 @@ internal class gastat {
     public List<gadefn> pdf1 = new List<gadefn>();       /* Pointer to first define block         */
     //gaclct pclct;     /* Pointer to the collection pointers    */
     public gadata result = new gadata();       /* Result goes here                      */
-    public dt tmin,tmax;
+    public dt tmin = new dt(),tmax = new dt();
     public double[] dmin = new double[5],dmax = new double[5];  /* Range of absolute dimensions          */
     public int fnum;                /* Default file number                   */
     public int type;                /* Result type (grid==1 or stn==0)       */
@@ -276,7 +276,7 @@ internal class gafile
 
     gaens ens1; /* pointer to array of ensemble classures */
 
-    long gsiz; /* Number of elements in a grid (x*y)    */
+    public long gsiz; /* Number of elements in a grid (x*y)    */
 
     /* This is for actual grid on disk,
        not psuedo grid (when pp in force) */
@@ -293,7 +293,7 @@ internal class gafile
     public int ppflag; /* Pre-projected data in use */
     int pdefgnrl; /* Keyword 'general' used instead of 'file' */
     public int ppwrot; /* Pre-projection wind rotation flag */
-    int ppisiz, ppjsiz; /* Actual size of preprojected grid */
+    public int ppisiz, ppjsiz; /* Actual size of preprojected grid */
 
     double[] ppvals; /* Projection constants for pre-projected
                                   grids.  Values depend on projection. */
@@ -667,7 +667,7 @@ internal class gacmn
     public int fseq; /* Unique sequence num for files opened  */
 
     public List<gadefn>? pdf1;         /* Pointer to first define block         */
-    public dt tmin, tmax;
+    public dt tmin = new dt(), tmax = new();
     public int[] vdim = new int[5]; /* Which dimensions vary?                */
     public int x1ex, x2ex, y1ex, y2ex; /* For -ex flag on fwrite */
     public int xexflg, yexflg; /* -ex -- are dims valid? */
@@ -840,7 +840,7 @@ internal class gacmn
     public int numgrd, relnum; /* Number of data objects held           */
     public int[] type = new int[16]; /* Data type of each data object         */
 
-    public gadata[] result; /* Pointers to held data objects         */
+    public gadata[] result = new gadata[16]; /* Pointers to held data objects         */
 
     //class gaclct *clct[32];   /* Anchor for collection */
     //int clctnm[32];          /* Number of items collected */
@@ -1136,8 +1136,8 @@ internal class gagrid : ICloneable
     public int alocf; /* Scaling info allocated for us only  */
 
     
-    public Func<double[], double, double> igrab;
-    public Func<double[], double, double> jgrab;
+    public Func<double[], double, double>? igrab;
+    public Func<double[], double, double>? jgrab;
     /* Addresses of routines to perform
    grid-to-absolute coordinate
    transforms for this grid's i and j

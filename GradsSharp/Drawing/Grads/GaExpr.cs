@@ -36,6 +36,8 @@ internal class GaExpr
         size = cmdlen + 10;
         stack = new smem[size];
 
+        for (int x = 0; x < size; x++) stack[x] = new smem();
+
         state = true;
         curr = -1;
         pos = 0;
@@ -233,7 +235,7 @@ internal class GaExpr
                 }
             }
 
-            if (expression[pos] == '\0' || expression[pos] == '\n') cont = false;
+            if (pos >= expression.Length) cont = false;
         }
 
         if (!err)
@@ -1191,7 +1193,7 @@ internal class GaExpr
         }
 
         /* Check for user provided dimension expressions */
-        if (ch[ipos] == '(')
+        if (ipos < ch.Length && ch[ipos] == '(')
         {
             ipos++;
             for (i = 0; i < 5; i++) id[i] = 0;
