@@ -227,7 +227,7 @@ internal class gafile
     public double undef; /* Global undefined value for this file  */
     double ulow, uhi; /* Undefined limits for missing data test  */
 
-    float[] sbuf; /* Buffer for file I/O equal in length
+    public float[] sbuf; /* Buffer for file I/O equal in length
                                 to the size needed to hold
                                 the largest station report            */
 
@@ -327,8 +327,8 @@ internal class gafile
                                   grid/absolute coord transformation
                                   (Time coordinate always linear).      */
 
-    public int[] dimoff; /* Dimension offsets for defined grids   */
-    int climo; /* Climatological Flag (defined grids)   */
+    public int[] dimoff = new int[5]; /* Dimension offsets for defined grids   */
+    public int climo; /* Climatological Flag (defined grids)   */
     int cysiz; /* Cycle size for climo grids            */
     public int idxflg; /* File records are indexed; 1==grib,station 2==grib2 */
     int grbgrd; /* GRIB Grid type */
@@ -361,7 +361,7 @@ internal class gafile
     string undefattr2; /* secondary undef attribute name */
     long xyhdr; /* Number of bytes to ignore at head of xy grids*/
     long xytrlr; /* Number of bytes to ignore at end of xy grids*/
-    int calendar; /* Support for 365-day calendars */
+    public int calendar; /* Support for 365-day calendars */
     int pa2mb; /* convert pressure values in descriptor file from Pa -> mb */
     int bufrflg; /* 1==dtype bufr */
     bufrinfo bufrinfo; /* x,y pairs from descriptor file */
@@ -440,7 +440,7 @@ internal class gafile
         abvals.Add(new double[7]);
         abvals.Add(new double[6]);
         linear = new int[5];
-        dimoff = new int[] { };
+        dimoff = new int[5];
         climo = 0;
         cysiz = 0;
         idxflg = 0;
@@ -666,7 +666,7 @@ internal class gacmn
 
     public int fseq; /* Unique sequence num for files opened  */
 
-    public List<gadefn>? pdf1;         /* Pointer to first define block         */
+    public List<gadefn>? pdf1 = new();         /* Pointer to first define block         */
     public dt tmin = new dt(), tmax = new();
     public int[] vdim = new int[5]; /* Which dimensions vary?                */
     public int x1ex, x2ex, y1ex, y2ex; /* For -ex flag on fwrite */

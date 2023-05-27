@@ -71,6 +71,8 @@ public class Plotter
         context.GaUser.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
         context.GaUser.SetMProjection(Projection.Latlon);
         
+        context.GaUser.Define("t", "tmpprs(lev=500)-273.15");
+        
         foreach (Chart c in context.Plot.Charts)
         {
             context.GaUser.SetLat(c.LatitdeMin, c.LatitudeMax);
@@ -81,7 +83,7 @@ public class Plotter
             // context.GaUser.SetGraphicsOut(GxOutSetting.Shaded);
             // context.GaUser.Display("tmp2m");
             context.GaUser.SetGraphicsOut(GxOutSetting.Shaded);
-            context.GaUser.Display("tmp2m-273.15");
+            context.GaUser.Display("t");
             context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
             // context.GaUser.SetGraphicsOut(GxOutSetting.Print);
             // context.GaUser.Display("tmp2m");
