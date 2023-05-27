@@ -67,7 +67,7 @@ internal class DrawingContext
         GxChpl = new GxChpl(this);
         GxContour = new GxContour(this);
         GxMeta = new GxMeta(this);
-        GaIO = new GaIO();
+        GaIO = new GaIO(this);
         GaExpr = new GaExpr(this);
         
         Colors.Add(Color.FromRgba(0,0,0,255));

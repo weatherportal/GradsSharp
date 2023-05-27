@@ -444,7 +444,7 @@ internal class GxContour
             var result = _drawingContext.GaSubs.gxcord(fwk.Skip(xystrt).ToArray(), nump, 3);
             for (int k = 0; k < result.Length; k++)
             {
-                fwk[xystrt + k + 1] = result[k];
+                fwk[xystrt + k] = result[k];
             }
         }
 

@@ -73,7 +73,7 @@ public class GxDb
 
         /* other flags for this and that */
         hershflag  = 0;     /* zero, use hershey fonts.  1, use emulation. */  
-        dbdevbck   = 0;     /* initial device background color is black */
+        dbdevbck   = 1;     /* initial device background color is black */
         dboutbck   = -1;    /* initial output background color is 'undefined' */
         dbtransclr = -1;    /* initial transparent color is 'undefined' */
     }
@@ -125,6 +125,12 @@ public class GxDb
     public void gxdbsettransclr (int clr) {   
         dbtransclr = clr; 
     }
+
+    public int gxdbqtransclr()
+    {
+        return dbtransclr;
+    }
+    
 
     public double gxdbqwid(int idx)
     {

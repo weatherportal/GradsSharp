@@ -13,9 +13,16 @@ internal class GaIO
     static gaindxb pindxb;
     static gag2indx g2indx;
 
+    private DrawingContext _drawingContext;
+    
     /* Routine to obtain a grid.  The addresses of the gagrid
         structure is passed to this routine.  The storage for the
         grid is obtained and the grid is filled with data.                 */
+    public GaIO(DrawingContext drawingContext)
+    {
+        _drawingContext = drawingContext;
+    }
+
     public int gaggrd(gagrid pgrid)
     {
         double[] gr;
@@ -207,31 +214,41 @@ internal class GaIO
         dflag = 0;
         if (id == 0)
         {
-            if (jd < 0) jd = 1;
-
-            int row = 0;
-            for (d[jd] = pgr.dimmin[jd]; d[jd] <= pgr.dimmax[jd]; d[jd]++)
+            // if (jd < 0) jd = 1;
+            //
+            // int row = 0;
+            // for (d[jd] = pgr.dimmin[jd]; d[jd] <= pgr.dimmax[jd]; d[jd]++)
+            // {
+            //     if (d[jd] < 1 || d[jd] > dx[jd])
+            //     {
+            //         for (i = 0; i < incr; i++)
+            //         {
+            //             gr[row + i] = pgr.undef;
+            //             gru[row + i] = 0;
+            //         }
+            //     }
+            //     else
+            //     {
+            //         rc = gagrow(ref gr, ref gru, d);
+            //         if (rc > 0) return (1);
+            //         if (rc == 0) dflag = 1;
+            //     }
+            //
+            //     row += incr;
+            gr = pgr.DataReader.ReadData(_drawingContext.CommonData, pgrid.pfile, pgrid.pvar.variableDefinition);
+            for (int t = 0; t < gru.Length; t++)
             {
-                if (d[jd] < 1 || d[jd] > dx[jd])
-                {
-                    for (i = 0; i < incr; i++)
-                    {
-                        gr[row + i] = pgr.undef;
-                        gru[row + i] = 0;
-                    }
-                }
-                else
-                {
-                    rc = gagrow(ref gr, ref gru, d);
-                    if (rc > 0) return (1);
-                    if (rc == 0) dflag = 1;
-                }
 
-                row += incr;
-                
+                gru[t] = 1;
             }
 
+            dflag = 1;
+
             if (dflag == 0) goto nodatmsg;
+            
+            pgr.grid = gr;
+            pgr.umask = gru;
+            
             return (0);
         }
 
@@ -281,6 +298,8 @@ internal class GaIO
 
         if (dflag == 0) goto nodatmsg;
 
+        
+        
         return (0);
 
         nozdat:

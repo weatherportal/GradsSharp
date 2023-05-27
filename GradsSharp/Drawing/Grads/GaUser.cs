@@ -951,6 +951,9 @@ internal class GaUser
 
     public void SetT(double tMin)
     {
+        var vals = _drawingContext.CommonData.pfid.grvals[3];
+        GaUtil.gr2t(vals, tMin, out _drawingContext.CommonData.tmin);
+        Console.Write("TMIN=");
     }
 
     public void SetE(double eMin)
@@ -964,6 +967,13 @@ internal class GaUser
         {
             ReadGrib2File(dataFile);
             _drawingContext.CommonData._variableMapping = new GfsVariables();
+        }
+        
+        
+        if (_drawingContext.CommonData.fnum == 1)
+        {
+            SetT(1);
+            SetE(1);
         }
     }
 
@@ -1077,7 +1087,13 @@ internal class GaUser
         }
 
         _drawingContext.CommonData.pfi1.Add(gf);
-        _drawingContext.CommonData.pfid = gf;
+        _drawingContext.CommonData.fnum = _drawingContext.CommonData.pfi1.Count;
+        if (_drawingContext.CommonData.fnum == 1)
+        {
+            _drawingContext.CommonData.pfid = gf;
+            _drawingContext.CommonData.dfnum = 1;
+        }
+
 
         foreach (var ds in datasets)
         {
@@ -1105,7 +1121,7 @@ internal class GaUser
 
         gf.vnum = gf.pvar1.Count;
 
-        gf.dataReader = new GfsGribDataReader();
+        gf.DataReader = new GfsGribDataReader();
     }
 
 
@@ -1601,7 +1617,91 @@ internal class GaUser
         {
             return DataVariable.SRH;
         }
-
+        else if (name == "Soil temperature")
+        {
+            return DataVariable.SoilTemperature;
+        }
+        else if (name == "Water equivalent of accumulated snow depth")
+        {
+            return DataVariable.WaterEquivalentOfSnowDepth;
+        }
+        else if (name == "Snow depth")
+        {
+            return DataVariable.SnowDepth;
+        }
+        else if (name == "Ice thickness")
+        {
+            return DataVariable.IceThickness;
+        }
+        else if (name == "Apparent Temperature ")
+        {
+            return DataVariable.ApparentTemperature;
+        }
+        else if (name == "Ice growth rate")
+        {
+            return DataVariable.IceGrowthRate;
+        }
+        else if (name == "Percent frozen precipitation")
+        {
+            return DataVariable.PercentFrozenPrecip;
+        }
+        else if (name == "Precipitation rate")
+        {
+            return DataVariable.PrecipRate;
+        }
+        else if (name == "Surface roughness")
+        {
+            return DataVariable.SurfaceRoughness;
+        }
+        else if (name == "Vegetation")
+        {
+            return DataVariable.Vegetation;
+        }
+        else if (name == "Soil type")
+        {
+            return DataVariable.SoilType;
+        }
+        else if (name == "Precipitable water")
+        {
+            return DataVariable.PrecipitableWater;
+        }
+        else if (name == "Cloud water")
+        {
+            return DataVariable.CloudWater;
+        }
+        else if (name == "Total ozone")
+        {
+            return DataVariable.TotalOzone;
+        }
+        else if (name == "Low cloud cover")
+        {
+            return DataVariable.LowCloudCover;
+        }
+        else if (name == "Medium cloud cover")
+        {
+            return DataVariable.MediumCloudCover;
+        }
+        else if (name == "High cloud cover")
+        {
+            return DataVariable.HighCloudCover;
+        }
+        else if (name == "ICAO Standard Atmosphere Reference Height")
+        {
+            return DataVariable.ICAOReferenceHeight;
+        }
+        else if (name == "Potential temperature")
+        {
+            return DataVariable.Potentialemperature;
+        }
+        else if (name == "Land cover (1=land, 2=sea)")
+        {
+            return DataVariable.LandCover;
+        }
+        else if (name == "Ice cover")
+        {
+            return DataVariable.IceCover;
+        }
+        
         throw new Exception($"Variable name {name} not mapped");
     }
 }

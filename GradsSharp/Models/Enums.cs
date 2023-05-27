@@ -6,6 +6,9 @@ public enum DataVariable
 {
     NotDefined,
     Temperature,
+    SoilTemperature,
+    Potentialemperature,
+    ApparentTemperature,
     RelativeHumidity,
     Dewpoint,
     SpecificHumidity,
@@ -26,7 +29,25 @@ public enum DataVariable
     VerticalVorticity,
     AbsoluteVorticity,
     VerticalVelocity,
-    TotalCloudCover
+    TotalCloudCover,
+    LowCloudCover,
+    MediumCloudCover,
+    HighCloudCover,
+    ICAOReferenceHeight,
+    WaterEquivalentOfSnowDepth,
+    SnowDepth,
+    IceThickness,
+    IceGrowthRate,
+    PercentFrozenPrecip,
+    PrecipRate,
+    SurfaceRoughness,
+    Vegetation,
+    SoilType,
+    PrecipitableWater,
+    CloudWater,
+    TotalOzone,
+    LandCover,
+    IceCover
 }
 
 

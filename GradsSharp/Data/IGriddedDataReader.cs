@@ -5,5 +5,5 @@ namespace GradsSharp.Data;
 
 internal interface IGriddedDataReader
 {
-    public double[] ReadData(gafile file, VariableDefinition definition);
+    public double[] ReadData(gacmn pcmn, gafile file, VariableDefinition definition);
 }

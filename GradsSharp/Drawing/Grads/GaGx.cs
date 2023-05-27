@@ -10,7 +10,7 @@ internal class GaGx
     static double ioffset, joffset;
     static double idiv, jdiv;
 
-    static cxclock timeobj;
+    static cxclock timeobj = new cxclock();
 
     Func<double, double, Tuple<double, double>> fconv;
     Func<double, double, Tuple<double, double>> gconv;
@@ -565,7 +565,7 @@ internal class GaGx
             /* Data type grid */
             pgr = pcm.result[0].pgr;
             siz = pgr.isiz * pgr.jsiz;
-            pout = String.Format("Printing Grid -- {0:i} Values -- Undef = {1:g}\n", siz, pcm.undef);
+            pout = String.Format("Printing Grid -- {0} Values -- Undef = {1}", siz, pcm.undef);
             gaprnt(2, pout);
             gr = pgr.grid;
             gru = pgr.umask;
@@ -828,7 +828,7 @@ internal class GaGx
                 pout = $"Min, Max = {pgr.rmin} {pgr.rmax}";
                 gaprnt(2, pout);
                 cint = 0.0;
-                gacsel(pgr.rmin, pgr.rmax, out cint, out cmin, out cmax);
+                gacsel(pgr.rmin, pgr.rmax, ref cint, out cmin, out cmax);
 
                 if (pgr.jdim == -1)
                 {
@@ -4441,8 +4441,8 @@ internal class GaGx
         }
         else
         {
-            cint1 = 0.0;
-            gacsel(pgr1.rmin, pgr1.rmax, out cint1, out cmin1, out cmax1);
+            //cint1 = 0.0;
+            gacsel(pgr1.rmin, pgr1.rmax, ref cint1, out cmin1, out cmax1);
             if (cint1 == 0.0)
             {
                 cmin1 = pgr1.rmin - 5.0;
@@ -4463,8 +4463,7 @@ internal class GaGx
         }
         else
         {
-            cint2 = 0.0;
-            gacsel(pgr2.rmin, pgr2.rmax, out cint2, out cmin2, out cmax2);
+            gacsel(pgr2.rmin, pgr2.rmax, ref cint2, out cmin2, out cmax2);
             if (cint2 == 0.0)
             {
                 cmin2 = pgr2.rmin - 5.0;
@@ -6571,7 +6570,7 @@ internal class GaGx
         /* Determine contour interval */
         if (pcm.cflag == 0)
         {
-            gacsel(pgr.rmin, pgr.rmax, out pcm.cint, out cmin, out cmax);
+            gacsel(pgr.rmin, pgr.rmax, ref pcm.cint, out cmin, out cmax);
             cint = pcm.cint;
             if (cint == 0.0)
             {
@@ -6613,7 +6612,7 @@ internal class GaGx
                 gaprnt(0, "Too many contour levels -- adjusting cint\n");
                 while ((pmax - pmin) / cint > 100.0) cint *= 10.0;
                 pcm.cint = cint;
-                gacsel(pgr.rmin, pgr.rmax, out cint, out cmin, out cmax);
+                gacsel(pgr.rmin, pgr.rmax, ref cint, out cmin, out cmax);
             }
         }
 
@@ -7286,7 +7285,7 @@ internal class GaGx
             }
             else
             {
-                gacsel(vmin, vmax, out vincr, out vstrt, out vend);
+                gacsel(vmin, vmax, ref vincr, out vstrt, out vend);
                 if (GaUtil.dequal(vincr, 0.0, 1e-08) == 0)
                 {
                     gaprnt(0, "gaaxis internal logic check 25\n");
@@ -7308,7 +7307,7 @@ internal class GaGx
                     else if (vincr > 10.0) vincr = 10.0;
                 }
 
-                gacsel(vmin, vmax, out vincr, out vstrt, out vend);
+                gacsel(vmin, vmax, ref vincr, out vstrt, out vend);
                 vend = vend + (vincr * 0.5);
             }
         }
@@ -7781,10 +7780,9 @@ internal class GaGx
 
 /* Select a contour interval.  */
 
-    void gacsel(double rmin, double rmax, out double cint, out double cmin, out double cmax)
+    void gacsel(double rmin, double rmax, ref double cint, out double cmin, out double cmax)
     {
         double rdif, ndif, norml, w1, w2, t1, t2, absmax;
-        cint = 0.0;
 
         /* determine if field is a constant */
         absmax = (Math.Abs(rmin) + Math.Abs(rmax) + Math.Abs(Math.Abs(rmin) - Math.Abs(rmax))) / 2;
@@ -8179,7 +8177,7 @@ internal class GaGx
             y1 = pcm.tmin.yr;
             y2 = pcm.tmax.yr;
             c1 = 0.0;
-            gacsel(y1, y2, out c1, out c2, out c3);
+            gacsel(y1, y2, ref c1, out c2, out c3);
             tincr.yr = (int)(c1 + 0.5);
             if (tincr.yr == 3) tincr.yr = 5;
             goto cont;
@@ -8505,7 +8503,7 @@ internal class GaGx
         lnincr = 0.0;
         lnmin = pcm.dmin[0];
         lnmax = pcm.dmax[0];
-        gacsel(lnmin, lnmax, out lnincr, out lnstrt, out lnend);
+        gacsel(lnmin, lnmax, ref lnincr, out lnstrt, out lnend);
         if (lnincr == 0.0)
         {
             gaprnt(0, "gaaxis internal logic check 25\n");
@@ -8515,7 +8513,7 @@ internal class GaGx
         if (lnincr > 24.9) lnincr = 30.0;
         else if (lnincr > 14.5) lnincr = 20.0;
         else if (lnincr > 10.0) lnincr = 10.0;
-        gacsel(lnmin, lnmax, out lnincr, out lnstrt, out lnend);
+        gacsel(lnmin, lnmax, ref lnincr, out lnstrt, out lnend);
         lndif = lnmax - lnmin;
 
         if (pcm.xlint != 0.0) lnincr = pcm.xlint; /* set the lon increment from xlint */
@@ -8524,7 +8522,7 @@ internal class GaGx
         ltincr = 0.0;
         ltmin = pcm.dmin[1];
         ltmax = pcm.dmax[1];
-        gacsel(ltmin, ltmax, out ltincr, out ltstrt, out ltend);
+        gacsel(ltmin, ltmax, ref ltincr, out ltstrt, out ltend);
         if (ltincr == 0.0)
         {
             gaprnt(0, "gaaxis internal logic check 25\n");
