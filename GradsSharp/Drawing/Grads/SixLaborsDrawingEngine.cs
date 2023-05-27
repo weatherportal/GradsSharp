@@ -524,7 +524,7 @@ internal class SixLaborsDrawingEngine : IDrawingEngine
         _moveTo = new PointF(x, y);
     }
 
-    public void gxpflush()
+    public void gxpflush(int opt)
     {
     }
 

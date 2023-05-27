@@ -28,7 +28,7 @@ public interface IDrawingEngine
     void gxpepoly(double[] xybuf, int xyc);
     void gxpmov(double xpos, double ypos);
     void gxpdrw(double xpos, double ypos);
-    void gxpflush();
+    void gxpflush(int opt);
     void gxpsignal(int sig);
     double gxpch(char ch, int fn, double x, double y, double w, double h, double rot);
     double gxpqchl(char ch, int fn, double w);

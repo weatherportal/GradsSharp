@@ -54,6 +54,10 @@ public class GaSubs
         {
             DrawingEngine = new SixLaborsDrawingEngine(_drawingContext);
         }
+        else if (gxpopt == "Cairo")
+        {
+            DrawingEngine = new CairoDrawingEngine(_drawingContext);
+        }
 
         DrawingEngine.gxpinit(xmx, ymx);
         DrawingEngine.gxpbgn(xmx, ymx);
@@ -1143,6 +1147,7 @@ public class GaSubs
         }
 
         r = buff;
+        cnt = 0;
         for (i = 0; i < onum; i++)
         {
             double k, l;
@@ -1156,6 +1161,7 @@ public class GaSubs
 
         _drawingContext.GxMeta.hout1(-7, onum); /* start a polygon fill */
         r = buff;
+        cnt = 0;
         _drawingContext.GxMeta.hout2(-10, r[cnt], r[cnt + 1]); /* move to first point in polygon */
         cnt += 2;
         for (i = 1; i < onum; i++)

@@ -1298,6 +1298,7 @@ internal class GaExpr
 
         pgr = new gagrid();
 
+        pgr.DataReader = pfi.DataReader;
         /* Fill in gagrid variables */
 
         idim = pst.idim;

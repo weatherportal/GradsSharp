@@ -73,11 +73,18 @@ public class Plotter
         
         foreach (Chart c in context.Plot.Charts)
         {
+            context.GaUser.SetLat(c.LatitdeMin, c.LatitudeMax);
+            context.GaUser.SetLon(c.LongitudeMin, c.LongitudeMax);
             context.GaUser.SetMapResolution(c.Resolution);
             context.GaUser.SetCInt(1);
             context.GaUser.SetCCols(new []{ 1,2,3,4,5,6,7,8,9,10,11,12,13,14});
-            context.GaUser.Display("tmp2m");
+            // context.GaUser.SetGraphicsOut(GxOutSetting.Shaded);
+            // context.GaUser.Display("tmp2m");
+            context.GaUser.SetGraphicsOut(GxOutSetting.Shaded);
+            context.GaUser.Display("tmp2m-273.15");
             context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
+            // context.GaUser.SetGraphicsOut(GxOutSetting.Print);
+            // context.GaUser.Display("tmp2m");
         }
         
         

@@ -216,7 +216,7 @@ internal class GxChpl
         supsub = 0;
         cw = 0;
         int idx = 0;
-        while (chrs[idx] != '\0' && len > 0)
+        while (idx < chrs.Length && len > 0)
         {
             while (chrs[idx] == '`')
             {

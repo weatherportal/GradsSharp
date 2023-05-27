@@ -115,7 +115,7 @@ internal class GxMeta
         ch = mbuflast.used;
         mbuflast.buff[ch] = 99;;
         mbuflast.buff[ch + 1] = cmd;
-        mbuflast.buff[ch+3] = opt;
+        mbuflast.buff[ch + 2] = opt;
         mbuflast.used+=3;
     }
 
@@ -563,7 +563,7 @@ internal class GxMeta
                     iii = ppp;
                     //dsubs.gxdptn((int)*(buff + 0), (int)*(buff + 1), (int)*(buff + 2));
                     if (pflg > 0)
-                        psubs.gxpflush();
+                        psubs.gxpflush(1);
                     ppp += 3;
                 }
                 /* -20 is a draw widget.  We will redraw it in current state. */
@@ -574,7 +574,7 @@ internal class GxMeta
                     iii = ppp;
                     //dsubs.gxdpbn((int)*(buff + 0), NULL, 1, 0, -1);
                     if (pflg > 0)
-                        psubs.gxpflush();
+                        psubs.gxpflush(1);
                     ppp += 1;
                 }
                 /* -21 is for drawing a single character in the indicated font and size */
@@ -630,7 +630,7 @@ internal class GxMeta
         }
 
         /* tell hardware and printing layer we are finished */
-        if (pflg > 0) psubs.gxpflush();
+        if (pflg > 0) psubs.gxpflush(1);
         //dsubs.gxdopt(4);
     }
 

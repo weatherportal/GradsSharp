@@ -208,7 +208,7 @@ internal class gafile
 {
 
     
-    public IGriddedDataReader dataReader;
+    public IGriddedDataReader DataReader { get; set; }
     
     int fseq; /* Unique sequence number for cache detection */
     public string name; /* File name or URL                      */
@@ -721,7 +721,7 @@ internal class gacmn
     public double strmarrsz; /* Streamline arrowhead size */
     public int strmarrt; /* Streamline arrowhead type */
     public int mdlblnk, mdldig3; /* Station model plot opts */
-    public string prstr; /* Format string for gxout print */
+    public string prstr = "{0:0.00}"; /* Format string for gxout print */
     public int prlnum; /* Number of values per record */
     public int prbnum; /* Number of blanks to add between values */
     public int prudef; /* Undef printed as "undef" or value */
@@ -1061,7 +1061,7 @@ internal class gacmn
         aaflg = 1;
         //xgeom[0] = '\0';
         gxdopt = "";
-        gxpopt = "SixLabors";
+        gxpopt = "Cairo";
     }
 }
 
@@ -1151,6 +1151,7 @@ internal class gagrid : ICloneable
     public int ilinr, jlinr; /* Indicates if linear transformation   */
     public int toff; /* Indicates if T dim values are forecast offsets */
 
+    public IGriddedDataReader DataReader { get; set; }
 
     public object Clone()
     {
