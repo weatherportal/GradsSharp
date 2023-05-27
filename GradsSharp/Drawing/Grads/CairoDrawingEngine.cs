@@ -934,16 +934,144 @@ internal class CairoDrawingEngine : IDrawingEngine
         if (sig == 3) gxCaa(1); /* enable anti-aliasing */
     }
 
+
+    /* Set the Cairo font based on the font number and the settings 
+   obtained from the backend database settings */
+
+    void gxCselfont(int fn)
+    {
+        FontFace? cf_face = null;
+        int dflt, rc;
+        int cbold, citalic;
+
+        /* get font info from graphics database */
+        // _drawingContext.GxDb.gxdbqfont(fn);
+        // gxdbqfont(fn, &dbq);
+        //
+        // /* font 0-5 (but not 3) and hershflag=1 in gxmeta.c, so we use cairo to draw something hershey-like */
+        // if (fn < 6) {
+        //     cbold = CAIRO_FONT_WEIGHT_NORMAL;
+        //     if (dbq.fbold == 1) cbold = CAIRO_FONT_WEIGHT_BOLD;
+        //     citalic = CAIRO_FONT_SLANT_NORMAL;
+        //     if (dbq.fitalic == 1) citalic = CAIRO_FONT_SLANT_ITALIC;
+        //     if (dbq.fitalic == 2) citalic = CAIRO_FONT_SLANT_OBLIQUE;
+        //
+        //     if (dbq.fname == NULL) {
+        //         /* we should never have fn<6 and fname==NULL, but just in case... */
+        //         cairo_select_font_face(cr, "sans-serif", citalic, cbold);
+        //     } else {
+        //         cairo_select_font_face(cr, dbq.fname, citalic, cbold);
+        //     }
+        // } else {
+        //     /* font>=10 */
+        //     dflt = 0;
+        //     if (library == NULL) dflt = 1;      /* use default fonts */
+        //     if (dbq.fname == NULL) dflt = 1;    /* make sure we have a font filename */
+        //
+        //     if (!dflt) {
+        //         if (face[fn] == NULL) {
+        //             /* try to open user-provided font file */
+        //             rc = FT_New_Face(library, dbq.fname, 0, &newface);
+        //             if (rc) {
+        //                 printf("Error: Unable to open font file \"%s\"\n", dbq.fname);
+        //                 printf(" Will use a default \"sans-serif\" font instead\n");
+        //                 dflt = 1;
+        //                 /* update the data base so this error message only appears once */
+        //                 gxdbsetfn(fn, NULL);
+        //             } else {
+        //                 /* we succeeded, so save the face and update the font status */
+        //                 face[fn] = newface;
+        //             }
+        //         } else {
+        //             /* this font has already been opened, so we use the saved face */
+        //             newface = face[fn];
+        //         }
+        //     }
+        //
+        //     if (!dflt) {
+        //         /* create a new font face  */
+        //         cf_face = cairo_ft_font_face_create_for_ft_face(newface, 0);
+        //         cairo_set_font_face(cr, cf_face);
+        //     } else {
+        //         /* set up a default font with the Cairo "Toy" interface */
+        //         cairo_select_font_face(cr, "sans-serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+        //     }
+        // }
+        cr.SelectFontFace("sans-serif", FontSlant.Normal, FontWeight.Normal);
+    }
+
     public double gxpch(char ch, int fn, double x, double y, double w, double h, double rot)
     {
-        //throw new NotImplementedException();
+        TextExtents te;
+        double xpage, ypage, usize, vsize;
+        double aheight, awidth, swidth, fontsize = 100.0;
+        string str;
+        string astr = "A";
+
+        if (drawing > 0) cr.Stroke();
+        drawing = 0;
+        gxCselfont(fn);
+
+        /* get the scale factor based on size of "A" */
+        cr.SetFontSize(fontsize);
+        te = cr.TextExtents(astr);
+        awidth = fontsize / te.Width;
+        aheight = fontsize / te.Height;
+        usize = w * xscl * awidth;
+        vsize = h * yscl * aheight;
+        if (brdrflg > 0)
+        {
+            usize = usize * (((double)width - brdrwid * 2.0) / (double)width);
+            vsize = vsize * (((double)height - brdrwid * 2.0) / (double)height);
+        }
+
+        /* Convert the position coordinates and adjust the rotation if necessary */
+        gxCxycnv(x, y, out xpage, out ypage);
+        if (rotate > 0) rot = rot + Math.PI / 2;
+
+        /* get the text extents of the character we want to draw */
+        te = cr.TextExtents(ch.ToString());
+
+        /* draw a character */
+        cr.Save(); /* save the untranslated, unrotated, unclipped context */
+        cr.Rectangle(clx, cly, clw, clh); /* set the clipping area */
+        cr.Clip(); /* clip it */
+        cr.Translate(xpage, ypage); /* translate to location of character */
+        cr.Rotate(-1.0 * rot); /* rotate if necessary */
+        cr.MoveTo(0.0, 0.0); /* move to (translated) origin */
+        cr.Scale(usize / fontsize, vsize / fontsize); /* apply the scale factor right before drawing */
+        cr.ShowText(ch.ToString()); /* finally, draw the darned thing */
+        cr.Restore(); /* restore the saved graphics context */
+
+        /* return the scaled width of the character */
+        swidth = te.XAdvance * usize / (fontsize * xscl);
+        return (swidth);
+
         return 0;
     }
 
     public double gxpqchl(char ch, int fn, double w)
     {
-        //throw new NotImplementedException();
-        return 0;
+        TextExtents te;
+        double usize, awidth, swidth, fontsize = 100.0;
+        
+        string astr = "A";
+
+        gxCselfont(fn);
+
+        /* get the scale factor (for width only) based on the size of "A" */
+        cr.SetFontSize(fontsize);
+        te = cr.TextExtents(astr);
+        awidth = fontsize / te.Width;
+        usize = w * awidth * xscl;
+        if (brdrflg>0) usize = usize * (((double) width - brdrwid * 2.0) / (double) width);
+
+        /* get the text extents of the character */
+        te = cr.TextExtents(ch.ToString());
+
+        /* return the scaled width of the character */
+        swidth = te.XAdvance * usize / (fontsize * xscl);
+        return (swidth);
     }
 
     public void gxpclip(double x1, double x2, double y1, double y2)

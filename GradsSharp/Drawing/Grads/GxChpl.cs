@@ -7,7 +7,7 @@ internal class GxChpl
     static string[] fch = new string[10]; /* Pointers to font data once it is read in */
     static int[] foff = new int[10]; /* Pointers to character offsets */
     static int[] flen = new int[10]; /* Pointers to character lengths */
-    static int dfont; /* Default font */
+    static int dfont = 15; /* Default font */
 
     public GxChpl(DrawingContext drawingContext)
     {

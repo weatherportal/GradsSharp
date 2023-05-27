@@ -62,7 +62,10 @@ public class VariableDefinition
         {
             result += HeightValue + "m";
         }
-
+        else if (HeightType == FixedSurfaceType.IsobaricSurface)
+        {
+            result += "prs";
+        }
         return result;
     }
 }

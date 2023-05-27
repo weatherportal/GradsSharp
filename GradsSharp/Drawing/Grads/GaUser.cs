@@ -316,12 +316,12 @@ internal class GaUser
             // pcm.sdfprec = 8;
             // if (pcm.sdfwname) {
             //     gree(pcm.sdfwname, "g225");
-            //     pcm.sdfwname = NULL;
+            //     pcm.sdfwname = null;
             // }
-            // while (pcm.attr != NULL) {
+            // while (pcm.attr != null) {
             //     attr = pcm.attr;           /* point to first block in chain */
-            //     if (attr.next == NULL) {
-            //         pcm.attr = NULL;         /* first block is only block */
+            //     if (attr.next == null) {
+            //         pcm.attr = null;         /* first block is only block */
             //     } else {        /* move start of chain from 1st to 2nd block */
             //         nextattr = attr.next;
             //         pcm.attr = nextattr;
@@ -341,15 +341,15 @@ internal class GaUser
 //     /* release file name */
 //     if (pcm.shpfname) {
 //       gree (pcm.shpfname,"g89");
-//       pcm.shpfname = NULL;
+//       pcm.shpfname = null;
 //     }
 //     /* release chain of data base fields */
-//     while (pcm.dbfld != NULL) {
+//     while (pcm.dbfld != null) {
 //       /* point to first block in chain */
 //       fld = pcm.dbfld;
-//       if (fld.next == NULL) {
+//       if (fld.next == null) {
 // 	/* first block is only block */
-// 	pcm.dbfld = NULL;
+// 	pcm.dbfld = null;
 //       }
 //       else {
 // 	/* move start of chain from 1st to 2nd block */
@@ -357,7 +357,7 @@ internal class GaUser
 // 	pcm.dbfld = nextfld;
 //       }
 //       /* release memory from 1st block */
-//       if (fld.value != NULL) gree(fld.value,"g87");
+//       if (fld.value != null) gree(fld.value,"g87");
 //       gree(fld,"g88");
 //     }
 // #endif
@@ -370,15 +370,15 @@ internal class GaUser
             // pcm.kmlflg = 1;                /* reset KML output to img */
             // if (pcm.kmlname) {           /* release KML file name */
             //     gree(pcm.kmlname, "g90");
-            //     pcm.kmlname = NULL;
+            //     pcm.kmlname = null;
             // }
             // if (pcm.tifname) {           /* release TIFF file name */
             //     gree(pcm.tifname, "g91");
-            //     pcm.tifname = NULL;
+            //     pcm.tifname = null;
             // }
             // if (pcm.gtifname) {          /* release GeoTIFF file name */
             //     gree(pcm.gtifname, "g92");
-            //     pcm.gtifname = NULL;
+            //     pcm.gtifname = null;
             // }
         }
 
@@ -857,7 +857,21 @@ internal class GaUser
         }
     }
 
-    public void SetStringSize(int hsize, int vsize = -1)
+    public void SetGrads(OnOffSetting onOffSetting)
+    {
+        if (onOffSetting == OnOffSetting.Off)
+        {
+            pcm.grdsflg = false;
+            pcm.timelabflg = false;
+        }
+        else
+        {
+            pcm.grdsflg = true;
+            pcm.timelabflg = true;
+        }
+    }
+
+    public void SetStringSize(double hsize, double vsize = -1)
     {
         pcm.strhsz = hsize;
         if (vsize > -1)
@@ -943,6 +957,8 @@ internal class GaUser
 
     public void SetZ(double zMin)
     {
+        _drawingContext.CommonData.dmin[2] = zMin;
+        _drawingContext.CommonData.dmax[2] = zMin;
     }
 
     public void SetZ(double zMin, double zMax)
@@ -951,15 +967,462 @@ internal class GaUser
 
     public void SetT(double tMin)
     {
+        _drawingContext.CommonData.vdim[3] = 0;
+
         var vals = _drawingContext.CommonData.pfid.grvals[3];
         GaUtil.gr2t(vals, tMin, out _drawingContext.CommonData.tmin);
+        _drawingContext.CommonData.tmax = _drawingContext.CommonData.tmin;
         Console.Write("TMIN=");
     }
 
     public void SetE(double eMin)
     {
+        _drawingContext.CommonData.vdim[4] = 0;
+        _drawingContext.CommonData.dmax[4] = 1;
+        _drawingContext.CommonData.dmin[4] = 1;
     }
 
+
+    public void Define(string varName, string formula)
+    {
+        gadef(varName, formula, 0);
+    }
+
+    int gadef(string variable, string formula, int impf)
+    {
+        gagrid pgr, pgr1;
+        gastat? pst;
+        gafile pfi, pfiv, pfic;
+        gadefn? pdf, pcurr, psave;
+        gadefn prev;
+        dt tmin, tmax;
+
+        Func<double[], double, double>? conv;
+        double vmin, vmax, zmin, zmax, emin, emax;
+        int res, resu, gr, gru;
+        int itmin, itmax, it, izmin, izmax, iz, iemin, iemax, ie;
+        int i, rc, gsiz, vdz, vdt, vde;
+        long sz, siz;
+
+
+        string name;
+
+        pdf = null;
+        pst = null;
+        pgr1 = null;
+        pfiv = null;
+
+        /* Save user dim limits */
+        zmin = pcm.dmin[2];
+        zmax = pcm.dmax[2];
+        tmin = pcm.tmin;
+        tmax = pcm.tmax;
+        emin = pcm.dmin[4];
+        emax = pcm.dmax[4];
+        vdz = pcm.vdim[2];
+        vdt = pcm.vdim[3];
+        vde = pcm.vdim[4];
+
+        /* Get the define name */
+        if (impf == 0)
+        {
+        }
+
+        formula = formula.Replace(" ", "");
+        name = variable;
+
+        /* We are now pointing to the expression.  We need to set up
+         our looping environment -- we are going to always loop
+         through Z and T and E.                                */
+
+        pfi = pcm.pfid;
+        if (pfi.type == 2 || pfi.type == 3)
+        {
+            GaGx.gaprnt(0, "DEFINE error: Define not yet valid for station data\n");
+            GaGx.gaprnt(0, "              Default file is a station data file\n");
+            goto retrn;
+        }
+
+        conv = pfi.ab2gr[2]; /* Get Z grid limits */
+        vmin = conv(pfi.abvals[2], zmin);
+        vmax = conv(pfi.abvals[2], zmax);
+        if (GaUtil.dequal(vmin, vmax, 1.0e-08) == 0)
+        {
+            if (vmin < 0.0) izmin = (int)(vmin - 0.5);
+            else izmin = (int)(vmin + 0.5);
+            izmax = izmin;
+        }
+        else
+        {
+            izmin = (int)(Math.Floor(vmin + 0.001));
+            izmax = (int)(Math.Ceiling(vmax - 0.001));
+        }
+
+
+        vmin = GaUtil.t2gr(pfi.abvals[3], tmin); /* Get T grid limits */
+        vmax = GaUtil.t2gr(pfi.abvals[3], tmax);
+        if (GaUtil.dequal(vmin, vmax, 1.0e-08) == 0)
+        {
+            if (vmin < 0.0) itmin = (int)(vmin - 0.5);
+            else itmin = (int)(vmin + 0.5);
+            itmax = itmin;
+        }
+        else
+        {
+            itmin = (int)(Math.Floor(vmin + 0.001));
+            itmax = (int)(Math.Ceiling(vmax - 0.001));
+        }
+
+        conv = pfi.ab2gr[4]; /* Get E grid limits */
+        vmin = conv(pfi.abvals[4], emin);
+        vmax = conv(pfi.abvals[4], emax);
+        if (GaUtil.dequal(vmin, vmax, 1.0e-08) == 0)
+        {
+            if (vmin < 0.0) iemin = (int)(vmin - 0.5);
+            else iemin = (int)(vmin + 0.5);
+            iemax = iemin;
+        }
+        else
+        {
+            iemin = (int)(Math.Floor(vmin + 0.001));
+            iemax = (int)(Math.Ceiling(vmax - 0.001));
+        }
+
+        /* Fix Z and T and E dimensions */
+        pcm.dmax[2] = pcm.dmin[2];
+        pcm.tmax = pcm.tmin;
+        pcm.dmax[4] = pcm.dmin[4];
+        pcm.vdim[2] = 0;
+        pcm.vdim[3] = 0;
+        pcm.vdim[4] = 0;
+
+        /* Get the first grid */
+        pst = getpst(pcm);
+        if (pst == null) goto retrn;
+
+        conv = pfi.gr2ab[2];
+        pst.dmin[2] = conv(pfi.grvals[2], (double)izmin);
+        pst.dmax[2] = pst.dmin[2];
+        GaUtil.gr2t(pfi.grvals[3], (double)itmin, out pst.tmin);
+        pst.tmax = pst.tmin;
+        conv = pfi.gr2ab[4];
+        pst.dmin[4] = conv(pfi.grvals[4], (double)iemin);
+        pst.dmax[4] = pst.dmin[4];
+
+        rc = _drawingContext.GaExpr.gaexpr(formula, pst);
+        if (rc == 0) rc = _drawingContext.CommonData.sig;
+        if (rc > 0)
+        {
+            GaGx.gaprnt(0, "DEFINE error:  Invalid expression. ");
+            goto retrn;
+        }
+
+        if (pst.type != 1)
+        {
+            GaGx.gaprnt(0, "DEFINE Error:  Define does not yet support station data");
+            GaGx.gaprnt(0, "    Expression results in station data object");
+            goto retrn;
+        }
+
+        /* Based on the grid we just got, we can now figure out the size of
+         the final defined grid and fill in the gafile structure for the
+         defined grid.  Allocate all the necessary stuff and fill it all
+         in.  */
+
+        /* Allocate the pdf and pfi blocks */
+        pdf = new gadefn();
+        pfiv = new gafile();
+        pdf.pfi = pfiv;
+        pfiv.rbuf = null;
+        pfiv.sbuf = null;
+        pfiv.ubuf = null;
+
+        /* Fill in the pfi block */
+        pgr1 = pst.result.pgr;
+        pfiv.type = 4;
+        pfiv.climo = 0;
+        pfiv.calendar = pfi.calendar;
+        pfiv.undef = pgr1.undef;
+        pfiv.dnum[2] = 1 + izmax - izmin;
+        pfiv.dnum[3] = 1 + itmax - itmin;
+        pfiv.dnum[4] = 1 + iemax - iemin;
+        pfiv.gr2ab[2] = pfi.gr2ab[2];
+        pfiv.ab2gr[2] = pfi.ab2gr[2];
+        pfiv.gr2ab[4] = pfi.gr2ab[4];
+        pfiv.ab2gr[4] = pfi.ab2gr[4];
+
+        if ((pfiv.grvals[2] = GaUtil.cpscal(pfi.grvals[2], pfi.linear[2], 0, 2)) == null) goto etrn;
+        if ((pfiv.abvals[2] = GaUtil.cpscal(pfi.abvals[2], pfi.linear[2], 1, 2)) == null) goto etrn;
+
+        if ((pfiv.grvals[3] = GaUtil.cpscal(pfi.grvals[3], pfi.linear[3], 0, 3)) == null) goto etrn;
+        if ((pfiv.abvals[3] = GaUtil.cpscal(pfi.abvals[3], pfi.linear[3], 1, 3)) == null) goto etrn;
+
+        if ((pfiv.grvals[4] = GaUtil.cpscal(pfi.grvals[4], pfi.linear[4], 0, 4)) == null) goto etrn;
+        if ((pfiv.abvals[4] = GaUtil.cpscal(pfi.abvals[4], pfi.linear[4], 1, 4)) == null) goto etrn;
+
+        pfiv.linear[2] = pfi.linear[2];
+        pfiv.linear[3] = pfi.linear[3];
+        pfiv.linear[4] = pfi.linear[4];
+        pfiv.dimoff[2] = izmin - 1;
+        pfiv.dimoff[3] = itmin - 1;
+        pfiv.dimoff[4] = iemin - 1;
+        pfiv.ppflag = 0;
+
+        if (pgr1.idim > -1 && pgr1.jdim > -1)
+        {
+            /* I and J are varying */
+            pfiv.gr2ab[0] = pgr1.igrab;
+            pfiv.ab2gr[0] = pgr1.iabgr;
+            if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
+            if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+            pfiv.linear[0] = pgr1.ilinr;
+            pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
+            pfiv.dnum[0] = pgr1.isiz;
+
+            pfiv.gr2ab[1] = pgr1.jgrab;
+            pfiv.ab2gr[1] = pgr1.jabgr;
+            if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.jvals, pgr1.jlinr, 0, pgr1.jdim)) == null) goto etrn;
+            if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.javals, pgr1.jlinr, 1, pgr1.jdim)) == null) goto etrn;
+            pfiv.linear[1] = pgr1.jlinr;
+            pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
+            pfiv.dnum[1] = pgr1.jsiz;
+        }
+        else if (pgr1.idim > -1 && pgr1.jdim == -1)
+        {
+            /* I is varying, J is fixed */
+            if (pgr1.idim == 0)
+            {
+                /* I is X */
+                pfiv.gr2ab[0] = pgr1.igrab;
+                pfiv.ab2gr[0] = pgr1.iabgr;
+                if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                pfiv.linear[0] = pgr1.ilinr;
+                pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
+                pfiv.dnum[0] = pgr1.isiz;
+
+                pfiv.gr2ab[1] = pfi.gr2ab[1];
+                pfiv.ab2gr[1] = pfi.ab2gr[1];
+                if ((pfiv.grvals[1] = GaUtil.cpscal(pfi.grvals[1], pfi.linear[1], 0, 1)) == null) goto etrn;
+                if ((pfiv.abvals[1] = GaUtil.cpscal(pfi.abvals[1], pfi.linear[1], 1, 1)) == null) goto etrn;
+                pfiv.linear[1] = pfi.linear[1];
+                pfiv.dimoff[1] = 0;
+                pfiv.dnum[1] = 1;
+            }
+            else
+            {
+                /* I is Y */
+                pfiv.gr2ab[1] = pgr1.igrab;
+                pfiv.ab2gr[1] = pgr1.iabgr;
+                if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                pfiv.linear[1] = pgr1.ilinr;
+                pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
+                pfiv.dnum[1] = pgr1.isiz;
+
+                pfiv.gr2ab[0] = pfi.gr2ab[0];
+                pfiv.ab2gr[0] = pfi.ab2gr[0];
+                if ((pfiv.grvals[0] = GaUtil.cpscal(pfi.grvals[0], pfi.linear[0], 0, 0)) == null) goto etrn;
+                if ((pfiv.abvals[0] = GaUtil.cpscal(pfi.abvals[0], pfi.linear[0], 1, 0)) == null) goto etrn;
+                pfiv.linear[0] = pfi.linear[0];
+                pfiv.dimoff[0] = 0;
+                pfiv.dnum[0] = 1;
+            }
+        }
+        else
+        {
+            /* I and J are fixed */
+            pfiv.gr2ab[0] = pfi.gr2ab[0];
+            pfiv.ab2gr[0] = pfi.ab2gr[0];
+            if ((pfiv.grvals[0] = GaUtil.cpscal(pfi.grvals[0], pfi.linear[0], 0, 0)) == null) goto etrn;
+            if ((pfiv.abvals[0] = GaUtil.cpscal(pfi.abvals[0], pfi.linear[0], 1, 0)) == null) goto etrn;
+            pfiv.linear[0] = pfi.linear[0];
+            pfiv.dimoff[0] = 0;
+            pfiv.dnum[0] = 1;
+
+            pfiv.gr2ab[1] = pfi.gr2ab[1];
+            pfiv.ab2gr[1] = pfi.ab2gr[1];
+            if ((pfiv.grvals[1] = GaUtil.cpscal(pfi.grvals[1], pfi.linear[1], 0, 1)) == null) goto etrn;
+            if ((pfiv.abvals[1] = GaUtil.cpscal(pfi.abvals[1], pfi.linear[1], 1, 1)) == null) goto etrn;
+            pfiv.linear[1] = pfi.linear[1];
+            pfiv.dimoff[1] = 0;
+            pfiv.dnum[1] = 1;
+        }
+
+        /* If the first grid is all the data we need, then we are pretty much done.  */
+
+        if (izmin == izmax && itmin == itmax && iemin == iemax)
+        {
+            if (pgr1.idim < 0)
+            {
+                /* grid is a single data value */
+                sz = sizeof(double);
+                pfiv.rbuf = new double[1];
+                sz = sizeof(char);
+                pfiv.ubuf = new byte[1];
+                pfiv.rbuf[0] = pgr1.grid[0];
+                pfiv.ubuf[0] = pgr1.umask[0];
+            }
+            else
+            {
+                pfiv.rbuf = pgr1.grid;
+                pfiv.ubuf = pgr1.umask;
+            }
+
+            pgr1.grid = null;
+            pgr1.umask = null;
+            siz = pgr1.isiz;
+            siz = siz * pgr1.jsiz;
+        }
+        else
+        {
+            /* We need to get multiple grids.  Set this up.  */
+
+            /* Calculate size and then allocate the storage for the defined object */
+            gsiz = pgr1.isiz * pgr1.jsiz;
+            siz = (long)gsiz * (long)pfiv.dnum[2] * (long)pfiv.dnum[3] * (long)pfiv.dnum[4];
+            pfiv.rbuf = new double[siz];
+            sz = siz * sizeof(char);
+            pfiv.ubuf = new byte[siz];
+
+            /* Now we can loop and get all the data */
+
+            res = 0;
+            resu = 0;
+            for (ie = iemin; ie <= iemax; ie++)
+            {
+                for (it = itmin; it <= itmax; it++)
+                {
+                    for (iz = izmin; iz <= izmax; iz++)
+                    {
+                        /* fix dmin and dmax values for Z, T, E dimensions */
+                        conv = pfi.gr2ab[2];
+                        pst.dmin[2] = conv(pfi.grvals[2], (double)iz);
+                        pst.dmax[2] = pst.dmin[2];
+                        GaUtil.gr2t(pfi.grvals[3], (double)it, out pst.tmin);
+                        pst.tmax = pst.tmin;
+                        conv = pfi.gr2ab[4];
+                        pst.dmin[4] = conv(pfi.grvals[4], (double)ie);
+                        pst.dmax[4] = pst.dmin[4];
+
+                        /* reuse first grid evaluated above */
+                        if (ie == iemin && it == itmin && iz == izmin)
+                        {
+                            //gr = pgr1.grid;
+                            //gru = pgr1.umask;
+                            gr = 0;
+                            gru = 0;
+                            /* copy the grid into defined variable space */
+                            for (i = 0; i < gsiz; i++)
+                            {
+                                pfiv.rbuf[res] = pgr1.grid[gr];
+                                pfiv.ubuf[resu] = pgr1.umask[gru];
+                                /* make sure defined vars have undef values, use pcm.undef */
+                                if (pgr1.umask[gru] == 0) pfiv.rbuf[res] = pcm.undef;
+                                res++;
+                                resu++;
+                                gr++;
+                                gru++;
+                            }
+                        }
+                        else
+                        {
+                            /* evaluate the expression again */
+                            rc = _drawingContext.GaExpr.gaexpr(formula, pst);
+                            if (rc == 0) rc = _drawingContext.CommonData.sig;
+                            if (rc > 0)
+                            {
+                                GaGx.gaprnt(0, "DEFINE error:  Invalid expression. \n");
+                                goto retrn;
+                            }
+
+                            pgr = pst.result.pgr;
+                            if (pgr.idim != pgr1.idim || pgr.jdim != pgr1.jdim ||
+                                GaExpr.gagchk(pgr, pgr1, pgr1.idim) > 0 ||
+                                GaExpr.gagchk(pgr, pgr1, pgr1.jdim) > 0)
+                            {
+                                GaGx.gaprnt(0, "Define Error: Internal Logic Check 4\n");
+                                goto retrn;
+                            }
+
+                            gr = 0;
+                            gru = 0;
+
+                            for (i = 0; i < gsiz; i++)
+                            {
+                                pfiv.rbuf[res] = pgr.grid[gr];
+                                pfiv.ubuf[resu] = pgr.umask[gru];
+                                /* make sure defined vars have undef values, use pcm.undef */
+                                if (pgr.umask[gru] == 0) pfiv.rbuf[res] = pcm.undef;
+                                res++;
+                                resu++;
+                                gr++;
+                                gru++;
+                            }
+                        }
+
+
+                        /* free the result grid  */
+                        if (ie == iemin && it == itmin && iz == izmin)
+                        {
+                            if (pgr1.idim > -1)
+                            {
+                            }
+
+                            pgr1.grid = null;
+                            pgr1.umask = null;
+                            pst.result.pgr = null;
+                        }
+                        else
+                        {
+                            //gafree(pst);
+                        }
+                    }
+                }
+            }
+        }
+
+        // siz = siz * sizeof(double);
+        // snprintf(pout, 1255, "Define memory allocation size = %ld bytes\n", siz);
+        // GaGx.gaprnt(2, pout);
+
+        /* Now we will chain our new object to the chain of define blocks
+         hung off the common area */
+
+
+        var curr = pcm.pdf1.FirstOrDefault(x => x.abbrv == name);
+
+        if (curr != null)
+        {
+            GaGx.gaprnt(2, "Name already DEFINEd:  ");
+            GaGx.gaprnt(2, name);
+            GaGx.gaprnt(2, ".   Will be deleted and replaced.\n");
+            pcm.pdf1.Remove(curr);
+        }
+
+        pcm.pdf1.Add(pdf);
+        pdf.abbrv = name;
+
+        /* Restore user dim limits*/
+        pcm.dmax[2] = zmax;
+        pcm.tmax = tmax;
+        pcm.dmax[4] = emax;
+        pcm.vdim[2] = vdz;
+        pcm.vdim[3] = vdt;
+        pcm.vdim[4] = vde;
+        return (0);
+
+        etrn:
+        GaGx.gaprnt(0, "Memory allocation error for Define\n");
+
+        retrn:
+
+        pcm.tmax = tmax; /* Restore user dim limits*/
+        pcm.dmax[2] = zmax;
+        pcm.vdim[2] = vdz;
+        pcm.vdim[3] = vdt;
+        return (1);
+    }
 
     public void Open(string dataFile, DataFormat format)
     {
@@ -968,12 +1431,13 @@ internal class GaUser
             ReadGrib2File(dataFile);
             _drawingContext.CommonData._variableMapping = new GfsVariables();
         }
-        
-        
+
+
         if (_drawingContext.CommonData.fnum == 1)
         {
             SetT(1);
             SetE(1);
+            SetZ(1);
         }
     }
 
@@ -991,23 +1455,26 @@ internal class GaUser
         ProductDefinition0000 pd;
 
         List<double> levels = new List<double>();
-        
+
         foreach (var ds in datasets)
         {
             var pdef = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
             if (pdef.FirstFixedSurfaceType == NGrib.Grib2.CodeTables.FixedSurfaceType.IsobaricSurface)
             {
-                if (!levels.Contains(pdef.FirstFixedSurfaceValue ?? 0))
+                if (!levels.Contains((pdef.FirstFixedSurfaceValue ?? 0) / 100.0))
                 {
-                    levels.Add(pdef.FirstFixedSurfaceValue ?? 0 / 100.0);
+                    levels.Add((pdef.FirstFixedSurfaceValue ?? 0) / 100.0);
                 }
             }
         }
 
 
-        levels.Add(0);
         levels = levels.OrderByDescending(x => x).ToList();
-
+        levels.Insert(0, levels.Count);
+        levels.Add(-999.9);
+        levels.Add(0);
+        levels.Add(0);
+        levels.Add(0);
         if (dataset.GridDefinitionSection.GridDefinition is LatLonGridDefinition gd)
         {
             var lonMin = gd.Lo1;
@@ -1016,8 +1483,8 @@ internal class GaUser
             {
                 lonMin -= 360;
             }
-            
-            
+
+
             gf.type = 1;
             gf.dnum[0] = (int)gd.Nx;
             gf.grvals[0] = new double[] { gd.Dx, lonMin - gd.Dx, -999.9 };
@@ -1030,7 +1497,7 @@ internal class GaUser
 
             v2 = gf.grvals[0][0];
             v1 = gf.grvals[0][1] + v2;
-            double temp = v1 + ((double) (gf.dnum[0])) * v2;
+            double temp = v1 + ((double)(gf.dnum[0])) * v2;
             temp = temp - 360.0;
             if (Math.Abs(temp - v1) < 0.01) gf.wrap = 1;
 
@@ -1050,7 +1517,7 @@ internal class GaUser
             gf.linear[2] = 0;
 
             var dt = dataset.Message.IdentificationSection.ReferenceTime;
-            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0 };
+            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0, 0 };
             gf.dnum[3] = 1; //TODO this can be multiple timesteps too
             gf.grvals[3] = vals;
             gf.abvals[3] = vals;
@@ -1061,14 +1528,14 @@ internal class GaUser
             v2 = 1;
             vals = new double[] { v2, v2 - v1, -999.9 };
             gf.grvals[4] = vals;
-            vals = new double[] { -1.0 * ((v1-v2)/v2), 1.0/v2, -999.9 };
+            vals = new double[] { -1.0 * ((v1 - v2) / v2), 1.0 / v2, -999.9 };
             gf.abvals[4] = vals;
             gf.linear[4] = 1;
             gf.ab2gr[4] = GaUtil.liconv;
             gf.gr2ab[4] = GaUtil.liconv;
-            
+
             gf.gsiz = gf.dnum[0] * gf.dnum[1];
-            if (gf.ppflag>0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
+            if (gf.ppflag > 0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
             /* add the XY header/trailer to gsiz */
             // if (pfi.xyhdr) {
             //     if (pvar.dfrm == 1) {
@@ -1078,7 +1545,6 @@ internal class GaUser
             //     }
             //     pfi.gsiz = pfi.gsiz + pfi.xyhdr;
             // }
-            
         }
 
         if (_drawingContext.CommonData.pfi1 == null)
@@ -1106,7 +1572,7 @@ internal class GaUser
 
 
                 gavar gv = new gavar();
-                
+
                 gv.variableDefinition = new VariableDefinition
                 {
                     HeightType = sfcType,
@@ -1278,7 +1744,7 @@ internal class GaUser
                 _drawingContext.GaGx.gaplot();
                 if (ldim == 3)
                 {
-                    lab  = $"{pst.tmin.yr}:{pst.tmin.mo}:{pst.tmin.dy}:{pst.tmin.hr}";
+                    lab = $"{pst.tmin.yr}:{pst.tmin.mo}:{pst.tmin.dy}:{pst.tmin.hr}";
                 }
                 else
                 {
@@ -1286,7 +1752,7 @@ internal class GaUser
                 }
 
                 llen = lab.Length;
-                
+
                 xl = pcm.xsiz - (0.11 * (double)(llen));
                 xl -= 0.02;
                 yl = 0.02;
@@ -1330,31 +1796,34 @@ internal class GaUser
         return (1);
     }
 
-    private int gapars(string cmd, gastat pst, gacmn pcm) {
+    private int gapars(string cmd, gastat pst, gacmn pcm)
+    {
         int pos;
         string expr;
         int num, i, rc;
 
         expr = cmd.ToLower();
-        
+
         /* Convert all the ;'s to nulls and count the number of
          sub-expressions.                                           */
 
         string[] cmds = expr.Split(';');
-        
-        
+
+
         /* Evaluate all the subexpressions */
-        
-        for (i = 0; i < cmds.Length; i++) {
+
+        for (i = 0; i < cmds.Length; i++)
+        {
             rc = _drawingContext.GaExpr.gaexpr(cmds[i], pst);
             if (rc == 0) rc = _drawingContext.CommonData.sig;
             if (rc > 0) goto err;
             pcm.type[i] = pst.type;
             pcm.result[i] = pst.result;
         }
+
         pcm.numgrd = cmds.Length;
         pcm.relnum = cmds.Length;
-        
+
         return (0);
 
         err:
@@ -1367,8 +1836,9 @@ internal class GaUser
         gagrel();
         return (1);
     }
-    
-    void gagrel() {
+
+    void gagrel()
+    {
         int i;
 
         for (i = 0; i < pcm.relnum; i++)
@@ -1378,6 +1848,7 @@ internal class GaUser
             else
                 pcm.result[i].stn = null;
         }
+
         pcm.numgrd = 0;
         pcm.relnum = 0;
     }
@@ -1517,10 +1988,38 @@ internal class GaUser
         return (null);
     }
 
-    private string GetVarName(string name, FixedSurfaceType sfc)
+
+    /* handle draw command */
+
+    static double[] justx = { 0.0, 0.5, 1.0, 0.0, 0.5, 1.0, 0.0, 0.5, 1.0 };
+    static double[] justy = { 0.0, 0.0, 0.0, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0 };
+
+
+    public int DrawString(double x, double y, string text)
     {
-        return name + "_" + sfc.ToString();
+        
+        _drawingContext.GaSubs.gxwide(pcm.strthk);
+        _drawingContext.GaSubs.gxcolr(pcm.strcol);
+
+        double swide = 0.2;
+        _drawingContext.GxChpl.gxchln(text, text.Length, pcm.strhsz, out swide);
+        double shite = pcm.strvsz;
+
+        double ang = pcm.strrot * Math.PI / 180.0;
+        x = x - justx[pcm.strjst] * swide * Math.Cos(ang);
+        y = y - justx[pcm.strjst] * swide * Math.Sin(ang);
+        x = x - justy[pcm.strjst] * shite * Math.Cos(ang + 1.5708);
+        y = y - justy[pcm.strjst] * shite * Math.Sin(ang + 1.5708);
+
+        _drawingContext.GaSubs.gxchpl(text, text.Length, x, y, pcm.strvsz, pcm.strhsz, pcm.strrot);
+        return (0);
+
+        errst:
+        GaGx.gaprnt(0, "DRAW error: Syntax is DRAW STRING x y string\n");
+        return (1);
+        
     }
+
 
     private DataVariable GetVarType(string name)
     {
@@ -1701,7 +2200,7 @@ internal class GaUser
         {
             return DataVariable.IceCover;
         }
-        
+
         throw new Exception($"Variable name {name} not mapped");
     }
 }

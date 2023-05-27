@@ -562,7 +562,7 @@ internal class GaUtil
 
         double[] cvals;
         double v = 0;
-/* gadouble g1,g2; */
+/* double g1,g2; */
         int i, op, len, enum1;
 
         StringBuilder nameb, enameb;
@@ -1051,4 +1051,28 @@ internal class GaUtil
         i = (int) gr;
         return (vals[i] + ((gr - (double) i) * (vals[i+1] - vals[i])));
     }
+    
+    public static double[]? cpscal(double[] vals, int lin, int dir, int dim) {
+        int i, num;
+        double[] vvv;
+        
+
+        if (dim < 0) {
+            GaGx.gaprnt(0, "cpscal error:  dim is not >= 0 ");
+            return (null);
+        }
+        if (dim == 3) {
+            num = 8;
+        } else {
+            if (lin == 1) num = 3;
+            else num = (int) (vals[0] + 0.5) + 5;
+        }
+
+        vvv = new double[num];
+        for (i = 0; i < num; i++) {
+            vvv[i] = vals[i];
+        }
+        return (vvv);
+    }
+
 }
