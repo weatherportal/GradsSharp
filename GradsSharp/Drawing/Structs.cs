@@ -1,5 +1,38 @@
-﻿namespace GradsSharp.Drawing;
+﻿using GradsSharp.Data;
+using GradsSharp.Models;
 
+namespace GradsSharp.Drawing;
+
+/* Stack to evaluate the expression.  The stack consists of an
+   array of structures.                                               */
+internal class smem {
+    internal int type;        /* Entry type: -2 stn,-1 grid,1=op,2='(',3=')'    */
+    public class sobj {
+        public int op;        /* Operator: 0=*, 1=/, 2=+                        */
+        public gagrid pgr; /* Operand (grid or stn)                      */
+        public gastn stn;
+        
+    }
+
+    public sobj obj = new();
+};
+
+
+
+/* GA status structure.  Contains necessary info about the scaling
+   and file structure in force.                                       */
+internal class gastat {
+    public List<gafile> pfi1;       /* Pointer to first gafile in chain      */
+    public gafile pfid;       /* Pointer to default gafile             */
+    public List<gadefn> pdf1 = new List<gadefn>();       /* Pointer to first define block         */
+    //gaclct pclct;     /* Pointer to the collection pointers    */
+    public gadata result = new gadata();       /* Result goes here                      */
+    public dt tmin = new dt(),tmax = new dt();
+    public double[] dmin = new double[5],dmax = new double[5];  /* Range of absolute dimensions          */
+    public int fnum;                /* Default file number                   */
+    public int type;                /* Result type (grid==1 or stn==0)       */
+    public int idim,jdim;           /* Varying dimensions                    */
+};
 
 class gxcntr {
     public double labsiz;             /* Size of contour label, plotting inches */
@@ -171,10 +204,14 @@ class gabufr_dset
     int len;
 };
 
-class gafile
+internal class gafile
 {
+
+    
+    public IGriddedDataReader dataReader;
+    
     int fseq; /* Unique sequence number for cache detection */
-    string name; /* File name or URL                      */
+    public string name; /* File name or URL                      */
     string tempname; /* File name of open file (differs with templates) */
     string dnam; /* Descriptor file name                  */
 
@@ -187,19 +224,19 @@ class gafile
                                                4 = defined grid       */
 
     string title; /* Title -- describes the file.          */
-    double undef; /* Global undefined value for this file  */
+    public double undef; /* Global undefined value for this file  */
     double ulow, uhi; /* Undefined limits for missing data test  */
 
     float[] sbuf; /* Buffer for file I/O equal in length
                                 to the size needed to hold
                                 the largest station report            */
 
-    double[] rbuf; /* Buffer for file I/O equal in length
+    public double[] rbuf; /* Buffer for file I/O equal in length
                                 to one grid row in the file           */
 
     char[] pbuf; /* Same as rbuf, for unpacking           */
     char[] bbuf; /* Same as rbuf, for bit map I/O         */
-    char[] ubuf; /* Same as rbuf, for undef mask          */
+    public byte[] ubuf; /* Same as rbuf, for undef mask          */
     int bswap; /* Byte swapping needed */
     int dhandle; /* libgadap file handle.                 */
 
@@ -225,7 +262,7 @@ class gafile
     public int[] dnum; /* Dimension sizes for this file.        */
     int tlpflg; /* Circular file flag                    */
     int tlpst; /* Start time offset in circular file    */
-    int vnum; /* Number of variables.                  */
+    public int vnum; /* Number of variables.                  */
 
     int ivnum; /* Number of level independent variables
                                 for station data file                 */
@@ -233,13 +270,13 @@ class gafile
     int lvnum; /* Number of level dependent variables
                                 for station data file                 */
 
-    gavar pvar1; /* Pointer to an array of classures.
+    public List<gavar> pvar1; /* Pointer to an array of classures.
                                 Each classure in the array has info
                                 about the specific variable.          */
 
     gaens ens1; /* pointer to array of ensemble classures */
 
-    long gsiz; /* Number of elements in a grid (x*y)    */
+    public long gsiz; /* Number of elements in a grid (x*y)    */
 
     /* This is for actual grid on disk,
        not psuedo grid (when pp in force) */
@@ -253,10 +290,10 @@ class gafile
     long fhdr; /* Number of bytes to ignore at file head*/
     public int wrap; /* The grid globally 'wraps' in X        */
     int seqflg, yrflg, zrflg; /* Format flags */
-    int ppflag; /* Pre-projected data in use */
+    public int ppflag; /* Pre-projected data in use */
     int pdefgnrl; /* Keyword 'general' used instead of 'file' */
-    int ppwrot; /* Pre-projection wind rotation flag */
-    int ppisiz, ppjsiz; /* Actual size of preprojected grid */
+    public int ppwrot; /* Pre-projection wind rotation flag */
+    public int ppisiz, ppjsiz; /* Actual size of preprojected grid */
 
     double[] ppvals; /* Projection constants for pre-projected
                                   grids.  Values depend on projection. */
@@ -267,14 +304,14 @@ class gafile
     double[] ppf; /* Pointers to interpolation constants
                                   for pre-projected grids */
 
-    double[] ppw; /* Pointer to wind rotation array */
+    public double[] ppw; /* Pointer to wind rotation array */
 
-    public Func<double, double, double, double>[] gr2ab; /* Addresses of routines to do conversion
+    public Func<double[], double, double>[] gr2ab; /* Addresses of routines to do conversion
                                   from grid coordinates to absolute
                                   coordinates for X, Y, Z.  All Date/time
                                   conversions handled by gr2t.          */
 
-    public Func<double, double, double, double>[] ab2gr; /* Addresses of routines to do conversion
+    public Func<double[], double, double>[] ab2gr; /* Addresses of routines to do conversion
                                   from absolute coordinates to grid
                                   coordinates for X,Y,Z.  All date/time
                                   conversions handled by t2gr.          */
@@ -290,16 +327,16 @@ class gafile
                                   grid/absolute coord transformation
                                   (Time coordinate always linear).      */
 
-    int[] dimoff; /* Dimension offsets for defined grids   */
+    public int[] dimoff; /* Dimension offsets for defined grids   */
     int climo; /* Climatological Flag (defined grids)   */
     int cysiz; /* Cycle size for climo grids            */
-    int idxflg; /* File records are indexed; 1==grib,station 2==grib2 */
+    public int idxflg; /* File records are indexed; 1==grib,station 2==grib2 */
     int grbgrd; /* GRIB Grid type */
-    gaindx pindx; /* Index Strucure if indexed file */
-    gaindxb pindxb; /* Index Strucure if off_t offsets are being used */
-    gag2indx g2indx; /* Index Strucure for grib2 index file */
+    public gaindx pindx; /* Index Strucure if indexed file */
+    public gaindxb pindxb; /* Index Strucure if off_t offsets are being used */
+    public gag2indx g2indx; /* Index Strucure for grib2 index file */
 
-    int tmplat; /* File name templating:
+    public int tmplat; /* File name templating:
                                    3==templating on E and T 
                                    2==templating only on E 
                                    1==templating only on T, or when 
@@ -312,7 +349,7 @@ class gafile
     gachsub pchsub1; /* Pointer to first %ch substitution */
     int errcnt; /* Current error count */
     int errflg; /* Current error flag */
-    int ncflg; /* 1==netcdf  2==hdfsds */
+    public int ncflg; /* 1==netcdf  2==hdfsds */
     int ncid; /* netcdf file id */
     int sdid; /* hdf-sds file id */
     int h5id; /* hdf5 file id */
@@ -336,11 +373,12 @@ class gafile
     int time_type; /* temporary flag for SDF time handling */
     char[,] sdfdimnam = new char[100, 129];
     long cachesize; /* default netcdf4/hdf5 cache size */
+    
 
     public gafile()
     {
         fseq = 0;
-        name = null;
+        name = "";
         tempname = null;
         dnam = null;
         mnam = null;
@@ -353,7 +391,7 @@ class gafile
         rbuf = new double[] { };
         pbuf = new char[] { };
         bbuf = new char[] { };
-        ubuf = new char[] { };
+        ubuf = new byte[] { };
         bswap = 0;
         dhandle = 0;
         dapinf = new int[5];
@@ -368,7 +406,7 @@ class gafile
         vnum = 0;
         ivnum = 0;
         lvnum = 0;
-        pvar1 = default;
+        pvar1 = new List<gavar>();
         ens1 = default;
         gsiz = 0;
         tsiz = 0;
@@ -387,20 +425,20 @@ class gafile
         ppi = new int[] { };
         ppf = new double[] { };
         ppw = new double[] { };
-        gr2ab = new Func<double, double, double, double>[5];
-        ab2gr = new Func<double, double, double, double>[5];
+        gr2ab = new Func<double[], double, double>[5];
+        ab2gr = new Func<double[], double, double>[5];
         grvals = new List<double[]>(5);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
-        grvals.Add(new double[1]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
+        grvals.Add(new double[6]);
         abvals = new List<double[]>(5);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
-        abvals.Add(new double[1]);
+        abvals.Add(new double[6]);
+        abvals.Add(new double[6]);
+        abvals.Add(new double[6]);
+        abvals.Add(new double[7]);
+        abvals.Add(new double[6]);
         linear = new int[5];
         dimoff = new int[] { };
         climo = 0;
@@ -455,7 +493,7 @@ class garpt
 class gavar
 {
     string varnm; /* Variable description.                */
-    string abbrv; /* Variable abbreviation.               */
+    public string abbrv; /* Variable abbreviation.               */
     string longnm; /* netcdf/hdf var name if different     */
 
     double[] units; /* Units indicator.                     
@@ -466,7 +504,7 @@ class gavar
 
     int g2aflg; /* var requires additional grib2 codes  */
 
-    long offset; /* Offset in grid elements of the start
+    public long offset; /* Offset in grid elements of the start
                                   of this variable within a time group
                                   within this file.                    */
 
@@ -477,7 +515,7 @@ class gavar
     int sdvid; /* hdf vid for this variable            */
     int h5vid; /* hdf5 dataset id for this variable    */
 
-    int levels; /* Number of levels for this variable.
+    public int levels; /* Number of levels for this variable.
                                   0 is special and indiates one grid is
                                   available for the surface only.      */
 
@@ -490,33 +528,35 @@ class gavar
     double add; /* offset value for unpacking data      */
     double undef; /* undefined value                      */
     double undef2; /* secondary undefined value            */
-    int vecpair; /* Variable has a vector pair           */
-    int isu; /* Variable is the u-component of a vector pair */
+    public int vecpair; /* Variable has a vector pair           */
+    public int isu; /* Variable is the u-component of a vector pair */
     int isdvar; /* Variable is a valid data variable (for SDF files) */
     int nvardims; /* Number of variable dimensions        */
     int nh5vardims; /* Number of variable dimensions for hdf5 */
     int[] vardimids = new int[100]; /* Variable dimension IDs. 	       */
+    
+    public VariableDefinition? variableDefinition { get; set; }
 
     public gavar()
     {
         varnm = null;
         abbrv = null;
         longnm = null;
-        units = new double[] { };
+        units = new double[48] ;
         g2aflg = 0;
         offset = 0;
         recoff = 0;
-        ncvid = 0;
-        sdvid = 0;
-        h5vid = 0;
+        ncvid = -999;
+        sdvid = -999;
+        h5vid = -999;
         levels = 0;
         dfrm = 0;
         var_t = 0;
         scale = 0;
         add = 0;
-        undef = 0;
+        undef = -9.99e8;
         undef2 = 0;
-        vecpair = 0;
+        vecpair = -999;
         isu = 0;
         isdvar = 0;
         nvardims = 0;
@@ -580,7 +620,7 @@ class gastn
 
 class gadata
 {
-    public gagrid pgr;
+    public gagrid? pgr;
     public gastn stn;
 };
 
@@ -593,8 +633,8 @@ internal class mapopt
 }
 
 class gadefn {
-    gafile pfi;          /* File Structure containing the data   */
-    string abbrv;              /* Abbreviation assigned to this        */
+    public gafile pfi;          /* File Structure containing the data   */
+    public string abbrv;              /* Abbreviation assigned to this        */
 };
 
 internal class gacmn
@@ -620,13 +660,14 @@ internal class gacmn
     public int loopflg; /* Looping on or off                     */
     public List<gafile>? pfi1;
     public gafile? pfid;
+    public IVariableMapping _variableMapping;
     public int fnum; /* File count                            */
     public int dfnum; /* Default file number   */
 
     public int fseq; /* Unique sequence num for files opened  */
 
     public List<gadefn>? pdf1;         /* Pointer to first define block         */
-    public dt tmin, tmax;
+    public dt tmin = new dt(), tmax = new();
     public int[] vdim = new int[5]; /* Which dimensions vary?                */
     public int x1ex, x2ex, y1ex, y2ex; /* For -ex flag on fwrite */
     public int xexflg, yexflg; /* -ex -- are dims valid? */
@@ -799,7 +840,7 @@ internal class gacmn
     public int numgrd, relnum; /* Number of data objects held           */
     public int[] type = new int[16]; /* Data type of each data object         */
 
-    public gadata[] result; /* Pointers to held data objects         */
+    public gadata[] result = new gadata[16]; /* Pointers to held data objects         */
 
     //class gaclct *clct[32];   /* Anchor for collection */
     //int clctnm[32];          /* Number of items collected */
@@ -1035,7 +1076,7 @@ internal class dt
 
 internal class gagrid : ICloneable
 {
-    //class gafile *pfile;
+    public gafile pfile;
     /* Address of the associated gafile
                                     classure to get the data from
                                     (requestor block only)               */
@@ -1084,19 +1125,19 @@ internal class gagrid : ICloneable
     public int[] dimmin = new int[5], dimmax = new int[5]; /* Dimension limits for each dimension
                                   (X,Y,Z,T,E) in grid units.           */
 
-    /*class gavar *pvar;*/ /* Pointer to the classure with info
+    public gavar pvar; /* Pointer to the classure with info
                                   on this particular variable.  If
                                   NULL, this grid is the result of
                                   an expression evaluation where the
                                   variable type is unkown.             */
-    /*char *exprsn;*/ /* If grid is a 'final' result, this
+    public string exprsn; /* If grid is a 'final' result, this
                                   will point to a character string that
                                   contains the original expression.    */
     public int alocf; /* Scaling info allocated for us only  */
 
     
-    public Func<double[], double, double> igrab;
-    public Func<double[], double, double> jgrab;
+    public Func<double[], double, double>? igrab;
+    public Func<double[], double, double>? jgrab;
     /* Addresses of routines to perform
    grid-to-absolute coordinate
    transforms for this grid's i and j

@@ -1,7 +1,16 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using System.Text;
+using GradsSharp.Utils;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class GaUtil
 {
+    static string[] mons =
+    {
+        "jan", "feb", "mar", "apr", "may", "jun",
+        "jul", "aug", "sep", "oct", "nov", "dec"
+    };
+
     static int[] mosiz = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     static int[] momn =
@@ -16,11 +25,18 @@ internal class GaUtil
         "SEP", "OCT", "NOV", "DEC"
     };
 
-    static int[] mnacum = {0, 0, 44640, 84960, 129600, 172800, 217440,
-        260640, 305280, 349920, 393120, 437760, 480960};
-    static int[] mnacul = {0, 0, 44640, 86400, 131040, 174240, 218880,
-        262080, 306720, 351360, 394560, 439200, 482400};
-    
+    static int[] mnacum =
+    {
+        0, 0, 44640, 84960, 129600, 172800, 217440,
+        260640, 305280, 349920, 393120, 437760, 480960
+    };
+
+    static int[] mnacul =
+    {
+        0, 0, 44640, 86400, 131040, 174240, 218880,
+        262080, 306720, 351360, 394560, 439200, 482400
+    };
+
     public static int dequal(double op1, double op2, double tolerance)
     {
         if (Math.Abs(op1 - op2) <= tolerance) return (0);
@@ -309,11 +325,12 @@ internal class GaUtil
 
         return ch.Length;
     }
-    
+
     /* Get minimum and maximum grid value.  Set rmin and rmax in the
    grid descriptor.                                                  */
 
-    public static void gamnmx(gagrid pgr) {
+    public static void gamnmx(gagrid pgr)
+    {
         double[] r;
         int i, size, cnt;
         byte[] rmask;
@@ -325,37 +342,48 @@ internal class GaUtil
         r = pgr.grid;
         rmask = pgr.umask;
         cnt = 0;
-        int cntrmask=0;
-        int cntr=0;
-        
-        for (i = 0; i < size; i++) {
-            if (rmask[cntrmask] == 1) {
+        int cntrmask = 0;
+        int cntr = 0;
+
+        for (i = 0; i < size; i++)
+        {
+            if (rmask[cntrmask] == 1)
+            {
                 cnt++;
-                if (pgr.rmin > r[cntr]) {
+                if (pgr.rmin > r[cntr])
+                {
                     pgr.rmin = r[cntr];
                 }
+
                 if (pgr.rmax < r[cntr]) pgr.rmax = r[cntr];
             }
+
             cntr++;
             cntrmask++;
         }
-        if (cnt == 0 || pgr.rmin == 9.99e35 || pgr.rmax == -9.99e35) {
+
+        if (cnt == 0 || pgr.rmin == 9.99e35 || pgr.rmax == -9.99e35)
+        {
             pgr.rmin = pgr.undef;
             pgr.rmax = pgr.undef;
             pgr.umin = pgr.umax = 0;
-        } else {
+        }
+        else
+        {
             pgr.umin = pgr.umax = 1;
         }
     }
-    
-    public static long timdif(dt dtim1, dt dtim2,  bool flag) {
+
+    public static long timdif(dt dtim1, dt dtim2, bool flag)
+    {
         long min1, min2, mon1, mon2, yr;
         dt temp = new();
         bool swap;
         long mo1, mo2;
 
         swap = false;
-        if (dtim1.yr > dtim2.yr) {
+        if (dtim1.yr > dtim2.yr)
+        {
             temp = dtim1;
             dtim1 = dtim2;
             dtim2 = temp;
@@ -367,50 +395,63 @@ internal class GaUtil
         min2 = 0;
         mon2 = 0;
         yr = dtim1.yr;
-        while (yr < dtim2.yr) {
+        while (yr < dtim2.yr)
+        {
             if (qleap(yr)) min2 += 527040L;
             else min2 += 525600L;
             mon2 += 12;
             yr++;
         }
 
-        if (flag) {
+        if (flag)
+        {
             /* return months */
             mon1 = dtim1.mo;
             mon2 += dtim2.mo;
             if (swap) return (mon1 - mon2);
             else return (mon2 - mon1);
-        } else {
+        }
+        else
+        {
             /* return minutes */
             mo1 = dtim1.mo;
             mo2 = dtim2.mo;
-            if (qleap(dtim1.yr)) {
+            if (qleap(dtim1.yr))
+            {
                 min1 = min1 + mnacul[mo1] + (dtim1.dy * 1440L) + (dtim1.hr * 60L) + dtim1.mn;
-            } else {
+            }
+            else
+            {
                 min1 = min1 + mnacum[mo1] + (dtim1.dy * 1440L) + (dtim1.hr * 60L) + dtim1.mn;
             }
-            if (qleap(dtim2.yr)) {
+
+            if (qleap(dtim2.yr))
+            {
                 min2 = min2 + mnacul[mo2] + (dtim2.dy * 1440L) + (dtim2.hr * 60L) + dtim2.mn;
-            } else {
+            }
+            else
+            {
                 min2 = min2 + mnacum[mo2] + (dtim2.dy * 1440L) + (dtim2.hr * 60L) + dtim2.mn;
             }
+
             if (swap) return (min1 - min2);
             else return (min2 - min1);
         }
     }
-    
-    public static double t2gr(double[] vals, dt dtim) {
-        dt stim = new ();
+
+    public static double t2gr(double[] vals, dt dtim)
+    {
+        dt stim = new();
         long eyear, mins, mons;
         double val, moincr, mnincr, rdiff;
 
         /* Get constants associated with this conversion                   */
 
-        stim.yr = (int) (vals[0] + 0.1);
-        stim.mo = (int) (vals[1] + 0.1);
-        stim.dy = (int) (vals[2] + 0.1);
-        stim.hr = (int) (vals[3] + 0.1);
-        stim.mn = (int) (vals[4] + 0.1);
+        stim.yr = (int)(vals[0] + 0.1);
+        stim.mo = (int)(vals[1] + 0.1);
+        stim.dy = (int)(vals[2] + 0.1);
+        stim.hr = (int)(vals[3] + 0.1);
+        stim.mn = (int)(vals[4] + 0.1);
 
         moincr = vals[5];
         mnincr = vals[6];
@@ -420,13 +461,16 @@ internal class GaUtil
          months or years, we do our calculations in months.              */
 
 
-        if (mnincr > 0.1) {
+        if (mnincr > 0.1)
+        {
             mins = timdif(stim, dtim, false);
-            rdiff = (double) mins;
+            rdiff = (double)mins;
             val = rdiff / (mnincr);
             val += 1.0;
             return (val);
-        } else {
+        }
+        else
+        {
             mons = timdif(stim, dtim, true);
             eyear = stim.yr;
             if (stim.yr > dtim.yr) eyear = dtim.yr;
@@ -435,19 +479,576 @@ internal class GaUtil
             stim.yr = dtim.yr;
             stim.mo = dtim.mo;
             mins = timdif(stim, dtim, false);
-            if (mins > 0) {
-                if (dtim.mo == 2 && qleap(dtim.yr)) {
-                    rdiff = rdiff + (((double) mins) / 41760.0);
-                } else {
-                    rdiff = rdiff + (((double) mins) / ((double) momn[dtim.mo]));
+            if (mins > 0)
+            {
+                if (dtim.mo == 2 && qleap(dtim.yr))
+                {
+                    rdiff = rdiff + (((double)mins) / 41760.0);
+                }
+                else
+                {
+                    rdiff = rdiff + (((double)mins) / ((double)momn[dtim.mo]));
                 }
             }
+
             val = rdiff / (moincr);
             val += 1.0;
             return (val);
         }
     }
-    public static  double liconv (double val1, double val2, double v) {
-        return ( (val1 * v) + val2);
+
+    public static double liconv(double[] vals, double v)
+    {
+        return ((vals[0] * v) + vals[1]);
+    }
+
+    /* Converts strings to double */
+    public static int? getdbl(string input, int start, out double val)
+    {
+        double res;
+        int newPos = 0;
+        res = StringToDouble.Parse(input, start, out newPos);
+        if (newPos == start)
+        {
+            val = Double.MaxValue;
+            return null;
+        }
+        else
+        {
+            val = res;
+            return newPos;
+        }
+    }
+
+    public static int? intprs(string input, int start, out int val)
+    {
+        int nflag, flag;
+
+        nflag = 0;
+        if (input[start] == '-')
+        {
+            nflag = 1;
+            start++;
+        }
+        else if (input[start] == '+') start++;
+
+        val = 0;
+        flag = 1;
+
+        while (input[start] >= '0' && input[start] <= '9')
+        {
+            val = val * 10 + (int)(input[start] - '0');
+            flag = 0;
+            start++;
+        }
+
+        if (flag > 0) return (null);
+
+        if (nflag > 0) val = -1 * val;
+        return (start);
+    }
+
+    public static int? dimprs(string expression, int pos, gastat pst, gafile pfi,
+        out int dim, out double d, int type, out int wflag)
+    {
+        dt dtim = new();
+        gaens ens;
+
+        d = 0;
+        dim = -1;
+        wflag = -1;
+
+        Func<double[], double, double>? conv;
+
+        double[] cvals;
+        double v = 0;
+/* gadouble g1,g2; */
+        int i, op, len, enum1;
+
+        StringBuilder nameb, enameb;
+        string name, ename;
+
+        /* parse the dimension name */
+        i = 0;
+        nameb = new StringBuilder();
+        while (expression[pos] >= 'a' && expression[pos] <= 'z' && i < 6)
+        {
+            nameb.Append(expression[pos]);
+            pos++;
+            i++;
+        }
+
+        name = nameb.ToString();
+
+
+        if (name.Length > 4)
+        {
+            GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression ");
+            GaGx.gaprnt(0, $"  Expecting x/y/z/t/offt/e/lon/lat/lev/time/ens, found {name}");
+            return (null);
+        }
+
+        /* parse the operator */
+        if (expression[pos] == '=') op = 0;
+        else if (expression[pos] == '+') op = 1;
+        else if (expression[pos] == '-') op = 2;
+        else
+        {
+            GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
+            GaGx.gaprnt(0, $"  Expecting +/-/= operator, found {expression[pos]}");
+            return (null);
+        }
+
+        /* dimension is TIME */
+        pos++;
+        int? newpos = 0;
+        if ("time" == name)
+        {
+            if (op == 0)
+            {
+                if ((newpos = adtprs(expression, pos, pst.tmin, dtim)) == null)
+                {
+                    GaGx.gaprnt(0, "  Invalid absolute time in dimension expression");
+                    return (null);
+                }
+            }
+            else
+            {
+                if ((newpos = rdtprs(expression, pos, dtim)) == null)
+                {
+                    GaGx.gaprnt(0, "  Invalid relative time in dimension expression");
+                    return (null);
+                }
+            }
+        }
+        /* dimension is ENS */
+        else if ("ens" == name)
+        {
+            /* parse the ensemble name */
+            newpos = pos;
+            len = 0;
+            enameb = new StringBuilder();
+            while (len < 16 && expression[newpos ?? 0] != ')')
+            {
+                enameb.Append(expression[newpos ?? 0]);
+                len++;
+                newpos++;
+            }
+
+            ename = enameb.ToString();
+        }
+        /* all other dimensions */
+        else
+        {
+            if ((newpos = getdbl(expression, pos, out v)) == null)
+            {
+                GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
+                GaGx.gaprnt(0, "  Dimension value missing or invalid");
+                return (null);
+            }
+        }
+
+        pos = newpos ?? int.MaxValue;
+
+        /* We now have all the info we need about this dimension expression to evaluate it.  */
+        if ("x" == name) dim = 0;
+        else if ("y" == name) dim = 1;
+        else if ("z" == name) dim = 2;
+        else if ("t" == name) dim = 3;
+        else if ("offt" == name) dim = 3;
+        else if ("e" == name) dim = 4;
+        else if ("lon" == name) dim = 5;
+        else if ("lat" == name) dim = 6;
+        else if ("lev" == name) dim = 7;
+        else if ("time" == name) dim = 8;
+        else if ("ens" == name) dim = 9;
+        else if (type == 0 && "r" == name) dim = 10;
+        else
+        {
+            GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
+            GaGx.gaprnt(0, $"  Expecting x/y/z/t/offt/e/lat/lon/lev/time/ens, found {name}");
+            return (null);
+        }
+
+        /* for station expressions */
+        if (dim == 10)
+        {
+            d = v;
+            return (pos);
+        }
+
+        /* dimension expression is given in grid coordinates: x, y, z, t, offt, or e */
+        wflag = 0;
+        if (dim < 5)
+        {
+            if ("offt" == name) wflag = 2; /* trip the time offset flag */
+            if (op == 0)
+            {
+                d = v + pfi.dimoff[dim]; /* straight override of fixed dimension value */
+                return (pos);
+            }
+            else
+            {
+                /* make sure the dimension is not varying */
+                if (dim == pst.idim || dim == pst.jdim)
+                {
+                    GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
+                    GaGx.gaprnt(0, "  Cannot use an offset value with a varying dimension");
+                    GaGx.gaprnt(0, $"  Varying dimension = {dim}");
+                    return (null);
+                }
+
+                /* get current dimension value in grid coordinates from gastat structure */
+                if (dim == 3)
+                {
+                    d = t2gr(pfi.abvals[3], pst.tmin);
+                }
+                else
+                {
+                    if (pfi.type == 1 || pfi.type == 4)
+                    {
+                        conv = pfi.ab2gr[dim];
+                        cvals = pfi.abvals[dim];
+                        d = conv(cvals, pst.dmin[dim]);
+                    }
+                    else
+                    {
+                        d = pst.dmin[dim];
+                    }
+                }
+
+                /* combine offset with current dimension value */
+                if (op == 1) d = d + v;
+                if (op == 2) d = d - v;
+                return (pos);
+            }
+        }
+        /* dimension expression is given in world coordinates: lon, lat, lev, time, or ens */
+        else
+        {
+            dim = dim - 5;
+            wflag = 1;
+/*     if (cmpwrd("offtime",name)) { */
+/*       /\* determine the size of the time offset in grid units *\/ */
+/*       g1 = t2gr(pfi.abvals[3],&(pst.tmin)); */
+/*       timadd (&(pst.tmin),&dtim); */
+/*       g2 = t2gr(pfi.abvals[3],&dtim); */
+/*       v = g2 - g1; */
+/*       *wflag=2;      /\* trip the time offset flag *\/ */
+/*     } */
+            if (op > 0)
+            {
+                /* check to make sure dimension isn't varying */
+                if (dim == pst.idim || dim == pst.jdim)
+                {
+                    GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
+                    GaGx.gaprnt(0, "  Cannot use an offset value with a varying dimension");
+                    GaGx.gaprnt(0, $"  Varying dimension = {dim}");
+                    return (null);
+                }
+
+                /* check to make sure dimension isn't E */
+                if (dim == 4)
+                {
+                    GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
+                    GaGx.gaprnt(0, "  Cannot use an offset value with an ensemble name");
+                    return (null);
+                }
+
+                /* combine offset with current dimension value from gastat structure */
+                if (dim == 3)
+                {
+                    if (op == 1) timadd((pst.tmin), dtim);
+                    if (op == 2) timsub((pst.tmin), dtim);
+                }
+                else
+                {
+                    if (op == 1) v = pst.dmin[dim] + v;
+                    if (op == 2) v = pst.dmin[dim] - v;
+                }
+            }
+
+            if (dim == 4)
+            {
+                /* loop over ensembles, looking for matching name */
+                // ens = pfi.ens1;
+                // i = 0;
+                // enum1 = -1;
+                // while (i < pfi.dnum[dim]) {
+                //     if (strcmp(ename, ens.name) == 0) enum1 = i;  /* grid coordinate of matching name */
+                //     i++;
+                //     ens++;
+                // }
+                // if (enum1 < 0) {
+                //     gaprnt(0, "Syntax Error:  Invalid dimension expression\n");
+                //     snprintf(pout, 1255, "  Ensemble name \"%s\" not found\n", ename);
+                //     gaprnt(0, pout);
+                //     return (null);
+                // }
+                // /* straight override of ensemble grid coordinate */
+                // *d = enum1 + 1 + pfi.dimoff[dim];
+                // return (ch);
+                throw new NotImplementedException();
+            }
+            /* get the grid coordinate for the new (combined) dimension value */
+            else if (dim == 3)
+            {
+                d = t2gr(pfi.abvals[3], dtim);
+            }
+            else
+            {
+                if (pfi.type == 1 || pfi.type == 4)
+                {
+                    /* grids  */
+                    conv = pfi.ab2gr[dim];
+                    cvals = pfi.abvals[dim];
+                    d = conv(cvals, v);
+                }
+                else
+                {
+                    d = v; /* station data */
+                }
+            }
+
+            return (pos);
+        }
+    }
+
+    public static int? adtprs(string expression, int pos, dt def, dt dtim)
+    {
+        int val, flag, i;
+
+        string monam;
+
+
+        dtim.mn = 0;
+        dtim.hr = 0;
+        dtim.dy = 1;
+
+        if (expression[pos] >= '0' && expression[pos] <= '9')
+        {
+            flag = 0;
+            pos = intprs(expression, pos, out val) ?? throw new Exception("Parsing integer value failed");
+            if (expression[pos] == ':' || Char.ToLower(expression[pos]) == 'z')
+            {
+                if (val > 23)
+                {
+                    GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
+                    GaGx.gaprnt(0, $"  Hour = {val} -- greater than 23");
+                    return (null);
+                }
+
+                dtim.hr = val;
+                if (expression[pos] == ':')
+                {
+                    pos++;
+                    if (expression[pos] >= '0' && expression[pos] <= '9')
+                    {
+                        pos = intprs(expression, pos, out val) ?? throw new Exception("Parsing integer value failed");
+                        if (val > 59)
+                        {
+                            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
+                            GaGx.gaprnt(0, $"  Minute = {val} -- greater than 59");
+                            return (null);
+                        }
+
+                        if (Char.ToLower(expression[pos]) != 'z')
+                        {
+                            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.");
+                            GaGx.gaprnt(0, "  'z' delimiter is missing ");
+                            return (null);
+                        }
+
+                        dtim.mn = val;
+                        pos++;
+                        if (expression[pos] >= '0' && expression[pos] <= '9')
+                            pos = intprs(expression, pos, out val) ??
+                                  throw new Exception("Error parsing integer value");
+                        else val = (int)def.dy;
+                    }
+                    else
+                    {
+                        GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.");
+                        GaGx.gaprnt(0, "  Missing minute value ");
+                        return (null);
+                    }
+                }
+                else
+                {
+                    pos++;
+                    if (expression[pos] >= '0' && expression[pos] <= '9')
+                        pos = intprs(expression, pos, out val) ?? throw new Exception("Error parsing integer value");
+                    else val = (int)def.dy;
+                }
+            }
+            else flag = 2;
+
+            dtim.dy = val;
+        }
+        else flag = 1;
+
+
+        StringBuilder mnb = new StringBuilder();
+        mnb.Append(Char.ToLower(expression[pos]));
+        mnb.Append(Char.ToLower(expression[pos + 1]));
+        mnb.Append(Char.ToLower(expression[pos + 2]));
+
+        monam = mnb.ToString();
+        i = 0;
+        while (i < 12 && monam != mons[i]) i++;
+        i++;
+
+        if (i == 13)
+        {
+            if (flag == 1)
+            {
+                GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
+                GaGx.gaprnt(0, "  Expected month abbreviation, none found\n");
+                return (null);
+            }
+
+            if (flag == 2)
+            {
+                GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
+                GaGx.gaprnt(0, "  Missing month abbreviation or 'z' delimiter\n");
+                return (null);
+            }
+
+            dtim.mo = def.mo;
+            dtim.yr = def.yr;
+        }
+        else
+        {
+            dtim.mo = i;
+            pos += 3;
+            /* parse year */
+            if (expression[pos] >= '0' && expression[pos] <= '9')
+            {
+                /* use fullyear only if year 1 = 0001*/
+                // if (*(ch + 2) >= '0' && *(ch + 2) <= '9') {
+                //     mfcmn.fullyear = 1;   /* 4-digit year */
+                // } else {
+                //     mfcmn.fullyear = 0;   /* 2-digit year */
+                // }
+                pos = intprs(expression, pos, out val) ?? throw new Exception("Error parsing integer value");
+            }
+            else
+            {
+                val = (int)def.yr;
+            }
+
+            /* turn off setting of < 100 years to 1900 or 2000 */
+            // if (mfcmn.fullyear == 0) {
+            //     if (val < 50) val += 2000;
+            //     else if (val < 100) val += 1900;
+            // }
+            dtim.yr = val;
+        }
+
+        i = mosiz[dtim.mo];
+        if (dtim.mo == 2 && qleap(dtim.yr)) i = 29;
+        if (dtim.dy > i)
+        {
+            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
+            GaGx.gaprnt(0, $"  Day = {dtim.dy} -- greater than {i} \n");
+            return (null);
+        }
+
+        return (pos);
+    }
+
+
+    /* Parse a relative date/time (offset).  Format is:
+
+   nn (yr/mo/dy/hr/mn)
+
+   Examples:  5mo
+              1dy12hr
+              etc.
+
+   Missing values are filled in with 0s.                             */
+    public static int? rdtprs(string expression, int pos, dt dtim)
+    {
+        int flag, val;
+        string id;
+
+        dtim.yr = 0;
+        dtim.mo = 0;
+        dtim.dy = 0;
+        dtim.hr = 0;
+        dtim.mn = 0;
+
+        flag = 1;
+
+        while (expression[pos] >= '0' && expression[pos] <= '9')
+        {
+            flag = 0;
+            pos = intprs(expression, pos, out val) ?? throw new Exception("Error parsing integer value");
+            StringBuilder idb = new StringBuilder();
+            idb.Append(expression[pos]);
+            idb.Append(expression[pos + 1]);
+            id = idb.ToString();
+            if ("yr" == id) dtim.yr = val;
+            else if ("mo" == id) dtim.mo = val;
+            else if ("dy" == id) dtim.dy = val;
+            else if ("hr" == id) dtim.hr = val;
+            else if ("mn" == id) dtim.mn = val;
+            else
+            {
+                GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time offset.");
+                GaGx.gaprnt(0, "  Expecting yr/mo/dy/hr/mn, found {id}");
+                return (null);
+            }
+
+            pos += 2;
+        }
+
+        if (flag > 0)
+        {
+            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time offset.");
+            GaGx.gaprnt(0, "  No offset value given");
+            return (null);
+        }
+
+        return (pos);
+    }
+    
+    public static double lev2gr(double[] vals, double lev) {
+        int i, num;
+        double gr;
+        
+        num = (int) (vals[0] + 0.1);
+        for (i = 1; i < num; i++) {
+            if ((lev >= vals[i] && lev <= vals[i+1]) ||
+                (lev <= vals[i] && lev >= vals[i+1])) {
+                gr = (double) i + (lev - vals[i]) / (vals[i+1] - vals[i]);
+                return (gr);
+            }
+        }
+        if (vals[1] < vals[num]) {
+            if (lev < vals[1]) {
+                gr = 1.0 + ((lev - vals[1]) / (vals[2] - vals[1]));
+                return (gr);
+            }
+            gr = (double) i + ((lev - vals[i]) / (vals[i] - vals[i-1]));
+            return (gr);
+        } else {
+            if (lev > vals[1]) {
+                gr = 1.0 + ((lev - vals[1]) / (vals[2] - vals[1]));
+                return (gr);
+            }
+            gr = (double) i + ((lev - vals[i]) / (vals[i] - vals[i-1]));
+            return (gr);
+        }
+    }
+    public static double gr2lev(double[] vals, double gr) {
+        int i;
+        if (gr < 1.0) return (vals[1] + (1.0 - gr) * (vals[1] - vals[2]));
+        if (gr > vals[0]) {
+            i = (int) (vals[0] + 0.1);
+            return (vals[i] + (gr - vals[0]) * (vals[i] - vals[i-1]));
+        }
+        i = (int) gr;
+        return (vals[i] + ((gr - (double) i) * (vals[i+1] - vals[i])));
     }
 }

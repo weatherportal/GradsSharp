@@ -653,7 +653,7 @@ public class GaSubs
    is provided.  This is scaling level 2, and is the level that
    mapping is done. */
 
-    public void gxproj(Func<double, double, Tuple<double, double>> fproj)
+    public void gxproj(Func<double, double, Tuple<double, double>>? fproj)
     {
         fconv = fproj;
     }
