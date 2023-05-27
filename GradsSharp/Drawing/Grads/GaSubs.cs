@@ -1021,7 +1021,7 @@ public class GaSubs
         double h, w, xoff, yoff, wact;
         int fn, supsub, nfn;
 
-        //fn = dfont;
+        fn = 15;
         angle = angle * Math.PI / 180.0; /* convert angle from degrees to radians */
         supsub = 0;
         // while (*chrs!='\0' && len>0) {
@@ -1073,6 +1073,20 @@ public class GaSubs
         //         chrs++; len--;
         //     }
         // }
+        for (int j = 0; j < chrs.Length; j++)
+        {
+            h = height; w = width; yoff = 0.0;
+            xoff = yoff*Math.Sin(angle);
+            yoff = yoff*Math.Cos(angle);
+            wact = gxdrawch (chrs[j], fn, x-xoff, y+yoff, w, h, angle);
+            // if (wact < -900.0 && fn<6) {
+            //     /* draw with Hershey font */
+            //     wact = _drawingContext.GxChpl.gxchplc (chrs[j], fn, x-xoff, y+yoff, w, h, angle); 
+            //     if (wact < -900.0) return;
+            // } 
+            x = x + wact*Math.Cos(angle);
+            y = y + wact*Math.Sin(angle);
+        }
     }
 
 

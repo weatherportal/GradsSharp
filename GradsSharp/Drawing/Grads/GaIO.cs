@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using GradsSharp.Models;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class GaIO
 {
@@ -235,6 +237,10 @@ internal class GaIO
             //     }
             //
             //     row += incr;
+            if (pgrid.pvar.variableDefinition.HeightType == FixedSurfaceType.IsobaricSurface)
+            {
+                pgrid.pvar.variableDefinition.HeightValue = GaUtil.gr2lev(_drawingContext.CommonData.pfid.abvals[2], pgr.dimmin[2]) * 100;
+            }
             gr = pgr.DataReader.ReadData(_drawingContext.CommonData, pgrid.pfile, pgrid.pvar.variableDefinition);
             for (int t = 0; t < gru.Length; t++)
             {

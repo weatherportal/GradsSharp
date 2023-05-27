@@ -64,14 +64,16 @@ public class Plotter
 
         var dataFile = context.Plot.DataFiles.First();
         context.GaUser.Open(dataFile.FileName, dataFile.Format);
+        context.GaUser.SetGrads(OnOffSetting.Off);
         //context.CommonData.pfid = new gafile();
         context.GaUser.SetLat(40, 60);
         context.GaUser.SetLon(-10,20);
         context.GaUser.SetMPVals(OnOffSetting.On, -10, 20, 30, 60);
         context.GaUser.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
         context.GaUser.SetMProjection(Projection.Latlon);
+        context.GxChpl.gxchdf(15);
         
-        context.GaUser.Define("t", "tmpprs(lev=500)-273.15");
+        context.GaUser.Define("t", "tmpprs(lev=850)-273.15");
         
         foreach (Chart c in context.Plot.Charts)
         {
@@ -84,6 +86,15 @@ public class Plotter
             // context.GaUser.Display("tmp2m");
             context.GaUser.SetGraphicsOut(GxOutSetting.Shaded);
             context.GaUser.Display("t");
+            
+            context.GaUser.SetStringSize(0.18);
+            context.GaUser.SetStringOptions(1, StringJustification.Right, 12, 0);
+            context.GaUser.DrawString(10.95, 8.3, "Temperature 2m");
+            
+            context.GaUser.SetStringSize(0.10);
+            context.GaUser.SetStringOptions(4, StringJustification.Right, 4, 0);
+            context.GaUser.DrawString(10.95, 8.1, "https://www.weatherportal.eu - Run: 06Z2023MAY27 - Valid: Sat 27/05 06:00Z");
+            
             context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
             // context.GaUser.SetGraphicsOut(GxOutSetting.Print);
             // context.GaUser.Display("tmp2m");

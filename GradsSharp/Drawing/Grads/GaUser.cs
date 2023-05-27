@@ -857,7 +857,21 @@ internal class GaUser
         }
     }
 
-    public void SetStringSize(int hsize, int vsize = -1)
+    public void SetGrads(OnOffSetting onOffSetting)
+    {
+        if (onOffSetting == OnOffSetting.Off)
+        {
+            pcm.grdsflg = false;
+            pcm.timelabflg = false;
+        }
+        else
+        {
+            pcm.grdsflg = true;
+            pcm.timelabflg = true;
+        }
+    }
+
+    public void SetStringSize(double hsize, double vsize = -1)
     {
         pcm.strhsz = hsize;
         if (vsize > -1)
@@ -954,7 +968,7 @@ internal class GaUser
     public void SetT(double tMin)
     {
         _drawingContext.CommonData.vdim[3] = 0;
-        
+
         var vals = _drawingContext.CommonData.pfid.grvals[3];
         GaUtil.gr2t(vals, tMin, out _drawingContext.CommonData.tmin);
         _drawingContext.CommonData.tmax = _drawingContext.CommonData.tmin;
@@ -966,7 +980,6 @@ internal class GaUser
         _drawingContext.CommonData.vdim[4] = 0;
         _drawingContext.CommonData.dmax[4] = 1;
         _drawingContext.CommonData.dmin[4] = 1;
-
     }
 
 
@@ -990,8 +1003,8 @@ internal class GaUser
         int itmin, itmax, it, izmin, izmax, iz, iemin, iemax, ie;
         int i, rc, gsiz, vdz, vdt, vde;
         long sz, siz;
-        
-        
+
+
         string name;
 
         pdf = null;
@@ -1334,7 +1347,7 @@ internal class GaUser
 
                             gr = 0;
                             gru = 0;
-                            
+
                             for (i = 0; i < gsiz; i++)
                             {
                                 pfiv.rbuf[res] = pgr.grid[gr];
@@ -1346,10 +1359,8 @@ internal class GaUser
                                 gr++;
                                 gru++;
                             }
-                            
                         }
 
-                        
 
                         /* free the result grid  */
                         if (ie == iemin && it == itmin && iz == izmin)
@@ -1388,10 +1399,10 @@ internal class GaUser
             GaGx.gaprnt(2, ".   Will be deleted and replaced.\n");
             pcm.pdf1.Remove(curr);
         }
-        
+
         pcm.pdf1.Add(pdf);
         pdf.abbrv = name;
-       
+
         /* Restore user dim limits*/
         pcm.dmax[2] = zmax;
         pcm.tmax = tmax;
@@ -1405,7 +1416,7 @@ internal class GaUser
         GaGx.gaprnt(0, "Memory allocation error for Define\n");
 
         retrn:
-        
+
         pcm.tmax = tmax; /* Restore user dim limits*/
         pcm.dmax[2] = zmax;
         pcm.vdim[2] = vdz;
@@ -1450,17 +1461,16 @@ internal class GaUser
             var pdef = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
             if (pdef.FirstFixedSurfaceType == NGrib.Grib2.CodeTables.FixedSurfaceType.IsobaricSurface)
             {
-                if (!levels.Contains(pdef.FirstFixedSurfaceValue ?? 0))
+                if (!levels.Contains((pdef.FirstFixedSurfaceValue ?? 0) / 100.0))
                 {
-                    levels.Add(pdef.FirstFixedSurfaceValue ?? 0 / 100.0);
+                    levels.Add((pdef.FirstFixedSurfaceValue ?? 0) / 100.0);
                 }
             }
         }
 
 
-        
         levels = levels.OrderByDescending(x => x).ToList();
-        levels.Insert(0, 0);
+        levels.Insert(0, levels.Count);
         levels.Add(-999.9);
         levels.Add(0);
         levels.Add(0);
@@ -1507,7 +1517,7 @@ internal class GaUser
             gf.linear[2] = 0;
 
             var dt = dataset.Message.IdentificationSection.ReferenceTime;
-            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0, 0};
+            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0, 0 };
             gf.dnum[3] = 1; //TODO this can be multiple timesteps too
             gf.grvals[3] = vals;
             gf.abvals[3] = vals;
@@ -1978,10 +1988,38 @@ internal class GaUser
         return (null);
     }
 
-    private string GetVarName(string name, FixedSurfaceType sfc)
+
+    /* handle draw command */
+
+    static double[] justx = { 0.0, 0.5, 1.0, 0.0, 0.5, 1.0, 0.0, 0.5, 1.0 };
+    static double[] justy = { 0.0, 0.0, 0.0, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0 };
+
+
+    public int DrawString(double x, double y, string text)
     {
-        return name + "_" + sfc.ToString();
+        
+        _drawingContext.GaSubs.gxwide(pcm.strthk);
+        _drawingContext.GaSubs.gxcolr(pcm.strcol);
+
+        double swide = 0.2;
+        _drawingContext.GxChpl.gxchln(text, text.Length, pcm.strhsz, out swide);
+        double shite = pcm.strvsz;
+
+        double ang = pcm.strrot * Math.PI / 180.0;
+        x = x - justx[pcm.strjst] * swide * Math.Cos(ang);
+        y = y - justx[pcm.strjst] * swide * Math.Sin(ang);
+        x = x - justy[pcm.strjst] * shite * Math.Cos(ang + 1.5708);
+        y = y - justy[pcm.strjst] * shite * Math.Sin(ang + 1.5708);
+
+        _drawingContext.GaSubs.gxchpl(text, text.Length, x, y, pcm.strvsz, pcm.strhsz, pcm.strrot);
+        return (0);
+
+        errst:
+        GaGx.gaprnt(0, "DRAW error: Syntax is DRAW STRING x y string\n");
+        return (1);
+        
     }
+
 
     private DataVariable GetVarType(string name)
     {
