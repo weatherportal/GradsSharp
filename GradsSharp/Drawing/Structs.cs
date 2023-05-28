@@ -1234,11 +1234,13 @@ class cxclock
                   10 - return
                   11 - function  */
 
-internal class gsrecd {
-    
+internal class gsrecd
+{
+    public gsrecd? forw;
     public gsrecd refer; /* Position of end of code block */
     public gsfdef pfdf;  /* Pointer to file def for this record */
     public int pos;            /* Start of record */
+    public string epostext;
     public int epos;           /* Position of start of expression, if any */
     public int num;              /* Record number in file */
     public int type;             /* Record type */
@@ -1264,9 +1266,10 @@ internal class gsfdef {
     public string? file;           /* The contents of the file */
 };
 
-internal class gsfnc {
-    
-    public List<gsrecd> recd;     /* Record block for function   */
+internal class gsfnc
+{
+    public gsfnc? forw;
+    public gsrecd recd;     /* Record block for function   */
     public string name;           /* Name of function            */
 };
 
@@ -1291,7 +1294,7 @@ internal class gscmn {
     public List<gsrecd>? frecd;    /* Head of record descriptor link list */   
     public gsrecd? lrecd;    /* Last in record list list */
     public gsvar? fvar;      /* Head of variable linklist   */
-    public List<gsfnc>? ffnc;      /* Head of function list       */
+    public gsfnc? ffnc;      /* Head of function list       */
     public gsiob? iob;       /* Head of file I/O list       */
     public gsvar? gvar;      /* Head of global var list     */
     public gsvar? farg;      /* Pointer to function arglist */
@@ -1313,8 +1316,8 @@ internal class stck {
     public stck? pback;               /* Backwards Pointer */
     public int type;        /* Entry type: 0=oprnd,1=oprtr,2='(',3=')'        */
     internal class tobj {
-        int op;                         /* Operator */
-        string strng;                    /* Operand  */
+        public int op;                         /* Operator */
+        public string strng;                    /* Operand  */
     }
-    public tobj obj;
+    public tobj obj = new tobj();
 };

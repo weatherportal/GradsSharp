@@ -1,4 +1,5 @@
-﻿using GradsSharp.Data;
+﻿using System.Diagnostics;
+using GradsSharp.Data;
 using GradsSharp.Models;
 using Microsoft.VisualBasic;
 using NGrib;
@@ -1619,7 +1620,7 @@ internal class GaUser
         // }
 
         rcode = 1;
-        if (String.IsNullOrEmpty(variable))
+        if (String.IsnullOrEmpty(variable))
         {
             GaGx.gaprnt(0, "Display command error:  No expression provided");
             return (1);
@@ -2001,7 +2002,6 @@ internal class GaUser
 
     public int DrawString(double x, double y, string text)
     {
-        
         _drawingContext.GaSubs.gxwide(pcm.strthk);
         _drawingContext.GaSubs.gxcolr(pcm.strcol);
 
@@ -2021,7 +2021,676 @@ internal class GaUser
         errst:
         GaGx.gaprnt(0, "DRAW error: Syntax is DRAW STRING x y string\n");
         return (1);
+    }
+
+    /* Execute command on behalf of the scripting language.
+   Return the result in a dynamically allocated buffer */
+    public string gagsdo(string cmd, out int rc)
+    {
+        int savflg, tlen, i;
+        gacmn pcm = _drawingContext.CommonData;
         
+        // savflg = msgflg;
+        // msgflg = 1;          /* Buffer messages */
+        //pcm = savpcm;        /* Get common pointer */
+        //msgstk = null;
+
+        rc = gacmd(cmd, pcm, 0);
+
+        /* Set up output buffer */
+
+        // if (msgstk == null)
+        // {
+        //     msgflg = savflg;
+        //     return (null);
+        // }
+        //
+        // tlen = 0;
+        // msgcurr = msgstk;
+        // while (msgcurr)
+        // {
+        //     tlen += msgcurr.len;
+        //     msgcurr = msgcurr.forw;
+        // }
+        //
+        // mbuf = (char*)malloc(tlen + 1);
+        // if (mbuf == null)
+        // {
+        //     printf("Memory allocation error: Message Return Buffer\n");
+        //     msgflg = savflg;
+        //     return (null);
+        // }
+        //
+        // msgcurr = msgstk;
+        // ch = mbuf;
+        // while (msgcurr != null)
+        // {
+        //     for (i = 0; i < msgcurr.len; i++)
+        //     {
+        //         cmd[ch] = *(msgcurr.msg + i);
+        //         ch++;
+        //     }
+        //
+        //     msgcurr = msgcurr.forw;
+        // }
+        //
+        // msgcurr = msgstk;
+        // while (msgcurr != null)
+        // {
+        //     if (msgcurr.msg) free(msgcurr.msg);
+        //     msgstk = msgcurr.forw;
+        //     free(msgcurr);
+        //     msgcurr = msgstk;
+        // }
+        //
+        // *(mbuf + tlen) = '\0';
+        // msgflg = savflg;
+        // return (mbuf);
+        return "";
+    }
+
+    int gacmd(string com, gacmn pcm, int exflg)
+    {
+        gafile? pfi, pfi2;
+        gadefn? pdf, pdf2;
+        //gaclct *clct, *clct2;
+        int rc, reinit, fnum, i, j, len, retcod, flag, xin, yin, bwin, fmtflg, tcolor, pos, size,  *ioff, rem;
+        double border,  *dx, *dy;
+        float* rvals = null,  *ivals = null, *jvals = null, *ival, *jval;
+        char pdefname[256];
+        string cc;
+        string cmd;
+        char* rslt, ext[10];
+        int ch;
+
+        string[] formats = { "EPS", "PS", "PDF", "SVG", "PNG", "GIF", "JPG" };
+        Stream? pdefid = null;
+
+        //gaiomg();   /* enable interpolation message */
+
+        cmd = com;
+        int cmdpos = 0;
+        int compos = 0;
+        while (cmd[cmdpos] == ' ') cmdpos++;
+        while (com[compos] == ' ') compos++;
+
+        retcod = 0;
+
+        /* Check for implied define */
+        flag = 0;
+        if (cmd[cmdpos] >= 'a' && cmd[cmdpos] <= 'z')
+        {
+            i = 0;
+            ch = cmdpos;
+            /* defined variable names are alphanumeric, and must start with a letter */
+            while ((cmd[ch] >= 'a' && cmd[ch] <= 'z') || (cmd[ch] >= '0' && cmd[ch] <= '9'))
+            {
+                i++;
+                if (i > 16) break;
+                ch++;
+            }
+
+            if (i < 17)
+            {
+                while (cmd[ch] == ' ') ch++;
+                if (cmd[ch] == '=')
+                {
+                    flag = 1;
+                    ch++;
+                    while (cmd[ch] == ' ') ch++;
+                }
+            }
+
+            if (flag > 0)
+            {
+                if (pcm.pfid == null)
+                {
+                    GaGx.gaprnt(0, "DEFINE error:  no file open yet\n");
+                    retcod = 1;
+                    goto retrn;
+                }
+
+                string[] cparts = cmd.Substring(ch).Split('=');
+                retcod = gadef(cparts[0], cparts[1], 1);
+                goto retrn;
+            }
+        }
+
+        /* OpenGrADS User Defined Extensions */
+
+        retcod = (int)gaudc(com);
+        if (retcod >= 0) goto retrn; /* found a udc, all done */
+        else retcod = 0; /* not found, keep going */
+
+
+        /* if command is NOT clear ...*/
+        if (!("clear" == cmd || "c" ==cmd))
+        {
+            _drawingContext.GaSubs.gxfrme(9); /* ... clear the X request buffer */
+        }
+
+        if (compos == com.Length || com[compos] == '\n') goto retrn;
+
+        cmd = cmd.Substring(cmdpos);
+        string[] parts = cmd.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        
+        if (cmd[cmdpos] == '!')
+        {
+            Process.Start(com.Substring(1)).WaitForExit();
+            goto retrn;
+        }
+       
+        else if (cmd.StartsWith("reset") || cmd.StartsWith("reinit"))
+        {
+            reset(cmd.StartsWith("reinit"));
+            goto retrn;
+        }
+        else if (cmd.StartsWith("close"))
+        {
+            close();
+            goto retrn;
+        }
+        else if (cmd.StartsWith("clear") || cmd.StartsWith("c"))
+        {
+            rc = 0;
+            if (parts.Length>1)
+            {
+                rc = 99;
+                if ("norset" == parts[1]) rc = 1; /* clears without resetting user options */
+                if ("events" == parts[1]) rc = 2; /* flushes the Xevents buffer */
+                if ("graphics" == parts[1]) rc = 3; /* clears the graphics but not the widgets */
+                if ("hbuff" == parts[1]) rc = 4; /* clears the buffered display and turns off double buffer mode */
+                if ("button" == parts[1]) rc = 5; /* clears a button */
+                if ("rband" == parts[1]) rc = 6; /* clears a rubber band */
+                if ("dropmenu" == parts[1]) rc = 7; /* clears a dropmenu */
+                if ("sdfwrite" == parts[1]) rc = 8; /* clears sdfwrite filename and attributes only */
+                if ("mask" == parts[1]) rc = 9; /* clears contour label mask */
+                if ("shp" == parts[1]) rc = 10; /* clears shapefile output filename and attributs only */
+            }
+
+            if (rc == 99)
+            {
+                GaGx.gaprnt(0, "Invalid option on clear command\n");
+                goto retrn;
+            }
+
+            
+            clear((ClearAction)rc);
+            goto retrn;
+        }
+        else if ("swap" == cmd)
+        {
+            if (pcm.dbflg>0) _drawingContext.GaSubs.gxfrme(2);
+            gacln(1);
+            goto retrn;
+        }
+        else if (cmd.StartsWith("exec"))
+        {
+            retcod = gaexec(com, pcm);
+            goto retrn;
+        }
+        else if (cmd.StartsWith("run"))
+        {
+            if (parts.Length == 1)
+            {
+                GaGx.gaprnt(0, "RUN error:  No file name specified\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            rslt = gsfile(cmd, &rc, 0);
+            if (rc == 0 && rslt != null) gaprnt(2, rslt);
+            if (rslt != null) gree(rslt, "f193");
+            retcod = rc;
+            goto retrn;
+        }
+        else if (cmd.StartsWith("draw"))
+        {
+            if (parts.Length > 1)
+            {
+                if (parts[1] == "string")
+                {
+                    if (parts.Length == 5)
+                    {
+                        _drawingContext.GaUser.DrawString(Convert.ToDouble(parts[2]), Convert.ToDouble(parts[3]), String.Join(' ', parts.Skip(4).ToArray()));    
+                    }
+                    
+                }
+            }
+            _drawingContext.GaSubs.gxsignal(1); /* tell rendering layer and metabuffer draw is done */
+            _drawingContext.GaSubs.gxfrme(9); /* flush X request buffer */
+            goto retrn;
+        }
+        else if (parts[0] == "gxprint" || parts[0] == "printim")
+        {
+            /* check for output file name */
+            if (parts.Length == 1)
+            {
+                GaGx.gaprnt(0, "GXPRINT error:  missing output file name\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            cc = parts[1]; /* copy output file name into cc */
+
+            /* advance past the output file name in mixed and lower case versions of the command */
+            
+            /* initialize */
+            xin = -999;
+            yin = -999;
+            bwin = -999;
+            fmtflg = 0;
+            bgImage = "";
+            fgImage = "";
+            tcolor = -1;
+            border = -1.0;
+
+            int partpos = 2;
+
+            /* parse the user-provided options */
+            while (partpos < parts.Length)
+            {
+                /* set backgroud/foreground colors */
+                string p = parts[partpos];
+                if ("black"== p) bwin = 0;
+                else if ("white"== p) bwin = 1;
+                /* explicit format types -- the union of all possibilities from all rendering engines */
+                else if ("eps"== p) fmtflg = 1;
+                else if ("ps"== p) fmtflg = 2;
+                else if ("pdf"== p) fmtflg = 3;
+                else if ("svg"== p) fmtflg = 4;
+                /* ... image formats start here ... */
+                else if ("png"== p) fmtflg = 5;
+                else if ("gif"== p) fmtflg = 6;
+                else if ("jpg"== p) fmtflg = 7;
+                else if ("jpeg"== p) fmtflg = 7;
+                /* get background image filename */
+                else if ("-b" == p)
+                {
+                    partpos++;
+                    if (partpos == parts.Length)
+                    {
+                        GaGx.gaprnt(1, "GXPRINT warning: Foreground image file name not provided\n");
+                        break;
+                    }
+
+                    bgImage = parts[partpos];
+                    partpos++;
+                }
+                /* get foreground image filename */
+                else if ("-f"== p)
+                {
+                    partpos++;
+                    if (partpos == parts.Length)
+                    {
+                        GaGx.gaprnt(1, "GXPRINT warning: Foreground image file name not provided\n");
+                        break;
+                    }
+
+                    fgImage = parts[partpos];
+                    partpos++;
+
+
+                }
+                /* set transparent color number */
+                else if ("-t" == p)
+                {
+                    partpos++;
+                    if (partpos == parts.Length)
+                    {
+                        GaGx.gaprnt(1, "GXPRINT warning: Missing transparent color number\n");
+                        break;
+                    }
+
+                    /* set transparent color number */
+                    tcolor = Convert.ToInt32(parts[partpos++]);
+                }
+                /* set horizontal image size */
+                else if (p[0] == 'x')
+                {
+                    try
+                    {
+                        xin = Convert.ToInt32(p.Substring(1));
+                    }
+                    catch (Exception ex)
+                    {
+                        GaGx.gaprnt(0, "GXPRINT error:  Invalid x option; ignored\n");
+                        xin = -999;
+                    }
+
+                    partpos++;
+                }
+                /* set vertical image size */
+                else if (p[0] == 'y')
+                {
+                    try
+                    {
+                        yin = Convert.ToInt32(p.Substring(1));
+                    }
+                    catch (Exception ex)
+                    {
+                        GaGx.gaprnt(0, "GXPRINT error:  Invalid y option; ignored\n");
+                        yin = -999;
+                    }
+                    partpos++;
+                }
+                /* set width of border around the edge of the plot */
+                else if ("-e"== p)
+                {
+                    partpos++;
+                    if (parts.Length == partpos)
+                    {
+                        GaGx.gaprnt(1, "GXPRINT warning: Missing edge width \n");
+                        break;
+                    }
+
+                    try
+                    {
+                        border = Convert.ToDouble(parts[partpos++]);
+                    }
+                    catch (Exception ex)
+                    {
+                        GaGx.gaprnt(1, "GXPRINT warning: Invalid edge width \n");
+                    }
+                }
+                else
+                {
+                    GaGx.gaprnt(0, "GXPRINT error: Invalid option; ignored\n");
+                }
+            }
+            
+            printim(cc, (OutputFormat)fmtflg, bgImage, fgImage, (BackgroundColor)bwin, tcolor, xin, yin, border);
+            
+            goto retrn;
+        }
+        else if (cmd.ToLower().StartsWith("set"))
+        {
+            retcod = gaset(cmd, com, pcm);
+            goto retrn;
+        }
+        else if ("open"== parts[0])
+        {
+            //Open();
+            if ((cmd = nxtwrd(com)) == null)
+            {
+                gaprnt(0, "OPEN error:  missing data description file name\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            getwrd(cc, cmd, 256);
+            retcod = gaopen(cc, pcm);
+            if (!retcod) mygreta(cc); /* (for IGES only) keep track of user's opened files */
+
+            goto retrn;
+
+        }
+        else if ("sdfopen"== p)
+        {
+            if ((cmd = nxtwrd(com)) == null)
+            {
+                gaprnt(0, "SDFOPEN error:  missing self-describing file pathname\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = gasdfopen(cmd, pcm);
+            if (!retcod) mygreta(cmd); /* (for IGES only) keep track of user's opened files */
+            goto retrn;
+        }
+        else if ("xdfopen"== p)
+        {
+            if ((cmd = nxtwrd(com)) == null)
+            {
+                gaprnt(0, "XDFOPEN error:  missing data descriptor file name\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = gaxdfopen(cmd, pcm);
+            if (!retcod) mygreta(cmd); /* (for IGES only) keep track of user's opened files */
+            goto retrn;
+        }
+        else if ("d"== p || "display" == p)
+        {
+            if (pcm.pfid == null)
+            {
+                gaprnt(0, "DISPLAY error:  no file open yet\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = gadspl(cmd, pcm);
+            gxsignal(1); /* tell rendering engine and metafile buffer display is finished */
+            _drawingContext.GaSubs.gxfrme(9); /* flush any buffers as needed */
+            goto retrn;
+        }
+        else if ("coll", cmd) || "collect", cmd))
+        {
+            if (pcm.pfid == null)
+            {
+                gaprnt(0, "COLLECT error:  no file open yet\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = gacoll(cmd, pcm);
+            goto retrn;
+        }
+        else if ("define", cmd))
+        {
+            if (pcm.pfid == null)
+            {
+                gaprnt(0, "DEFINE error:  no file open yet\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = gadef(cmd, pcm, 0);
+            goto retrn;
+        }
+        else if ("undefine", cmd))
+        {
+            if (pcm.pfid == null)
+            {
+                gaprnt(0, "DEFINE error: no file open yet\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = gaudef(cmd, pcm);
+            goto retrn;
+        }
+        else if ("modify", cmd))
+        {
+            if (pcm.pfid == null)
+            {
+                gaprnt(0, "MODIFY error: no file open yet\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = gamodf(cmd, pcm);
+            goto retrn;
+        }
+        else if ("sdfwrite", cmd))
+        {
+            if (pcm.pdf1 == null)
+            {
+                gaprnt(0, "SDFWRITE error: no defined variables\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            retcod = ncwrite(cmd, pcm);
+            goto retrn;
+        }
+        else if ("pdefwrite", cmd))
+        {
+            if (pcm.pfid == null)
+            {
+                gaprnt(0, "PDEFWRITE error: no file open yet\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            if (pcm.pfid.ppflag == 0)
+            {
+                gaprnt(0, "PDEFWRITE error: default file does not use PDEF\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            if (pcm.pfid.ppflag == 7 || pcm.pfid.ppflag == 8)
+            {
+                gaprnt(0, "PDEFWRITE error: default file already has an external PDEF file\n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            /* Get the name of the output file and open it */
+            if ((cmd = nxtwrd(cmd)) != null)
+            {
+                if (strlen(cmd) < 256)
+                {
+                    getwrd(pdefname, cmd, 255);
+                }
+                else
+                {
+                    gaprnt(0, "PDEFWRITE error: name of output file is missing \n");
+                    retcod = 1;
+                    goto retrn;
+                }
+            }
+
+            if ((pdefid = fopen(pdefname, "w")) == null)
+            {
+                gaprnt(0, "PDEFWRITE error: failed to open output file \n");
+                retcod = 1;
+                goto retrn;
+            }
+
+            /* allocate memory for grids to be written out to file */
+            size = pcm.pfid.dnum[0] * pcm.pfid.dnum[1];
+            if ((ivals = (float*)galloc(size * sizeof(float), "ppivals")) == null)
+            {
+                retcod = 1;
+                goto retrn;
+            }
+
+            if ((jvals = (float*)galloc(size * sizeof(float), "ppjvals")) == null)
+            {
+                retcod = 1;
+                goto retrn;
+            }
+
+            if ((rvals = (float*)galloc(size * sizeof(float), "pprvals")) == null)
+            {
+                retcod = 1;
+                goto retrn;
+            }
+
+            ival = ivals; /* save these initial pointers for the fwrite commands */
+            jval = jvals;
+
+            /* Fill grids of file offsets and weights (dx,dy) calculated for pdef grid interpolation */
+            ioff = pcm.pfid.ppi[0];
+            dx = pcm.pfid.ppf[0];
+            dy = pcm.pfid.ppf[1];
+            for (j = 0; j < pcm.pfid.dnum[1]; j++)
+            {
+                for (i = 0; i < pcm.pfid.dnum[0]; i++)
+                {
+                    if (*ioff == -1)
+                    {
+                        *ivals = -999;
+                        *jvals = -999;
+                    }
+                    else
+                    {
+                        rem = *ioff % (pcm.pfid.ppisiz); /* 0-based x index */
+                        *ivals = rem + 1 + (float)*dx; /* make x index 1-based and add the interp wgt */
+                        *jvals = ((*ioff - rem) / pcm.pfid.ppisiz) + 1 +
+                                 (float)*dy; /* 1-based y index plus interp wgt */
+                    }
+
+                    ioff++;
+                    dx++;
+                    dy++;
+                    ivals++;
+                    jvals++;
+                }
+            }
+
+            rc = fwrite(ival, sizeof(float), size, pdefid);
+            if (rc != size)
+            {
+                retcod = 1;
+                goto retrn;
+            }
+
+            rc = fwrite(jval, sizeof(float), size, pdefid);
+            if (rc != size)
+            {
+                retcod = 1;
+                goto retrn;
+            }
+
+            /* Fill the grid of rotation values, then write it out */
+            if (pcm.pfid.ppwrot)
+                for (i = 0; i < size; i++)
+                    *(rvals + i) = (float)(*(pcm.pfid.ppw + i));
+            else
+                for (i = 0; i < size; i++)
+                    *(rvals + i) = -999;
+            rc = fwrite(rvals, sizeof(float), size, pdefid);
+            if (rc != size)
+            {
+                retcod = 1;
+                goto retrn;
+            }
+
+            fclose(pdefid);
+            snprintf(pout, 1255, "pdef %d %d bilin stream binary-", pcm.pfid.ppisiz, pcm.pfid.ppjsiz);
+            gaprnt(2, pout);
+#if BYTEORDER == 1
+            snprintf(pout, 1255, "big");
+#else
+        snprintf(pout, 1255, "little");
+#endif
+            gaprnt(2, pout);
+            snprintf(pout, 1255, " ^%s\n", pdefname);
+            gaprnt(2, pout);
+
+            if (ival != null) gree(ival, "f194a");
+            if (jval != null) gree(jval, "f194a");
+            if (rvals != null) gree(rvals, "f194a");
+
+            retcod = 0;
+            goto retrn;
+        }
+        else
+        {
+            if (pcm.impcmd)
+            {
+                savpcm = pcm;
+                rslt = gsfile(com, &rc, 1);
+                if (rc == 0 && rslt != null) gaprnt(2, rslt);
+                if (rslt != null) gree(rslt, "f195");
+                retcod = rc;
+                goto retrn;
+            }
+
+            gaprnt(0, "Unknown command: ");
+            gaprnt(0, cmd);
+            gaprnt(0, "\n");
+            retcod = 1;
+            goto retrn;
+        }
+
+        retrn:
+       
+        return (retcod);
     }
 
 

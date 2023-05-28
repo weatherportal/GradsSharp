@@ -15,7 +15,15 @@ internal class GScript
     static string rcdef = "rc              ";
     static string redef = "result          ";
 
+    string[] opchars = {"!=",">=","<=","|","&","=",">","<","%",
+        "+","-","*","/"};
+    int[] opvals = {4,6,8,1,2,3,5,7,9,10,11,12,13};
+    int[] optyps = {0,0,1,1,1,1,1,1,0,2,2,2,2,0,2};
+    int[] opmins = {14,12,10,9,3,2,1};
+    int[] opmaxs = {15,13,11,9,8,2,1};
 
+    private const int RSIZ = 3600;
+    
     /*  Execute a script, from one or more files. 
     Beware: various levels of recursion are used.     */
 
@@ -189,9 +197,9 @@ internal class GScript
                   1:  error; message already printed
                   9:  couldn't open file; message not yet printed */
 
-    int gsgsfrd(gscmn pcmn, int lflag, char* pfnc) {
-        gsfdef pfdf,  tfdf;
-        gsrecd rectmp,  *reccur = null;
+    int gsgsfrd(gscmn pcmn, int lflag, out string pfnc) {
+        gsfdef? pfdf,  tfdf;
+        gsrecd? rectmp,  reccur = null;
         int fpos;
         Stream ifile;
         string sfile;
@@ -258,7 +266,7 @@ internal class GScript
         reccnt = 1;
         while (fpos < flen)
         {
-            rectmp = gsrtyp(&fpos, &reccnt, &rc);
+            rectmp = gsrtyp(ref fpos, &reccnt, &rc);
             if (rc > 0) return (1);
             if (rectmp != null)
             {
@@ -300,51 +308,46 @@ internal class GScript
 /* Determine what kind of record in the script file we have,
    and fill in a record descriptor block.                  */
 
-    gsrecd gsrtyp(char** ppos, int* reccnt, int* rc)
+    gsrecd? gsrtyp(string rec, ref int ppos, ref int reccnt, out int rc)
     {
-        char* fpos, *pos;
-        gsrecd* recd;
-        char ch[20];
+        int fpos, pos;
+        gsrecd recd;
+        string ch;
+        StringBuilder chb = new StringBuilder();
         int i, eflg, cflg;
 
         /* Ignore comments */
 
-        fpos = *ppos;
-        if (*fpos == '*' || *fpos == '#')
+        fpos = ppos;
+        if (rec[fpos] == '*' || rec[fpos] == '#')
         {
-            while (*fpos != '\n') fpos++;
+            while (rec[fpos] != '\n') fpos++;
             fpos++;
-            *ppos = fpos;
-            *rc = 0;
-            *reccnt = *reccnt + 1;
+            ppos = fpos;
+            rc = 0;
+            reccnt++;
             return (null);
         }
 
         /* Ignore blank lines */
 
-        while (*fpos == ' ') fpos++;
-        if (*fpos == '\n' || *fpos == ';')
+        while (rec[fpos] == ' ') fpos++;
+        if (rec[fpos] == '\n' || rec[fpos] == ';')
         {
-            if (*fpos == '\n') *reccnt = *reccnt + 1;
+            if (rec[fpos] == '\n') reccnt++;
             fpos++;
-            *ppos = fpos;
-            *rc = 0;
+            ppos = fpos;
+            rc = 0;
             return (null);
         }
 
         /* We found something, so allocate a descriptor block */
 
-        recd = (gsrecd *)malloc(sizeof(gsrecd));
-        if (recd == null)
-        {
-            Console.WriteLine("Memory allocation error: script scan\n");
-            *rc = 1;
-            return (null);
-        }
-
+        recd = new gsrecd();
+        
         recd.forw = null;
         recd.pos = fpos;
-        recd.num = *reccnt;
+        recd.num = reccnt;
         recd.refer = null;
 
         /* Check for assignment statement first */
@@ -353,14 +356,14 @@ internal class GScript
         recd.epos = null;
         pos = fpos;
         recd.type = -9;
-        if ((*pos >= 'a' && *pos <= 'z') || (*pos >= 'A' && *pos <= 'Z') || *pos == '_')
+        if ((rec[pos] >= 'a' && rec[pos] <= 'z') || (rec[pos] >= 'A' && rec[pos] <= 'Z') || rec[pos] == '_')
         {
-            while ((*pos >= 'a' && *pos <= 'z') ||
-                   (*pos >= 'A' && *pos <= 'Z') ||
-                   (*pos == '.') || (*pos == '_') ||
-                   (*pos >= '0' && *pos <= '9')) pos++;
-            while (*pos == ' ') pos++;
-            if (*pos == '=')
+            while ((rec[pos] >= 'a' && rec[pos] <= 'z') ||
+                   (rec[pos] >= 'A' && rec[pos] <= 'Z') ||
+                   (rec[pos] == '.') || (rec[pos] == '_') ||
+                   (rec[pos] >= '0' && rec[pos] <= '9')) pos++;
+            while (rec[pos] == ' ') pos++;
+            if (rec[pos] == '=')
             {
                 recd.type = 2;
                 fpos = pos + 1;
@@ -373,89 +376,87 @@ internal class GScript
         if (recd.type != 2)
         {
             i = 0;
-            while (*(fpos + i) != '\n' && *(fpos + i) != ';' && i < 9)
+            while (rec[fpos + i] != '\n' && rec[fpos + i] != ';' && i < 9)
             {
-                ch[i] = *(fpos + i);
+                chb.Append(rec[fpos + i]);
                 i++;
             }
 
-            ch[i] = '\0';
-            lowcas(ch);
-
-            if (cmpwrd(ch, "if") || !cmpch(ch, "if(", 3))
+            ch = chb.ToString().ToLower();
+            if (ch == "if" || ch.StartsWith("if("))
             {
                 fpos += 2;
                 eflg = 1;
                 recd.type = 7;
             }
-            else if (cmpwrd(ch, "else"))
+            else if (ch == "else")
             {
                 fpos += 4;
                 recd.type = 8;
             }
-            else if (cmpwrd(ch, "endif"))
+            else if (ch == "endif")
             {
                 fpos += 5;
                 recd.type = 9;
             }
-            else if (cmpwrd(ch, "while") || !cmpch(ch, "while(", 6))
+            else if (ch == "while" || ch.StartsWith("while("))
             {
                 fpos += 5;
                 eflg = 1;
                 recd.type = 3;
             }
-            else if (cmpwrd(ch, "endwhile"))
+            else if (ch == "endwhile")
             {
                 fpos += 8;
                 recd.type = 4;
             }
-            else if (cmpwrd(ch, "continue"))
+            else if (ch == "continue")
             {
                 fpos += 8;
                 recd.type = 5;
             }
-            else if (cmpwrd(ch, "break"))
+            else if (ch == "break")
             {
                 fpos += 5;
                 recd.type = 6;
             }
-            else if (cmpwrd(ch, "return") || !cmpch(ch, "return(", 7))
+            else if (ch == "return" || ch.StartsWith("return("))
             {
                 fpos += 6;
                 recd.type = 10;
                 eflg = 1;
             }
-            else if (cmpwrd(ch, "function"))
+            else if (ch == "function")
             {
                 fpos += 8;
                 recd.type = 11;
                 eflg = 1;
             }
-            else if (cmpwrd(ch, "say"))
+            else if (ch == "say")
             {
                 fpos += 3;
                 recd.type = 12;
                 eflg = 1;
             }
-            else if (cmpwrd(ch, "print"))
+            else if (ch == "print")
             {
                 fpos += 5;
                 recd.type = 12;
                 eflg = 1;
             }
-            else if (cmpwrd(ch, "prompt"))
+            else if (ch == "prompt")
             {
                 fpos += 6;
                 recd.type = 15;
                 eflg = 1;
             }
-            else if (cmpwrd(ch, "pull"))
+            else if (ch == "pull")
             {
                 fpos += 4;
                 recd.type = 13;
                 eflg = 1;
             }
-            else if (cmpwrd(ch, "exit"))
+            else if (ch == "exit")
             {
                 fpos += 4;
                 recd.type = 14;
@@ -470,10 +471,10 @@ internal class GScript
 
         /* Locate expression */
 
-        if (eflg)
+        if (eflg>0)
         {
-            while (*fpos == ' ') fpos++;
-            if (*fpos == '\n' || *fpos == ';')
+            while (rec[fpos] == ' ') fpos++;
+            if (rec[fpos] == '\n' || rec[fpos] == ';')
             {
                 recd.epos = null;
             }
@@ -483,16 +484,16 @@ internal class GScript
         /* Advance to end of record */
 
         cflg = 0;
-        while (1)
+        while (true)
         {
-            if (!cflg && *fpos == ';') break;
-            if (*fpos == '\n') break;
-            if (*fpos == '\'')
+            if (cflg == 0 && rec[fpos] == ';') break;
+            if (rec[fpos] == '\n') break;
+            if (rec[fpos] == '\'')
             {
                 if (cflg == 1) cflg = 0;
                 else if (cflg == 0) cflg = 1;
             }
-            else if (*fpos == '\"')
+            else if (rec[fpos] == '\"')
             {
                 if (cflg == 2) cflg = 0;
                 else if (cflg == 0) cflg = 2;
@@ -504,49 +505,44 @@ internal class GScript
         /* Remove trailing blanks */
 
         pos = fpos - 1;
-        while (*pos == ' ')
+        while (rec[pos] == ' ')
         {
-            *pos = '\0';
+            rec = rec.Substring(0, pos);
             pos--;
         }
 
         /* Finish building rec block and return */
 
-        if (*fpos == '\n') *reccnt = *reccnt + 1;
-        *fpos = '\0';
+        if (rec[fpos] == '\n') reccnt++;
+        rec = rec.Substring(0, fpos);
         fpos++;
-        *ppos = fpos;
-        *rc = 0;
+        ppos = fpos;
+        rc = 0;
         return (recd);
     }
 
 /*  Resolve flow-control blocks.  Scan each function
     seperately.                                      */
 
-    int gsblck(gsrecd recd, gscmn pcmn) {
-        gsfnc* pfnc, *prev,*cfnc;
+    int gsblck(gsrecd? recd, gscmn pcmn) {
+        gsfnc? pfnc, prev, cfnc;
         int rc, i;
-        char* fch;
+        int fch;
 
         /* Loop looking at statements.  If a function definition, allocate a
            function block and chain it.   */
 
-        while (recd)
+        while (recd!=null)
         {
-            recd = gsbkst(recd, null, null, &rc);
+            recd = gsbkst(recd, null, null, out rc);
             if (rc > 0) return (rc);
 
             /* If a function, allocate a function block */
 
             if (recd != null && recd.type == 11)
             {
-                pfnc = (gsfnc *)malloc(sizeof(gsfnc));
-                if (pfnc == null)
-                {
-                    Console.WriteLine("Error allocating memory: script scan\n");
-                    return (1);
-                }
-
+                pfnc = new gsfnc();
+                
                 /* Chain it */
 
                 if (pcmn.ffnc == null)
@@ -556,7 +552,8 @@ internal class GScript
                 else
                 {
                     cfnc = pcmn.ffnc;
-                    while (cfnc)
+                    prev = cfnc;
+                    while (cfnc!=null)
                     {
                         prev = cfnc;
                         cfnc = cfnc.forw;
@@ -618,7 +615,7 @@ internal class GScript
     if/then/else and while/endwhile blocks.  Return pointer
     to next statement (unless a function statement). */
 
-    gsrecd gsbkst(gsrecd recd, gsrecd ifblk, gsrecd doblk, out int rc) {
+    gsrecd? gsbkst(gsrecd recd, gsrecd ifblk, gsrecd doblk, out int rc) {
         int ret;
 
         if (recd.type == 3)
@@ -706,13 +703,13 @@ internal class GScript
 /* Resolve an while/endwhile block.  Recursively resolve any
    nested elements. */
 
-    gsrecd gsbkdo(gsrecd recd, gsrecd ifblk, gsrecd doblk, out int rc) {
+    gsrecd? gsbkdo(gsrecd? recd, gsrecd ifblk, gsrecd doblk, out int rc) {
         int ret;
 
         ret = 0;
         while (recd != null && recd.type != 4 && recd.type != 11 && ret == 0)
         {
-            recd = gsbkst(recd, ifblk, doblk, &ret);
+            recd = gsbkst(recd, ifblk, doblk, out ret);
         }
 
         if (ret == 0 && (recd == null || recd.type == 11))
@@ -720,11 +717,11 @@ internal class GScript
             Console.WriteLine("Unable to locate ENDWHILE statement");
             Console.WriteLine(" for the WHILE statement at line %i\n", doblk.num);
             Console.WriteLine("  In file %s\n", doblk.pfdf.name);
-            *rc = 1;
+            rc = 1;
             return (null);
         }
 
-        *rc = ret;
+        rc = ret;
         if (ret == 0)
         {
             recd.refer = doblk;
@@ -736,7 +733,7 @@ internal class GScript
 
 /*  Resolve if/else/endif block */
 
-    gsrecd gsbkif(gsrecd recd, gsrecd ifblk, gsrecd doblk, out int rc) {
+    gsrecd? gsbkif(gsrecd? recd, gsrecd ifblk, gsrecd doblk, out int rc) {
         int ret, eflg;
         gsrecd? elsblk = null;
 
@@ -750,7 +747,7 @@ internal class GScript
                 eflg = 1;
                 recd = recd.forw;
             }
-            else recd = gsbkst(recd, ifblk, doblk, &ret);
+            else recd = gsbkst(recd, ifblk, doblk, out ret);
         }
 
         if (ret == 0 && (recd == null || recd.type == 11))
@@ -758,15 +755,15 @@ internal class GScript
             Console.WriteLine("Unable to locate ENDIF statement");
             Console.WriteLine(" for the IF statement at line %i\n", ifblk.num);
             Console.WriteLine("  In file %s\n", ifblk.pfdf.name);
-            *rc = 1;
+            rc = 1;
             return (null);
         }
 
-        *rc = ret;
+        rc = ret;
         if (ret == 0)
         {
             recd.refer = ifblk;
-            if (eflg)
+            if (eflg>0)
             {
                 ifblk.refer = elsblk;
                 elsblk.refer = recd;
@@ -784,10 +781,11 @@ internal class GScript
 /* Execute the function pointed to by recd and with the
    arguments pointed to by farg in pcmn */
 
-    int gsrunf(gsrecd recd, gscmn pcmn) {
-        gsvar* fvar,  *tvar, *avar, *nvar, *svar;
+    int gsrunf(gsrecd? recd, gscmn pcmn) {
+        gsvar? fvar,  tvar, avar, nvar, svar;
         int i, ret, len;
-        char fnm[20],*ch;
+        string fnm;
+        int ch;
 
         svar = pcmn.fvar; /* Save caller's args  */
         avar = null; /* Create new arg list */
@@ -795,22 +793,16 @@ internal class GScript
         /* First two variables in var list are rc and result */
 
         fvar = null;
-        fvar = (gsvar *)malloc(sizeof(gsvar));
-        if (fvar == null) goto merr;
+        fvar = new gsvar();
         fvar.forw = null;
-        for (i = 0; i < 16; i++) fvar.name[i] = *(rcdef + i);
-        fvar.strng = (char*)malloc(1);
-        if (fvar.strng == null) goto merr;
-        *(fvar.strng) = '\0';
-
-        tvar = (gsvar *)malloc(sizeof(gsvar));
-        if (tvar == null) goto merr;
+        fvar.name = rcdef;
+        fvar.strng = "";
+        
+        tvar = new gsvar();
         tvar.forw = null;
         fvar.forw = tvar;
-        for (i = 0; i < 16; i++) tvar.name[i] = *(redef + i);
-        tvar.strng = (char*)malloc(1);
-        if (tvar.strng == null) goto merr;
-        *(tvar.strng) = '\0';
+        tvar.name = redef;
+        tvar.strng = "";
 
         /* If the recd is a function record, check the prototype
            list to assign variables.  Add these variables to
@@ -850,7 +842,7 @@ internal class GScript
                 }
                 else
                 {
-                    nvar = (gsvar *)malloc(sizeof(gsvar));
+                    nvar = new gsvar();
                     if (nvar == null) goto merr;
                     nvar.strng = (char*)malloc(len + 1);
                     if (nvar.strng == null)
@@ -873,11 +865,6 @@ internal class GScript
             }
         }
 
-        /* If the calling arg list was too long, discard the
-           unused var blocks */
-
-        gsfrev(avar);
-
         /* Execute commands until we are done.  Flow control is
            handled recursively. */
 
@@ -897,15 +884,12 @@ internal class GScript
         }
         else if (ret == 3) ret = 0;
 
-        gsfrev(fvar);
         pcmn.fvar = svar; /* Restore caller's arg list */
         return (ret);
 
         merr:
 
         Console.WriteLine("Error allocating variable memory\n");
-        gsfrev(fvar);
-        gsfrev(avar);
         pcmn.fvar = svar;
         return (99);
 
@@ -914,8 +898,6 @@ internal class GScript
         Console.WriteLine("Error:  Invalid function list\n");
         Console.WriteLine("  Error occurred on line %i\n", recd.num);
         Console.WriteLine("  In file %s\n", recd.pfdf.name);
-        gsfrev(fvar);
-        gsfrev(avar);
         pcmn.fvar = svar;
         return (99);
     }
@@ -1224,9 +1206,10 @@ internal class GScript
     int gsstmt(gsrecd recd, gscmn pcmn) {
         gsvar? pvar;
         int rc;
-        char* res,  *buf, *tmp;
-
-        res = gsexpr(recd.epos, pcmn);
+        char* buf, *tmp;
+        
+        string? res;
+        res = gsexpr(recd.epostext.Substring(recd.epos), pcmn);
         if (res == null)
         {
             Console.WriteLine("  Error occurred on line %i\n", recd.num);
@@ -1289,32 +1272,19 @@ internal class GScript
     int gsassn(gsrecd recd, gscmn pcmn) {
         gsvar? var,  pvar = null;
         int rc, i, flg;
-        char* res,  *pos;
-        char varnm[16];
+        string? res;
+        int pos;
+        string varnm;
 
         /* Evaluate expression or read user input */
 
         if (recd.type == 13)
         {
-            res = (char*)malloc(RSIZ);
-            if (res == null)
-            {
-                Console.WriteLine("Memory allocation Error\n");
-                return (99);
-            }
-
-            for (i = 0; i < 10; i++) *(res + i) = '\0';
-            fgets(res, 512, stdin);
-            /* Replace newline character or return character at end of user input string with null */
-            for (i = 0; i < 512; i++)
-            {
-/*       if (*(res+i) == '\n') *(res+i)='\0';  */
-                if ((*(res + i) == '\n') || (*(res + i) == '\r')) *(res + i) = '\0';
-            }
+            res = Console.ReadLine()??"";
         }
         else
         {
-            res = gsexpr(recd.epos, pcmn);
+            res = gsexpr(recd.epostext, pcmn);
             if (res == null)
             {
                 Console.WriteLine("  Error occurred on line %i\n", recd.num);
@@ -1324,21 +1294,22 @@ internal class GScript
         }
 
         /* Get variable name */
-
-        for (i = 0; i < 16; i++) varnm[i] = ' ';
+        StringBuilder vn = new StringBuilder();
+        
         if (recd.type == 13) pos = recd.epos;
         else pos = recd.pos;
         i = 0;
-        while (*pos != ' ' && *pos != '=' && i < 16 && *pos != '\0')
+        while (recd.epostext[pos] != ' ' && recd.epostext[pos] != '=' && i < 16 && recd.epostext[pos] != '\0')
         {
-            varnm[i] = *pos;
+            vn.Append(recd.epostext[pos]);
             pos++;
             i++;
         }
 
+        varnm = vn.ToString();
         /* Resolve possible compound name. */
 
-        rc = gsrvar(pcmn, varnm, varnm);
+        rc = gsrvar(pcmn, varnm, out varnm);
         if (rc > 0)
         {
             Console.WriteLine("  Error occurred on line %i\n", recd.num);
@@ -1352,7 +1323,7 @@ internal class GScript
         else var = pcmn.fvar;
         if (var == null) flg = 1;
         else flg = 0;
-        while (var)
+        while (var!=null)
         {
             for (i = 0; i < 16; i++)
             {
@@ -1368,14 +1339,9 @@ internal class GScript
 
         if (var == null)
         {
-            var = (gsvar *)malloc(sizeof(gsvar));
-            if (var == null)
-            {
-                Console.WriteLine("Error allocating memory for variable\n");
-                return (99);
-            }
-
-            if (flg)
+            var = new gsvar();
+            
+            if (flg>0)
             {
                 if (varnm[0] == '_') pcmn.gvar = var;
                 else pcmn.fvar = var;
@@ -1383,11 +1349,11 @@ internal class GScript
             else pvar.forw = var;
 
             var.forw = null;
-            for (i = 0; i < 16; i++) var.name[i] = varnm[i];
+            var.name = varnm;
         }
         else
         {
-            free(var.strng);
+            var.strng = null;
         }
 
         /* Assign new value */
@@ -1423,17 +1389,16 @@ internal class GScript
    The expression must be null terminated.  The result string
    is returned, or if an error occurs, null is returned.    */
 
-    string gsexpr(string expr,  gscmn pcmn) {
+    string? gsexpr(string text,  gscmn pcmn) {
         stck? curr,  snew,  sold;
-        char* pos;
+        int pos;
         int state, uflag, i, flag;
 
         /* First element on stack is artificial left paren.  We
            will match with artificial right paren at end of expr
            to force final expression evaluation.  */
 
-        curr = (stck *)malloc(sizeof(stck));
-        if (curr == null) goto err2;
+        curr = new stck();
         curr.pback = null;
         curr.pforw = null;
         curr.type = 2;
@@ -1442,7 +1407,7 @@ internal class GScript
 
         state = 1;
         uflag = 0;
-        pos = expr;
+        pos = 0;
 
         /* Loop while parsing expression.  Each loop iteration deals with
            the next element of the expression.  Each expression element
@@ -1450,12 +1415,11 @@ internal class GScript
            encountered, the stack is evaluated back to the matching left
            paren, with the intermediate result restacked.                 */
 
-        while (1)
+        while (true)
         {
             /* Allocate next link list item so its ready when we need it  */
 
-            snew = (stck *)malloc(sizeof(stck));
-            if (snew == null) goto err2;
+            snew = new stck();
             curr.pforw = snew;
             sold = curr;
             curr = snew;
@@ -1465,24 +1429,24 @@ internal class GScript
 
             /* Advance past any imbedded blanks */
 
-            while (*pos == ' ') pos++;
+            while (text[pos] == ' ') pos++;
 
             /* End of expr?  If so, leave loop.  */
 
-            if (*pos == '\0') break;
+            if (pos == text.Length) break;
 
             /*  The state flag determines what is expected next in the
                 expression.  After an operand, we would expect an operator,
                 for example -- or a ')'.  And after an operator, we would
                 expect an operand, among other things.                      */
 
-            if (state)
+            if (state>0)
             {
                 /* Expect oprnd, unary op, '(' */
 
                 /*  Handle a left paren. */
 
-                if (*pos == '(')
+                if (text[pos] == '(')
                 {
                     curr.type = 2;
                     pos++;
@@ -1490,9 +1454,9 @@ internal class GScript
                 }
                 /* Unary minus */
 
-                else if (*pos == '-')
+                else if (text[pos] == '-')
                 {
-                    if (uflag) goto err1;
+                    if (uflag>0) goto err1;
                     curr.type = 1;
                     curr.obj.op = 15;
                     pos++;
@@ -1500,9 +1464,9 @@ internal class GScript
                 }
                 /* Unary not */
 
-                else if (*pos == '!')
+                else if (text[pos] == '!')
                 {
-                    if (uflag) goto err1;
+                    if (uflag>0) goto err1;
                     curr.type = 1;
                     curr.obj.op = 14;
                     pos++;
@@ -1510,23 +1474,23 @@ internal class GScript
                 }
                 /*  Handle a constant   */
 
-                else if (*pos == '\"' || *pos == '\'' ||
-                         (*pos >= '0' && *pos <= '9'))
+                else if (text[pos] == '\"' || text[pos] == '\'' ||
+                         (text[pos] >= '0' && text[pos] <= '9'))
                 {
                     curr.type = 0;
-                    curr.obj.strng = gscnst(&pos);
+                    curr.obj.strng = gscnst(text, ref pos);
                     if (curr.obj.strng == null) goto err3;
                     state = 0;
                     uflag = 0;
                 }
                 /*  Handle a variable or function call */
 
-                else if ((*pos >= 'a' && *pos <= 'z') ||
-                         (*pos >= 'A' && *pos <= 'Z') ||
-                         (*pos == '_'))
+                else if ((text[pos] >= 'a' && text[pos] <= 'z') ||
+                         (text[pos] >= 'A' && text[pos] <= 'Z') ||
+                         (text[pos] == '_'))
                 {
                     curr.type = 0;
-                    curr.obj.strng = gsgopd(&pos, pcmn);
+                    curr.obj.strng = gsgopd(text, ref pos, pcmn);
                     if (curr.obj.strng == null) goto err3;
                     state = 0;
                     uflag = 0;
@@ -1546,7 +1510,7 @@ internal class GScript
 
                 /*  Handle right paren.   */
 
-                if (*pos == ')')
+                if (text[pos] == ')')
                 {
                     curr.type = 3;
                     pos++;
@@ -1556,10 +1520,10 @@ internal class GScript
                 }
                 /*  Handle implied concatenation - check for operand */
 
-                else if (*pos == '\"' || *pos == '\'' || *pos == '_' ||
-                         (*pos >= '0' && *pos <= '9') ||
-                         (*pos >= 'a' && *pos <= 'z') ||
-                         (*pos >= 'A' && *pos <= 'Z'))
+                else if (text[pos] == '\"' || text[pos] == '\'' || text[pos] == '_' ||
+                         (text[pos] >= '0' && text[pos] <= '9') ||
+                         (text[pos] >= 'a' && text[pos] <= 'z') ||
+                         (text[pos] >= 'A' && text[pos] <= 'Z'))
                 {
                     curr.type = 1;
                     curr.obj.op = 9;
@@ -1572,8 +1536,8 @@ internal class GScript
                     flag = -1;
                     for (i = 0; i < 13; i++)
                     {
-                        if (*pos != *(opchars[i])) continue;
-                        if (*(opchars[i] + 1) && (*(pos + 1) != *(opchars[i] + 1))) continue;
+                        if (text[pos] != opchars[i][0]) continue;
+                        if ((opchars[i].Length>1) && (text[pos + 1] != opchars[i][1])) continue;
                         flag = opvals[i];
                         break;
                     }
@@ -1615,9 +1579,7 @@ internal class GScript
         /*  The expression has been evaluated without error.
             Free the last stack entry and return the result.     */
 
-        pos = curr.obj.strng;
-        free(curr);
-        return (pos);
+        return curr.obj.strng;
 
         /* Handle errors.  Issue error messages, free stack and
            associated memory.  */
@@ -1639,13 +1601,12 @@ internal class GScript
 
         err3:
 
-        while (curr.pback) curr = curr.pback;
+        while (curr.pback!=null) curr = curr.pback;
         while (curr != null)
         {
-            if (curr.type == 0) free(curr.obj.strng);
+            if (curr.type == 0) curr.obj.strng = null;
             sold = curr;
             curr = curr.pforw;
-            free(sold);
         }
 
         return (null);
@@ -1658,13 +1619,13 @@ internal class GScript
     placed on the end of the stack without the parens.           */
 
     stck? gseval(stck? curr) {
-        stck* sbeg,  *srch, *stmp;
+        stck? sbeg, srch, stmp;
         int i;
 
         /* Locate matching left paren. */
 
         sbeg = curr;
-        while (sbeg)
+        while (sbeg!=null)
         {
             if (sbeg.type == 2) break;
             sbeg = sbeg.pback;
@@ -1714,12 +1675,10 @@ internal class GScript
         srch.pforw = curr.pforw;
         srch.pback = sbeg.pback;
         stmp = sbeg.pback;
-        if (stmp) stmp.pforw = srch;
+        if (stmp!=null) stmp.pforw = srch;
         stmp = curr.pforw;
-        if (stmp) stmp.pback = srch;
-        free(sbeg);
-        free(curr);
-
+        if (stmp!=null) stmp.pback = srch;
+        
         return (srch);
     }
 
@@ -1728,22 +1687,22 @@ internal class GScript
    the link list element representing the result.           */
 
     stck? gsoper(stck soper) {
-        stck* sop1,  *sop2, *stmp;
+        stck? sop1, sop2, stmp;
         int op, ntyp1, ntyp2, ntype = 0, comp = 0, len;
-        double v1, v2, v;
-        int iv1, iv2, iv;
-        char* s1,  *s2, *ch, *res, buf[25];
+        double v1 = 0, v2 = 0, v = 0;
+        int iv1 = 0, iv2 = 0, iv = 0;
+        string s1,  s2, ch, res, buf;
 
         /* Get pointers to the operands.  If a potentially numeric
            operation, do string to numeric conversion.             */
-
+ 
         op = soper.obj.op;
         sop1 = soper.pback;
         sop2 = soper.pforw;
-        if (optyps[op - 1])
+        if (optyps[op - 1]>0)
         {
-            gsnum(sop2.obj.strng, &ntyp2, &iv2, out v2);
-            if (op < 14) gsnum(sop1.obj.strng, &ntyp1, &iv1, &v1);
+            gsnum(sop2.obj.strng, out ntyp2, out iv2, out v2);
+            if (op < 14) gsnum(sop1.obj.strng, out ntyp1, out iv1, out v1);
             else ntyp1 = ntyp2;
             if (ntyp1 == 1 && ntyp2 == 1) ntype = 1;
             else if (ntyp1 == 0 || ntyp2 == 0) ntype = 0;
@@ -1763,43 +1722,31 @@ internal class GScript
 
         /* Logical or, and */
 
+        int s1pos = 0;
+        int s2pos = 0; 
+
         if (op == 1 || op == 2)
         {
             s1 = sop1.obj.strng;
-            s2 = sop2.obj.strng;
-            res = malloc(2);
-            if (res == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                return (null);
-            }
-
-            *(res + 1) = '\0';
+            s2 = sop2.obj.strng; 
             if (op == 1)
             {
-                if ((*s1 == '0' && *(s1 + 1) == '\0') &&
-                    (*s2 == '0' && *(s2 + 1) == '\0')) *res = '0';
-                else *res = '1';
+                if ((s1[s1pos] == '0' && s1pos + 1 == s1.Length) &&
+                    (s2[s2pos] == '0' && s2pos+1 == s2.Length)) res = "0";
+                else res = "1";
             }
             else
             {
-                if ((*s1 == '0' && *(s1 + 1) == '\0') ||
-                    (*s2 == '0' && *(s2 + 1) == '\0')) *res = '0';
-                else *res = '1';
+                if ((s1[s1pos] == '0' && s1pos + 1 == s1.Length) ||
+                    (s2[s2pos] == '0' && s2pos+1 == s2.Length)) res = "0";
+                else res = "1";
             }
         }
         /* Logical comparitive */
 
         else if (op > 2 && op < 9)
         {
-            res = malloc(2);
-            if (res == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                return (null);
-            }
-
-            *(res + 1) = '\0';
+            res = "";
 
             /* Determine relationship between the ops */
 
@@ -1819,60 +1766,60 @@ internal class GScript
             {
                 s1 = sop1.obj.strng;
                 s2 = sop2.obj.strng;
-                while (*s1 && *s2)
+                while (s1pos < s1.Length && s2pos < s2.Length)
                 {
-                    if (*s1 < *s2)
+                    if (s1[s1pos] < s2[s2pos])
                     {
                         comp = 1;
                         break;
                     }
 
-                    if (*s1 > *s2)
+                    if (s1[s1pos] > s2[s2pos])
                     {
                         comp = 2;
                         break;
                     }
 
-                    s1++;
-                    s2++;
+                    s1pos++;
+                    s2pos++;
                 }
 
-                if (*s1 == '\0' && *s2 == '\0') comp = 3;
-                else if (*s1 == '\0') comp = 1;
-                else if (*s2 == '\0') comp = 2;
+                if (s1pos == s1.Length && s2pos == s2.Length) comp = 3;
+                else if (s1pos == s1.Length) comp = 1;
+                else if (s2pos == s2.Length) comp = 2;
             }
 
             /* Apply relationship to specific op */
 
             if (op == 3)
             {
-                if (comp == 3) *res = '1';
-                else *res = '0';
+                if (comp == 3) res = "1";
+                else res = "0";
             }
             else if (op == 4)
             {
-                if (comp != 3) *res = '1';
-                else *res = '0';
+                if (comp != 3) res = "1";
+                else res = "0";
             }
             else if (op == 5)
             {
-                if (comp == 2) *res = '1';
-                else *res = '0';
+                if (comp == 2) res = "1";
+                else res = "0";
             }
             else if (op == 6)
             {
-                if (comp == 2 || comp == 3) *res = '1';
-                else *res = '0';
+                if (comp == 2 || comp == 3) res = "1";
+                else res = "0";
             }
             else if (op == 7)
             {
-                if (comp == 1) *res = '1';
-                else *res = '0';
+                if (comp == 1) res = "1";
+                else res = "0";
             }
             else
             {
-                if (comp == 1 || comp == 3) *res = '1';
-                else *res = '0';
+                if (comp == 1 || comp == 3) res = "1";
+                else res = "0";
             }
         }
         /* String concatenation */
@@ -1881,30 +1828,12 @@ internal class GScript
         {
             s1 = sop1.obj.strng;
             s2 = sop2.obj.strng;
-            len = strlen(s1) + strlen(s2);
-            res = malloc(len + 1);
+            res = s1 + s2;
             if (res == null)
             {
                 Console.WriteLine("Memory allocation error\n");
                 return (null);
             }
-
-            ch = res;
-            while (*s1)
-            {
-                *ch = *s1;
-                s1++;
-                ch++;
-            }
-
-            while (*s2)
-            {
-                *ch = *s2;
-                s2++;
-                ch++;
-            }
-
-            *ch = '\0';
         }
         /*  Handle arithmetic operator */
 
@@ -1951,33 +1880,18 @@ internal class GScript
                 v = v1 / v2;
             }
 
-            snConsole.WriteLine(buf, 24, "%.15g", v);
-/**/
-            len = strlen(buf) + 1;
-            res = malloc(len);
-            if (res == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                return (null);
-            }
 
-            strcpy(res, buf);
+            buf = v.ToString("{0:.15g}");
+
+            res = buf;
         }
         /*  Do unary not operation */
 
         else if (op == 14)
         {
-            res = malloc(2);
-            if (res == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                return (null);
-            }
-
-            *(res + 1) = '\0';
             s2 = sop2.obj.strng;
-            if (*s2 == '\0' || (*s2 == '0' && *(s2 + 1) == '\0')) *res = '1';
-            else *res = '0';
+            if (s2pos == s2.Length || (s2[s2pos] == '0' && s2pos+1==s2.Length)) res = "1";
+            else res = "0";
         }
         /* Do unary minus operation */
 
@@ -1986,23 +1900,13 @@ internal class GScript
             if (ntype == 1)
             {
                 iv = -1 * iv2;
-                snConsole.WriteLine(buf, 24, "%i", iv);
+                res = iv.ToString();
             }
             else
             {
                 v = -1.0 * v2;
-                snConsole.WriteLine(buf, 24, "%.15g", v);
+                res = v.ToString("{0:.15g}");
             }
-
-            len = strlen(buf) + 1;
-            res = malloc(len);
-            if (res == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                return (null);
-            }
-
-            strcpy(res, buf);
         }
 
         else
@@ -2013,15 +1917,14 @@ internal class GScript
 
         /* Rechain, Free stuff and return */
 
-        free(sop2.obj.strng);
-        if (op < 14) free(sop1.obj.strng);
+        sop2.obj.strng = null;
+        if (op < 14) sop1.obj.strng = null;
         sop2.obj.strng = res;
         if (op < 14)
         {
             sop2.pback = sop1.pback;
             stmp = sop1.pback;
             stmp.pforw = sop2;
-            free(sop1);
         }
         else
         {
@@ -2030,108 +1933,97 @@ internal class GScript
             stmp.pforw = sop2;
         }
 
-        free(soper);
         return (sop2);
     }
 
 /* Obtain the value of an operand.  This may be either a
    variable or a function.                                */
 
-    char* gsgopd(char** ppos,  gscmn pcmn) {
-        char* pos,  *res;
-        char name[16];
+    string? gsgopd(string text, ref int ppos,  gscmn pcmn) {
+        int pos;
+        string name = "";
+        StringBuilder namebld = new StringBuilder();
         int i, pflag;
+        string? res;
 
-        pos = *ppos;
-        for (i = 0; i < 16; i++) name[i] = ' ';
+        pos = ppos;
         i = 0;
         pflag = 0;
-        while ((*pos >= 'a' && *pos <= 'z') ||
-               (*pos >= 'A' && *pos <= 'Z') ||
-               (*pos == '.') || (*pos == '_') ||
-               (*pos >= '0' && *pos <= '9'))
+        while ((text[pos] >= 'a' && text[pos] <= 'z') ||
+               (text[pos] >= 'A' && text[pos] <= 'Z') ||
+               (text[pos] == '.') || (text[pos] == '_') ||
+               (text[pos] >= '0' && text[pos] <= '9'))
         {
-            if (*pos == '.') pflag = 1;
+            if (text[pos] == '.') pflag = 1;
             if (i > 15)
             {
                 Console.WriteLine("Variable name too long - 1st 16 chars are: ");
-                for (i = 0; i < 16; i++) Console.WriteLine("%c", name[i]);
+                Console.WriteLine(namebld.ToString());
                 Console.WriteLine("\n");
                 return (null);
             }
 
-            name[i] = *pos;
+            namebld.Append(text[pos]);
             pos++;
             i++;
         }
 
-        while (*pos == ' ') pos++;
+        while (text[pos] == ' ') pos++;
 
         /* Handle a function call -- this is a recursive call all the
            way back to gsrunf.   */
 
-        if (*pos == '(')
+        if (text[pos] == '(')
         {
-            if (pflag)
+            if (pflag>0)
             {
-                Console.WriteLine("Invalid function name: ");
-                for (i = 0; i < 16; i++) Console.WriteLine("%c", name[i]);
-                Console.WriteLine("\n");
+                Console.Write("Invalid function name: ");
+                Console.Write(namebld.ToString());
+                Console.Write("\n");
                 return (null);
             }
 
-            pos = gsfunc(pos, name, pcmn);
-            if (pos == null) return (null);
-            *ppos = pos;
+            var rcpos = gsfunc(text, pos, namebld.ToString(), pcmn);
+            if (rcpos == null) return (null);
+            ppos = rcpos??-1;
             res = pcmn.rres;
             if (res == null)
             {
-                res = (char*)malloc(1);
-                if (res == null)
-                {
-                    Console.WriteLine("Memory allocation error\n");
-                    return (null);
-                }
-
-                *res = '\0';
+                res = "";
             }
 
             pcmn.rres = null;
             return (res);
         }
 
-        *ppos = pos;
-        res = gsfvar(name, pcmn);
+        ppos = pos;
+        res = gsfvar(namebld.ToString(), pcmn);
         return (res);
     }
 
 /* Call a function.  */
 
-    string gsfunc(string text, int pos, string name,  gscmn pcmn) {
+    int? gsfunc(string text, int pos, string name,  gscmn pcmn) {
         gsfnc? pfnc;
         gsvar? avar,  nvar, cvar = null;
-        string astr,  res;
+        string res;
         int len, rc, i, cflg, pcnt;
-
+        int? ppos = pos;
         avar = null;
 
-        /*  Get storage for holding argument expressions */
-
-        len = text.Substring(pos).Length;
-        
         /*  Evaluate each argument found.  Allocate a gsvar block
             for each one, and chain them together */
-
+        StringBuilder astr = new StringBuilder();
         pos++;
         pcnt = 0;
         while (!(text[pos] == ')' && pcnt == 0))
         {
             cflg = 0;
             len = 0;
-            while (text[pos])
+            while (pos < text.Length)
             {
-                if (!cflg && (text[pos] == ',' || (text[pos] == ')' && pcnt == 0))) break;
-                if (!cflg)
+                if (cflg == 0 && (text[pos] == ',' || (text[pos] == ')' && pcnt == 0))) break;
+                if (cflg == 0)
                 {
                     if (text[pos] == '(') pcnt++;
                     if (text[pos] == ')') pcnt--;
@@ -2149,35 +2041,28 @@ internal class GScript
                     else if (cflg == 0) cflg = 2;
                 }
 
-                *(astr + len) = text[pos];
+                astr.Append(text[pos]);
                 pos++;
                 len++;
             }
 
-            if (text[pos] == '\0')
+            if (pos == text.Length)
             {
                 Console.WriteLine("Unmatched parens on function call\n");
-                pos = null;
+                ppos = null;
                 goto retrn;
             }
 
-            *(astr + len) = '\0';
-            res = gsexpr(astr, pcmn);
+            
+            res = gsexpr(astr.ToString(), pcmn);
             if (res == null)
             {
                 Console.WriteLine("Error occurred processing function arguments\n");
-                pos = null;
+                ppos = null;
                 goto retrn;
             }
 
-            nvar = (gsvar *)malloc(sizeof(gsvar));
-            if (nvar == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                pos = null;
-                goto retrn;
-            }
-
+            nvar = new gsvar();
             nvar.strng = res;
             if (avar == null) avar = nvar;
             else cvar.forw = nvar;
@@ -2236,9 +2121,9 @@ internal class GScript
         else
         {
             pfnc = pcmn.ffnc;
-            while (pfnc)
+            while (pfnc!=null)
             {
-                if (!cmpch(pfnc.name, name, 16)) break;
+                if (pfnc.name == name) break;
                 pfnc = pfnc.forw;
             }
 
@@ -2247,14 +2132,14 @@ internal class GScript
 
             if (pfnc == null && pcmn.gsfflg != 0)
             {
-                rc = gsgsfrd(pcmn, 1, name); /* Load function file */
+                rc = gsgsfrd(pcmn, 1, out name); /* Load function file */
                 if (rc == 0)
                 {
                     /* Now look again */
                     pfnc = pcmn.ffnc;
-                    while (pfnc)
+                    while (pfnc!=null)
                     {
-                        if (!cmpch(pfnc.name, name, 16)) break;
+                        if (pfnc.name == name) break;
                         pfnc = pfnc.forw;
                     }
 
@@ -2268,32 +2153,33 @@ internal class GScript
                 {
                     /* An error occurred */
                     Console.WriteLine("Error while loading function: ");
-                    for (i = 0; i < 16; i++) Console.WriteLine("%c", name[i]);
+                    Console.WriteLine(name);
                     Console.WriteLine("\n");
-                    pos = null;
+                    ppos = null;
                     goto retrn;
                 } /* File not found (rc==9) just */
             } /*   fall thru and give msg below */
 
-            if (pfnc)
+            if (pfnc!=null)
             {
                 rc = gsrunf(pfnc.recd, pcmn);
             }
             else
             {
                 Console.WriteLine("Function not found: ");
-                for (i = 0; i < 16; i++) Console.WriteLine("%c", name[i]);
+                Console.WriteLine(name);
                 Console.WriteLine("\n");
-                pos = null;
+                ppos = null;
                 goto retrn;
             }
         }
 
-        if (rc > 0) pos = null;
+        if (rc > 0) ppos = null;
+        else ppos = pos;
         avar = null;
 
         retrn:
-        return (pos);
+        return (ppos);
     }
 
 /* Find the value of a variable */
