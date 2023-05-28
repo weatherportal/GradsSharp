@@ -211,6 +211,7 @@ public enum SmoothOption
 
 public enum DataFormat
 {
+    Unknown,
     GFS_GRIB2
 }
 

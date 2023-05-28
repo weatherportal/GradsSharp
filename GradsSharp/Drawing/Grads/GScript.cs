@@ -27,7 +27,7 @@ internal class GScript
     /*  Execute a script, from one or more files. 
     Beware: various levels of recursion are used.     */
 
-    char* gsfile(string cmd, out int retc, int impp)
+    public string gsfile(string cmd, out int retc, int impp)
     {
         gsvar parg;
         gscmn pcmn;

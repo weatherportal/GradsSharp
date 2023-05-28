@@ -24,6 +24,8 @@ internal class DrawingContext
     public GxDb GxDb { get; set; } = new GxDb();
     public GxWmap GxWmap { get; set; }
     
+    public GScript GScript { get; set; }
+    
     public float XSize { get; set; }
     public float YSize { get; set; }
 
@@ -69,6 +71,7 @@ internal class DrawingContext
         GxMeta = new GxMeta(this);
         GaIO = new GaIO(this);
         GaExpr = new GaExpr(this);
+        GScript = new GScript(this);
         
         Colors.Add(Color.FromRgba(0,0,0,255));
         Colors.Add(Color.FromRgba(255,255,255,255));
