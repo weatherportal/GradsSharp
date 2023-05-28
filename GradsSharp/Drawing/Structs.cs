@@ -1217,3 +1217,102 @@ class cxclock
     public int julian_day;
     public int epoch_time_in_sec;
 }
+
+
+/* One of these gets allocated for each record in the file */
+
+/* Record types:
+                  1 - statement
+                  2 - assignment
+                  3 - while
+                  4 - endwhile
+                  5 - continue
+                  6 - break
+                  7 - if
+                  8 - else
+                  9 - endif
+                  10 - return
+                  11 - function  */
+
+internal class gsrecd {
+    
+    public gsrecd refer; /* Position of end of code block */
+    public gsfdef pfdf;  /* Pointer to file def for this record */
+    public int pos;            /* Start of record */
+    public int epos;           /* Position of start of expression, if any */
+    public int num;              /* Record number in file */
+    public int type;             /* Record type */
+};
+
+/* Following structure hold information on open files
+   accessed via the read/write/close user callable functions */
+
+internal class gsiob {
+   
+   public Stream file;              /* File pointer     */
+   public  string name;              /* File name        */
+   public int flag;                /* Status flag: 1-read 2-write  */
+};
+
+/* Following structure describes a file that has been read in
+   to become part of the running script.  */
+
+internal class gsfdef {
+    public gsrecd precd; /* Record descriptor for start of this file */
+    public string? name;           /* Text name of the file  */
+    public string? file;           /* The contents of the file */
+};
+
+internal class gsfnc {
+    
+    public List<gsrecd> recd;     /* Record block for function   */
+    public string name;           /* Name of function            */
+};
+
+
+/* Following structure is a member of a link list providing the
+   current value of a variable.    */
+
+internal class gsvar {
+    
+    public string name;           /* Variable name               */
+    public string strng;             /* Value of variable           */
+};
+
+/* Following structure holds global pointers needed by all the
+   gs routines, and anchors most global memory allocations */
+
+
+internal class gscmn {
+    public List<gsfdef>? ffdef;    /* Head of input file link list */
+    public gsfdef? lfdef;    /* Last in chain of input files */
+    public List<gsrecd>? frecd;    /* Head of record descriptor link list */   
+    public gsrecd? lrecd;    /* Last in record list list */
+    public List<gsvar>? fvar;      /* Head of variable linklist   */
+    public List<gsfnc>? ffnc;      /* Head of function list       */
+    public gsiob? iob;       /* Head of file I/O list       */
+    public List<gsvar>? gvar;      /* Head of global var list     */
+    public List<gsvar>? farg;      /* Pointer to function arglist */
+    public string? fname;             /* Pointer to user-entered file name   */
+    public string? fprefix;           /* File name prefix for loading functions */
+    public string ppath;             /* Private path for gsf loads */
+    public byte[] rres;              /* Pointer to function result  */
+    public string gsfnm;             /* Most recent file name read in */
+    public int gsfflg;              /* Dynamic load script functions from files */
+    public int rc;                  /* Exit value                  */
+};
+
+
+/* Stack to evaluate the expression.  The stack consists of an
+   doubly linked list of structures.                              */
+
+internal class stck {
+    public stck? pforw;               /* Forward Pointer  */
+    public stck? pback;               /* Backwards Pointer */
+    public int type;        /* Entry type: 0=oprnd,1=oprtr,2='(',3=')'        */
+    internal class tobj {
+        int op;                         /* Operator */
+        string strng;                    /* Operand  */
+    }
+    public tobj obj;
+};
