@@ -878,6 +878,10 @@ internal class GaUser
         {
             pcm.strvsz = vsize;
         }
+        else
+        {
+            pcm.strvsz = hsize;
+        }
     }
 
     public void SetCThick(int cthck)

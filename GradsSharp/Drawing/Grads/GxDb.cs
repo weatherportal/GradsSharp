@@ -21,7 +21,7 @@ public class GxDb
     static string fn_serif = "serif";
     static string fn_sans = "sans-serif";
     static bool[] fnbold = new bool[100];
-    static bool[] fnitalic = new bool[100];
+    static int[] fnitalic = new int[100];
     static int hershflag;                /* For fn 1 to 6, use Hershey fonts or not */
     static int dbdevbck;                 /* Device background color */
     static int dboutbck;                 /* Ouput (image or hardcopy) background color */
@@ -61,21 +61,30 @@ public class GxDb
         for (int i=0; i<100; i++) {
             fontname[i] = null;
             fnbold[i] = false;
-            fnitalic[i] = false;
+            fnitalic[i] = 0;
         }
 
         /* these will be for emulations of hershey fonts 0-5, but not 3 */
-        fontname[0] = fn_sans;   fnbold[0] = false;  fnitalic[0] =false; 
-        fontname[1] = fn_serif;  fnbold[1] = false;  fnitalic[1] = false;
-        fontname[2] = fn_sans;  fnbold[2] = false;  fnitalic[2] = false;
-        fontname[4] = fn_sans;   fnbold[4] = true;  fnitalic[4] = true;
-        fontname[5] = fn_serif;  fnbold[5] = true;  fnitalic[5] = true;
+        fontname[0] = fn_sans;   fnbold[0] = false;  fnitalic[0] = 0; 
+        fontname[1] = fn_serif;  fnbold[1] = false;  fnitalic[1] = 0;
+        fontname[2] = fn_sans;  fnbold[2] = false;  fnitalic[2] = 0;
+        fontname[4] = fn_sans;   fnbold[4] = true;  fnitalic[4] = 1;
+        fontname[5] = fn_serif;  fnbold[5] = true;  fnitalic[5] = 1;
 
         /* other flags for this and that */
         hershflag  = 0;     /* zero, use hershey fonts.  1, use emulation. */  
         dbdevbck   = 1;     /* initial device background color is black */
         dboutbck   = -1;    /* initial output background color is 'undefined' */
         dbtransclr = -1;    /* initial transparent color is 'undefined' */
+    }
+
+    public (string, bool, int) gxdbqfont (int fn) {
+        if (fn<0 || fn>99)
+        {
+            return (fontname[0], fnbold[0], fnitalic[0]);
+        } else {
+            return (fontname[fn], fnbold[fn], fnitalic[fn]);
+        }
     }
     
     public static int gxdbkq() {    

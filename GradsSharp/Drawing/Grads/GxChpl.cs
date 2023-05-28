@@ -1,12 +1,15 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using System.Reflection;
+using CSJ2K.j2k.image;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class GxChpl
 {
     private DrawingContext _drawingContext;
 
-    static string[] fch = new string[10]; /* Pointers to font data once it is read in */
-    static int[] foff = new int[10]; /* Pointers to character offsets */
-    static int[] flen = new int[10]; /* Pointers to character lengths */
+    static byte[][] fch = new byte[10][]; /* Pointers to font data once it is read in */
+    static int[][] foff = new int[10][]; /* Pointers to character offsets */
+    static int[][] flen = new int[10][]; /* Pointers to character lengths */
     static int dfont = 15; /* Default font */
 
     public GxChpl(DrawingContext drawingContext)
@@ -17,7 +20,7 @@ internal class GxChpl
     public void gxchii()
     {
         int i;
-        for (i = 0; i < 10; i++) fch[i] = "";
+        for (i = 0; i < 10; i++) fch[i] = Array.Empty<byte>();
         dfont = 0;
     }
 
@@ -29,14 +32,14 @@ internal class GxChpl
         dfont = df;
     }
 
-    int gxqdf()
+    public int gxqdf()
     {
         return dfont;
     }
 
     /* Plot character string */
 
-    void gxchpl(string chrs, int len, double x, double y, double height, double width, double angle)
+    public void gxchpl(string chrs, int len, double x, double y, double height, double width, double angle)
     {
         double h, w, xoff, yoff, wact;
         int fn, supsub, nfn;
@@ -118,8 +121,8 @@ internal class GxChpl
                 {
                     /* draw with Hershey font */
                     //TODO: hershey font
-                    // wact = gxchplc(chrs[idx], fn, x - xoff, y + yoff, w, h, angle);
-                    // if (wact < -900.0) return;
+                    wact = gxchplc(chrs[idx], fn, x - xoff, y + yoff, w, h, angle);
+                    if (wact < -900.0) return;
                 }
 
                 x = x + wact * Math.Cos(angle);
@@ -133,77 +136,79 @@ internal class GxChpl
 
 /* Get actual width of a single character in the indicated Hershey font */
 
-    // double gxchqlc(char ccc, int fn, double width)
-    // {
-    //     double xs, w;
-    //     int cnt, ic, jc;
-    //     char* cdat;
-    //
-    //     xs = width / 21.0;
-    //     cdat = gxchgc((int)ccc, fn, &cnt);
-    //     if (cdat == NULL) return (-999.9);
-    //     ic = (int)(*(cdat + 3)) - 82;
-    //     jc = (int)(*(cdat + 4)) - 82;
-    //     w = (double)(jc - ic) * xs * 1.05;
-    //     return (w);
-    // }
+    double gxchqlc(char ccc, int fn, double width)
+    {
+        double xs, w;
+        int cnt, ic, jc;
+        byte[] cdat;
+    
+        xs = width / 21.0;
+        cdat = gxchgc((int)ccc, fn, out cnt);
+        if (cdat == null) return (-999.9);
+        ic = (int)(cdat[3]) - 82;
+        jc = (int)(cdat[4]) - 82;
+        w = (double)(jc - ic) * xs * 1.05;
+        return (w);
+    }
 
 /* plot a single char in the indicated hershey font with the indicated location, size, and angle, 
    and return the distance to advance after plotting */
 
-    // double gxchplc(char ccc, int fn, double x, double y, double width, double height, double angle)
-    // {
-    //     double xs, ys, w, d, xc, yc, ang, rx, ry;
-    //     int i, ic, jc, cnt, ipen;
-    //     char* cdat;
-    //
-    //     xs = width / 21.0;
-    //     ys = height / 22.0;
-    //     cdat = gxchgc((int)ccc, fn, &cnt);
-    //     if (cdat == NULL) return (-999.9);
-    //     ic = (int)(*(cdat + 3)) - 82;
-    //     jc = (int)(*(cdat + 4)) - 82;
-    //     w = (double)(jc - ic) * xs * 1.05;
-    //     d = GaUtil.hypot(w / 2.0, height * 0.42);
-    //     ang = Math.Atan2(height * 0.42, w / 2.0) + angle;
-    //     xc = x + d * Math.Cos(ang);
-    //     yc = y + d * Math.Sin(ang);
-    //     cdat += 5;
-    //     ipen = 3;
-    //     for (i = 1; i < cnt; i++)
-    //     {
-    //         ic = (int)*cdat;
-    //         jc = (int)*(cdat + 1);
-    //         if (ic == 32) ipen = 3;
-    //         else
-    //         {
-    //             ic = ic - 82;
-    //             jc = jc - 82;
-    //             rx = ((double)ic) * xs;
-    //             ry = -1.0 * ((double)jc) * ys;
-    //             if (rx == 0.0 && ry == 0.0)
-    //             {
-    //                 d = 0.0;
-    //                 ang = 0.0;
-    //             }
-    //             else
-    //             {
-    //                 d = GaUtil.hypot(rx, ry);
-    //                 ang = Math.Atan2(ry, rx) + angle;
-    //             }
-    //
-    //             rx = xc + d * Math.Cos(ang);
-    //             ry = yc + d * Math.Sin(ang);
-    //             if (ipen == 3) _drawingContext.GaSubs.gxmove(rx, ry);
-    //             else _drawingContext.GaSubs.gxdraw(rx, ry);
-    //             ipen = 2;
-    //         }
-    //
-    //         cdat += 2;
-    //     }
-    //
-    //     return (w);
-    // }
+    public double gxchplc(char ccc, int fn, double x, double y, double width, double height, double angle)
+    {
+        double xs, ys, w, d, xc, yc, ang, rx, ry;
+        int i, ic, jc, cnt, ipen;
+        byte[] cdat;
+    
+        xs = width / 21.0;
+        ys = height / 22.0;
+        cdat = gxchgc((int)ccc, fn, out cnt);
+        if (cdat == null) return (-999.9);
+        ic = (int)(cdat[3]) - 82;
+        jc = (int)(cdat[4]) - 82;
+        w = (double)(jc - ic) * xs * 1.05;
+        d = GaUtil.hypot(w / 2.0, height * 0.42);
+        ang = Math.Atan2(height * 0.42, w / 2.0) + angle;
+        xc = x + d * Math.Cos(ang);
+        yc = y + d * Math.Sin(ang);
+
+        int cdatcnt = 5;
+        
+        ipen = 3;
+        for (i = 1; i < cnt; i++)
+        {
+            ic = (int)cdat[cdatcnt];
+            jc = (int)cdat[cdatcnt + 1];
+            if (ic == 32) ipen = 3;
+            else
+            {
+                ic = ic - 82;
+                jc = jc - 82;
+                rx = ((double)ic) * xs;
+                ry = -1.0 * ((double)jc) * ys;
+                if (rx == 0.0 && ry == 0.0)
+                {
+                    d = 0.0;
+                    ang = 0.0;
+                }
+                else
+                {
+                    d = GaUtil.hypot(rx, ry);
+                    ang = Math.Atan2(ry, rx) + angle;
+                }
+    
+                rx = xc + d * Math.Cos(ang);
+                ry = yc + d * Math.Sin(ang);
+                if (ipen == 3) _drawingContext.GaSubs.gxmove(rx, ry);
+                else _drawingContext.GaSubs.gxdraw(rx, ry);
+                ipen = 2;
+            }
+    
+            cdatcnt += 2;
+        }
+    
+        return (w);
+    }
 
 /* Determine the length of a character string without plotting it. */
 
@@ -276,7 +281,7 @@ internal class GxChpl
                 if (wact < -900.0)
                 {
                     //TODO: Hershey font
-                    //wact = gxchqlc(chrs[idx], fn, w);
+                    wact = gxchqlc(chrs[idx], fn, w);
                 }
 
                 cw = cw + wact;
@@ -292,132 +297,101 @@ internal class GxChpl
 /* Get location and length of particular character info
    for particular font */
 
-    // char* gxchgc(int ch, int fn, out int cnt)
-    // {
-    //     int* clen,  *coff, rc;
-    //     char* fdat;
-    //
-    //     if (fch[fn] == NULL)
-    //     {
-    //         rc = gxchrd(fn);
-    //         if (rc) return (NULL);
-    //     }
-    //
-    //     clen = flen[fn];
-    //     coff = foff[fn];
-    //     fdat = fch[fn];
-    //     if (ch < 32 || ch > 127) ch = 32;
-    //     ch = ch - 32;
-    //     *cnt = *(clen + ch);
-    //     return (fdat + *(coff + ch));
-    // }
+    byte[]? gxchgc(int ch, int fn, out int cnt)
+    {
+        int[] clen, coff;
+        int rc;
+        byte[] fdat;
+    
+        if (fch[fn].Length == 0 )
+        {
+            rc = gxchrd(fn);
+            cnt = 0;
+            if (rc>0) return (null);
+        }
+    
+        clen = flen[fn];
+        coff = foff[fn];
+        fdat = fch[fn];
+        if (ch < 32 || ch > 127) ch = 32;
+        ch = ch - 32;
+        cnt = clen[ch];
+        return fdat.Skip(coff[ch]).ToArray();
+    }
 
 /* Read in a font file */
 
     int gxchrd(int fn)
     {
-        // FILE* ifile;
-        // int i, j, rc, tlen, *coff,*clen,flag;
-        // char buff[20],*fname,*fdat;
-        //
-        // snprintf(buff, 19, "font%i.dat", fn);
-        //
-        // ifile = NULL;
-        // fname = gxgnam(buff);
-        // if (fname != NULL) ifile = fopen(fname, "rb");
-        // if (ifile == NULL)
-        // {
-        //     ifile = fopen(buff, "rb");
-        //     if (ifile == NULL)
-        //     {
-        //         printf("Error opening stroke character data set \n");
-        //         if (fname != NULL)
-        //         {
-        //             printf("  Data set names = %s ; %s\n", fname, buff);
-        //             free(fname);
-        //         }
-        //
-        //         return (1);
-        //     }
-        // }
-        //
-        // free(fname);
-        //
-        // fseek(ifile, 0L, 2);
-        // tlen = ftell(ifile);
-        // fseek(ifile, 0L, 0);
-        //
-        // fdat = (char*)malloc(tlen + 1);
-        // if (fdat == NULL)
-        // {
-        //     printf("Error reading font data:  Memory allocation error\n");
-        //     return (1);
-        // }
-        //
-        // coff = (int*)malloc(sizeof(int) * 95);
-        // if (coff == NULL)
-        // {
-        //     printf("Error reading font data:  Memory allocation error\n");
-        //     free(fdat);
-        //     return (1);
-        // }
-        //
-        // clen = (int*)malloc(sizeof(int) * 95);
-        // if (clen == NULL)
-        // {
-        //     printf("Error reading font data:  Memory allocation error\n");
-        //     free(fdat);
-        //     return (1);
-        // }
-        //
-        // rc = fread(fdat, 1, tlen, ifile);
-        // if (rc != tlen)
-        // {
-        //     printf("Error reading font data: I/O Error\n");
-        //     return (1);
-        // }
-        //
-        // *(fdat + tlen) = '\0';
-        //
-        // /* Determine the locations of the start of each character */
-        //
-        // i = 0;
-        // j = 1;
-        // *(coff) = 0;
-        // flag = 0;
-        // while (*(fdat + i))
-        // {
-        //     if (*(fdat + i) < ' ')
-        //     {
-        //         flag = 1;
-        //     }
-        //     else
-        //     {
-        //         if (flag)
-        //         {
-        //             *(coff + j) = i;
-        //             j++;
-        //         }
-        //
-        //         flag = 0;
-        //     }
-        //
-        //     i++;
-        // }
-        //
-        // /* Determine the count on each character */
-        //
-        // for (i = 0; i < 95; i++)
-        // {
-        //     for (j = 0; j < 3; j++) buff[j] = *(fdat + *(coff + i) + j);
-        //     buff[3] = '\0';
-        //     sscanf(buff, "%i", &rc);
-        //     *(clen + i) = rc;
-        // }
-        //
-        // flen[fn] = clen;
-        // foff[fn] = coff;
-        // fch[fn] = fdat;
+        Stream ifile;
+        int i, j, rc, tlen;
+        int[] coff, clen;
+        bool flag;
+        byte[] fdat;
+        
+        string buff = $"font{fn}.dat";
+        
+        
+        string fname = "GradsSharp.Data." + buff;
+        ifile = Assembly.GetExecutingAssembly().GetManifestResourceStream(fname) ??
+                throw new FileNotFoundException(fname);;
+
+        tlen = (int)ifile.Length;
+        
+        fdat = new byte[tlen + 1];
+        
+        coff = new int[95];
+        clen = new int[95];
+
+        rc = ifile.Read(fdat, 0, tlen);
+        if (rc != tlen)
+        {
+            throw new IOException("Error reading font data: I/O Error");
+            return (1);
+        }
+        
+        fdat[tlen] = 0;
+        
+        /* Determine the locations of the start of each character */
+        
+        i = 0;
+        j = 1;
+        coff[0] = 0;
+        flag = false;
+        while (fdat[i]!=0)
+        {
+            if (fdat[i] < ' ')
+            {
+                flag = true;
+            }
+            else
+            {
+                if (flag)
+                {
+                    coff[j] = i;
+                    j++;
+                }
+        
+                flag = false;
+            }
+        
+            i++;
+        }
+        
+        /* Determine the count on each character */
+        
+        for (i = 0; i < 95; i++)
+        {
+            char[] bbuff = new char[3];
+            for (j = 0; j < 3; j++) bbuff[j] = (char)fdat[coff[i] + j];
+            String s = new string(bbuff);
+            
+            clen[i] = Convert.ToInt32(s);
+        }
+        
+        flen[fn] = clen;
+        foff[fn] = coff;
+        fch[fn] = fdat;
 
         return (0);
     }
