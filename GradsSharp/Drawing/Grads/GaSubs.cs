@@ -113,6 +113,7 @@ public class GaSubs
 /* Query the width of a character */
     public double gxqchl(char ch, int fn, double w)
     {
+        
         double wid;
 
         /* cases where we want to use Hershey fonts */
@@ -1018,75 +1019,8 @@ public class GaSubs
 
     public void gxchpl(string chrs, int len, double x, double y, double height, double width, double angle)
     {
-        double h, w, xoff, yoff, wact;
-        int fn, supsub, nfn;
 
-        fn = 15;
-        angle = angle * Math.PI / 180.0; /* convert angle from degrees to radians */
-        supsub = 0;
-        // while (*chrs!='\0' && len>0) {
-        //     while (*chrs=='`') {
-        //         if (*(chrs+1)>='0' && *(chrs+1)<='9') {    /* get 1-digit font number */
-        //             fn = (gaint)*(chrs+1) - 48;
-        //             chrs+=2;
-        //             len-=2;
-        //         } else if (*(chrs+1)=='a') {    /* superscript */
-        //             supsub = 1;
-        //             chrs+=2; len-=2;
-        //         } else if (*(chrs+1)=='b') {    /* subscript */
-        //             supsub = 2;
-        //             chrs+=2; len-=2;
-        //         } else if (*(chrs+1)=='n') {    /* normal */
-        //             supsub = 0;
-        //             chrs+=2; len-=2;
-        //         } else if (*(chrs+1)=='f') {    /* get 2-digit font number */
-        //             if (len>3) {
-        //                 nfn = 10*((gaint)*(chrs+2) - 48) + ((gaint)*(chrs+3) - 48);
-        //                 if (nfn>=0 && nfn<100) fn = nfn;
-        //             }
-        //             chrs+=4;
-        //             len-=4;
-        //         } else break;
-        //     }
-        //     if (*chrs!='\0' && len>0) {
-        //         if (supsub) {
-        //             /* adjust size and position for superscripts and subscripts */
-        //             h = height*0.45; w = width*0.45;
-        //             if (supsub==1) yoff = height*0.58;
-        //             else yoff = -0.20*height;
-        //         } else {
-        //             h = height; w = width; yoff = 0.0;
-        //         }
-        //         xoff = yoff*sin(angle);
-        //         yoff = yoff*cos(angle);
-        //
-        //         /* plot the character */
-        //         wact = gxdrawch (*chrs, fn, x-xoff, y+yoff, w, h, angle);
-        //         if (wact < -900.0 && fn<6) {
-        //             /* draw with Hershey font */
-        //             wact = gxchplc (*chrs, fn, x-xoff, y+yoff, w, h, angle); 
-        //             if (wact < -900.0) return;
-        //         } 
-        //         x = x + wact*cos(angle);
-        //         y = y + wact*sin(angle);
-        //
-        //         chrs++; len--;
-        //     }
-        // }
-        for (int j = 0; j < chrs.Length; j++)
-        {
-            h = height; w = width; yoff = 0.0;
-            xoff = yoff*Math.Sin(angle);
-            yoff = yoff*Math.Cos(angle);
-            wact = gxdrawch (chrs[j], fn, x-xoff, y+yoff, w, h, angle);
-            // if (wact < -900.0 && fn<6) {
-            //     /* draw with Hershey font */
-            //     wact = _drawingContext.GxChpl.gxchplc (chrs[j], fn, x-xoff, y+yoff, w, h, angle); 
-            //     if (wact < -900.0) return;
-            // } 
-            x = x + wact*Math.Cos(angle);
-            y = y + wact*Math.Sin(angle);
-        }
+        _drawingContext.GxChpl.gxchpl(chrs, len, x, y, height, width, angle);
     }
 
 

@@ -21,6 +21,16 @@
       <EmbeddedResource Include="Data\lowres" />
       <None Remove="Data\mres" />
       <EmbeddedResource Include="Data\mres" />
+      <None Remove="Data\font0.dat" />
+      <EmbeddedResource Include="Data\font0.dat" />
+      <None Remove="Data\font1.dat" />
+      <EmbeddedResource Include="Data\font1.dat" />
+      <None Remove="Data\font2.dat" />
+      <EmbeddedResource Include="Data\font2.dat" />
+      <None Remove="Data\font3.dat" />
+      <EmbeddedResource Include="Data\font3.dat" />
+      <None Remove="Data\font5.dat" />
+      <EmbeddedResource Include="Data\font5.dat" />
     </ItemGroup>
 
     
