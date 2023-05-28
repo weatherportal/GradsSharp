@@ -1290,10 +1290,10 @@ internal class gscmn {
     public gsfdef? lfdef;    /* Last in chain of input files */
     public List<gsrecd>? frecd;    /* Head of record descriptor link list */   
     public gsrecd? lrecd;    /* Last in record list list */
-    public List<gsvar>? fvar;      /* Head of variable linklist   */
+    public gsvar? fvar;      /* Head of variable linklist   */
     public List<gsfnc>? ffnc;      /* Head of function list       */
     public gsiob? iob;       /* Head of file I/O list       */
-    public List<gsvar>? gvar;      /* Head of global var list     */
+    public gsvar? gvar;      /* Head of global var list     */
     public gsvar? farg;      /* Pointer to function arglist */
     public string? fname;             /* Pointer to user-entered file name   */
     public string? fprefix;           /* File name prefix for loading functions */

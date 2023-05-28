@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -2106,61 +2107,54 @@ internal class GScript
 
 /* Call a function.  */
 
-    char* gsfunc(char* pos, string name,  gscmn pcmn) {
-        gsfnc* pfnc;
-        gsvar* avar,  *nvar, *cvar = null;
-        char* astr,  *res;
+    string gsfunc(string text, int pos, string name,  gscmn pcmn) {
+        gsfnc? pfnc;
+        gsvar? avar,  nvar, cvar = null;
+        string astr,  res;
         int len, rc, i, cflg, pcnt;
 
         avar = null;
 
         /*  Get storage for holding argument expressions */
 
-        len = 0;
-        while (*(pos + len)) len++;
-        astr = (char*)malloc(len);
-        if (astr == null)
-        {
-            Console.WriteLine("Memory allocation error \n");
-            return (null);
-        }
-
+        len = text.Substring(pos).Length;
+        
         /*  Evaluate each argument found.  Allocate a gsvar block
             for each one, and chain them together */
 
         pos++;
         pcnt = 0;
-        while (!(*pos == ')' && pcnt == 0))
+        while (!(text[pos] == ')' && pcnt == 0))
         {
             cflg = 0;
             len = 0;
-            while (*pos)
+            while (text[pos])
             {
-                if (!cflg && (*pos == ',' || (*pos == ')' && pcnt == 0))) break;
+                if (!cflg && (text[pos] == ',' || (text[pos] == ')' && pcnt == 0))) break;
                 if (!cflg)
                 {
-                    if (*pos == '(') pcnt++;
-                    if (*pos == ')') pcnt--;
+                    if (text[pos] == '(') pcnt++;
+                    if (text[pos] == ')') pcnt--;
                     if (pcnt < 0) break;
                 }
 
-                if (*pos == '\'')
+                if (text[pos] == '\'')
                 {
                     if (cflg == 1) cflg = 0;
                     else if (cflg == 0) cflg = 1;
                 }
-                else if (*pos == '\"')
+                else if (text[pos] == '\"')
                 {
                     if (cflg == 2) cflg = 0;
                     else if (cflg == 0) cflg = 2;
                 }
 
-                *(astr + len) = *pos;
+                *(astr + len) = text[pos];
                 pos++;
                 len++;
             }
 
-            if (*pos == '\0')
+            if (text[pos] == '\0')
             {
                 Console.WriteLine("Unmatched parens on function call\n");
                 pos = null;
@@ -2189,7 +2183,7 @@ internal class GScript
             else cvar.forw = nvar;
             cvar = nvar;
             cvar.forw = null;
-            if (*pos == ',') pos++;
+            if (text[pos] == ',') pos++;
         }
 
         pos++;
@@ -2198,44 +2192,44 @@ internal class GScript
             to find the function.  Look for internal functions first */
 
         pcmn.farg = avar;
-        if (cmpwrd(name, "substr")) rc = gsfsub(pcmn);
-        else if (cmpwrd(name, "subwrd")) rc = gsfwrd(pcmn);
-        else if (cmpwrd(name, "sublin")) rc = gsflin(pcmn);
-        else if (cmpwrd(name, "wrdpos")) rc = gsfpwd(pcmn);
-        else if (cmpwrd(name, "strlen")) rc = gsfsln(pcmn);
-        else if (cmpwrd(name, "valnum")) rc = gsfval(pcmn);
-        else if (cmpwrd(name, "read")) rc = gsfrd(pcmn);
-        else if (cmpwrd(name, "write")) rc = gsfwt(pcmn);
-        else if (cmpwrd(name, "close")) rc = gsfcl(pcmn);
-        else if (cmpwrd(name, "sys")) rc = gsfsys(pcmn);
-        else if (cmpwrd(name, "gsfallow")) rc = gsfallw(pcmn);
-        else if (cmpwrd(name, "gsfpath")) rc = gsfpath(pcmn);
-        else if (cmpwrd(name, "math_log")) rc = gsfmath(pcmn, 1);
-        else if (cmpwrd(name, "math_log10")) rc = gsfmath(pcmn, 2);
-        else if (cmpwrd(name, "math_cos")) rc = gsfmath(pcmn, 3);
-        else if (cmpwrd(name, "math_sin")) rc = gsfmath(pcmn, 4);
-        else if (cmpwrd(name, "math_tan")) rc = gsfmath(pcmn, 5);
-        else if (cmpwrd(name, "math_atan")) rc = gsfmath(pcmn, 6);
-        else if (cmpwrd(name, "math_atan2")) rc = gsfmath(pcmn, 7);
-        else if (cmpwrd(name, "math_sqrt")) rc = gsfmath(pcmn, 8);
-        else if (cmpwrd(name, "math_abs")) rc = gsfmath(pcmn, 9);
-        else if (cmpwrd(name, "math_acosh")) rc = gsfmath(pcmn, 10);
-        else if (cmpwrd(name, "math_asinh")) rc = gsfmath(pcmn, 11);
-        else if (cmpwrd(name, "math_atanh")) rc = gsfmath(pcmn, 12);
-        else if (cmpwrd(name, "math_cosh")) rc = gsfmath(pcmn, 13);
-        else if (cmpwrd(name, "math_sinh")) rc = gsfmath(pcmn, 14);
-        else if (cmpwrd(name, "math_exp")) rc = gsfmath(pcmn, 15);
-        else if (cmpwrd(name, "math_fmod")) rc = gsfmath(pcmn, 16);
-        else if (cmpwrd(name, "math_pow")) rc = gsfmath(pcmn, 17);
-        else if (cmpwrd(name, "math_sinh")) rc = gsfmath(pcmn, 18);
-        else if (cmpwrd(name, "math_tanh")) rc = gsfmath(pcmn, 19);
-        else if (cmpwrd(name, "math_acos")) rc = gsfmath(pcmn, 20);
-        else if (cmpwrd(name, "math_asin")) rc = gsfmath(pcmn, 21);
-        else if (cmpwrd(name, "math_format")) rc = gsfmath(pcmn, 22);
-        else if (cmpwrd(name, "math_nint")) rc = gsfmath(pcmn, 23);
-        else if (cmpwrd(name, "math_int")) rc = gsfmath(pcmn, 24);
-        else if (cmpwrd(name, "math_mod")) rc = gsfmath(pcmn, 25);
-        else if (cmpwrd(name, "math_strlen")) rc = gsfmath(pcmn, 26);
+        if (name == "substr") rc = gsfsub(pcmn);
+        else if (name == "subwrd") rc = gsfwrd(pcmn);
+        else if (name == "sublin") rc = gsflin(pcmn);
+        else if (name == "wrdpos") rc = gsfpwd(pcmn);
+        else if (name == "strlen") rc = gsfsln(pcmn);
+        else if (name == "valnum") rc = gsfval(pcmn);
+        else if (name == "read") rc = gsfrd(pcmn);
+        else if (name == "write") rc = gsfwt(pcmn);
+        else if (name == "close") rc = gsfcl(pcmn);
+        else if (name == "sys") rc = gsfsys(pcmn);
+        else if (name == "gsfallow") rc = gsfallw(pcmn);
+        else if (name == "gsfpath") rc = gsfpath(pcmn);
+        else if (name == "math_log") rc = gsfmath(pcmn, 1);
+        else if (name == "math_log10") rc = gsfmath(pcmn, 2);
+        else if (name == "math_cos") rc = gsfmath(pcmn, 3);
+        else if (name == "math_sin") rc = gsfmath(pcmn, 4);
+        else if (name == "math_tan") rc = gsfmath(pcmn, 5);
+        else if (name == "math_atan") rc = gsfmath(pcmn, 6);
+        else if (name == "math_atan2") rc = gsfmath(pcmn, 7);
+        else if (name == "math_sqrt") rc = gsfmath(pcmn, 8);
+        else if (name == "math_abs") rc = gsfmath(pcmn, 9);
+        else if (name == "math_acosh") rc = gsfmath(pcmn, 10);
+        else if (name == "math_asinh") rc = gsfmath(pcmn, 11);
+        else if (name == "math_atanh") rc = gsfmath(pcmn, 12);
+        else if (name == "math_cosh") rc = gsfmath(pcmn, 13);
+        else if (name == "math_sinh") rc = gsfmath(pcmn, 14);
+        else if (name == "math_exp") rc = gsfmath(pcmn, 15);
+        else if (name == "math_fmod") rc = gsfmath(pcmn, 16);
+        else if (name == "math_pow") rc = gsfmath(pcmn, 17);
+        else if (name == "math_sinh") rc = gsfmath(pcmn, 18);
+        else if (name == "math_tanh") rc = gsfmath(pcmn, 19);
+        else if (name == "math_acos") rc = gsfmath(pcmn, 20);
+        else if (name == "math_asin") rc = gsfmath(pcmn, 21);
+        else if (name == "math_format") rc = gsfmath(pcmn, 22);
+        else if (name == "math_nint") rc = gsfmath(pcmn, 23);
+        else if (name == "math_int") rc = gsfmath(pcmn, 24);
+        else if (name == "math_mod") rc = gsfmath(pcmn, 25);
+        else if (name == "math_strlen") rc = gsfmath(pcmn, 26);
         /*  Not an intrinsic function.  See if it is a function
             within the file we are currently working on.  */
 
@@ -2299,29 +2293,27 @@ internal class GScript
         avar = null;
 
         retrn:
-        gsfrev(avar);
-        free(astr);
         return (pos);
     }
 
 /* Find the value of a variable */
 
-    char* gsfvar(string iname,  gscmn pcmn) {
-        gsvar* var;
-        char* ch,  *src, name[16];
+    string? gsfvar(string iname,  gscmn pcmn) {
+        gsvar? var;
         int len, i;
-
+        string name = "";
+        string src;
         /* Resolve possible compound name. */
 
-        i = gsrvar(pcmn, iname, name);
-        if (i) return (null);
+        i = gsrvar(pcmn, iname, out name);
+        if (i>0) return (null);
 
         /* See if this variable name already exists */
 
         if (name[0] == '_') var = pcmn.gvar;
         else var = pcmn.fvar;
 
-        while (var)
+        while (var!=null)
         {
             for (i = 0; i < 16; i++)
             {
@@ -2336,34 +2328,24 @@ internal class GScript
 
         if (var == null)
         {
-            len = 0;
-            while (name[len] != ' ' && len < 16) len++;
+            len = name.Trim().Length;
             src = name;
         }
         else
         {
-            len = 0;
-            while (*(var.strng + len)) len++;
+            len = var.strng.Trim().Length;
             src = var.strng;
         }
 
-        ch = malloc(len + 1);
-        if (ch == null)
-        {
-            Console.WriteLine("Error allocating memory for variable \n");
-            return (null);
-        }
-
-        for (i = 0; i < len; i++) *(ch + i) = *(src + i);
-        *(ch + len) = '\0';
-        return (ch);
+        return src.Substring(0, len);
     }
 
 /*  Resolve compound variable name */
 
-    int gsrvar(gscmn pcmn, string name, string oname) {
+    int gsrvar(gscmn pcmn, string name, out string oname) {
         gsvar? var;
-        char rname[16],sname[16];
+        char[] rname = new char [16];
+        char[] sname = new char [16];
         int len, pos, tpos, cnt, i;
 
         for (i = 0; i < 16; i++) rname[i] = ' ';
@@ -2373,28 +2355,29 @@ internal class GScript
         {
             if (len > 15)
             {
-                if (*(name + pos) != ' ')
+                if (name[pos] != ' ')
                 {
                     Console.WriteLine("Compound variable name too long: ");
-                    for (i = 0; i < 16; i++) Console.WriteLine("%c", *(name + i));
+                    for (i = 0; i < 16; i++) Console.WriteLine(name);
+                    oname = "";
                     return (1);
                 }
 
                 break;
             }
 
-            rname[len] = *(name + pos);
+            rname[len] = name[pos];
             len++;
-            if (*(name + pos) == '.')
+            if (name[pos] == '.')
             {
                 /* Split off sub name */
                 pos++;
                 cnt = 0;
                 tpos = pos;
                 for (i = 0; i < 16; i++) sname[i] = ' ';
-                while (*(name + tpos) != '.' && *(name + tpos) != ' ' && tpos < 16)
+                while (name[tpos] != '.' && name[tpos] != ' ' && tpos < 16)
                 {
-                    sname[cnt] = *(name + tpos);
+                    sname[cnt] = name[tpos];
                     tpos++;
                     cnt++;
                 }
@@ -2402,13 +2385,13 @@ internal class GScript
                 if (cnt > 0)
                 {
                     /* See if it's a var  */
-                    if (*sname == '_') var = pcmn.gvar;
+                    if (sname[0] == '_') var = pcmn.gvar;
                     else var = pcmn.fvar;
-                    while (var)
+                    while (var!=null)
                     {
                         for (i = 0; i < 16; i++)
                         {
-                            if (*(sname + i) != var.name[i]) break;
+                            if (sname[i] != var.name[i]) break;
                         }
 
                         if (i == 16) break;
@@ -2419,17 +2402,18 @@ internal class GScript
                     {
                         /* If so, use value   */
                         cnt = 0;
-                        while (len < 16 && *(var.strng + cnt) != '\0')
+                        while (len < 16 && cnt < var.strng.Length)
                         {
-                            rname[len] = *(var.strng + cnt);
+                            rname[len] = var.strng[cnt];
                             cnt++;
                             len++;
                         }
 
-                        if (len == 16 && *(var.strng + cnt) == '\0')
+                        if (len == 16 && cnt < var.strng.Length)
                         {
                             Console.WriteLine("Compound variable name too long: ");
-                            for (i = 0; i < 16; i++) Console.WriteLine("%c", *(name + i));
+                            Console.WriteLine(name);
+                            oname = "";
                             return (1);
                         }
 
@@ -2440,7 +2424,10 @@ internal class GScript
             else pos++;
         }
 
-        for (i = 0; i < 16; i++) *(oname + i) = rname[i];
+        StringBuilder bld = new StringBuilder();
+        for (i = 0; i < 16; i++) bld.Append(rname[i]);
+        oname = bld.ToString();
+        
 /*
   for (i=0; i<16; i++) Console.WriteLine ("%c",*(oname+i));
   Console.WriteLine ("\n");
@@ -2451,125 +2438,109 @@ internal class GScript
 
 /*  Retreive a constant */
 
-    char* gscnst(char** ppos)
+    string gscnst(string ch, ref int ppos)
     {
-        char* pos,  *ch, *cpos, delim;
+        int cpos;
         int len, i, dflg, eflg;
 
-        pos = *ppos;
-
+        int pos = ppos;
+        char delim;
         /* Handle integer constant */
 
-        if (*pos >= '0' && *pos <= '9')
+        if (ch[pos] >= '0' && ch[pos] <= '9')
         {
             len = 0;
             dflg = 1;
-            while ((*pos >= '0' && *pos <= '9') ||
-                   (dflg && *pos == '.'))
+            while ((ch[pos] >= '0' && ch[pos] <= '9') ||
+                   (dflg>0 && ch[pos] == '.'))
             {
-                if (*pos == '.') dflg = 0;
+                if (ch[pos] == '.') dflg = 0;
                 pos++;
                 len++;
             }
 
             eflg = 0;
-            if ((*pos == 'e' || *pos == 'E'))
+            if ((ch[pos] == 'e' || ch[pos] == 'E'))
             {
-                if (*(pos + 1) >= '0' && *(pos + 1) <= '9') eflg = 1;
-                else if (*(pos + 1) == '-' || *(pos + 1) == '+')
+                if (ch[pos+1] >= '0' && ch[pos+1] <= '9') eflg = 1;
+                else if (ch[pos+1] == '-' || ch[pos+1] == '+')
                 {
-                    if (*(pos + 2) >= '0' && *(pos + 2) <= '9') eflg = 2;
+                    if (ch[pos+2] >= '0' && ch[pos+2] <= '9') eflg = 2;
                 }
             }
 
-            if (eflg)
+            if (eflg>0)
             {
                 pos += eflg; /* Skip past 'e' and exponent sign */
                 len += eflg;
-                while (*pos >= '0' && *pos <= '9')
+                while (ch[pos] >= '0' && ch[pos] <= '9')
                 {
                     pos++;
                     len++;
                 }
             }
 
-            ch = malloc(len + 1);
-            if (ch == null)
-            {
-                Console.WriteLine("Memory allocation error \n");
-                return (null);
-            }
-
-            pos = *ppos;
-            for (i = 0; i < len; i++) *(ch + i) = *(pos + i);
-            *(ch + len) = '\0';
-            *ppos = pos + len;
+            pos = ppos;
+            var rusult = ch.Substring(pos, len);
+            ppos = pos + len;
             return (ch);
         }
 
         /* Handle string constant */
 
-        delim = *pos;
+        delim = ch[pos];
         len = 0;
         pos++;
-        while (*pos)
+        while (pos < ch.Length)
         {
-            if (*pos == delim && *(pos + 1) == delim)
+            if (ch[pos] == delim && ch[pos+1] == delim)
             {
                 len++;
                 pos += 2;
                 continue;
             }
 
-            if (*pos == delim) break;
+            if (ch[pos] == delim) break;
             len++;
             pos++;
         }
 
-        if (*pos == '\0')
+        if (pos == ch.Length)
         {
             Console.WriteLine("Non-terminated constant\n");
             return (null);
         }
 
-        ch = malloc(len + 1);
-        if (ch == null)
-        {
-            Console.WriteLine("Memory allocation error \n");
-            return (null);
-        }
-
-        pos = *ppos;
-        cpos = ch;
+        pos = ppos;
+        StringBuilder bld = new StringBuilder();
         pos++;
-        while (1)
+        while (true)
         {
-            if (*pos == delim && *(pos + 1) == delim)
+            if (ch[pos] == delim && ch[pos+1] == delim)
             {
-                *cpos = *pos;
-                cpos++;
+                bld.Append(ch[pos]);
                 pos += 2;
                 continue;
             }
 
-            if (*pos == delim) break;
-            *cpos = *pos;
+            if (ch[pos] == delim) break;
+            bld.Append(ch[pos]);
             pos++;
-            cpos++;
+            
         }
 
-        *cpos = '\0';
-        *ppos = pos + 1;
-        return (ch);
+        ppos = pos + 1;
+        
+        return (bld.ToString());
     }
 
 /* Determine if an operand is a numeric.  Numerics must not
    have any leading or trailing blanks, and must be
    either integer or floating values.  */
 
-    void gsnum(string strng, out int type, out int ival, out double val)
+    void gsnum(string? strng, out int type, out int ival, out double val)
     {
-        char* ch;
+        string? ch;
         int dflg, eflg, len;
 
         ch = strng;
@@ -2578,101 +2549,105 @@ internal class GScript
         dflg = 0; /* we found a decimal point */
         eflg = 0; /* we found an exponent */
 
-        if (*ch == '\0')
+        if (String.IsNullOrEmpty(ch))
         {
-            *type = 0;
+            type = 0;
+            ival = 0;
+            val = 0;
             return;
         }
 
-        if (*ch < '0' || *ch > '9')
+        if (ch[len] < '0' || ch[len] > '9')
         {
-            if (*ch == '+' || *ch == '-')
+            if (ch[len] == '+' || ch[len] == '-')
             {
-                ch++;
                 len++;
-                if (*ch == '.')
+                if (ch[len] == '.')
                 {
                     dflg = 1;
-                    ch++;
                     len++;
                 }
             }
-            else if (*ch == '.')
+            else if (ch[len] == '.')
             {
                 dflg = 1;
-                ch++;
                 len++;
             }
             else
             {
-                *type = 0;
+                type = 0;
+                ival = 0;
+                val = 0;
                 return;
             }
         }
 
-        if (*ch < '0' || *ch > '9')
+        if (ch[len] < '0' || ch[len] > '9')
         {
             /* should be a number at this point */
-            *type = 0;
+            type = 0;
+            ival = 0;
+            val = 0;
             return;
         }
 
-        while (*ch)
+        while (len < ch.Length)
         {
-            if (*ch < '0' || *ch > '9')
+            if (ch[len] < '0' || ch[len] > '9')
             {
-                if (*ch == '.')
+                if (ch[len] == '.')
                 {
-                    if (dflg) break;
+                    if (dflg>0) break;
                     dflg = 1;
                 }
                 else break;
             }
 
-            ch++;
             len++;
         }
 
-        if (*ch == 'E' || *ch == 'e')
+        if (ch[len] == 'E' || ch[len] == 'e')
         {
             eflg = 1;
-            ch++;
             len++;
-            if (*ch == '+' || *ch == '-')
+            if (ch[len] == '+' || ch[len] == '-')
             {
-                ch++;
                 len++;
             }
 
-            if (*ch < '0' || *ch > '9')
+            if (ch[len] < '0' || ch[len] > '9')
             {
-                *type = 0;
+                type = 0;
+                ival = 0;
+                val = 0;
                 return;
             }
 
-            while (*ch >= '0' && *ch <= '9')
+            while (ch[len] >= '0' && ch[len] <= '9')
             {
-                ch++;
                 len++;
             }
         }
 
-        if (*ch)
+        if (len == ch.Length)
         {
-            *type = 0;
+            type = 0;
+            ival = 0;
+            val = 0;
             return;
         }
 
-        if (!dflg && !eflg && len < 10)
+        if (dflg == 0 && eflg == 0 && len < 10)
         {
-            *ival = atol(strng);
-            *val = (double)(*ival);
-            *type = 1;
+            ival = Convert.ToInt32(strng);
+            val = (double)(ival);
+            type = 1;
         }
         else
         {
-            *val = atof(strng);
-            *type = 2;
+            ival = 0;
+            val = Convert.ToDouble(strng);
+            type = 2;
         }
 
         return;
@@ -2685,9 +2660,8 @@ internal class GScript
    Note that popen has limitations. */
 
     int gsfsys(gscmn pcmn) {
-        FILE* pipe;
-        gsvar* pvar;
-        char* cmd, *res,*buf;
+        gsvar? pvar;
+        string? cmd, res, buf;
         double v;
         int ret, len, siz, incr, pos, ntype;
 
@@ -2707,7 +2681,7 @@ internal class GScript
         pvar = pvar.forw;
         if (pvar != null)
         {
-            gsnum(pvar.strng, out ntype, &ret, &v);
+            gsnum(pvar.strng, out ntype, out ret, out v);
             if (ntype != 1 || ret < 5000)
             {
                 Console.WriteLine("Warning from script function: sys: 2nd arg invalid, ignored\n");
@@ -2717,45 +2691,16 @@ internal class GScript
 
         /* Call popen to execute the command. */
 
-        pipe = popen(cmd, "r");
-        if (pipe == null)
+        var process = Process.Start(new ProcessStartInfo
         {
-            Console.WriteLine("Error from script function: sys:  popen error\n");
-            ret = 1;
-            goto retrn;
-        }
+            RedirectStandardOutput = true,
+            FileName = cmd
+        });
 
-        /* Allocate storage for the result and read the result */
+        process?.WaitForExit();
 
-        siz = incr;
-        res = null;
-        pos = 0;
-        while (1)
-        {
-            buf = (char*)realloc(res, siz + 10);
-            if (buf == null)
-            {
-                Console.WriteLine("Error from script function: sys:  Memory allocation error\n");
-                Console.WriteLine("Error from script function: sys:  Attempted size %i\n", siz);
-                free(res);
-                pclose(pipe);
-                ret = 1;
-                goto retrn;
-            }
-
-            res = buf;
-            len = fread(res + pos, sizeof(char), incr, pipe);
-            pos += len;
-            if (len < incr) break;
-            if (siz > 10000 && incr < 5000) incr = 5000;
-            if (siz > 100000 && incr < 10000) incr = 10000;
-            if (siz > 1000000 && incr < 100000) incr = 100000;
-            siz += incr;
-        }
-
-        *(res + pos) = '\0';
-        pclose(pipe);
-
+        res = process?.StandardOutput.ReadToEnd();
+        
         ret = 0;
         pcmn.rres = res;
 
@@ -2763,7 +2708,6 @@ internal class GScript
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -2771,11 +2715,11 @@ internal class GScript
 /* Substring function.  Expects three args:  string, start, length */
 
     int gsfsub(gscmn pcmn) {
-        gsvar* pvar;
-        char* ch,  *res;
+        gsvar? pvar;
+        string ch,  res;
         int ret, ntype, strt, len, i;
         int lstrt, llen;
-        double v;
+        double v = -1;
 
         pcmn.rres = null;
 
@@ -2797,7 +2741,7 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, out ntype, &lstrt, &v);
+        gsnum(pvar.strng, out ntype, out lstrt, out v);
         strt = lstrt;
         if (ntype != 1 || strt < 1)
         {
@@ -2814,21 +2758,11 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, out ntype, &llen, &v);
+        gsnum(pvar.strng, out ntype, out llen, out v);
         len = llen;
         if (ntype != 1 || len < 1)
         {
             Console.WriteLine("Error in substr:  3rd argument invalid.\n");
-            ret = 1;
-            goto retrn;
-        }
-
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(len + 1);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
             ret = 1;
             goto retrn;
         }
@@ -2838,22 +2772,9 @@ internal class GScript
         pvar = pcmn.farg;
         i = 1;
         ch = pvar.strng;
-        while (*ch && i < strt)
-        {
-            ch++;
-            i++;
-        } /* Don't start past end of string */
 
-        i = 0;
-        while (*ch && i < len)
-        {
-            *(res + i) = *ch;
-            ch++;
-            i++;
-        }
-
-        *(res + i) = '\0';
-
+        res = ch.Substring(strt, len);
+        
         ret = 0;
         pcmn.rres = res;
 
@@ -2861,7 +2782,6 @@ internal class GScript
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -2869,11 +2789,11 @@ internal class GScript
 /*  Routine to get specified word in a string */
 
     int gsfwrd(gscmn pcmn) {
-        gsvar* pvar;
-        char* ch,  *res;
+        gsvar? pvar;
+        string ch,  res;
         int ret, ntype, wnum, i, len;
         int lwnum;
-        double v;
+        double v = -1;
 
         pcmn.rres = null;
 
@@ -2895,7 +2815,7 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, out ntype, out lwnum, &v);
+        gsnum(pvar.strng, out ntype, out lwnum, out v);
         wnum = lwnum;
         if (ntype != 1 || wnum < 1)
         {
@@ -2909,39 +2829,27 @@ internal class GScript
         pvar = pcmn.farg;
         ch = pvar.strng;
         i = 0;
-        while (*ch)
+        while (i<ch.Length)
         {
-            if (*ch == ' ' || *ch == '\n' || *ch == '\t' || i == 0)
+            if (ch[i] == ' ' || ch[i] == '\n' || ch[i] == '\t' || i == 0)
             {
-                while (*ch == ' ' || *ch == '\n' || *ch == '\t') ch++;
-                if (*ch) i++;
+                while (ch[i] == ' ' || ch[i] == '\n' || ch[i] == '\t') i++;
+                if (i<ch.Length) i++;
                 if (i == wnum) break;
             }
-            else ch++;
+            else i++;
         }
 
 
         /* Get length of returned word. */
 
         len = 0;
-        while (*(ch + len) != '\0' && *(ch + len) != ' '
-                                   && *(ch + len) != '\t' && *(ch + len) != '\n') len++;
-
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(len + 1);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
+        while (len < ch.Length && ch[len] != ' '
+                                   && ch[len] != '\t' && ch[len] != '\n') len++;
 
         /* Deliver the result and return */
 
-        for (i = 0; i < len; i++) *(res + i) = *(ch + i);
-        *(res + len) = '\0';
-
+        res = ch.Substring(0, len);
         ret = 0;
         pcmn.rres = res;
 
@@ -2949,7 +2857,6 @@ internal class GScript
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
