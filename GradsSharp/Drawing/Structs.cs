@@ -1247,8 +1247,9 @@ internal class gsrecd {
 /* Following structure hold information on open files
    accessed via the read/write/close user callable functions */
 
-internal class gsiob {
-   
+internal class gsiob
+{
+    public gsiob? forw;
    public Stream file;              /* File pointer     */
    public  string name;              /* File name        */
    public int flag;                /* Status flag: 1-read 2-write  */
@@ -1273,10 +1274,11 @@ internal class gsfnc {
 /* Following structure is a member of a link list providing the
    current value of a variable.    */
 
-internal class gsvar {
-    
-    public string name;           /* Variable name               */
-    public string strng;             /* Value of variable           */
+internal class gsvar
+{
+    public gsvar? forw;
+    public string? name;           /* Variable name               */
+    public string? strng;             /* Value of variable           */
 };
 
 /* Following structure holds global pointers needed by all the
@@ -1292,11 +1294,11 @@ internal class gscmn {
     public List<gsfnc>? ffnc;      /* Head of function list       */
     public gsiob? iob;       /* Head of file I/O list       */
     public List<gsvar>? gvar;      /* Head of global var list     */
-    public List<gsvar>? farg;      /* Pointer to function arglist */
+    public gsvar? farg;      /* Pointer to function arglist */
     public string? fname;             /* Pointer to user-entered file name   */
     public string? fprefix;           /* File name prefix for loading functions */
     public string ppath;             /* Private path for gsf loads */
-    public byte[] rres;              /* Pointer to function result  */
+    public string? rres;              /* Pointer to function result  */
     public string gsfnm;             /* Most recent file name read in */
     public int gsfflg;              /* Dynamic load script functions from files */
     public int rc;                  /* Exit value                  */

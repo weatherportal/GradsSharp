@@ -921,17 +921,17 @@ internal class GScript
 
 /* Free a link list of variable blocks */
 
-    void gsfrev(gsvar var) {
-        gsvar* nvar;
-
-        while (var)
-        {
-            nvar = var.forw;
-            if (var.strng) free(var.strng);
-            free(var);
-            var = nvar;
-        }
-    }
+    // void gsfrev(gsvar var) {
+    //     gsvar nvar;
+    //
+    //     while (var!=null)
+    //     {
+    //         nvar = var.forw;
+    //         if (var.strng!=null) var.strng);
+    //         free(var);
+    //         var = nvar;
+    //     }
+    // }
 
 /* Execute a statement in the scripting language */
 
@@ -1741,7 +1741,7 @@ internal class GScript
         sop2 = soper.pforw;
         if (optyps[op - 1])
         {
-            gsnum(sop2.obj.strng, &ntyp2, &iv2, &v2);
+            gsnum(sop2.obj.strng, &ntyp2, &iv2, out v2);
             if (op < 14) gsnum(sop1.obj.strng, &ntyp1, &iv1, &v1);
             else ntyp1 = ntyp2;
             if (ntyp1 == 1 && ntyp2 == 1) ntype = 1;
@@ -2707,7 +2707,7 @@ internal class GScript
         pvar = pvar.forw;
         if (pvar != null)
         {
-            gsnum(pvar.strng, &ntype, &ret, &v);
+            gsnum(pvar.strng, out ntype, &ret, &v);
             if (ntype != 1 || ret < 5000)
             {
                 Console.WriteLine("Warning from script function: sys: 2nd arg invalid, ignored\n");
@@ -2797,7 +2797,7 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, &ntype, &lstrt, &v);
+        gsnum(pvar.strng, out ntype, &lstrt, &v);
         strt = lstrt;
         if (ntype != 1 || strt < 1)
         {
@@ -2814,7 +2814,7 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, &ntype, &llen, &v);
+        gsnum(pvar.strng, out ntype, &llen, &v);
         len = llen;
         if (ntype != 1 || len < 1)
         {
@@ -2895,7 +2895,7 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, &ntype, &lwnum, &v);
+        gsnum(pvar.strng, out ntype, out lwnum, &v);
         wnum = lwnum;
         if (ntype != 1 || wnum < 1)
         {
@@ -2957,11 +2957,11 @@ internal class GScript
 /*  Routine to get specified line in a string */
 
     int gsflin(gscmn pcmn) {
-        gsvar* pvar;
-        char* ch,  *res;
+        gsvar? pvar;
+        string ch,  res;
         int ret, ntype, lnum, i, len;
         int llnum;
-        double v;
+        double v = -1;
 
         pcmn.rres = null;
 
@@ -2983,7 +2983,7 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, &ntype, &llnum, &v);
+        gsnum(pvar.strng, out ntype, out llnum, out v);
         lnum = llnum;
         if (ntype != 1 || lnum < 1)
         {
@@ -2996,33 +2996,13 @@ internal class GScript
 
         pvar = pcmn.farg;
         ch = pvar.strng;
-        i = 1;
-        while (*ch && i < lnum)
-        {
-            if (*ch == '\n') i++;
-            ch++;
-        }
 
-        /* Get length of returned line. */
-
-        len = 0;
-        while (*(ch + len) != '\0' && *(ch + len) != '\n') len++;
-
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(len + 1);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
+        string[] lines = ch.Split('\n');
+        res = lines[lnum];
+        
+        
 
         /* Deliver the result and return */
-
-        for (i = 0; i < len; i++) *(res + i) = *(ch + i);
-        *(res + len) = '\0';
-
         ret = 0;
         pcmn.rres = res;
 
@@ -3030,7 +3010,6 @@ internal class GScript
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3039,21 +3018,15 @@ internal class GScript
    Returnes a two line result -- an rc, and the record read */
 
     int gsfrd(gscmn pcmn) {
-        FILE* ifile;
-        gsvar* pvar;
-        gsiob* iob, *iobo;
-        char* res, *name,rc,*ch;
+        Stream? ifile;
+        gsvar? pvar;
+        gsiob? iob, iobo;
+        string? res, name,ch;
         int ret, n;
+        char rc;
 
         pcmn.rres = null;
-        res = (char*)malloc(RSIZ);
-        if (res == null)
-        {
-            Console.WriteLine("Memory allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
-
+        
         /* Get file name */
 
         pvar = pcmn.farg;
@@ -3065,7 +3038,7 @@ internal class GScript
         }
 
         name = pvar.strng;
-        if (*name == '\0')
+        if (String.IsNullOrEmpty(name))
         {
             Console.WriteLine("Error in read:  null File Name\n");
             ret = 1;
@@ -3076,9 +3049,9 @@ internal class GScript
 
         iob = pcmn.iob;
         iobo = iob;
-        while (iob)
+        while (iob!=null)
         {
-            if (!strcmp(name, iob.name)) break;
+            if (name == iob.name) break;
             iobo = iob;
             iob = iob.forw;
         }
@@ -3087,21 +3060,18 @@ internal class GScript
 
         if (iob == null)
         {
-            ifile = fopen(name, "r");
-            if (ifile == null)
+            if(File.Exists(name))
+            {
+                ifile = File.Open(name, FileMode.Open);
+            }
+            else
             {
                 rc = '1';
                 goto rslt;
             }
 
-            iob = (gsiob *)malloc(sizeof(gsiob));
-            if (iob == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                ret = 1;
-                goto retrn;
-            }
-
+            iob = new gsiob();
+           
             if (pcmn.iob == null) pcmn.iob = iob;
             else iobo.forw = iob;
             iob.forw = null;
@@ -3115,8 +3085,8 @@ internal class GScript
             if (iob.flag != 1)
             {
                 rc = '8';
-                Console.WriteLine("Error in read:  attempt to read a file open for write\n");
-                Console.WriteLine("  File name = %s\n", iob.name);
+                Console.WriteLine("Error in read:  attempt to read a file open for write");
+                Console.WriteLine("  File name = {0}", iob.name);
                 goto rslt;
             }
 
@@ -3149,18 +3119,14 @@ internal class GScript
 
         rslt:
 
-        *res = rc;
-        *(res + 1) = '\n';
         ret = 0;
-        pcmn.rres = res;
+        pcmn.rres = rc.ToString();
         res = null;
 
         /* Release arg storage and return */
 
         retrn:
 
-        if (res) free(res);
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3169,21 +3135,15 @@ internal class GScript
    output record, and optional append flag.  Returns a return code. */
 
     int gsfwt(gscmn pcmn) {
-        FILE* ofile;
-        gsvar* pvar,  *pvars;
-        gsiob* iob,  *iobo;
-        char* res,  *name, rc, *orec;
+        Stream ofile;
+        gsvar? pvar,  pvars;
+        gsiob? iob,  iobo;
+        string? res,  name, orec;
+        char rc;
         int ret, appflg, len;
 
         pcmn.rres = null;
-        res = (char*)malloc(2);
-        if (res == null)
-        {
-            Console.WriteLine("Memory allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
-
+        
         /* Get file name */
 
         pvar = pcmn.farg;
@@ -3195,7 +3155,7 @@ internal class GScript
         }
 
         name = pvar.strng;
-        if (*name == '\0')
+        if (String.IsNullOrEmpty(name))
         {
             Console.WriteLine("Error in write:  null File Name\n");
             ret = 1;
@@ -3226,9 +3186,9 @@ internal class GScript
 
         iob = pcmn.iob;
         iobo = iob;
-        while (iob)
+        while (iob!=null)
         {
-            if (!strcmp(name, iob.name)) break;
+            if (name == iob.name) break;
             iobo = iob;
             iob = iob.forw;
         }
@@ -3237,21 +3197,16 @@ internal class GScript
 
         if (iob == null)
         {
-            if (appflg) ofile = fopen(name, "a+");
-            else ofile = fopen(name, "w");
+            if (appflg==1) ofile = File.Open(name, FileMode.Append);
+            else ofile = File.Open(name, FileMode.Create);
             if (ofile == null)
             {
                 rc = '1';
                 goto rslt;
             }
 
-            iob = (gsiob *)malloc(sizeof(gsiob));
-            if (iob == null)
-            {
-                Console.WriteLine("Memory allocation error\n");
-                ret = 1;
-                goto retrn;
-            }
+            iob = new gsiob();
+            
 
             if (pcmn.iob == null) pcmn.iob = iob;
             else iobo.forw = iob;
@@ -3266,8 +3221,8 @@ internal class GScript
             if (iob.flag != 2)
             {
                 rc = '8';
-                Console.WriteLine("Error in write: attempt to write a file open for read\n");
-                Console.WriteLine("  File name = %s\n", iob.name);
+                Console.WriteLine("Error in write: attempt to write a file open for read");
+                Console.WriteLine("  File name = {0}", iob.name);
                 goto rslt;
             }
 
@@ -3276,29 +3231,21 @@ internal class GScript
 
         /* Write the next record */
 
-        len = 0;
-        while (*(orec + len)) len++;
-        *(orec + len) = '\n';
-        len++;
-        fwrite(orec, 1, len, ofile);
+        new StreamWriter(ofile).Write(orec);
         rc = '0';
 
         /* Complete return arg list */
 
         rslt:
 
-        *res = rc;
-        *(res + 1) = '\n';
         ret = 0;
-        pcmn.rres = res;
+        pcmn.rres = rc.ToString();
         res = null;
 
         /* Release arg storage and return */
 
         retrn:
 
-        if (res) free(res);
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3307,19 +3254,14 @@ internal class GScript
    Returns a return code:  0, normal, 1, file not open */
 
     int gsfcl(gscmn pcmn) {
-        gsvar* pvar;
-        gsiob* iob,  *iobo;
-        char* name,  *res, rc;
+        gsvar? pvar;
+        gsiob? iob,  iobo;
+        string? name, res;
+            char rc;
         int ret;
 
         pcmn.rres = null;
-        res = (char*)malloc(2);
-        if (res == null)
-        {
-            Console.WriteLine("Memory allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
+        
 
         /* Get file name */
 
@@ -3332,7 +3274,7 @@ internal class GScript
         }
 
         name = pvar.strng;
-        if (*name == '\0')
+        if (String.IsNullOrEmpty(name))
         {
             Console.WriteLine("Error in close:  null File Name\n");
             ret = 1;
@@ -3343,9 +3285,9 @@ internal class GScript
 
         iob = pcmn.iob;
         iobo = iob;
-        while (iob)
+        while (iob!=null)
         {
-            if (!strcmp(name, iob.name)) break;
+            if (name == iob.name) break;
             iobo = iob;
             iob = iob.forw;
         }
@@ -3360,26 +3302,21 @@ internal class GScript
         }
         else
         {
-            fclose(iob.file);
+            iob.file.Close();
             if (iob == pcmn.iob) pcmn.iob = iob.forw;
             else iobo.forw = iob.forw;
-            free(iob);
             rc = '0';
         }
 
         /* Complete return arg list */
-        *res = rc;
-        *(res + 1) = '\0';
         ret = 0;
-        pcmn.rres = res;
+        pcmn.rres = rc.ToString();
         res = null;
 
         /* Release arg storage and return */
 
         retrn:
 
-        if (res) free(res);
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3387,11 +3324,11 @@ internal class GScript
 /*  Routine to return position of specified word in a string */
 
     int gsfpwd(gscmn pcmn) {
-        gsvar* pvar;
-        char* ch,  *res;
+        gsvar? pvar;
+        string ch,  res;
         int ret, ntype, wnum, i, pos;
         int lwnum;
-        double v;
+        double v = -1;
 
         pcmn.rres = null;
 
@@ -3413,7 +3350,7 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, &ntype, &lwnum, &v);
+        gsnum(pvar.strng, out ntype, out lwnum, out v);
         wnum = lwnum;
         if (ntype != 1 || wnum < 1)
         {
@@ -3427,43 +3364,32 @@ internal class GScript
         pvar = pcmn.farg;
         ch = pvar.strng;
         i = 0;
-        while (*ch)
+        while (i < ch.Length)
         {
-            if (*ch == ' ' || *ch == '\n' || *ch == '\t' || i == 0)
+            if (ch[i] == ' ' || ch[i] == '\n' || ch[i] == '\t' || i == 0)
             {
-                while (*ch == ' ' || *ch == '\n' || *ch == '\t') ch++;
-                if (*ch) i++;
+                while (ch[i] == ' ' || ch[i] == '\n' || ch[i] == '\t') i++;
                 if (i == wnum) break;
             }
-            else ch++;
+            else i++;
         }
 
         /* Calculcate position of the desired word */
 
-        if (*ch == '\0') pos = 0;
-        else pos = 1 + ch - pvar.strng;
+        if (i == ch.Length) pos = 0;
+        else pos = i;
 
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(12);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
+        
 
         /* Deliver the result and return */
 
-        snConsole.WriteLine(res, 11, "%i", pos);
         ret = 0;
-        pcmn.rres = res;
+        pcmn.rres = pos.ToString();
 
         /* Release arg storage and return */
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3471,9 +3397,8 @@ internal class GScript
 /*  Routine to return the length of a string */
 
     int gsfsln(gscmn pcmn) {
-        gsvar* pvar;
-        char* res;
-        int ret, len;
+        gsvar? pvar;
+        int ret;
 
         pcmn.rres = null;
 
@@ -3485,34 +3410,17 @@ internal class GScript
             goto retrn;
         }
 
-        len = 0;
-        while (*(pvar.strng + len))
-        {
-            len++;
-            if (len == 9999999) break;
-        }
-
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(12);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
+        
 
         /* Deliver the result and return */
 
-        snConsole.WriteLine(res, 11, "%i", len);
         ret = 0;
-        pcmn.rres = res;
+        pcmn.rres = pvar.strng.Length.ToString();
 
         /* Release arg storage and return */
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3520,8 +3428,8 @@ internal class GScript
 /*  Routine to check if a string is a valid numeric */
 
     int gsfval(gscmn pcmn) {
-        gsvar* pvar;
-        char* res;
+        gsvar? pvar;
+        string res;
         int ret, ntype;
         int lwnum;
         double v;
@@ -3536,29 +3444,17 @@ internal class GScript
             goto retrn;
         }
 
-        gsnum(pvar.strng, &ntype, &lwnum, &v);
-
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(12);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
-
+        gsnum(pvar.strng, out ntype, out lwnum, out v);
+        
         /* Deliver the result and return */
 
-        snConsole.WriteLine(res, 11, "%i", ntype);
         ret = 0;
-        pcmn.rres = res;
+        pcmn.rres = ntype.ToString();
 
         /* Release arg storage and return */
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3566,8 +3462,7 @@ internal class GScript
 /*  Routine to control gsf loading.  */
 
     int gsfallw(gscmn pcmn) {
-        gsvar* pvar;
-        char* res;
+        gsvar? pvar;
         int ret, i;
 
         pcmn.rres = null;
@@ -3581,35 +3476,18 @@ internal class GScript
         }
 
         i = 999;
-        if (cmpwrd(pvar.strng, "on")) i = 1;
-        if (cmpwrd(pvar.strng, "On")) i = 1;
-        if (cmpwrd(pvar.strng, "ON")) i = 1;
-        if (cmpwrd(pvar.strng, "off")) i = 0;
-        if (cmpwrd(pvar.strng, "Off")) i = 0;
-        if (cmpwrd(pvar.strng, "OFF")) i = 0;
+        if (pvar.strng.ToLower() == "on") i = 1;
+        if (pvar.strng.ToLower() == "off") i = 0;
         if (i < 900) pcmn.gsfflg = i;
-
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(12);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
 
         /* Deliver the result and return */
 
-        snConsole.WriteLine(res, 11, "%i", i);
         ret = 0;
-        pcmn.rres = res;
+        pcmn.rres = i.ToString();
 
         /* Release arg storage and return */
 
         retrn:
-
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3617,8 +3495,8 @@ internal class GScript
 /*  Routine to set gsf private path  */
 
     int gsfpath(gscmn pcmn) {
-        gsvar* pvar;
-        char* res;
+        gsvar pvar;
+        string res;
         int ret, i, j;
 
         pcmn.rres = null;
@@ -3633,40 +3511,11 @@ internal class GScript
 
         /* Copy the path to the gscmn area */
 
-        i = 0;
-        while (*(pvar.strng + i)) i++;
-        if (pcmn.ppath) free(pcmn.ppath);
-        pcmn.ppath = (char*)malloc(i + 1);
-        if (pcmn.ppath == null)
-        {
-            Console.WriteLine("Error in gsfpath:  Memory Allocation\n");
-            ret = 1;
-            goto retrn;
-        }
-
-        j = 0;
-        while (j < i)
-        {
-            *(pcmn.ppath + j) = *(pvar.strng + j);
-            j++;
-        }
-
-        *(pcmn.ppath + i) = '\0';
-
-        /* Allocate storage for the result */
-
-        res = (char*)malloc(3);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
+        pcmn.ppath = pvar.strng;
 
         /* Deliver the result and return */
 
-        *res = '1';
-        *(res + 1) = '\0';
+        res = "1";
         ret = 0;
         pcmn.rres = res;
 
@@ -3674,7 +3523,6 @@ internal class GScript
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
@@ -3683,7 +3531,9 @@ internal class GScript
 
     int gsfmath(gscmn pcmn, int mathflg) {
         gsvar? pvar;
-        char* res, buf[25],vformat[15];
+        string res;
+        string buf;
+        string vformat = "{0}";
         string mathmsg1 = "log";
         string mathmsg2 = "log10";
         string mathmsg3 = "cos";
@@ -3713,7 +3563,7 @@ internal class GScript
         string? mathmsg = null;
         int ret, ntype, i, len;
         int lwnum;
-        double v, v2;
+        double v=-1, v2=-1;
 
         pcmn.rres = null;
 
@@ -3744,7 +3594,7 @@ internal class GScript
         if (mathflg == 25) mathmsg = mathmsg25;
         if (mathflg == 26) mathmsg = mathmsg26;
 
-        pvar = pcmn.farg.FirstOrDefault();
+        pvar = pcmn.farg;
         if (pvar == null)
         {
             Console.WriteLine("Error in math_{0}:  Argument missing\n", mathmsg);
@@ -3758,7 +3608,7 @@ internal class GScript
 
             if (ntype == 0)
             {
-                Console.WriteLine("Error in math_%s:  Argument not a valid numeric\n", mathmsg);
+                Console.WriteLine("Error in math_{0}:  Argument not a valid numeric\n", mathmsg);
                 ret = 1;
                 goto retrn;
             }
@@ -3767,13 +3617,13 @@ internal class GScript
         {
             if (mathflg == 22)
             {
-                if (strlen(pvar.strng) < 15)
+                if (pvar.strng.Length < 15)
                 {
-                    strcpy(vformat, pvar.strng);
+                    vformat = pvar.strng;
                 }
                 else
                 {
-                    Console.WriteLine("Error in math_%s:  argument: %s  too long < 15\n", mathmsg, pvar.strng);
+                    Console.WriteLine("Error in math_{0}:  argument: {0}  too long < 15\n", mathmsg, pvar.strng);
                     ret = 1;
                     goto retrn;
                 }
@@ -3782,7 +3632,7 @@ internal class GScript
 
         if (v <= 0.0 && (mathflg == 1 || mathflg == 2))
         {
-            Console.WriteLine("Error in math_%s:  Argument less than or equal to zero\n", mathmsg);
+            Console.WriteLine("Error in math_{0}:  Argument less than or equal to zero\n", mathmsg);
             ret = 1;
             goto retrn;
         }
@@ -3797,7 +3647,7 @@ internal class GScript
                 goto retrn;
             }
 
-            gsnum(pvar.strng, &ntype, &lwnum, &v2);
+            gsnum(pvar.strng, out ntype, out lwnum, out v2);
 
             if (ntype == 0)
             {
@@ -3817,7 +3667,7 @@ internal class GScript
                 goto retrn;
             }
 
-            gsnum(pvar.strng, &ntype, &lwnum, &v2);
+            gsnum(pvar.strng, out ntype, out lwnum, out v2);
 
             if (ntype == 0)
             {
@@ -3837,7 +3687,7 @@ internal class GScript
                 goto retrn;
             }
 
-            gsnum(pvar.strng, &ntype, &lwnum, &v2);
+            gsnum(pvar.strng, out ntype, out lwnum, out v2);
 
             if (ntype == 0)
             {
@@ -3857,7 +3707,7 @@ internal class GScript
                 goto retrn;
             }
 
-            gsnum(pvar.strng, &ntype, &lwnum, &v2);
+            gsnum(pvar.strng, out ntype, out lwnum, out v2);
 
             if (ntype == 0)
             {
@@ -3877,7 +3727,7 @@ internal class GScript
                 goto retrn;
             }
 
-            gsnum(pvar.strng, &ntype, &lwnum, &v);
+            gsnum(pvar.strng, out ntype, out lwnum, out v);
 
             if (ntype == 0)
             {
@@ -3890,73 +3740,65 @@ internal class GScript
 
         /* Get result */
 
-        if (mathflg == 1) v = log(v);
-        if (mathflg == 2) v = log10(v);
-        if (mathflg == 3) v = cos(v);
-        if (mathflg == 4) v = sin(v);
-        if (mathflg == 5) v = tan(v);
-        if (mathflg == 6) v = atan(v);
-        if (mathflg == 7) v = atan2(v, v2);
-        if (mathflg == 8) v = sqrt(v);
-        if (mathflg == 9) v = fabs(v);
-        if (mathflg == 10) v = fabs(v);
-        if (mathflg == 11) v = asinh(v);
-        if (mathflg == 12) v = atanh(v);
-        if (mathflg == 13) v = cosh(v);
-        if (mathflg == 14) v = sinh(v);
-        if (mathflg == 15) v = exp(v);
-        if (mathflg == 16) v = fmod(v, v2);
-        if (mathflg == 17) v = pow(v, v2);
-        if (mathflg == 18) v = sinh(v);
-        if (mathflg == 19) v = tanh(v);
-        if (mathflg == 20) v = acos(v);
-        if (mathflg == 21) v = asin(v);
+        if (mathflg == 1) v = Math.Log(v);
+        if (mathflg == 2) v = Math.Log10(v);
+        if (mathflg == 3) v = Math.Cos(v);
+        if (mathflg == 4) v = Math.Sin(v);
+        if (mathflg == 5) v = Math.Tan(v);
+        if (mathflg == 6) v = Math.Atan(v);
+        if (mathflg == 7) v = Math.Atan2(v, v2);
+        if (mathflg == 8) v = Math.Sqrt(v);
+        if (mathflg == 9) v = Math.Abs(v);
+        if (mathflg == 10) v = Math.Abs(v);
+        if (mathflg == 11) v = Math.Asinh(v);
+        if (mathflg == 12) v = Math.Atanh(v);
+        if (mathflg == 13) v = Math.Cosh(v);
+        if (mathflg == 14) v = Math.Sinh(v);
+        if (mathflg == 15) v = Math.Exp(v);
+        if (mathflg == 16) v = v % v2;
+        if (mathflg == 17) v = Math.Pow(v, v2);
+        if (mathflg == 18) v = Math.Sinh(v);
+        if (mathflg == 19) v = Math.Tanh(v);
+        if (mathflg == 20) v = Math.Acos(v);
+        if (mathflg == 21) v = Math.Asin(v);
 
 
         if (mathflg == 23)
         {
-            v = floor(v + 0.5);
+            v = Math.Floor(v + 0.5);
         }
         else if (mathflg == 24)
         {
-            v = floor(v);
+            v = Math.Floor(v);
         }
         else if (mathflg == 25)
         {
-            v = floor(fmod(v, v2));
+            v = Math.Floor((v % v2));
         }
         else if (mathflg == 26)
         {
-            v = strlen(pvar.strng);
+            v = pvar.strng.Length;
         }
 
         if (mathflg == 22)
         {
-            snConsole.WriteLine(buf, 24, vformat, v);
+            buf = String.Format(vformat, v);
+            
         }
         else
         {
-            snConsole.WriteLine(buf, 24, "%.15g", v);
+            buf = String.Format("{0:.15g}", v);
+            
         }
 
 
-        len = 0;
-        while (buf[len]) len++;
-        len++;
+        
 
         /* Allocate storage for the result */
 
-        res = (char*)malloc(len);
-        if (res == null)
-        {
-            Console.WriteLine("Error:  Storage allocation error\n");
-            ret = 1;
-            goto retrn;
-        }
-
+        res = buf;
         /* Deliver the result and return */
 
-        for (i = 0; i < len; i++) *(res + i) = buf[i];
         ret = 0;
         pcmn.rres = res;
 
@@ -3964,7 +3806,6 @@ internal class GScript
 
         retrn:
 
-        gsfrev(pcmn.farg);
         pcmn.farg = null;
         return (ret);
     }
