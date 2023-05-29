@@ -18,6 +18,13 @@ public class ChartBuilder
         return _chart;
     }
 
+
+    public ChartBuilder WithTitle(string title)
+    {
+        _chart.Title = title;
+        return this;
+    }
+    
     public ChartBuilder WithMapResolution(MapResolution resolution)
     {
         _chart.Resolution = resolution;
@@ -37,4 +44,24 @@ public class ChartBuilder
         _chart.LongitudeMax = lonMax;
         return this;
     }
+
+    public ChartBuilder WithColorRange(double? min, double? max, double? interval, GxOutSetting gxout, string? kind)
+    {
+        _chart.ColorBarMin = min;
+        _chart.ColorBarMax = max;
+        _chart.ColorBarInterval = interval;
+        _chart.ColorBarKind = kind;
+        _chart.ColorBarGxOut = gxout;
+        _chart.ColorBarEnabled = true;
+        return this;
+    }
+
+    public ChartBuilder WithColorBarSettings(ColorBarSettings settings)
+    {
+        _chart.ColorBarSettings = settings;
+        return this;
+    }
+    
+    
+    
 }
