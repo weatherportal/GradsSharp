@@ -6,11 +6,10 @@ public class ChartBuilder
 {
 
     private Chart _chart = new();
-    private List<ChartLayer> _chartLayers = new ();
 
     public ChartBuilder AddLayer(Func<ChartLayerBuilder, ChartLayerBuilder> chartLayerBuilder)
     {
-        _chartLayers.Add(chartLayerBuilder(new ChartLayerBuilder()).Build());
+        _chart.Layers.Add(chartLayerBuilder(new ChartLayerBuilder()).Build());
         return this;
     }
     
