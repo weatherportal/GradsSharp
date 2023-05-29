@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using GradsSharp.Drawing.Grads;
+using GradsSharp.Functions;
 using GradsSharp.Models;
 using SixLabors.ImageSharp.Drawing;
 
@@ -79,6 +80,17 @@ public class Plotter
             context.GaUser.SetLon(c.LongitudeMin, c.LongitudeMax);
             context.GaUser.SetMapResolution(c.Resolution);
 
+            if (c.ColorBarEnabled)
+            {
+                var cb = new ColorBar(context);
+                cb.Min = c.ColorBarMin;
+                cb.Max = c.ColorBarMax;
+                cb.Interval = c.ColorBarInterval;
+                cb.GxOut = c.ColorBarGxOut;
+                cb.Kind = c.ColorBarKind??"";
+                cb.SetColors();
+            }
+
             foreach (ChartLayer cl in c.Layers)
             {
                 context.CommonData.DataAction = cl.DataAction;
@@ -98,11 +110,11 @@ public class Plotter
             
             context.GaUser.SetStringSize(0.18);
             context.GaUser.SetStringOptions(1, StringJustification.Right, 12, 0);
-            context.GaUser.DrawString(10.95, 8.3, "2m Temperature (C) & Mean sea layer pressure");
+            context.GaUser.DrawString(10.95, 8.3, c.Title);
             
             context.GaUser.SetStringSize(0.10);
             context.GaUser.SetStringOptions(4, StringJustification.Right, 4, 0);
-            context.GaUser.DrawString(10.95, 8.1, "https://www.weatherportal.eu - Run: 06Z2023MAY27 - Valid: Sat 27/05 06:00Z");
+            context.GaUser.DrawString(10.95, 8.1, "https://www.weatherportal.eu - Run: 00Z2023MAY29 - Valid: Mon 29/05 13:00Z");
             
             context.GaUser.printim(@"tst.png", horizontalSize: 1024, verticalSize: 768);
             // context.GaUser.SetGraphicsOut(GxOutSetting.Print);

@@ -2,6 +2,13 @@
 
 namespace GradsSharp.Models;
 
+
+public enum IntervalType
+{
+    Interval,
+    Fac
+}
+
 public enum DataVariable
 {
     NotDefined,
