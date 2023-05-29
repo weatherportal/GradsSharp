@@ -42,17 +42,4 @@ public class PlotBuilder
         _plot.AddDataFile(new DataFile { FileName = fileName, Format = format});
         return this;
     }
-    
-    public PlotBuilder WithVariable(string name, DataVariable variableType, FixedSurfaceType heighType, double heightValue)
-    {
-        _plot.AddVariableDefintition(new VariableDefinition
-        {
-            VariableName = name,
-            HeightType = heighType,
-            HeightValue = heightValue,
-            VariableType = variableType
-        });
-
-        return this;
-    }
 }
