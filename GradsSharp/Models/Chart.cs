@@ -25,6 +25,8 @@ public class Chart
 
     public bool ColorBarEnabled { get; set; } = false;
     
+    public ColorBarSettings? ColorBarSettings { get; set; }
+    
     public string Title { get; set; }
     
     public List<ChartLayer> Layers { get; set; } = new List<ChartLayer>();

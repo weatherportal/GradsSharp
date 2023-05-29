@@ -3,6 +3,13 @@
 namespace GradsSharp.Models;
 
 
+public enum ColorBarDirection
+{
+    Auto,
+    Vertical,
+    Horizontal
+}
+
 public enum IntervalType
 {
     Interval,

@@ -82,7 +82,7 @@ public class Plotter
 
             if (c.ColorBarEnabled)
             {
-                var cb = new ColorBar(context);
+                var cb = new ColorRange(context);
                 cb.Min = c.ColorBarMin;
                 cb.Max = c.ColorBarMax;
                 cb.Interval = c.ColorBarInterval;
@@ -107,6 +107,18 @@ public class Plotter
             // context.GaUser.SetCLab(LabelOption.Off);
             // context.GaUser.SetCThick(0);
             // context.GaUser.Display("t");
+
+            if (c.ColorBarEnabled && c.ColorBarSettings != null)
+            {
+                var cb = new ColorBar(c.ColorBarSettings, context);
+                cb.DrawColorBar();
+
+                string caption =  "J/kg, Higher means more favorable for (& severity of) TSTMS";
+                context.GaUser.SetStringSize(0.12);
+                context.GaUser.SetStringOptions(1, StringJustification.Right, 3, 270);
+                context.GaUser.DrawString(0.15, 0.35, caption);    
+                
+            }
             
             context.GaUser.SetStringSize(0.18);
             context.GaUser.SetStringOptions(1, StringJustification.Right, 12, 0);
