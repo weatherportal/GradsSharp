@@ -1,4 +1,5 @@
-﻿using GradsSharp.Models;
+﻿using System.Drawing.Imaging;
+using GradsSharp.Models;
 
 namespace GradsSharp.Builders;
 
@@ -19,7 +20,13 @@ public class PlotBuilder
         return _plot;
     }
 
-    
+    public PlotBuilder WithOutputFile(string fileName, int sizeX = 1024, int sizeY = 768)
+    {
+        _plot.OutputFile = fileName;
+        _plot.OutputSizeX = sizeX;
+        _plot.OutputSizeY = sizeY;
+        return this;
+    }
     public PlotBuilder WithOrientation(Orientation orientation)
     {
         _plot.Orientation = orientation;

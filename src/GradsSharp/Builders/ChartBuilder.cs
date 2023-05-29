@@ -18,16 +18,41 @@ public class ChartBuilder
         return _chart;
     }
 
-
-    public ChartBuilder WithTitle(string title)
+    public ChartBuilder WithTextBlock(TextOutput block)
     {
-        _chart.Title = title;
+        _chart.TextBlocks.Add(block);
         return this;
     }
-    
     public ChartBuilder WithMapResolution(MapResolution resolution)
     {
         _chart.Resolution = resolution;
+        return this;
+    }
+    
+    public ChartBuilder WithMapColor(int color)
+    {
+        _chart.MapColor = color;
+        return this;
+    }
+
+    public ChartBuilder WithAxisLabels(Axis axis, AxisLabelOption labelOption, string? format)
+    {
+        if (axis == Axis.X)
+        {
+            _chart.AxisLabelFormatX = format;
+            _chart.AxisLabelOptionX = labelOption;
+        }
+        if (axis == Axis.Y)
+        {
+            _chart.AxisLabelFormatY = format;
+            _chart.AxisLabelOptionY = labelOption;
+        }
+        return this;
+    }
+    
+    public ChartBuilder WithGridSetting(GridOption option)
+    {
+        _chart.GridSetting = option;
         return this;
     }
 
@@ -61,7 +86,7 @@ public class ChartBuilder
         _chart.ColorBarSettings = settings;
         return this;
     }
-    
-    
+
+
     
 }

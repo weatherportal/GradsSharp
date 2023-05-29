@@ -801,6 +801,34 @@ internal class GaUser
         pcm.ylab = i1;
     }
 
+    public void SetAxisLabels(Axis axis, AxisLabelOption option, string? format)
+    {
+        if (axis == Axis.X)
+        {
+            if (option == AxisLabelOption.Format)
+            {
+                pcm.xlab = 1;
+                pcm.xlstr = format;
+            }
+            else
+            {
+                pcm.xlab = (int)option;
+            }
+        }
+        if (axis == Axis.Y)
+        {
+            if (option == AxisLabelOption.Format)
+            {
+                pcm.ylab = 1;
+                pcm.ylstr = format;
+            }
+            else
+            {
+                pcm.ylab = (int)option;
+            }
+        }
+    }
+    
     public void SetGridOptions(GridOption option, int style = -1, int color = -1, int thickness = -1)
     {
         pcm.grflag = (int)option;
@@ -2356,5 +2384,18 @@ internal class GaUser
     }
 
 
+    public void SetMapOptions(int color, LineStyle? style , int? thickness)
+    {
+        _drawingContext.CommonData.mapcol = color;
+        if (style != null)
+        {
+            _drawingContext.CommonData.mapstl = (int)style;
+        }
+
+        if (thickness != null)
+        {
+            _drawingContext.CommonData.mapthk = thickness.Value;
+        }
+    }
    
 }

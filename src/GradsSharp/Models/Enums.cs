@@ -74,7 +74,19 @@ public enum DataVariable
     CloudWater,
     TotalOzone,
     LandCover,
-    IceCover
+    IceCover,
+    Reflectivity,
+    CompositeReflectivity,
+    VentilationRate,
+    CategoricalRain,
+    CategoricalFreezingRain,
+    CategoricalIcePellets,
+    CategoricalSnow,
+    PotentialEvaporationRate,
+    FrictionalVelocity,
+    PressureMSLPEta,
+    LiftedIndexSurface,
+    LiftedIndex4Layer
 }
 
 
@@ -236,6 +248,19 @@ public enum SmoothOption
     Linear = 2
 }
 
+public enum AxisLabelOption
+{
+    On = 1,
+    Off = 0,
+    Format = 2
+}
+
+
+public enum Axis
+{
+    X,
+    Y
+}
 public enum DataFormat
 {
     GFS_GRIB2

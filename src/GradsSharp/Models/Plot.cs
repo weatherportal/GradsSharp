@@ -25,5 +25,7 @@ public class Plot
 
     public void AddVariableDefintition(VariableDefinition definition) => _variables.Add(definition);
 
-
+    public string OutputFile { get; set; }
+    public int OutputSizeX { get; set; } = 1024;
+    public int OutputSizeY { get; set; } = 768;
 }
