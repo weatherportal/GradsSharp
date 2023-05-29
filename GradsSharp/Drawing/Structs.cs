@@ -646,6 +646,8 @@ internal class gacmn
     public Func<double[], double, double> ygr2ab;
     public Func<double[], double, double> xab2gr;
     public Func<double[], double, double> yab2gr;
+    
+    public Action<IDataAdapter>? DataAction { get; set; }
 
     public double[] xgrval;
     public double[] ygrval;
@@ -660,7 +662,7 @@ internal class gacmn
     public int loopflg; /* Looping on or off                     */
     public List<gafile>? pfi1;
     public gafile? pfid;
-    public IVariableMapping _variableMapping;
+    public IVariableMapping VariableMapping { get; set; }
     public int fnum; /* File count                            */
     public int dfnum; /* Default file number   */
 

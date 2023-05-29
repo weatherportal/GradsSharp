@@ -992,6 +992,334 @@ internal class GaUser
         gadef(varName, formula, 0);
     }
 
+    public void Define(string varName, double[] data)
+    {
+        
+        gagrid pgr, pgr1;
+        gastat? pst;
+        gafile pfi, pfiv, pfic;
+        gadefn? pdf, pcurr, psave;
+        gadefn prev;
+        dt tmin, tmax;
+
+        Func<double[], double, double>? conv;
+        double vmin, vmax, zmin, zmax, emin, emax;
+        int res, resu, gr, gru;
+        int itmin, itmax, it, izmin, izmax, iz, iemin, iemax, ie;
+        int i, rc, gsiz, vdz, vdt, vde;
+        long sz, siz;
+
+        double[] dmin = new double[5], dmax = new double[5];
+        double[] cvals;
+
+        string name = varName;
+        
+        zmin = pcm.dmin[2];
+        zmax = pcm.dmax[2];
+        tmin = pcm.tmin;
+        tmax = pcm.tmax;
+        emin = pcm.dmin[4];
+        emax = pcm.dmax[4];
+        vdz = pcm.vdim[2];
+        vdt = pcm.vdim[3];
+        vde = pcm.vdim[4];
+        
+        pfi = pcm.pfid??throw new Exception("No file open yet");
+        
+        conv = pfi.ab2gr[2]; /* Get Z grid limits */
+        vmin = conv(pfi.abvals[2], zmin);
+        vmax = conv(pfi.abvals[2], zmax);
+        if (GaUtil.dequal(vmin, vmax, 1.0e-08) == 0)
+        {
+            if (vmin < 0.0) izmin = (int)(vmin - 0.5);
+            else izmin = (int)(vmin + 0.5);
+            izmax = izmin;
+        }
+        else
+        {
+            izmin = (int)(Math.Floor(vmin + 0.001));
+            izmax = (int)(Math.Ceiling(vmax - 0.001));
+        }
+
+
+        vmin = GaUtil.t2gr(pfi.abvals[3], tmin); /* Get T grid limits */
+        vmax = GaUtil.t2gr(pfi.abvals[3], tmax);
+        if (GaUtil.dequal(vmin, vmax, 1.0e-08) == 0)
+        {
+            if (vmin < 0.0) itmin = (int)(vmin - 0.5);
+            else itmin = (int)(vmin + 0.5);
+            itmax = itmin;
+        }
+        else
+        {
+            itmin = (int)(Math.Floor(vmin + 0.001));
+            itmax = (int)(Math.Ceiling(vmax - 0.001));
+        }
+
+        conv = pfi.ab2gr[4]; /* Get E grid limits */
+        vmin = conv(pfi.abvals[4], emin);
+        vmax = conv(pfi.abvals[4], emax);
+        if (GaUtil.dequal(vmin, vmax, 1.0e-08) == 0)
+        {
+            if (vmin < 0.0) iemin = (int)(vmin - 0.5);
+            else iemin = (int)(vmin + 0.5);
+            iemax = iemin;
+        }
+        else
+        {
+            iemin = (int)(Math.Floor(vmin + 0.001));
+            iemax = (int)(Math.Ceiling(vmax - 0.001));
+        }
+        
+        pst = getpst(pcm);
+        
+        for (i = 0; i < 5; i++)
+        {
+            if (i == 3)
+            {
+                dmin[i] = GaUtil.t2gr(pfi.abvals[i], pst.tmin);
+                dmax[i] = GaUtil.t2gr(pfi.abvals[i], pst.tmax);
+            }
+            else
+            {
+                conv = pfi.ab2gr[i];
+                cvals = pfi.abvals[i];
+                dmin[i] = conv(cvals, pst.dmin[i]);
+                dmax[i] = conv(cvals, pst.dmax[i]);
+            }
+        }
+
+        for (i = 0; i < 5; i++)
+        {
+            if (i == pst.idim || i == pst.jdim)
+            {
+                dmin[i] = Math.Floor(dmin[i] + 0.0001);
+                dmax[i] = Math.Ceiling(dmax[i] - 0.0001);
+                if (dmax[i] <= dmin[i])
+                {
+                    GaGx.gaprnt(0, "Data Request Error: Invalid grid coordinates");
+                    GaGx.gaprnt(0, $"  Varying dimension {i} decreases: {dmin[i]} to {dmax[i]}");
+                    //GaGx.gaprnt(0, $"  Error ocurred getting variable '{sVName}'");
+                    return;
+                }
+            }
+        }
+
+        pdf = new gadefn();
+        pfiv = new gafile();
+        pdf.pfi = pfiv;
+        pfiv.rbuf = null;
+        pfiv.sbuf = null;
+        pfiv.ubuf = null;
+
+        pgr1 = new gagrid();
+        pgr1.idim = pst.idim;
+        pgr1.jdim = pst.jdim;
+        pgr1.grid = data;
+        
+        pgr1.jgrab = pfi.gr2ab[pst.jdim];
+        pgr1.iabgr = pfi.ab2gr[pst.idim];
+        pgr1.jabgr = pfi.ab2gr[pst.jdim];
+        pgr1.jvals = pfi.grvals[pst.jdim];
+        pgr1.jlinr = pfi.linear[pst.jdim];
+        pgr1.igrab = pfi.gr2ab[pst.idim];
+        pgr1.ivals = pfi.grvals[pst.idim];
+        pgr1.ilinr = pfi.linear[pst.idim];
+        pgr1.iavals = pfi.abvals[pst.idim];
+        pgr1.javals = pfi.abvals[pst.jdim];
+        
+                
+        for (i = 0; i < 5; i++)
+        {
+            if (dmin[i] < 0.0)
+            {
+                pgr1.dimmin[i] = (int)(dmin[i] - 0.1);
+            }
+            else
+            {
+                pgr1.dimmin[i] = (int)(dmin[i] + 0.1);
+            }
+
+            if (dmax[i] < 0.0)
+            {
+                pgr1.dimmax[i] = (int)(dmax[i] - 0.1);
+            }
+            else
+            {
+                pgr1.dimmax[i] = (int)(dmax[i] + 0.1);
+            }
+        }
+        
+        pgr1.isiz = pgr1.dimmax[pst.idim] - pgr1.dimmin[pst.idim] + 1;
+        pgr1.jsiz = pgr1.dimmax[pst.jdim] - pgr1.dimmin[pst.jdim] + 1;
+
+        pgr1.umask = new byte[pgr1.isiz * pgr1.jsiz];
+        for (int j = 0; j < pgr1.isiz * pgr1.jsiz; j++)
+        {
+            pgr1.umask[j] = 1;
+        }
+        
+        /* Fill in the pfi block */
+        //pgr1 = pst.result.pgr;
+        pfiv.type = 4;
+        pfiv.climo = 0;
+        pfiv.calendar = pfi.calendar;
+        pfiv.undef = pfi.undef;
+        pfiv.dnum[2] = 1 + izmax - izmin;
+        pfiv.dnum[3] = 1 + itmax - itmin;
+        pfiv.dnum[4] = 1 + iemax - iemin;
+        pfiv.gr2ab[2] = pfi.gr2ab[2];
+        pfiv.ab2gr[2] = pfi.ab2gr[2];
+        pfiv.gr2ab[4] = pfi.gr2ab[4];
+        pfiv.ab2gr[4] = pfi.ab2gr[4];
+
+        if ((pfiv.grvals[2] = GaUtil.cpscal(pfi.grvals[2], pfi.linear[2], 0, 2)) == null) goto etrn;
+        if ((pfiv.abvals[2] = GaUtil.cpscal(pfi.abvals[2], pfi.linear[2], 1, 2)) == null) goto etrn;
+
+        if ((pfiv.grvals[3] = GaUtil.cpscal(pfi.grvals[3], pfi.linear[3], 0, 3)) == null) goto etrn;
+        if ((pfiv.abvals[3] = GaUtil.cpscal(pfi.abvals[3], pfi.linear[3], 1, 3)) == null) goto etrn;
+
+        if ((pfiv.grvals[4] = GaUtil.cpscal(pfi.grvals[4], pfi.linear[4], 0, 4)) == null) goto etrn;
+        if ((pfiv.abvals[4] = GaUtil.cpscal(pfi.abvals[4], pfi.linear[4], 1, 4)) == null) goto etrn;
+
+        pfiv.linear[2] = pfi.linear[2];
+        pfiv.linear[3] = pfi.linear[3];
+        pfiv.linear[4] = pfi.linear[4];
+        pfiv.dimoff[2] = izmin - 1;
+        pfiv.dimoff[3] = itmin - 1;
+        pfiv.dimoff[4] = iemin - 1;
+        pfiv.ppflag = 0;
+
+        if (pgr1.idim > -1 && pgr1.jdim > -1)
+        {
+            /* I and J are varying */
+            pfiv.gr2ab[0] = pgr1.igrab;
+            pfiv.ab2gr[0] = pgr1.iabgr;
+            if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
+            if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+            pfiv.linear[0] = pgr1.ilinr;
+            pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
+            pfiv.dnum[0] = pgr1.isiz;
+
+            pfiv.gr2ab[1] = pgr1.jgrab;
+            pfiv.ab2gr[1] = pgr1.jabgr;
+            if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.jvals, pgr1.jlinr, 0, pgr1.jdim)) == null) goto etrn;
+            if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.javals, pgr1.jlinr, 1, pgr1.jdim)) == null) goto etrn;
+            pfiv.linear[1] = pgr1.jlinr;
+            pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
+            pfiv.dnum[1] = pgr1.jsiz;
+        }
+        else if (pgr1.idim > -1 && pgr1.jdim == -1)
+        {
+            /* I is varying, J is fixed */
+            if (pgr1.idim == 0)
+            {
+                /* I is X */
+                pfiv.gr2ab[0] = pgr1.igrab;
+                pfiv.ab2gr[0] = pgr1.iabgr;
+                if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                pfiv.linear[0] = pgr1.ilinr;
+                pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
+                pfiv.dnum[0] = pgr1.isiz;
+
+                pfiv.gr2ab[1] = pfi.gr2ab[1];
+                pfiv.ab2gr[1] = pfi.ab2gr[1];
+                if ((pfiv.grvals[1] = GaUtil.cpscal(pfi.grvals[1], pfi.linear[1], 0, 1)) == null) goto etrn;
+                if ((pfiv.abvals[1] = GaUtil.cpscal(pfi.abvals[1], pfi.linear[1], 1, 1)) == null) goto etrn;
+                pfiv.linear[1] = pfi.linear[1];
+                pfiv.dimoff[1] = 0;
+                pfiv.dnum[1] = 1;
+            }
+            else
+            {
+                /* I is Y */
+                pfiv.gr2ab[1] = pgr1.igrab;
+                pfiv.ab2gr[1] = pgr1.iabgr;
+                if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                pfiv.linear[1] = pgr1.ilinr;
+                pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
+                pfiv.dnum[1] = pgr1.isiz;
+
+                pfiv.gr2ab[0] = pfi.gr2ab[0];
+                pfiv.ab2gr[0] = pfi.ab2gr[0];
+                if ((pfiv.grvals[0] = GaUtil.cpscal(pfi.grvals[0], pfi.linear[0], 0, 0)) == null) goto etrn;
+                if ((pfiv.abvals[0] = GaUtil.cpscal(pfi.abvals[0], pfi.linear[0], 1, 0)) == null) goto etrn;
+                pfiv.linear[0] = pfi.linear[0];
+                pfiv.dimoff[0] = 0;
+                pfiv.dnum[0] = 1;
+            }
+        }
+        else
+        {
+            /* I and J are fixed */
+            pfiv.gr2ab[0] = pfi.gr2ab[0];
+            pfiv.ab2gr[0] = pfi.ab2gr[0];
+            if ((pfiv.grvals[0] = GaUtil.cpscal(pfi.grvals[0], pfi.linear[0], 0, 0)) == null) goto etrn;
+            if ((pfiv.abvals[0] = GaUtil.cpscal(pfi.abvals[0], pfi.linear[0], 1, 0)) == null) goto etrn;
+            pfiv.linear[0] = pfi.linear[0];
+            pfiv.dimoff[0] = 0;
+            pfiv.dnum[0] = 1;
+
+            pfiv.gr2ab[1] = pfi.gr2ab[1];
+            pfiv.ab2gr[1] = pfi.ab2gr[1];
+            if ((pfiv.grvals[1] = GaUtil.cpscal(pfi.grvals[1], pfi.linear[1], 0, 1)) == null) goto etrn;
+            if ((pfiv.abvals[1] = GaUtil.cpscal(pfi.abvals[1], pfi.linear[1], 1, 1)) == null) goto etrn;
+            pfiv.linear[1] = pfi.linear[1];
+            pfiv.dimoff[1] = 0;
+            pfiv.dnum[1] = 1;
+        }
+
+        /* If the first grid is all the data we need, then we are pretty much done.  */
+
+        if (izmin == izmax && itmin == itmax && iemin == iemax)
+        {
+            if (pgr1.idim < 0)
+            {
+                /* grid is a single data value */
+                sz = sizeof(double);
+                pfiv.rbuf = new double[1];
+                sz = sizeof(char);
+                pfiv.ubuf = new byte[1];
+                pfiv.rbuf[0] = pgr1.grid[0];
+                pfiv.ubuf[0] = pgr1.umask[0];
+            }
+            else
+            {
+                pfiv.rbuf = pgr1.grid;
+                pfiv.ubuf = pgr1.umask;
+            }
+
+            pgr1.grid = null;
+            pgr1.umask = null;
+        }
+        
+        
+        var curr = pcm.pdf1.FirstOrDefault(x => x.abbrv == name);
+
+        if (curr != null)
+        {
+            GaGx.gaprnt(2, "Name already DEFINEd:  ");
+            GaGx.gaprnt(2, name);
+            GaGx.gaprnt(2, ".   Will be deleted and replaced.\n");
+            pcm.pdf1.Remove(curr);
+        }
+
+        pcm.pdf1.Add(pdf);
+        pdf.abbrv = name;
+        
+        etrn:
+        GaGx.gaprnt(0, "Memory allocation error for Define\n");
+
+        retrn:
+
+        pcm.tmax = tmax; /* Restore user dim limits*/
+        pcm.dmax[2] = zmax;
+        pcm.vdim[2] = vdz;
+        pcm.vdim[3] = vdt;
+    }
+
     int gadef(string variable, string formula, int impf)
     {
         gagrid pgr, pgr1;
@@ -1432,8 +1760,8 @@ internal class GaUser
     {
         if (format == DataFormat.GFS_GRIB2)
         {
+            _drawingContext.CommonData.VariableMapping = new GfsVariables();
             ReadGrib2File(dataFile);
-            _drawingContext.CommonData._variableMapping = new GfsVariables();
         }
 
 
@@ -1582,7 +1910,7 @@ internal class GaUser
                     HeightType = sfcType,
                     HeightValue = heightValue ?? Double.MinValue,
                     VariableName = gv.abbrv,
-                    VariableType = GetVarType(name)
+                    VariableType = _drawingContext.CommonData.VariableMapping.GetVarType(name)
                 };
                 gv.abbrv = gv.variableDefinition.GetVarName();
                 gf.pvar1.Add(gv);
@@ -1595,9 +1923,6 @@ internal class GaUser
     }
 
 
-    public void Define()
-    {
-    }
 
     public int Display(string variable)
     {
@@ -1623,6 +1948,11 @@ internal class GaUser
         {
             GaGx.gaprnt(0, "Display command error:  No expression provided");
             return (1);
+        }
+
+        if (pcm.DataAction != null)
+        {
+            pcm.DataAction(new DataAdapter(_drawingContext));
         }
 
         //garemb(cmd);
@@ -2025,186 +2355,5 @@ internal class GaUser
     }
 
 
-    private DataVariable GetVarType(string name)
-    {
-        if (name == "Temperature")
-        {
-            return DataVariable.Temperature;
-        }
-
-        if (name == "Pressure")
-        {
-            return DataVariable.Pressure;
-        }
-        else if (name == "Pressure reduced to MSL")
-        {
-            return DataVariable.Pressure;
-        }
-        else if (name == "Cloud mixing ratio")
-        {
-            return DataVariable.CloudMixingRatio;
-        }
-        else if (name == "Ice water mixing ratio")
-        {
-            return DataVariable.IceWaterMixingRatio;
-        }
-        else if (name == "Rain mixing ratio")
-        {
-            return DataVariable.RainMixingRatio;
-        }
-        else if (name == "Snow mixing ratio")
-        {
-            return DataVariable.SnowMixingRatio;
-        }
-        else if (name == "Graupel (snow pellets)")
-        {
-            return DataVariable.Graupel;
-        }
-        else if (name == "Visibility")
-        {
-            return DataVariable.Visibility;
-        }
-        else if (name == "u-component of wind")
-        {
-            return DataVariable.UWind;
-        }
-        else if (name == "v-component of wind")
-        {
-            return DataVariable.VWind;
-        }
-        else if (name == "Wind speed (gust)")
-        {
-            return DataVariable.WindGust;
-        }
-        else if (name == "Geopotential height")
-        {
-            return DataVariable.GeopotentialHeight;
-        }
-        else if (name == "Relative humidity")
-        {
-            return DataVariable.RelativeHumidity;
-        }
-        else if (name == "Specific humidity")
-        {
-            return DataVariable.SpecificHumidity;
-        }
-        else if (name == "Vertical velocity (pressure)")
-        {
-            return DataVariable.VerticalVorticity;
-        }
-        else if (name == "Vertical velocity (geometric)")
-        {
-            return DataVariable.VerticalVelocity;
-        }
-        else if (name == "Absolute vorticity")
-        {
-            return DataVariable.AbsoluteVorticity;
-        }
-        else if (name == "Total cloud cover")
-        {
-            return DataVariable.TotalCloudCover;
-        }
-        else if (name == "Dew point temperature")
-        {
-            return DataVariable.Dewpoint;
-        }
-        else if (name == "Convective available potential energy")
-        {
-            return DataVariable.CAPE;
-        }
-        else if (name == "Convective inhibition")
-        {
-            return DataVariable.CIN;
-        }
-        else if (name == "Storm relative helicity")
-        {
-            return DataVariable.SRH;
-        }
-        else if (name == "Soil temperature")
-        {
-            return DataVariable.SoilTemperature;
-        }
-        else if (name == "Water equivalent of accumulated snow depth")
-        {
-            return DataVariable.WaterEquivalentOfSnowDepth;
-        }
-        else if (name == "Snow depth")
-        {
-            return DataVariable.SnowDepth;
-        }
-        else if (name == "Ice thickness")
-        {
-            return DataVariable.IceThickness;
-        }
-        else if (name == "Apparent Temperature ")
-        {
-            return DataVariable.ApparentTemperature;
-        }
-        else if (name == "Ice growth rate")
-        {
-            return DataVariable.IceGrowthRate;
-        }
-        else if (name == "Percent frozen precipitation")
-        {
-            return DataVariable.PercentFrozenPrecip;
-        }
-        else if (name == "Precipitation rate")
-        {
-            return DataVariable.PrecipRate;
-        }
-        else if (name == "Surface roughness")
-        {
-            return DataVariable.SurfaceRoughness;
-        }
-        else if (name == "Vegetation")
-        {
-            return DataVariable.Vegetation;
-        }
-        else if (name == "Soil type")
-        {
-            return DataVariable.SoilType;
-        }
-        else if (name == "Precipitable water")
-        {
-            return DataVariable.PrecipitableWater;
-        }
-        else if (name == "Cloud water")
-        {
-            return DataVariable.CloudWater;
-        }
-        else if (name == "Total ozone")
-        {
-            return DataVariable.TotalOzone;
-        }
-        else if (name == "Low cloud cover")
-        {
-            return DataVariable.LowCloudCover;
-        }
-        else if (name == "Medium cloud cover")
-        {
-            return DataVariable.MediumCloudCover;
-        }
-        else if (name == "High cloud cover")
-        {
-            return DataVariable.HighCloudCover;
-        }
-        else if (name == "ICAO Standard Atmosphere Reference Height")
-        {
-            return DataVariable.ICAOReferenceHeight;
-        }
-        else if (name == "Potential temperature")
-        {
-            return DataVariable.Potentialemperature;
-        }
-        else if (name == "Land cover (1=land, 2=sea)")
-        {
-            return DataVariable.LandCover;
-        }
-        else if (name == "Ice cover")
-        {
-            return DataVariable.IceCover;
-        }
-
-        throw new Exception($"Variable name {name} not mapped");
-    }
+   
 }

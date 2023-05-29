@@ -15,7 +15,7 @@ internal class GfsGribDataReader : IGriddedDataReader
             if (ds.Parameter != null)
             {
 
-                if (ds.Parameter.Value.Name == definition.VariableType.ToString())
+                if (ds.Parameter.Value.Name == pcmn.VariableMapping.GetVariableName(definition.VariableType))
                 {
 
                     var ps = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;

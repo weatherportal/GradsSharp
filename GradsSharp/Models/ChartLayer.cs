@@ -1,6 +1,11 @@
 ﻿namespace GradsSharp.Models;
 
-internal class ChartLayer
+public class ChartLayer
 {
-    public int[] Levels { get; set; }
+    public Action<IDataAdapter>? DataAction { get; set; } 
+    public int[]? Levels { get; set; }
+    
+    public GxOutSetting LayerType { get; set; }
+    
+    public string VariableToDisplay { get; set; }
 }

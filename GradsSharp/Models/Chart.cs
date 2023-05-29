@@ -16,5 +16,7 @@ public class Chart
     public bool PlotAreaDefined { get; set; } = false;
 
     public MapResolution Resolution { get; set; } = MapResolution.Undefined;
-    
+
+    public List<ChartLayer> Layers { get; set; } = new List<ChartLayer>();
+
 }
