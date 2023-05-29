@@ -24,13 +24,15 @@ public class VariableDefinition
             DataVariable.VWind => "v",
             DataVariable.GeopotentialHeight => "hgt",
             DataVariable.Pressure => "pres",
+            DataVariable.PressureMSL => "presmsl",
             DataVariable.CloudMixingRatio => "cloudmix",
             DataVariable.IceWaterMixingRatio => "icewmix",
             DataVariable.RainMixingRatio => "rainmix",
             DataVariable.SnowMixingRatio => "snowmix",
             DataVariable.Visibility => "vis",
             DataVariable.WindGust => "gust",
-            DataVariable.VerticalVorticity => "vertvort",
+            DataVariable.VerticalVorticityGeometric => "vertvortg",
+            DataVariable.VerticalVorticityPressure => "vertvortp",
             DataVariable.AbsoluteVorticity => "absvort",
             DataVariable.VerticalVelocity => "vertvel",
             DataVariable.TotalCloudCover => "tcc",
@@ -55,7 +57,18 @@ public class VariableDefinition
             DataVariable.ICAOReferenceHeight => "icaorefh",
             DataVariable.LandCover => "landcov",
             DataVariable.IceCover => "icecov",
-            _ => throw new ArgumentOutOfRangeException()
+            DataVariable.MaximumTemperature => "tmpmax",
+            DataVariable.MinimumTemperature => "tmpmin",
+            DataVariable.ConvectivePrecipRate => "cprecrate",
+            DataVariable.TotalPrecipitation => "prectot",
+            DataVariable.ConvectivePrecipitation => "precconv",
+            DataVariable.WaterRunoff => "waterrun",
+            DataVariable.LatentNetHeatFlux => "lnhf",
+            DataVariable.SensibleNetHeatFlux => "snhf",
+            DataVariable.MomentFluxU => "mfu",
+            DataVariable.MomentFluxV => "mfv",
+            DataVariable.Albedo => "alb",
+            _ => throw new ArgumentOutOfRangeException($"{VariableType}")
         };
 
         if (HeightType == FixedSurfaceType.SpecifiedHeightLevelAboveGround)
@@ -67,5 +80,10 @@ public class VariableDefinition
             result += "prs";
         }
         return result;
+    }
+
+    public override string ToString()
+    {
+        return $"{VariableType}-{HeightType}-{HeightValue}";
     }
 }

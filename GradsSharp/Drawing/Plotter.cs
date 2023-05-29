@@ -71,7 +71,7 @@ public class Plotter
         context.GaUser.SetMPVals(OnOffSetting.On, -10, 20, 30, 60);
         context.GaUser.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
         context.GaUser.SetMProjection(Projection.Latlon);
-        context.GaUser.Define("t", "tmp2m-273.15");
+        //context.GaUser.Define("t", "tmp2m-273.15");
         
         foreach (Chart c in context.Plot.Charts)
         {

@@ -662,7 +662,7 @@ internal class gacmn
     public int loopflg; /* Looping on or off                     */
     public List<gafile>? pfi1;
     public gafile? pfid;
-    public IVariableMapping _variableMapping;
+    public IVariableMapping VariableMapping { get; set; }
     public int fnum; /* File count                            */
     public int dfnum; /* Default file number   */
 

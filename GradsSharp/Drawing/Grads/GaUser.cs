@@ -1118,11 +1118,15 @@ internal class GaUser
         pgr1.grid = data;
         
         pgr1.jgrab = pfi.gr2ab[pst.jdim];
+        pgr1.iabgr = pfi.ab2gr[pst.idim];
+        pgr1.jabgr = pfi.ab2gr[pst.jdim];
         pgr1.jvals = pfi.grvals[pst.jdim];
         pgr1.jlinr = pfi.linear[pst.jdim];
         pgr1.igrab = pfi.gr2ab[pst.idim];
         pgr1.ivals = pfi.grvals[pst.idim];
         pgr1.ilinr = pfi.linear[pst.idim];
+        pgr1.iavals = pfi.abvals[pst.idim];
+        pgr1.javals = pfi.abvals[pst.jdim];
         
                 
         for (i = 0; i < 5; i++)
@@ -1152,7 +1156,7 @@ internal class GaUser
         pgr1.umask = new byte[pgr1.isiz * pgr1.jsiz];
         for (int j = 0; j < pgr1.isiz * pgr1.jsiz; j++)
         {
-            pgr1.umask[j] = 0;
+            pgr1.umask[j] = 1;
         }
         
         /* Fill in the pfi block */
@@ -1756,8 +1760,8 @@ internal class GaUser
     {
         if (format == DataFormat.GFS_GRIB2)
         {
+            _drawingContext.CommonData.VariableMapping = new GfsVariables();
             ReadGrib2File(dataFile);
-            _drawingContext.CommonData._variableMapping = new GfsVariables();
         }
 
 
@@ -1906,7 +1910,7 @@ internal class GaUser
                     HeightType = sfcType,
                     HeightValue = heightValue ?? Double.MinValue,
                     VariableName = gv.abbrv,
-                    VariableType = GetVarType(name)
+                    VariableType = _drawingContext.CommonData.VariableMapping.GetVarType(name)
                 };
                 gv.abbrv = gv.variableDefinition.GetVarName();
                 gf.pvar1.Add(gv);
@@ -1919,9 +1923,6 @@ internal class GaUser
     }
 
 
-    public void Define()
-    {
-    }
 
     public int Display(string variable)
     {
@@ -2354,186 +2355,5 @@ internal class GaUser
     }
 
 
-    private DataVariable GetVarType(string name)
-    {
-        if (name == "Temperature")
-        {
-            return DataVariable.Temperature;
-        }
-
-        if (name == "Pressure")
-        {
-            return DataVariable.Pressure;
-        }
-        else if (name == "Pressure reduced to MSL")
-        {
-            return DataVariable.Pressure;
-        }
-        else if (name == "Cloud mixing ratio")
-        {
-            return DataVariable.CloudMixingRatio;
-        }
-        else if (name == "Ice water mixing ratio")
-        {
-            return DataVariable.IceWaterMixingRatio;
-        }
-        else if (name == "Rain mixing ratio")
-        {
-            return DataVariable.RainMixingRatio;
-        }
-        else if (name == "Snow mixing ratio")
-        {
-            return DataVariable.SnowMixingRatio;
-        }
-        else if (name == "Graupel (snow pellets)")
-        {
-            return DataVariable.Graupel;
-        }
-        else if (name == "Visibility")
-        {
-            return DataVariable.Visibility;
-        }
-        else if (name == "u-component of wind")
-        {
-            return DataVariable.UWind;
-        }
-        else if (name == "v-component of wind")
-        {
-            return DataVariable.VWind;
-        }
-        else if (name == "Wind speed (gust)")
-        {
-            return DataVariable.WindGust;
-        }
-        else if (name == "Geopotential height")
-        {
-            return DataVariable.GeopotentialHeight;
-        }
-        else if (name == "Relative humidity")
-        {
-            return DataVariable.RelativeHumidity;
-        }
-        else if (name == "Specific humidity")
-        {
-            return DataVariable.SpecificHumidity;
-        }
-        else if (name == "Vertical velocity (pressure)")
-        {
-            return DataVariable.VerticalVorticity;
-        }
-        else if (name == "Vertical velocity (geometric)")
-        {
-            return DataVariable.VerticalVelocity;
-        }
-        else if (name == "Absolute vorticity")
-        {
-            return DataVariable.AbsoluteVorticity;
-        }
-        else if (name == "Total cloud cover")
-        {
-            return DataVariable.TotalCloudCover;
-        }
-        else if (name == "Dew point temperature")
-        {
-            return DataVariable.Dewpoint;
-        }
-        else if (name == "Convective available potential energy")
-        {
-            return DataVariable.CAPE;
-        }
-        else if (name == "Convective inhibition")
-        {
-            return DataVariable.CIN;
-        }
-        else if (name == "Storm relative helicity")
-        {
-            return DataVariable.SRH;
-        }
-        else if (name == "Soil temperature")
-        {
-            return DataVariable.SoilTemperature;
-        }
-        else if (name == "Water equivalent of accumulated snow depth")
-        {
-            return DataVariable.WaterEquivalentOfSnowDepth;
-        }
-        else if (name == "Snow depth")
-        {
-            return DataVariable.SnowDepth;
-        }
-        else if (name == "Ice thickness")
-        {
-            return DataVariable.IceThickness;
-        }
-        else if (name == "Apparent Temperature ")
-        {
-            return DataVariable.ApparentTemperature;
-        }
-        else if (name == "Ice growth rate")
-        {
-            return DataVariable.IceGrowthRate;
-        }
-        else if (name == "Percent frozen precipitation")
-        {
-            return DataVariable.PercentFrozenPrecip;
-        }
-        else if (name == "Precipitation rate")
-        {
-            return DataVariable.PrecipRate;
-        }
-        else if (name == "Surface roughness")
-        {
-            return DataVariable.SurfaceRoughness;
-        }
-        else if (name == "Vegetation")
-        {
-            return DataVariable.Vegetation;
-        }
-        else if (name == "Soil type")
-        {
-            return DataVariable.SoilType;
-        }
-        else if (name == "Precipitable water")
-        {
-            return DataVariable.PrecipitableWater;
-        }
-        else if (name == "Cloud water")
-        {
-            return DataVariable.CloudWater;
-        }
-        else if (name == "Total ozone")
-        {
-            return DataVariable.TotalOzone;
-        }
-        else if (name == "Low cloud cover")
-        {
-            return DataVariable.LowCloudCover;
-        }
-        else if (name == "Medium cloud cover")
-        {
-            return DataVariable.MediumCloudCover;
-        }
-        else if (name == "High cloud cover")
-        {
-            return DataVariable.HighCloudCover;
-        }
-        else if (name == "ICAO Standard Atmosphere Reference Height")
-        {
-            return DataVariable.ICAOReferenceHeight;
-        }
-        else if (name == "Potential temperature")
-        {
-            return DataVariable.Potentialemperature;
-        }
-        else if (name == "Land cover (1=land, 2=sea)")
-        {
-            return DataVariable.LandCover;
-        }
-        else if (name == "Ice cover")
-        {
-            return DataVariable.IceCover;
-        }
-
-        throw new Exception($"Variable name {name} not mapped");
-    }
+   
 }
