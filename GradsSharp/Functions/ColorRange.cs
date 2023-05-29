@@ -250,7 +250,7 @@ int max_ncol = max;
             int g = (int)(sg + (eg - sg) * (i - snum) / diff);
             int b = (int)(sb + (eb - sb) * (i - snum) / diff);
             int a = (int)(sa + (ea - sa) * (i - snum) / diff);
-            Console.WriteLine($"Define color {i} as ({r},{g},{b},{a})");
+            //Console.WriteLine($"Define color {i} as ({r},{g},{b},{a})");
             
             _drawingContext.GaUser.SetColor(i, r, g, b, a);
             i = i + 1;
