@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using GradsSharp.Models.Internal;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class GaGx
 {
@@ -7104,7 +7106,7 @@ internal class GaGx
     void gaaxis(int axis, int dim)
     {
         var pcm = _drawingContext.CommonData;
-        gafile pfi;
+        GradsFile pfi;
         dt tstrt = new dt(), tincr = new(), addmo = new dt(), twrk;
         double vmin, vmax, x, y, tt;
         double[] tvals = Array.Empty<double>();

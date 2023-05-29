@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Models;
+using GradsSharp.Models.Internal;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -7,7 +8,7 @@ internal class GaIO
     static bool cflag = false; /* cache flag */
     static gagrid pgr;
     static gavar pvr;
-    static gafile pfi;
+    static GradsFile pfi;
     static int timerr;
     static int msgflg = 1;
 

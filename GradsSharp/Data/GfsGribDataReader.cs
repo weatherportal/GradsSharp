@@ -1,5 +1,6 @@
 ﻿using GradsSharp.Drawing;
 using GradsSharp.Models;
+using GradsSharp.Models.Internal;
 using NGrib;
 using NGrib.Grib2.Templates.ProductDefinitions;
 
@@ -7,7 +8,7 @@ namespace GradsSharp.Data;
 
 internal class GfsGribDataReader : IGriddedDataReader
 {
-    public double[] ReadData(gacmn pcmn, gafile file, VariableDefinition definition)
+    public double[] ReadData(GradsCommon pcmn, GradsFile file, VariableDefinition definition)
     {
         Grib2Reader rdr = new Grib2Reader(file.name);
         foreach (var ds in rdr.ReadAllDataSets())

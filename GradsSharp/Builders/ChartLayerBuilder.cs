@@ -34,6 +34,42 @@ public class ChartLayerBuilder
     public ChartLayerBuilder WithVariableToDisplay(string variable)
     {
         _chartLayer.VariableToDisplay = variable;
+        
+        return this;
+    }
+
+    public ChartLayerBuilder WithContourStyle(LineStyle style)
+    {
+        _chartLayer.LineStyle = style;
+        return this;
+    }
+
+    public ChartLayerBuilder WithContourInterval(double interval)
+    {
+        _chartLayer.ContourInterval = interval;
+        return this;
+    }
+
+    public ChartLayerBuilder WithLabelOption(LabelOption option)
+    {
+        _chartLayer.ContourLabelOption = option;
+        return this;
+    }
+
+    public ChartLayerBuilder WithContourMin(double min)
+    {
+        _chartLayer.ContourMin = min;
+        return this;
+    }
+    public ChartLayerBuilder WithContourMax(double max)
+    {
+        _chartLayer.ContourMax = max;
+        return this;
+    }
+
+    public ChartLayerBuilder WithContourColor(int clr)
+    {
+        _chartLayer.ContourColor = clr;
         return this;
     }
 }

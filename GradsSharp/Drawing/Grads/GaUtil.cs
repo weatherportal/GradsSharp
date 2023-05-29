@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GradsSharp.Models.Internal;
 using GradsSharp.Utils;
 
 namespace GradsSharp.Drawing.Grads;
@@ -548,7 +549,7 @@ internal class GaUtil
         return (start);
     }
 
-    public static int? dimprs(string expression, int pos, gastat pst, gafile pfi,
+    public static int? dimprs(string expression, int pos, gastat pst, GradsFile pfi,
         out int dim, out double d, int type, out int wflag)
     {
         dt dtim = new();
