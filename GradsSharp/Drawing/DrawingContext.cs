@@ -1,12 +1,13 @@
 ﻿using GradsSharp.Drawing.Grads;
 using GradsSharp.Models;
+using GradsSharp.Models.Internal;
 
 namespace GradsSharp.Drawing;
 
 internal class DrawingContext
 {
 
-    public gacmn CommonData { get; set; } = new gacmn();
+    public GradsCommon CommonData { get; set; } = new GradsCommon();
     
 
     public GaSubs GaSubs { get; set; }

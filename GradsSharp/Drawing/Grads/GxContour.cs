@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using GradsSharp.Models.Internal;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class GxContour
 {
@@ -1222,7 +1224,7 @@ internal class GxContour
         _drawingContext.GaSubs.gxmaskrec(x - buff, x + w + buff, y - buff, y + h + buff);
 
         _drawingContext.GaSubs.gxcolr(scol);
-        _drawingContext.GaSubs.gxcolr(swid);
+        _drawingContext.GaSubs.gxwide(swid);
     }
 
 /* query if the contour label will overlay another, if uMath.Sing masking */

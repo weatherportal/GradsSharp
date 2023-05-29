@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using GradsSharp.Models.Internal;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class GaExpr
 {
@@ -984,7 +986,7 @@ internal class GaExpr
     int? varprs(string ch, int ipos, gastat pst)
     {
         gagrid? pgr, pgr2 = null;
-        gafile? pfi;
+        GradsFile? pfi;
         gavar? pvar, pvar2, vfake = new gavar();
 
         Func<double[], double, double>? conv;
@@ -1679,7 +1681,7 @@ internal class GaExpr
         return (0);
     }
 
-    gafile? getdfn(string name, gastat pst)
+    GradsFile? getdfn(string name, gastat pst)
     {
         gadefn pdf;
 

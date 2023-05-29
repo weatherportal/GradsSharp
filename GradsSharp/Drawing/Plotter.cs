@@ -1,15 +1,11 @@
-﻿using System.Reflection;
-using GradsSharp.Drawing.Grads;
-using GradsSharp.Functions;
+﻿using GradsSharp.Functions;
 using GradsSharp.Models;
-using SixLabors.ImageSharp.Drawing;
 
 namespace GradsSharp.Drawing;
 
 public class Plotter
 {
     DrawingContext context = new DrawingContext();
-    Image<Argb32> image;
     public void Draw(Plot plot)
     {
 
@@ -72,6 +68,7 @@ public class Plotter
         context.GaUser.SetMPVals(OnOffSetting.On, -10, 20, 30, 60);
         context.GaUser.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
         context.GaUser.SetMProjection(Projection.Latlon);
+        context.CommonData.mapcol = 1;
         //context.GaUser.Define("t", "tmp2m-273.15");
         
         foreach (Chart c in context.Plot.Charts)
@@ -95,6 +92,22 @@ public class Plotter
             {
                 context.CommonData.DataAction = cl.DataAction;
                 context.GaUser.SetGraphicsOut(cl.LayerType);
+
+                if (cl.LayerType == GxOutSetting.Contour)
+                {
+                    context.GaUser.SetCStyle(cl.LineStyle);
+                    if(cl.ContourInterval!=null)
+                        context.GaUser.SetCInt(cl.ContourInterval.Value);
+                    if(cl.ContourMin!=null)
+                        context.GaUser.SetCMin(cl.ContourMin.Value);
+                    if(cl.ContourMax!=null)
+                        context.GaUser.SetCMax(cl.ContourMax.Value);
+                    if(cl.ContourLabelOption!=null)
+                        context.GaUser.SetCLab(cl.ContourLabelOption.Value);
+                    if(cl.ContourColor!=null)
+                        context.GaUser.SetCColor(cl.ContourColor.Value);
+                }
+                
                 context.GaUser.Display(cl.VariableToDisplay);
             }
             //

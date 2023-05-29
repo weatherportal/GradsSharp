@@ -1,5 +1,6 @@
 ﻿using GradsSharp.Data;
 using GradsSharp.Models;
+using GradsSharp.Models.Internal;
 using Microsoft.VisualBasic;
 using NGrib;
 using NGrib.Grib1;
@@ -11,10 +12,10 @@ namespace GradsSharp.Drawing.Grads;
 internal class GaUser
 {
     private DrawingContext _drawingContext;
-    private gacmn pcm;
+    private GradsCommon pcm;
 
     private bool isReinit = false;
-    private gafile pfi;
+    private GradsFile pfi;
 
     private int yin = -999;
     private int xin = -999;
@@ -521,7 +522,7 @@ internal class GaUser
         }
     }
 
-    public void SetCInt(int val)
+    public void SetCInt(double val)
     {
         if (val <= 0)
         {
@@ -997,7 +998,7 @@ internal class GaUser
         
         gagrid pgr, pgr1;
         gastat? pst;
-        gafile pfi, pfiv, pfic;
+        GradsFile pfi, pfiv, pfic;
         gadefn? pdf, pcurr, psave;
         gadefn prev;
         dt tmin, tmax;
@@ -1106,7 +1107,7 @@ internal class GaUser
         }
 
         pdf = new gadefn();
-        pfiv = new gafile();
+        pfiv = new GradsFile();
         pdf.pfi = pfiv;
         pfiv.rbuf = null;
         pfiv.sbuf = null;
@@ -1324,7 +1325,7 @@ internal class GaUser
     {
         gagrid pgr, pgr1;
         gastat? pst;
-        gafile pfi, pfiv, pfic;
+        GradsFile pfi, pfiv, pfic;
         gadefn? pdf, pcurr, psave;
         gadefn prev;
         dt tmin, tmax;
@@ -1463,7 +1464,7 @@ internal class GaUser
 
         /* Allocate the pdf and pfi blocks */
         pdf = new gadefn();
-        pfiv = new gafile();
+        pfiv = new GradsFile();
         pdf.pfi = pfiv;
         pfiv.rbuf = null;
         pfiv.sbuf = null;
@@ -1777,7 +1778,7 @@ internal class GaUser
     {
         GaGx.gaprnt(0, $"Loading datafile {dataFile}");
 
-        gafile gf = new gafile();
+        GradsFile gf = new GradsFile();
         gf.name = dataFile;
 
         Grib2Reader rdr = new Grib2Reader(dataFile);
@@ -1881,7 +1882,7 @@ internal class GaUser
 
         if (_drawingContext.CommonData.pfi1 == null)
         {
-            _drawingContext.CommonData.pfi1 = new List<gafile>();
+            _drawingContext.CommonData.pfi1 = new List<GradsFile>();
         }
 
         _drawingContext.CommonData.pfi1.Add(gf);
@@ -1927,7 +1928,7 @@ internal class GaUser
     public int Display(string variable)
     {
         gastat? pst;
-        gafile pfi;
+        GradsFile pfi;
 
         Func<double[], double, double>? conv = null;
         double[] vals;
@@ -2130,7 +2131,7 @@ internal class GaUser
         return (1);
     }
 
-    private int gapars(string cmd, gastat pst, gacmn pcm)
+    private int gapars(string cmd, gastat pst, GradsCommon pcm)
     {
         int pos;
         string expr;
@@ -2187,7 +2188,7 @@ internal class GaUser
         pcm.relnum = 0;
     }
 
-    private gastat? getpst(gacmn pcm)
+    private gastat? getpst(GradsCommon pcm)
     {
         gastat pst = new gastat();
         int i, vcnt, lflg, ll;

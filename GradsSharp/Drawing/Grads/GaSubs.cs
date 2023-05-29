@@ -30,7 +30,7 @@ public class GaSubs
     //static void (*bconv)(double, double, double *, double *); /* for back transform rnt */
     static int bcol; /* background color */
     static int savcol; /* for color save/restore */
-    static StringBuilder mask; /* pointer to mask array */
+    static char[]? mask; /* pointer to mask array */
     static int maskx; /* Size of a row in the array */
     static int masksize; /* Size of mask array */
 
@@ -1170,7 +1170,7 @@ public class GaSubs
         {
             /* If not allocated yet, now's the time */
             siz = (int)(rxsize * rysize * 10000.0);
-            mask = new StringBuilder(siz);
+            mask = new char[siz];
             masksize = siz;
             maskx = (int)(rxsize * 100.0);
             gxmaskclear();

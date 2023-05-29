@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Reflection.Metadata;
+using GradsSharp.Models.Internal;
 
 namespace GradsSharp.Drawing.Grads;
 
