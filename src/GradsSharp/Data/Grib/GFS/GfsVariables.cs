@@ -1,7 +1,6 @@
-﻿using GradsSharp.Data.Grib;
-using GradsSharp.Models;
+﻿using GradsSharp.Models;
 
-namespace GradsSharp.Data;
+namespace GradsSharp.Data.Grib.GFS;
 
 public class GfsVariables : IVariableMapping
 {
@@ -115,19 +114,31 @@ new GribDataSetInfo { Discipline = 10, ParameterCategory = 2, ParameterNumber = 
          */
     }
 
-    public string GetVariableName(DataVariable variable)
+    public object GetVariableInfo(DataVariable variable)
     {
         GribDataSetInfo? result = null ;
         if (_mapping.TryGetValue(variable, out result))
         {
-            return result.ParameterName;
+            return result;
         }
 
         // should not happen
         throw new Exception($"Variable {variable} not found");
     }
-    
-    
+
+    public DataVariable GetGrib2VarType(int disciple, int paramCategory, int paramNumber)
+    {
+        foreach (var dsi in _mapping)
+        {
+            if (dsi.Value.Discipline == disciple && dsi.Value.ParameterCategory == paramCategory &&
+                dsi.Value.ParameterNumber == paramNumber)
+                return dsi.Key;
+        }
+
+        throw new Exception("Variable not found");
+    }
+
+
     public DataVariable GetVarType(string name)
     {
 

@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Data;
+using GradsSharp.Data.Grib.GFS;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 using Microsoft.VisualBasic;
@@ -1939,7 +1940,9 @@ internal class GaUser
                     HeightType = sfcType,
                     HeightValue = heightValue ?? Double.MinValue,
                     VariableName = gv.abbrv,
-                    VariableType = _drawingContext.CommonData.VariableMapping.GetVarType(name)
+                    VariableType = _drawingContext.CommonData.VariableMapping.GetGrib2VarType((int)ds.Message.IndicatorSection.Discipline, 
+                        ds.ProductDefinitionSection.ProductDefinition.ParameterCategory,
+                        ds.ProductDefinitionSection.ProductDefinition.ParameterNumber)
                 };
                 gv.abbrv = gv.variableDefinition.GetVarName();
                 gf.pvar1.Add(gv);
