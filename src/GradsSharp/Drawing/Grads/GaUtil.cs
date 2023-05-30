@@ -1,11 +1,13 @@
 ﻿using System.Text;
 using GradsSharp.Models.Internal;
 using GradsSharp.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
 
 internal class GaUtil
 {
+    
     static string[] mons =
     {
         "jan", "feb", "mar", "apr", "may", "jun",
@@ -584,8 +586,8 @@ internal class GaUtil
 
         if (name.Length > 4)
         {
-            GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression ");
-            GaGx.gaprnt(0, $"  Expecting x/y/z/t/offt/e/lon/lat/lev/time/ens, found {name}");
+            GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression ");
+            GradsEngine.Logger?.LogInformation($"  Expecting x/y/z/t/offt/e/lon/lat/lev/time/ens, found {name}");
             return (null);
         }
 
@@ -595,8 +597,8 @@ internal class GaUtil
         else if (expression[pos] == '-') op = 2;
         else
         {
-            GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
-            GaGx.gaprnt(0, $"  Expecting +/-/= operator, found {expression[pos]}");
+            GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression");
+            GradsEngine.Logger?.LogInformation($"  Expecting +/-/= operator, found {expression[pos]}");
             return (null);
         }
 
@@ -609,7 +611,7 @@ internal class GaUtil
             {
                 if ((newpos = adtprs(expression, pos, pst.tmin, dtim)) == null)
                 {
-                    GaGx.gaprnt(0, "  Invalid absolute time in dimension expression");
+                    GradsEngine.Logger?.LogInformation("  Invalid absolute time in dimension expression");
                     return (null);
                 }
             }
@@ -617,7 +619,7 @@ internal class GaUtil
             {
                 if ((newpos = rdtprs(expression, pos, dtim)) == null)
                 {
-                    GaGx.gaprnt(0, "  Invalid relative time in dimension expression");
+                    GradsEngine.Logger?.LogInformation("  Invalid relative time in dimension expression");
                     return (null);
                 }
             }
@@ -643,8 +645,8 @@ internal class GaUtil
         {
             if ((newpos = getdbl(expression, pos, out v)) == null)
             {
-                GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
-                GaGx.gaprnt(0, "  Dimension value missing or invalid");
+                GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression");
+                GradsEngine.Logger?.LogInformation("  Dimension value missing or invalid");
                 return (null);
             }
         }
@@ -666,8 +668,8 @@ internal class GaUtil
         else if (type == 0 && "r" == name) dim = 10;
         else
         {
-            GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
-            GaGx.gaprnt(0, $"  Expecting x/y/z/t/offt/e/lat/lon/lev/time/ens, found {name}");
+            GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression");
+            GradsEngine.Logger?.LogInformation($"  Expecting x/y/z/t/offt/e/lat/lon/lev/time/ens, found {name}");
             return (null);
         }
 
@@ -693,9 +695,9 @@ internal class GaUtil
                 /* make sure the dimension is not varying */
                 if (dim == pst.idim || dim == pst.jdim)
                 {
-                    GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
-                    GaGx.gaprnt(0, "  Cannot use an offset value with a varying dimension");
-                    GaGx.gaprnt(0, $"  Varying dimension = {dim}");
+                    GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression");
+                    GradsEngine.Logger?.LogInformation("  Cannot use an offset value with a varying dimension");
+                    GradsEngine.Logger?.LogInformation($"  Varying dimension = {dim}");
                     return (null);
                 }
 
@@ -742,17 +744,17 @@ internal class GaUtil
                 /* check to make sure dimension isn't varying */
                 if (dim == pst.idim || dim == pst.jdim)
                 {
-                    GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
-                    GaGx.gaprnt(0, "  Cannot use an offset value with a varying dimension");
-                    GaGx.gaprnt(0, $"  Varying dimension = {dim}");
+                    GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression");
+                    GradsEngine.Logger?.LogInformation("  Cannot use an offset value with a varying dimension");
+                    GradsEngine.Logger?.LogInformation($"  Varying dimension = {dim}");
                     return (null);
                 }
 
                 /* check to make sure dimension isn't E */
                 if (dim == 4)
                 {
-                    GaGx.gaprnt(0, "Syntax Error:  Invalid dimension expression");
-                    GaGx.gaprnt(0, "  Cannot use an offset value with an ensemble name");
+                    GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression");
+                    GradsEngine.Logger?.LogInformation("  Cannot use an offset value with an ensemble name");
                     return (null);
                 }
 
@@ -781,9 +783,9 @@ internal class GaUtil
                 //     ens++;
                 // }
                 // if (enum1 < 0) {
-                //     gaprnt(0, "Syntax Error:  Invalid dimension expression\n");
+                //     GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid dimension expression\n");
                 //     snprintf(pout, 1255, "  Ensemble name \"%s\" not found\n", ename);
-                //     gaprnt(0, pout);
+                //     GradsEngine.Logger?.LogInformation(pout);
                 //     return (null);
                 // }
                 // /* straight override of ensemble grid coordinate */
@@ -834,8 +836,8 @@ internal class GaUtil
             {
                 if (val > 23)
                 {
-                    GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
-                    GaGx.gaprnt(0, $"  Hour = {val} -- greater than 23");
+                    GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time value.\n");
+                    GradsEngine.Logger?.LogInformation($"  Hour = {val} -- greater than 23");
                     return (null);
                 }
 
@@ -848,15 +850,15 @@ internal class GaUtil
                         pos = intprs(expression, pos, out val) ?? throw new Exception("Parsing integer value failed");
                         if (val > 59)
                         {
-                            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
-                            GaGx.gaprnt(0, $"  Minute = {val} -- greater than 59");
+                            GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time value.\n");
+                            GradsEngine.Logger?.LogInformation($"  Minute = {val} -- greater than 59");
                             return (null);
                         }
 
                         if (Char.ToLower(expression[pos]) != 'z')
                         {
-                            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.");
-                            GaGx.gaprnt(0, "  'z' delimiter is missing ");
+                            GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time value.");
+                            GradsEngine.Logger?.LogInformation("  'z' delimiter is missing ");
                             return (null);
                         }
 
@@ -869,8 +871,8 @@ internal class GaUtil
                     }
                     else
                     {
-                        GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.");
-                        GaGx.gaprnt(0, "  Missing minute value ");
+                        GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time value.");
+                        GradsEngine.Logger?.LogInformation("  Missing minute value ");
                         return (null);
                     }
                 }
@@ -903,15 +905,15 @@ internal class GaUtil
         {
             if (flag == 1)
             {
-                GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
-                GaGx.gaprnt(0, "  Expected month abbreviation, none found\n");
+                GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time value.\n");
+                GradsEngine.Logger?.LogInformation("  Expected month abbreviation, none found\n");
                 return (null);
             }
 
             if (flag == 2)
             {
-                GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
-                GaGx.gaprnt(0, "  Missing month abbreviation or 'z' delimiter\n");
+                GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time value.\n");
+                GradsEngine.Logger?.LogInformation("  Missing month abbreviation or 'z' delimiter\n");
                 return (null);
             }
 
@@ -950,8 +952,8 @@ internal class GaUtil
         if (dtim.mo == 2 && qleap(dtim.yr)) i = 29;
         if (dtim.dy > i)
         {
-            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time value.\n");
-            GaGx.gaprnt(0, $"  Day = {dtim.dy} -- greater than {i} \n");
+            GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time value.\n");
+            GradsEngine.Logger?.LogInformation($"  Day = {dtim.dy} -- greater than {i} \n");
             return (null);
         }
 
@@ -996,8 +998,8 @@ internal class GaUtil
             else if ("mn" == id) dtim.mn = val;
             else
             {
-                GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time offset.");
-                GaGx.gaprnt(0, "  Expecting yr/mo/dy/hr/mn, found {id}");
+                GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time offset.");
+                GradsEngine.Logger?.LogInformation("  Expecting yr/mo/dy/hr/mn, found {id}");
                 return (null);
             }
 
@@ -1006,8 +1008,8 @@ internal class GaUtil
 
         if (flag > 0)
         {
-            GaGx.gaprnt(0, "Syntax Error:  Invalid Date/Time offset.");
-            GaGx.gaprnt(0, "  No offset value given");
+            GradsEngine.Logger?.LogInformation("Syntax Error:  Invalid Date/Time offset.");
+            GradsEngine.Logger?.LogInformation("  No offset value given");
             return (null);
         }
 
@@ -1059,7 +1061,7 @@ internal class GaUtil
         
 
         if (dim < 0) {
-            GaGx.gaprnt(0, "cpscal error:  dim is not >= 0 ");
+            GradsEngine.Logger?.LogInformation("cpscal error:  dim is not >= 0 ");
             return (null);
         }
         if (dim == 3) {

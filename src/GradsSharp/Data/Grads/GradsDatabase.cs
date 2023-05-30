@@ -1,6 +1,8 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using GradsSharp.Drawing.Grads;
 
-public class GxDb
+namespace GradsSharp.Data.Grads;
+
+internal class GradsDatabase : IGradsDatabase
 {
     static int[] pdcred = {  0,255,250,  0, 30,  0,240,230,240,160,160,  0,230,  0,130,170};
     static int[] pdcgre = {  0,255, 60,220, 60,200,  0,220,130,  0,230,160,175,210,  0,170};
@@ -87,7 +89,7 @@ public class GxDb
         }
     }
     
-    public static int gxdbkq() {    
+    public int gxdbkq() {    
         /* If the output background color is not set, return device background color */
         if (dboutbck != -1) 
             return (dboutbck);
@@ -95,7 +97,7 @@ public class GxDb
             return (dbdevbck);
     }
     
-    public static void gxdboutbck (int clr) {    
+    public void gxdboutbck (int clr) {    
         dboutbck = clr;
     }
 

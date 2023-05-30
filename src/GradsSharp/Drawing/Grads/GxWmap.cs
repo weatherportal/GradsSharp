@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Reflection.Metadata;
 using GradsSharp.Models.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -60,7 +61,7 @@ internal class GxWmap
             imap = gxwopen(mopt.mpdset, "rb");
             if (imap == 0)
             {
-                GaGx.gaprnt(0, $"Open Error on Map Data Set: {mopt.mpdset}");
+                _drawingContext.Logger?.LogInformation($"Open Error on Map Data Set: {mopt.mpdset}");
                 return;
             }
         }
@@ -180,15 +181,15 @@ internal class GxWmap
             if (mopt.mcol[type] == -9) continue;
             if (mopt.mcol[type] == -1)
             {
-                _drawingContext.GaSubs.gxcolr(mopt.dcol);
-                _drawingContext.GaSubs.gxstyl(mopt.dstl);
-                _drawingContext.GaSubs.gxwide(mopt.dthk);
+                _drawingContext.GradsDrawingInterface.gxcolr(mopt.dcol);
+                _drawingContext.GradsDrawingInterface.gxstyl(mopt.dstl);
+                _drawingContext.GradsDrawingInterface.gxwide(mopt.dthk);
             }
             else
             {
-                _drawingContext.GaSubs.gxcolr(mopt.mcol[type]);
-                _drawingContext.GaSubs.gxstyl(mopt.mstl[type]);
-                _drawingContext.GaSubs.gxwide(mopt.mthk[type]);
+                _drawingContext.GradsDrawingInterface.gxcolr(mopt.mcol[type]);
+                _drawingContext.GradsDrawingInterface.gxstyl(mopt.mstl[type]);
+                _drawingContext.GradsDrawingInterface.gxwide(mopt.mthk[type]);
             }
 
             lnmin = 9999.9;
@@ -284,8 +285,8 @@ internal class GxWmap
                         {
                             if (ipen == 2)
                             {
-                                GaSubs.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
-                                _drawingContext.GaSubs.gxplot(xx, yy, ipen);
+                                GradsDrawingInterface.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
+                                _drawingContext.GradsDrawingInterface.gxplot(xx, yy, ipen);
                             }
 
                             ipen = 3;
@@ -294,13 +295,13 @@ internal class GxWmap
                         {
                             if (ipen == 3)
                             {
-                                GaSubs.gxconv(lnsav + lnfact, ltsav, out xx, out yy, 2);
-                                _drawingContext.GaSubs.gxplot(xx, yy, ipen);
+                                GradsDrawingInterface.gxconv(lnsav + lnfact, ltsav, out xx, out yy, 2);
+                                _drawingContext.GradsDrawingInterface.gxplot(xx, yy, ipen);
                             }
 
                             ipen = 2;
-                            GaSubs.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
-                            _drawingContext.GaSubs.gxplot(xx, yy, ipen);
+                            GradsDrawingInterface.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
+                            _drawingContext.GradsDrawingInterface.gxplot(xx, yy, ipen);
                         }
 
                         lnsav = lntmp;
@@ -348,8 +349,8 @@ internal class GxWmap
             y2 = (float)mpj.ltmn;
         }
 
-        _drawingContext.GaSubs.gxscal(mpj.axmn, mpj.axmx, mpj.aymn, mpj.aymx, x1, x2, y1, y2);
-        _drawingContext.GaSubs.gxproj(null);
+        _drawingContext.GradsDrawingInterface.gxscal(mpj.axmn, mpj.axmx, mpj.aymn, mpj.aymx, x1, x2, y1, y2);
+        _drawingContext.GradsDrawingInterface.gxproj(null);
         adjtyp = 0;
         return (0);
     }
@@ -392,9 +393,9 @@ internal class GxWmap
             mpj.axmx = mpj.xmx;
         }
 
-        _drawingContext.GaSubs.gxscal(mpj.axmn, mpj.axmx, mpj.aymn, mpj.aymx,
+        _drawingContext.GradsDrawingInterface.gxscal(mpj.axmn, mpj.axmx, mpj.aymn, mpj.aymx,
             mpj.lnmn, mpj.lnmx, mpj.ltmn, mpj.ltmx);
-        _drawingContext.GaSubs.gxproj(null);
+        _drawingContext.GradsDrawingInterface.gxproj(null);
         adjtyp = 0;
         return (0);
     }
@@ -469,7 +470,7 @@ internal class GxWmap
         {
             w1 = 0.5 * (ymax - ymin) * (x2 - x1) / (y2 - y1);
             xave = (xmax + xmin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
             mpj.axmn = xave - w1;
             mpj.axmx = xave + w1;
             mpj.aymn = ymin;
@@ -479,15 +480,15 @@ internal class GxWmap
         {
             w1 = 0.5 * (xmax - xmin) * (y2 - y1) / (x2 - x1);
             yave = (ymax + ymin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             mpj.axmn = xmin;
             mpj.axmx = xmax;
             mpj.aymn = yave - w1;
             mpj.aymx = yave + w1;
         }
 
-        _drawingContext.GaSubs.gxproj(gxnpst);
-        _drawingContext.GaSubs.gxback(gxnrev);
+        _drawingContext.GradsDrawingInterface.gxproj(gxnpst);
+        _drawingContext.GradsDrawingInterface.gxback(gxnrev);
         adjtyp = 1;
         return (0);
     }
@@ -600,7 +601,7 @@ internal class GxWmap
         {
             w1 = 0.5 * (ymax - ymin) * (x2 - x1) / (y2 - y1);
             xave = (xmax + xmin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
             mpj.axmn = xave - w1;
             mpj.axmx = xave + w1;
             mpj.aymn = ymin;
@@ -610,15 +611,15 @@ internal class GxWmap
         {
             w1 = 0.5 * (xmax - xmin) * (y2 - y1) / (x2 - x1);
             yave = (ymax + ymin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             mpj.axmn = xmin;
             mpj.axmx = xmax;
             mpj.aymn = yave - w1;
             mpj.aymx = yave + w1;
         }
 
-        _drawingContext.GaSubs.gxproj(gxspst);
-        _drawingContext.GaSubs.gxback(gxsrev);
+        _drawingContext.GradsDrawingInterface.gxproj(gxspst);
+        _drawingContext.GradsDrawingInterface.gxback(gxsrev);
         adjtyp = 2;
         return (0);
     }
@@ -693,20 +694,20 @@ internal class GxWmap
             if (lat > 89.9)
             {
                 /* back difference if near np */
-                GaSubs.gxconv(lon, lat - 0.05, out xx1, out yy1, 2);
-                GaSubs.gxconv(lon, lat, out xx2, out yy2, 2);
+                GradsDrawingInterface.gxconv(lon, lat - 0.05, out xx1, out yy1, 2);
+                GradsDrawingInterface.gxconv(lon, lat, out xx2, out yy2, 2);
             }
             else if (lat < -89.9)
             {
                 /* forward difference if near sp */
-                GaSubs.gxconv(lon, lat, out xx1, out yy1, 2);
-                GaSubs.gxconv(lon, lat + 0.05, out xx2, out yy2, 2);
+                GradsDrawingInterface.gxconv(lon, lat, out xx1, out yy1, 2);
+                GradsDrawingInterface.gxconv(lon, lat + 0.05, out xx2, out yy2, 2);
             }
             else
             {
                 /* otherwise centered diff */
-                GaSubs.gxconv(lon, lat - 0.03, out xx1, out yy1, 2);
-                GaSubs.gxconv(lon, lat + 0.03, out xx2, out yy2, 2);
+                GradsDrawingInterface.gxconv(lon, lat - 0.03, out xx1, out yy1, 2);
+                GradsDrawingInterface.gxconv(lon, lat + 0.03, out xx2, out yy2, 2);
             }
 
             dir = Math.Atan2(xx1 - xx2, yy2 - yy1);
@@ -777,7 +778,7 @@ internal class GxWmap
         {
             w1 = 0.5 * (ymax - ymin) * (x2 - x1) / (y2 - y1);
             xave = (xmax + xmin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
             mpj.axmn = xave - w1;
             mpj.axmx = xave + w1;
             mpj.aymn = ymin;
@@ -787,15 +788,15 @@ internal class GxWmap
         {
             w1 = 0.5 * (xmax - xmin) * (y2 - y1) / (x2 - x1);
             yave = (ymax + ymin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             mpj.axmn = xmin;
             mpj.axmx = xmax;
             mpj.aymn = yave - w1;
             mpj.aymx = yave + w1;
         }
 
-        _drawingContext.GaSubs.gxproj(gxrobp);
-        _drawingContext.GaSubs.gxback(gxrobb);
+        _drawingContext.GradsDrawingInterface.gxproj(gxrobp);
+        _drawingContext.GradsDrawingInterface.gxback(gxrobb);
         adjtyp = 4;
         return (0);
     }
@@ -916,7 +917,7 @@ internal class GxWmap
         {
             w1 = 0.5 * (ymax - ymin) * (x2 - x1) / (y2 - y1);
             xave = (xmax + xmin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
             mpj.axmn = xave - w1;
             mpj.axmx = xave + w1;
             mpj.aymn = ymin;
@@ -926,15 +927,15 @@ internal class GxWmap
         {
             w1 = 0.5 * (xmax - xmin) * (y2 - y1) / (x2 - x1);
             yave = (ymax + ymin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             mpj.axmn = xmin;
             mpj.axmx = xmax;
             mpj.aymn = yave - w1;
             mpj.aymx = yave + w1;
         }
 
-        _drawingContext.GaSubs.gxproj(gxmollp);
-        _drawingContext.GaSubs.gxback(gxmollb);
+        _drawingContext.GradsDrawingInterface.gxproj(gxmollp);
+        _drawingContext.GradsDrawingInterface.gxback(gxmollb);
         adjtyp = 4;
         return (0);
     }
@@ -1088,7 +1089,7 @@ internal class GxWmap
         {
             w1 = 0.5 * (ymax - ymin) * (x2 - x1) / (y2 - y1);
             xave = (xmax + xmin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xave - w1, xave + w1, ymin, ymax, x1, x2, y1, y2);
             mpj.axmn = xave - w1;
             mpj.axmx = xave + w1;
             mpj.aymn = ymin;
@@ -1098,15 +1099,15 @@ internal class GxWmap
         {
             w1 = 0.5 * (xmax - xmin) * (y2 - y1) / (x2 - x1);
             yave = (ymax + ymin) / 2.0;
-            _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+            _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             mpj.axmn = xmin;
             mpj.axmx = xmax;
             mpj.aymn = yave - w1;
             mpj.aymx = yave + w1;
         }
 
-        _drawingContext.GaSubs.gxproj(gxortgp);
-        _drawingContext.GaSubs.gxback(gxortgb);
+        _drawingContext.GradsDrawingInterface.gxproj(gxortgp);
+        _drawingContext.GradsDrawingInterface.gxback(gxortgb);
         adjtyp = 4;
         return (0);
     }
@@ -1264,18 +1265,18 @@ internal class GxWmap
 
             w1 = 0.5 * (ymax - ymin) * (x2 - x1) / (y2 - y1);
             if (w1 < 1.0)
-                _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+                _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             else if (w1 < 2.0)
-                _drawingContext.GaSubs.gxscal(xave - 0.5 * (w1), xave + 0.5 * w1, yave - w1, yave + w1,
+                _drawingContext.GradsDrawingInterface.gxscal(xave - 0.5 * (w1), xave + 0.5 * w1, yave - w1, yave + w1,
                     x1, x2, y1, y2);
             else if (w1 < 3.0)
-                _drawingContext.GaSubs.gxscal(xave - 0.5 * w1, xave + 0.5 * w1, yave - w1, yave + w1,
+                _drawingContext.GradsDrawingInterface.gxscal(xave - 0.5 * w1, xave + 0.5 * w1, yave - w1, yave + w1,
                     x1, x2, y1, y2);
             else if (w1 > 3.0)
-                _drawingContext.GaSubs.gxscal(xave - 0.75 * w1, xave + 0.75 * w1, yave - 0.75 * w1,
+                _drawingContext.GradsDrawingInterface.gxscal(xave - 0.75 * w1, xave + 0.75 * w1, yave - 0.75 * w1,
                     yave + 0.75 * w1, x1, x2, y1, y2);
             else
-                _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+                _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
         }
         else
         {
@@ -1298,17 +1299,17 @@ internal class GxWmap
 
             w1 = 0.5 * (xmax - xmin) * (y2 - y1) / (x2 - x1);
             if (w1 < 1.0)
-                _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+                _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             else if (w1 < 2.0)
-                _drawingContext.GaSubs.gxscal(xmin + 0.5 * w1, xmax - 0.5 * w1, yave - 1.25 * w1,
+                _drawingContext.GradsDrawingInterface.gxscal(xmin + 0.5 * w1, xmax - 0.5 * w1, yave - 1.25 * w1,
                     yave + 1.25 * w1, x1, x2, y1, y2);
             else if (w1 < 3.0)
-                _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+                _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
             else if (w1 > 3.0)
-                _drawingContext.GaSubs.gxscal(xave - 0.5 * w1, xave + 0.5 * w1, yave - 0.5 * w1,
+                _drawingContext.GradsDrawingInterface.gxscal(xave - 0.5 * w1, xave + 0.5 * w1, yave - 0.5 * w1,
                     yave + 0.5 * w1, x1, x2, y1, y2);
             else
-                _drawingContext.GaSubs.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
+                _drawingContext.GradsDrawingInterface.gxscal(xmin, xmax, yave - w1, yave + w1, x1, x2, y1, y2);
         }
 
         mpj.axmn = xmin;
@@ -1316,8 +1317,8 @@ internal class GxWmap
         mpj.aymn = ymin;
         mpj.aymx = ymax;
 
-        _drawingContext.GaSubs.gxproj(gxlamcp);
-        _drawingContext.GaSubs.gxback(gxlamcb);
+        _drawingContext.GradsDrawingInterface.gxproj(gxlamcp);
+        _drawingContext.GradsDrawingInterface.gxback(gxlamcb);
         adjtyp = 3;
         return (0);
     }
@@ -1408,7 +1409,7 @@ internal class GxWmap
         newxy = new double[ncnt * 2];
         
         /* Write out the very first point, before interpolation begins (this is for j=0) */
-        GaSubs.gxconv(xy[0], xy[1], out xx, out yy, 2);
+        GradsDrawingInterface.gxconv(xy[0], xy[1], out xx, out yy, 2);
         newxy[0] = xx;
         newxy[1] = yy;
         /* Now interpolate each point, convert to x,y, and put in list */
@@ -1467,7 +1468,7 @@ internal class GxWmap
                     }
                 }
 
-                GaSubs.gxconv(lntmp, lttmp, out xx, out yy, 2);
+                GradsDrawingInterface.gxconv(lntmp, lttmp, out xx, out yy, 2);
                 newxy[j * 2] = xx;
                 newxy[j * 2 + 1] = yy;
                 j++;

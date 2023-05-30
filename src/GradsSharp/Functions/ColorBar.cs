@@ -1,15 +1,18 @@
 ﻿using GradsSharp.Drawing;
+using GradsSharp.Drawing.Grads;
 using GradsSharp.Models;
 
 namespace GradsSharp.Functions;
 
 internal class ColorBar
 {
-    private DrawingContext _context;
-    public ColorBar(ColorBarSettings settings, DrawingContext context)
+    private IGradsCommandInterface _gradsCommandInterface;
+    private IGradsDrawingInterface _drawingInterface;
+    public ColorBar(ColorBarSettings settings, IGradsCommandInterface gradsCommandInterface, IGradsDrawingInterface drawingInterface)
     {
         Settings = settings;
-        _context = context;
+        _gradsCommandInterface = gradsCommandInterface;
+        _drawingInterface = drawingInterface;
     }
 
     public ColorBarSettings Settings { get; private set; }
@@ -17,22 +20,20 @@ internal class ColorBar
     public void DrawColorBar()
     {
 
-        var pcm = _context.CommonData; 
-        
-        if (pcm.shdcnt < 1)
+        if (_drawingInterface.ShadeCount < 1)
         {
             throw new Exception("No shading information.  Drawn a chart yet?");
         }
 
-        int cnum = pcm.shdcnt;
+        int cnum = _drawingInterface.ShadeCount;
 
         int i = 1;
         int[] col = new int[3600];
         double[] hi = new double[3600];
         while (i < cnum)
         {
-            col[i] = pcm.shdcls[i - 1];
-            hi[i] = pcm.shdlvs[i - 1];
+            col[i] = _drawingInterface.ShadeColors[i - 1];
+            hi[i] = _drawingInterface.ShadeLevels[i - 1];
             i++;
         }
         
@@ -113,12 +114,12 @@ internal class ColorBar
             double xmoji = x2 + (0.5 * fwidth) * ydir + fxoffset;
             double ymoji = (y1 - 0.5 * fheight) * xdir + y2 * ydir + fyoffset;
             
-            _context.GaSubs.gxcolr(col[i]);
-            _context.GaUser.SetStringSize(fwidth, fheight);
+            _drawingInterface.gxcolr(col[i]);
+            _gradsCommandInterface.SetStringSize(fwidth, fheight);
             
             if (edge == "box")
             {
-                _context.GaSubs.gxrecf(x1, x2, y1, y2);
+                _drawingInterface.gxrecf(x1, x2, y1, y2);
                 if (line == OnOffSetting.On)
                 {
                     drawrec(linecolor, x1, y1, x2, y2); 
@@ -130,11 +131,11 @@ internal class ColorBar
             {
                 if (Settings.Direction == ColorBarDirection.Horizontal)
                 {
-                    _context.GaUser.SetStringOptions(fcolor, StringJustification.TopCenter, (int)ftickness, 0);
+                    _gradsCommandInterface.SetStringOptions(fcolor, StringJustification.TopCenter, (int)ftickness, 0);
                 }
                 else
                 {
-                    _context.GaUser.SetStringOptions(fcolor, StringJustification.Left, (int)ftickness, 0);
+                    _gradsCommandInterface.SetStringOptions(fcolor, StringJustification.Left, (int)ftickness, 0);
                 }
 
                 var lev = hi[i];
@@ -144,7 +145,7 @@ internal class ColorBar
                     lbl = lev.ToString(Settings.LabelFormat);
                 }
 
-                _context.GaUser.DrawString(xmoji, ymoji, lbl);
+                _gradsCommandInterface.DrawString(xmoji, ymoji, lbl);
             }
             
             
@@ -177,10 +178,10 @@ internal class ColorBar
             double xmax = Convert.ToDouble(args[i]);
             double ymax = Convert.ToDouble(args[i+1]);
          
-            _context.GaUser.SetCThick(1);
-            _context.GaSubs.gxcolr(linecolor);
-            _context.GaSubs.gxmove(xmin, ymin);
-            _context.GaSubs.gxdraw(xmax, ymax);
+            _gradsCommandInterface.SetCThick(1);
+            _drawingInterface.gxcolr(linecolor);
+            _drawingInterface.gxmove(xmin, ymin);
+            _drawingInterface.gxdraw(xmax, ymax);
             xmin = xmax;
             ymin = ymax;
             
@@ -188,9 +189,9 @@ internal class ColorBar
             if (i >= args.Length) break;
         }
         
-        _context.GaUser.SetCThick(1);
-        _context.GaSubs.gxcolr(linecolor);
-        _context.GaSubs.gxmove(xmin, ymin);
-        _context.GaSubs.gxdraw(xstart, ystart);
+        _gradsCommandInterface.SetCThick(1);
+        _drawingInterface.gxcolr(linecolor);
+        _drawingInterface.gxmove(xmin, ymin);
+        _drawingInterface.gxdraw(xstart, ystart);
     }
 }

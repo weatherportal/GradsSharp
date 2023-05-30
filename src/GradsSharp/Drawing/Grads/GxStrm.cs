@@ -105,8 +105,8 @@ internal class GxStrm
                 ysav = y;
                 xstrt = x;
                 ystrt = y;
-                GaSubs.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
-                _drawingContext.GaSubs.gxplot(xx, yy, 3);
+                GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 3);
                 xxsv = xx;
                 yysv = yy;
                 iisav = -999;
@@ -148,7 +148,7 @@ internal class GxStrm
                             icol = gxshdc(shdlvs, shdcls, shdcnt, cv);
                         }
 
-                        if (icol != scol && icol > -1) _drawingContext.GaSubs.gxcolr(icol);
+                        if (icol != scol && icol > -1) _drawingContext.GradsDrawingInterface.gxcolr(icol);
                         scol = icol;
                     }
 
@@ -172,9 +172,9 @@ internal class GxStrm
                         vv = vv * fact / avv;
                     }
 
-                    GaSubs.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
-                    GaSubs.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
-                    GaSubs.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
+                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
+                    GradsDrawingInterface.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
+                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
                     adj = GaUtil.hypot(xx - xx1, yy - yy1) / GaUtil.hypot(xx - xx2, yy - yy2);
                     if (adj > 1.0) uv = uv / adj;
                     else vv = vv * adj;
@@ -197,16 +197,16 @@ internal class GxStrm
                     if (iacc > 10 && tacum < 0.1) break;
                     if (iacc > 100) break;
                     iisav = ii1;
-                    GaSubs.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
                     if (icol > -1)
                     {
                         if (bflg)
                         {
-                            _drawingContext.GaSubs.gxplot(xold, yold, 3);
+                            _drawingContext.GradsDrawingInterface.gxplot(xold, yold, 3);
                             bflg = false;
                         }
 
-                        _drawingContext.GaSubs.gxplot(xx, yy, 2);
+                        _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 2);
                     }
                     else bflg = true;
 
@@ -228,8 +228,8 @@ internal class GxStrm
                 bflg = false;
                 x = xsav;
                 y = ysav;
-                GaSubs.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
-                _drawingContext.GaSubs.gxplot(xx, yy, 3);
+                GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 3);
                 xxsv = xx;
                 yysv = yy;
                 iisav = -999;
@@ -270,7 +270,7 @@ internal class GxStrm
                             icol = gxshdc(shdlvs, shdcls, shdcnt, cv);
                         }
 
-                        if (icol != scol && icol > -1) _drawingContext.GaSubs.gxcolr(icol);
+                        if (icol != scol && icol > -1) _drawingContext.GradsDrawingInterface.gxcolr(icol);
                         scol = icol;
                     }
 
@@ -294,9 +294,9 @@ internal class GxStrm
                         vv = vv * fact / avv;
                     }
 
-                    GaSubs.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
-                    GaSubs.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
-                    GaSubs.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
+                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
+                    GradsDrawingInterface.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
+                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
                     adj = GaUtil.hypot(xx - xx1, yy - yy1) / GaUtil.hypot(xx - xx2, yy - yy2);
                     if (adj > 1.0) uv = uv / adj;
                     else vv = vv * adj;
@@ -314,16 +314,16 @@ internal class GxStrm
                     if (iacc > 10 && tacum < 0.1) break;
                     if (iacc > 100) break;
                     iisav = ii1;
-                    GaSubs.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
                     if (icol > -1)
                     {
                         if (bflg)
                         {
-                            _drawingContext.GaSubs.gxplot(xold, yold, 3);
+                            _drawingContext.GradsDrawingInterface.gxplot(xold, yold, 3);
                             bflg = false;
                         }
 
-                        _drawingContext.GaSubs.gxplot(xx, yy, 2);
+                        _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 2);
                     }
                     else bflg = true;
 
@@ -378,16 +378,16 @@ internal class GxStrm
         xy[7] = yy2;
         if (type == 1)
         {
-            _drawingContext.GaSubs.gxplot(xx2, yy2, 3);
-            _drawingContext.GaSubs.gxplot(xy[2], xy[3], 2);
-            _drawingContext.GaSubs.gxplot(xx2, yy2, 3);
-            _drawingContext.GaSubs.gxplot(xy[4], xy[5], 2);
-            _drawingContext.GaSubs.gxplot(xx2, yy2, 3);
+            _drawingContext.GradsDrawingInterface.gxplot(xx2, yy2, 3);
+            _drawingContext.GradsDrawingInterface.gxplot(xy[2], xy[3], 2);
+            _drawingContext.GradsDrawingInterface.gxplot(xx2, yy2, 3);
+            _drawingContext.GradsDrawingInterface.gxplot(xy[4], xy[5], 2);
+            _drawingContext.GradsDrawingInterface.gxplot(xx2, yy2, 3);
         }
 
         if (type == 2)
         {
-            _drawingContext.GaSubs.gxfill(xy, 4);
+            _drawingContext.GradsDrawingInterface.gxfill(xy, 4);
         }
     }
 

@@ -1,6 +1,8 @@
-﻿using GradsSharp.Drawing.Grads;
+﻿using GradsSharp.Data.Grads;
+using GradsSharp.Drawing.Grads;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing;
 
@@ -10,9 +12,9 @@ internal class DrawingContext
     public GradsCommon CommonData { get; set; } = new GradsCommon();
     
 
-    public GaSubs GaSubs { get; set; }
+    public GradsDrawingInterface GradsDrawingInterface { get; set; }
     public GaIO GaIO { get; set; }
-    public GaUser GaUser { get; set; }
+    public GradsCommandInterface GradsCommandInterface { get; set; }
     public GaExpr GaExpr { get; set; }
     public GxMeta GxMeta { get; set; }
     public GxShad GxShad { get; set; }
@@ -22,7 +24,7 @@ internal class DrawingContext
     public GxChpl GxChpl { get; set; }
     public GxContour GxContour { get; set; }
 
-    public GxDb GxDb { get; set; } = new GxDb();
+    public GradsDatabase GradsDatabase { get; set; } = new GradsDatabase();
     public GxWmap GxWmap { get; set; }
     
     public float XSize { get; set; }
@@ -53,13 +55,18 @@ internal class DrawingContext
     public int DefaultColor { get; set; } = 1;
     public int DefaultStyle { get; set; } = 1;
     public int DefaultThickness { get; set; } = 3;
+
+
+    private ILogger? _logger;
     
+    public ILogger? Logger => _logger;
     
-    public Plot Plot { get; set; }
-    public DrawingContext()
+    public DrawingContext(ILogger? logger = null)
     {
-        GaSubs = new GaSubs(this);
-        GaUser = new GaUser(this);
+        _logger = logger;
+        
+        GradsDrawingInterface = new GradsDrawingInterface(this);
+        GradsCommandInterface = new GradsCommandInterface(this);
         GaGx = new GaGx(this);
         GxWmap = new GxWmap(this);
         GxStrm = new GxStrm(this);

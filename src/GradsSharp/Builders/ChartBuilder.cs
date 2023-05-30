@@ -70,16 +70,6 @@ public class ChartBuilder
         return this;
     }
 
-    public ChartBuilder WithColorRange(double? min, double? max, double? interval, GxOutSetting gxout, string? kind)
-    {
-        _chart.ColorBarMin = min;
-        _chart.ColorBarMax = max;
-        _chart.ColorBarInterval = interval;
-        _chart.ColorBarKind = kind;
-        _chart.ColorBarGxOut = gxout;
-        _chart.ColorBarEnabled = true;
-        return this;
-    }
 
     public ChartBuilder WithColorBarSettings(ColorBarSettings settings)
     {

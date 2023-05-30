@@ -382,7 +382,7 @@ internal class GxMeta
             return;
         }
 
-        var psubs = _drawingContext.GaSubs.DrawingEngine;
+        var psubs = _drawingContext.GradsDrawingInterface.DrawingEngine;
 
         List<gxmbuf>.Enumerator pmbufe;
 
@@ -468,7 +468,7 @@ internal class GxMeta
                     op4 = (int)(pmbuf.buff[iii]);
                     iii = ppp + 4;
                     op5 = (int)(pmbuf.buff[iii]);
-                    _drawingContext.GxDb.gxdbacol(op1, op2, op3, op4, op5); /* update the data base */
+                    _drawingContext.GradsDatabase.gxdbacol(op1, op2, op3, op4, op5); /* update the data base */
                     if (pflg > 0)
                         psubs.gxpacol(op1); /* for printing (no-op for cairo) */
                     ppp += 5;

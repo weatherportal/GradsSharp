@@ -25,14 +25,7 @@ public class Chart
     public string? AxisLabelFormatX { get; set; }
     public string? AxisLabelFormatY { get; set; }
 
-    // color bar settings
-    public double? ColorBarMin { get; set; }
-    public double? ColorBarMax { get; set; }
-    public double? ColorBarInterval { get; set; }
-    public GxOutSetting ColorBarGxOut { get; set; }
-    public string? ColorBarKind { get; set; }
 
-    public bool ColorBarEnabled { get; set; } = false;
     
     public ColorBarSettings? ColorBarSettings { get; set; }
     

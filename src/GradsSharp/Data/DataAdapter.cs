@@ -42,6 +42,6 @@ internal class DataAdapter : IDataAdapter
 
     public void DefineVariable(string name, double[] data)
     {
-        _drawingContext.GaUser.Define(name, data);
+        _drawingContext.GradsCommandInterface.Define(name, data);
     }
 }

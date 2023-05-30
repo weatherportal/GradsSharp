@@ -6,9 +6,10 @@ namespace GradsSharp.Functions;
 
 internal class ColorRange
 {
-    public ColorRange(DrawingContext drawingContext)
+    private IGradsCommandInterface _gradsCommandInterface;
+    public ColorRange(IGradsCommandInterface commandInterface)
     {
-        _drawingContext = drawingContext;
+        _gradsCommandInterface = commandInterface;
     }
 
     public GxOutSetting GxOut { get; set; } = GxOutSetting.Shaded;
@@ -23,8 +24,6 @@ internal class ColorRange
     public int Div { get; set; } = 10;
     public IntervalType IntervalType { get; set; } = IntervalType.Interval;
     public List<double> Levels { get; set; } = new();
-
-    private DrawingContext _drawingContext;
 
 
     public void SetColors()
@@ -85,8 +84,8 @@ internal class ColorRange
             colnums.Add(colnum + 15);
         }
 
-        _drawingContext.GaUser.SetCLevs(Levels.ToArray());
-        _drawingContext.GaUser.SetCCols(colnums.ToArray());
+        _gradsCommandInterface.SetCLevs(Levels.ToArray());
+        _gradsCommandInterface.SetCCols(colnums.ToArray());
 
         // define colors
         int i = 1;
@@ -252,7 +251,7 @@ int max_ncol = max;
             int a = (int)(sa + (ea - sa) * (i - snum) / diff);
             //Console.WriteLine($"Define color {i} as ({r},{g},{b},{a})");
             
-            _drawingContext.GaUser.SetColor(i, r, g, b, a);
+            _gradsCommandInterface.SetColor(i, r, g, b, a);
             i = i + 1;
         }
     }

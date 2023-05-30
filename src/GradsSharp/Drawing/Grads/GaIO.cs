@@ -1,5 +1,6 @@
 ﻿using GradsSharp.Models;
 using GradsSharp.Models.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -67,7 +68,7 @@ internal class GaIO
         if (pfi.idxflg == 2) g2indx = pfi.g2indx;
         if (pfi.ppflag > 0 && msgflg > 0)
         {
-            GaGx.gaprnt(2, "Notice:  Automatic Grid Interpolation Taking Place");
+            _drawingContext.Logger?.LogInformation("Notice:  Automatic Grid Interpolation Taking Place");
             msgflg = 0;
         }
 
@@ -82,7 +83,7 @@ internal class GaIO
             pgr.jdim < -1 || pgr.jdim > 4 ||
             (pgr.idim == -1 && pgr.jdim != -1))
         {
-            GaGx.gaprnt(0, "Internal logic check 16:  {pgr.idim} {pgr.jdim}");
+            _drawingContext.Logger?.LogInformation("Internal logic check 16:  {pgr.idim} {pgr.jdim}");
             return (16);
         }
         
@@ -312,8 +313,8 @@ internal class GaIO
         nozdat:
         // if (mfcmn.warnflg > 0)
         // {
-        //     gaprnt(1, "Data Request Warning:  Varying Z dimension environment...\n");
-        //     gaprnt(1, "  but the requested variable has no Z dimension\n");
+        //     _drawingContext.Logger?.LogInformation("Data Request Warning:  Varying Z dimension environment...\n");
+        //     _drawingContext.Logger?.LogInformation("  but the requested variable has no Z dimension\n");
         //     gaprnt(2, "  Entire grid contents are set to missing data \n");
         // }
 
@@ -336,7 +337,7 @@ internal class GaIO
         nodatmsg:
         // if (mfcmn.warnflg > 0)
         // {
-        //     gaprnt(1, "Data Request Warning:  Request is completely outside file limits\n");
+        //     _drawingContext.Logger?.LogInformation("Data Request Warning:  Request is completely outside file limits\n");
         //     gaprnt(2, "  Entire grid contents are set to missing data \n");
         //     snprintf(pout, 1255, "  Grid limits of file:     X = 1 %i  Y = 1 %i  Z = 1 %i  T = 1 %i  E = 1 %i \n",
         //         pfi.dnum[0], pfi.dnum[1], pfi.dnum[2], pfi.dnum[3], pfi.dnum[4]);
@@ -521,7 +522,7 @@ internal class GaIO
 //                     {
 //                         pvr.h5vid = -888;
 //                         snprintf(pout, 1255, "Error: Variable %s not in HDF5 file\n", vname);
-//                         gaprnt(0, pout);
+//                         _drawingContext.Logger?.LogInformation(pout);
 //                         return (rc);
 //                     }
 //

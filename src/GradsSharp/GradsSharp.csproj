@@ -4,11 +4,20 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Version>0.0.1</Version>
+        <Title>GradsSharp</Title>
+        <Authors>Chase2be</Authors>
+        <Description>Opengrads port to a C# library.</Description>
+        <Copyright>Chase2be</Copyright>
+        <PackageProjectUrl>https://github.com/weatherportal/GradsSharp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/weatherportal/GradsSharp</RepositoryUrl>
+        <RepositoryType>Github</RepositoryType>
 
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="CairoSharp" Version="3.24.24.4" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
       <PackageReference Include="NGrib" Version="0.8.0" />
       <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta15" />

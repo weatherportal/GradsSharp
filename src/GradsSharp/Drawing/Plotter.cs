@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Builders;
+using GradsSharp.Drawing.Grads;
 using GradsSharp.Functions;
 using GradsSharp.Models;
 
@@ -6,133 +7,153 @@ namespace GradsSharp.Drawing;
 
 public class Plotter
 {
-    DrawingContext context = new DrawingContext();
+
+    private readonly GradsEngine _engine;
+
+    public Plotter(GradsEngine engine)
+    {
+        _engine = engine;
+    }
+
     public void Draw(Plot plot)
     {
 
-        context.Plot = plot;
         
-        if (context.Plot.Orientation == Orientation.Landscape)
+        if (plot.Orientation == Orientation.Landscape)
         {
-            context.CommonData.xsiz = 11.0f;
-            context.CommonData.ysiz = 8.5f;
+            _engine.GradsCommandInterface.SetPaperSize(11.0f, 8.5f);
         }
         else
         {
-            context.CommonData.xsiz = 8.5f;
-            context.CommonData.ysiz = 11.0f;
+            _engine.GradsCommandInterface.SetPaperSize( 8.5f,11.0f);
         }
 
-        if (context.Plot.AspectRatio > -990)
+        if (plot.AspectRatio > -990)
         {
-            if (context.Plot.AspectRatio < 1.0f)
+            if (plot.AspectRatio < 1.0f)
             {
-                context.CommonData.xsiz = 11.0f * plot.AspectRatio;
-                context.CommonData.ysiz = 11.0f;
+                _engine.GradsCommandInterface.SetPaperSize(11.0f * plot.AspectRatio, 11.0f);
+                
             }
             else
             {
-                context.CommonData.xsiz = 11.0f;
-                context.CommonData.ysiz = 11.0f / plot.AspectRatio;
+                _engine.GradsCommandInterface.SetPaperSize(11.0f, 11.0f / plot.AspectRatio);
             }
         }
         
-        context.CommonData.InitData();
+        _engine.InitEngine();
 
-        context.CommonData.fnum = 0;
-        context.CommonData.undef = -9.99e8;
-        context.CommonData.fillpoly = -1;
-        context.CommonData.marktype = 3;
-        context.CommonData.marksize = 0.05;
+        // _engine.GradsCommandInterface.CommonData.fnum = 0;
+        // _engine.GradsCommandInterface.CommonData.undef = -9.99e8;
+        // _engine.GradsCommandInterface.CommonData.fillpoly = -1;
+        // _engine.GradsCommandInterface.CommonData.marktype = 3;
+        // _engine.GradsCommandInterface.CommonData.marksize = 0.05;
 
-        int rc = context.GaGx.gagx();
-        if (rc > 0) throw new Exception("Error setting up graphics");
         
-        StartPlot();
+        
+        StartPlot(plot);
 
-        context.GaSubs.gxend();
+       _engine.EndDrawing();
     }
 
-    private void StartPlot()
+    private void StartPlot(Plot plot)
     {
-        if (context.Plot.DataFiles.Count == 0)
+        if (plot.DataFiles.Count == 0)
         {
             throw new Exception("No datafiles added");
         }
 
         // for now only support for 1 file
-        var dataFile = context.Plot.DataFiles.First();
-        context.GaUser.Open(dataFile.FileName, dataFile.Format);
-        context.GaUser.SetGrads(OnOffSetting.Off);
-        context.GaUser.SetLat(40, 60);
-        context.GaUser.SetLon(-10,20);
-        context.GaUser.SetMPVals(OnOffSetting.On, -10, 20, 30, 60);
-        context.GaUser.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
-        context.GaUser.SetMProjection(Projection.Latlon);
+        var dataFile = plot.DataFiles.First();
+        _engine.GradsCommandInterface.Open(dataFile.FileName, dataFile.Format);
+        _engine.GradsCommandInterface.SetGrads(OnOffSetting.Off);
+        _engine.GradsCommandInterface.SetLat(40, 60);
+        _engine.GradsCommandInterface.SetLon(-10,20);
+        _engine.GradsCommandInterface.SetMPVals(OnOffSetting.On, -10, 20, 30, 60);
+        _engine.GradsCommandInterface.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
+        _engine.GradsCommandInterface.SetMProjection(Projection.Latlon);
         
-        //context.GaUser.Define("t", "tmp2m-273.15");
+        //_engine.GradsCommandInterface.GaUser.Define("t", "tmp2m-273.15");
 
-        foreach (Chart c in context.Plot.Charts)
+        foreach (Chart c in plot.Charts)
         {
-            context.GaUser.SetLat(c.LatitdeMin, c.LatitudeMax);
-            context.GaUser.SetLon(c.LongitudeMin, c.LongitudeMax);
-            context.GaUser.SetMapResolution(c.Resolution);
-            context.GaUser.SetGridOptions(c.GridSetting);
-            context.GaUser.SetAxisLabels(Axis.X, c.AxisLabelOptionX, c.AxisLabelFormatX);
-            context.GaUser.SetAxisLabels(Axis.Y, c.AxisLabelOptionY, c.AxisLabelFormatY);
+            _engine.GradsCommandInterface.SetLat(c.LatitdeMin, c.LatitudeMax);
+            _engine.GradsCommandInterface.SetLon(c.LongitudeMin, c.LongitudeMax);
+            _engine.GradsCommandInterface.SetMapResolution(c.Resolution);
+            _engine.GradsCommandInterface.SetGridOptions(c.GridSetting);
+            _engine.GradsCommandInterface.SetAxisLabels(Axis.X, c.AxisLabelOptionX, c.AxisLabelFormatX);
+            _engine.GradsCommandInterface.SetAxisLabels(Axis.Y, c.AxisLabelOptionY, c.AxisLabelFormatY);
             if (c.MapColor != null)
             {
-                context.GaUser.SetMapOptions(c.MapColor.Value, null, null);
+                _engine.GradsCommandInterface.SetMapOptions(c.MapColor.Value, null, null);
             }
 
-            if (c.ColorBarEnabled)
-            {
-                var cb = new ColorRange(context);
-                cb.Min = c.ColorBarMin;
-                cb.Max = c.ColorBarMax;
-                cb.Interval = c.ColorBarInterval;
-                cb.GxOut = c.ColorBarGxOut;
-                cb.Kind = c.ColorBarKind??"";
-                cb.SetColors();
-            }
+            
 
             foreach (ChartLayer cl in c.Layers)
             {
-                context.CommonData.DataAction = cl.DataAction;
-                context.GaUser.SetGraphicsOut(cl.LayerType);
+                
+                if (cl.ColorShadingEnabled)
+                {
+                    var cb = new ColorRange(_engine.GradsCommandInterface);
+                    cb.Min = cl.ColorShadingMin;
+                    cb.Max = cl.ColorShadingMax;
+                    cb.Interval = cl.ColorShadingInterval;
+                    cb.GxOut = cl.ColorShadingGxOut;
+                    cb.Kind = cl.ColorShadingKind??"";
+                    cb.SetColors();
+                }
+                
+                _engine.GradsCommandInterface.SetDataAction(cl.DataAction);
+                _engine.GradsCommandInterface.SetGraphicsOut(cl.LayerType);
 
                 if (cl.LayerType == GxOutSetting.Contour)
                 {
-                    context.GaUser.SetCStyle(cl.LineStyle);
+                    _engine.GradsCommandInterface.SetCStyle(cl.LineStyle);
                     if(cl.ContourInterval!=null)
-                        context.GaUser.SetCInt(cl.ContourInterval.Value);
+                        _engine.GradsCommandInterface.SetCInt(cl.ContourInterval.Value);
                     if(cl.ContourMin!=null)
-                        context.GaUser.SetCMin(cl.ContourMin.Value);
+                        _engine.GradsCommandInterface.SetCMin(cl.ContourMin.Value);
                     if(cl.ContourMax!=null)
-                        context.GaUser.SetCMax(cl.ContourMax.Value);
+                        _engine.GradsCommandInterface.SetCMax(cl.ContourMax.Value);
                     if(cl.ContourLabelOption!=null)
-                        context.GaUser.SetCLab(cl.ContourLabelOption.Value);
+                        _engine.GradsCommandInterface.SetCLab(cl.ContourLabelOption.Value);
                     if(cl.ContourColor!=null)
-                        context.GaUser.SetCColor(cl.ContourColor.Value);
+                        _engine.GradsCommandInterface.SetCColor(cl.ContourColor.Value);
+                    if(cl.ContourThickness!=null)
+                        _engine.GradsCommandInterface.SetCThick(cl.ContourThickness.Value);
+                    foreach (var cd in cl.ColorDefinitions)
+                    {
+                        _engine.GradsCommandInterface.SetColor(cd.ColorNumber, cd.Red, cd.Green, cd.Blue, cd.Alpha); 
+                    }
                 }
-                
-                context.GaUser.Display(cl.VariableToDisplay);
+                else if (cl.LayerType == GxOutSetting.Shaded)
+                {
+                    foreach (var cd in cl.ColorDefinitions)
+                    {
+                        _engine.GradsCommandInterface.SetColor(cd.ColorNumber, cd.Red, cd.Green, cd.Blue, cd.Alpha); 
+                    }
+                    _engine.GradsCommandInterface.SetCLevs(cl.Levels);
+                    _engine.GradsCommandInterface.SetCCols(cl.Colors);
+                    
+                }
+                _engine.GradsCommandInterface.Display(cl.VariableToDisplay);
             }
 
-            if (c.ColorBarEnabled && c.ColorBarSettings != null)
+            if (c.ColorBarSettings != null)
             {
-                var cb = new ColorBar(c.ColorBarSettings, context);
+                var cb = new ColorBar(c.ColorBarSettings, _engine.GradsCommandInterface, _engine.GradsDrawingInterface);
                 cb.DrawColorBar();
             }
 
             foreach (var tb in c.TextBlocks)
             {
-                context.GaUser.SetStringSize(tb.Width, tb.Height);
-                context.GaUser.SetStringOptions(tb.FontColor, tb.Justification, tb.Thickness, tb.Rotation);
-                context.GaUser.DrawString(tb.LocationX, tb.LocationY, tb.Text);    
+                _engine.GradsCommandInterface.SetStringSize(tb.Width, tb.Height);
+                _engine.GradsCommandInterface.SetStringOptions(tb.FontColor, tb.Justification, tb.Thickness, tb.Rotation);
+                _engine.GradsCommandInterface.DrawString(tb.LocationX, tb.LocationY, tb.Text);    
             }
            
-            context.GaUser.printim(context.Plot.OutputFile, horizontalSize: context.Plot.OutputSizeX, verticalSize: context.Plot.OutputSizeY);
+            _engine.GradsCommandInterface.printim(plot.OutputFile, horizontalSize: plot.OutputSizeX, verticalSize: plot.OutputSizeY);
 
         }
         
