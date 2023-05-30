@@ -80,6 +80,39 @@ public class GfsVariables : IVariableMapping
         _mapping[DataVariable.LiftedIndexSurface] = new GribDataSetInfo { Discipline = 0, ParameterCategory = 7, ParameterNumber = 192, ParameterName = "Surface Lifted Index", ParameterUnit = "K" };
         _mapping[DataVariable.LiftedIndex4Layer] = new GribDataSetInfo { Discipline = 0, ParameterCategory = 7, ParameterNumber = 193, ParameterName = "Best (4 layer) Lifted Index", ParameterUnit = "K" };
 
+        
+        /*
+         
+         new GribDataSetInfo { Discipline = 0, ParameterCategory = 3, ParameterNumber = 194, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 3, ParameterNumber = 195, ParameterName = "Unknown", ParameterUnit = "" };
+
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 14, ParameterNumber = 192, ParameterName = "Unknown", ParameterUnit = "" };
+
+new GribDataSetInfo { Discipline = 2, ParameterCategory = 0, ParameterNumber = 192, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 2, ParameterCategory = 0, ParameterNumber = 193, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 2, ParameterCategory = 0, ParameterNumber = 196, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 2, ParameterCategory = 0, ParameterNumber = 201, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 2, ParameterCategory = 3, ParameterNumber = 192, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 2, ParameterCategory = 3, ParameterNumber = 203, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 2, ParameterCategory = 4, ParameterNumber = 2, ParameterName = "Unknown", ParameterUnit = "" };
+
+
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 6, ParameterNumber = 201, ParameterName = "Unknown", ParameterUnit = "" };
+
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 6, ParameterNumber = 193, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 4, ParameterNumber = 192, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 5, ParameterNumber = 192, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 4, ParameterNumber = 193, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 5, ParameterNumber = 193, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 2, ParameterNumber = 194, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 2, ParameterNumber = 195, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 2, ParameterNumber = 192, ParameterName = "Unknown", ParameterUnit = "" };
+
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 3, ParameterNumber = 196, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 0, ParameterCategory = 3, ParameterNumber = 200, ParameterName = "Unknown", ParameterUnit = "" };
+new GribDataSetInfo { Discipline = 10, ParameterCategory = 2, ParameterNumber = 8, ParameterName = "Unknown", ParameterUnit = "" };
+         
+         */
     }
 
     public string GetVariableName(DataVariable variable)
