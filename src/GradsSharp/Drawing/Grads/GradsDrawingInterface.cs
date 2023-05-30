@@ -1,8 +1,14 @@
 ﻿using System.Text;
+using GradsSharp.Data.Grads;
 
 namespace GradsSharp.Drawing.Grads;
 
-public class GaSubs
+/*
+ * Old gasubs class containing drawing functions
+ */
+
+
+internal class GradsDrawingInterface : IGradsDrawingInterface
 {
     static Func<double, double, Tuple<double, double>>? fconv;
     static Func<double, double, Tuple<double, double>>? gconv;
@@ -37,7 +43,7 @@ public class GaSubs
     static int maskflg; /* mask flag; -999 no mask yet,
                                                 0 no mask used, 1 mask values set, -888 error  */
 
-    internal GaSubs(DrawingContext drawingContext)
+    internal GradsDrawingInterface(DrawingContext drawingContext)
     {
         _drawingContext = drawingContext;
     }
@@ -49,15 +55,15 @@ public class GaSubs
 
     public int gxstrt(double xmx, double ymx, int batch, int hbufsz, string gxdopt, string gxpopt, string xgeom)
     {
-        _drawingContext.GxDb.gxdbinit();
-        if (gxpopt == "SixLabors")
-        {
-            DrawingEngine = new SixLaborsDrawingEngine(_drawingContext);
-        }
-        else if (gxpopt == "Cairo")
-        {
-            DrawingEngine = new CairoDrawingEngine(_drawingContext);
-        }
+        _drawingContext.GradsDatabase.gxdbinit();
+        // if (gxpopt == "SixLabors")
+        // {
+        //     DrawingEngine = new SixLaborsDrawingEngine(_drawingContext);
+        // }
+        // else if (gxpopt == "Cairo")
+        // {
+        //     DrawingEngine = new CairoDrawingEngine(_drawingContext);
+        // }
 
         DrawingEngine.gxpinit(xmx, ymx);
         DrawingEngine.gxpbgn(xmx, ymx);
@@ -119,7 +125,7 @@ public class GaSubs
         /* cases where we want to use Hershey fonts */
         if (fn == 3) return (-999.9); /* symbol font */
         if (fn > 5 && fn < 10) return (-999.9); /* user-defined font file */
-        if (fn < 6 && _drawingContext.GxDb.gxdbqhersh() == 0)
+        if (fn < 6 && _drawingContext.GradsDatabase.gxdbqhersh() == 0)
             return (-999.9); /* font 0-5 and hershflag=0 in gxmeta.c */
 
 
@@ -135,7 +141,7 @@ public class GaSubs
         /* cases where we want to use Hershey fonts */
         if (fn == 3) return (-999.9); /* symbol font */
         if (fn > 5 && fn < 10) return (-999.9); /* user-defined font file */
-        if (fn < 6 && _drawingContext.GxDb.gxdbqhersh() == 0)
+        if (fn < 6 && _drawingContext.GradsDatabase.gxdbqhersh() == 0)
             return (-999.9); /* font 0-5 and hershflag=0 in gxmeta.c */
 
         /* from here on we're using Cairo fonts */
@@ -187,7 +193,7 @@ public class GaSubs
         //     dsubs.gxdfrm(9);                /* clear the X request buffer */
         // }
         _drawingContext.GxMeta.gxhfrm(action); /* reset metabuffer */
-        bcol = GxDb.gxdbkq();
+        bcol = _drawingContext.GradsDatabase.gxdbkq();
         if (bcol > 1)
         {
             /* If background is not black/white, draw a full page rectangle and populate the metabuffer */
@@ -223,7 +229,7 @@ public class GaSubs
     public int gxacol(int clr, int red, int green, int blue, int alpha)
     {
         int rc = 0;
-        _drawingContext.GxDb.gxdbacol(clr, red, green, blue, alpha); /* update the database */
+        _drawingContext.GradsDatabase.gxdbacol(clr, red, green, blue, alpha); /* update the database */
         _drawingContext.GxMeta.hout5i(-5, clr, red, green, blue, alpha); /* tell the metabuffer */
         //if (intflg) rc = dsubs.gxdacol(clr, red, green, blue, alpha);  /* tell hardware */
         return (rc);
@@ -780,7 +786,11 @@ public class GaSubs
         // }
     }
 
-/* Define fill pattern for rectangles and polygons. */
+    public int ShadeCount => _drawingContext.CommonData.shdcnt;
+    public double[] ShadeLevels => _drawingContext.CommonData.shdlvs;
+    public int[] ShadeColors => _drawingContext.CommonData.shdcls;
+
+    /* Define fill pattern for rectangles and polygons. */
 
     void gxptrn(int typ, int den, int ang)
     {

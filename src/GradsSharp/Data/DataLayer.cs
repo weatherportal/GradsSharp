@@ -14,7 +14,7 @@ public class DataLayer
 
     public void Open(string file, DataFormat format)
     {
-        _context.GaUser.Open(file, format);
+        _context.GradsCommandInterface.Open(file, format);
     }
 
     public List<VariableDefinition> GetAvailableVariables()

@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using Microsoft.Extensions.Logging;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class s2pbuf
 {
@@ -57,7 +59,7 @@ internal class GxShad2
         int k;
 
         bug = 0;
-        if (bug > 0) GaGx.gaprnt(0, "in gxshad2");
+        if (bug > 0) _drawingContext.Logger?.LogInformation("in gxshad2");
 
         rr = r;
         isize = iis;
@@ -93,17 +95,17 @@ internal class GxShad2
                 else clev2 = clev1 + Math.Abs(vs[k] - vs[k - 1]);
             }
 
-            _drawingContext.GaSubs.gxcolr(clrs[k]);
+            _drawingContext.GradsDrawingInterface.gxcolr(clrs[k]);
             blev = clev1;
             alev = clev2;
-            if (bug > 0) GaGx.gaprnt(0, $"clevs {clev1} {clev2}");
+            if (bug > 0) _drawingContext.Logger?.LogInformation($"clevs {clev1} {clev2}");
             s2flags(r, u, iis, jjs, clev1, clev2);
             s2poly(r, iis, jjs, clev1, clev2);
             if (bug > 0) s2debug();
         }
 
 
-        if (bug > 0 && bufopt) GaGx.gaprnt(0, $"---. bufcnt = {bufcnt}");
+        if (bug > 0 && bufopt) _drawingContext.Logger?.LogInformation($"---. bufcnt = {bufcnt}");
     }
 /* The grid r is shaded.  Size is by js.  lvs indicates the number of 
    shaded levels.  vs contains the values bounding the shaded regions.
@@ -131,7 +133,7 @@ internal class GxShad2
                 else clev2 = clev1 + Math.Abs(vs[k] - vs[k - 1]);
             }
 
-            _drawingContext.GaSubs.gxcolr(clrs[k]);
+            _drawingContext.GradsDrawingInterface.gxcolr(clrs[k]);
 
             /*  Loop through all the grid boxes.  Skip box if any missing values */
 
@@ -146,7 +148,7 @@ internal class GxShad2
                     v2 = r[ijg + 1];
                     v4 = r[ijg + iis];
                     v3 = r[ijg + iis + 1];
-                    if (bug > 0) GaGx.gaprnt(0, $"{v1},{v2},{v3},{v4}");
+                    if (bug > 0) _drawingContext.Logger?.LogInformation($"{v1},{v2},{v3},{v4}");
 
                     /* Find all the intersect points for this box, and if it
                        is a col, determine the nature of the col and the 
@@ -253,7 +255,7 @@ internal class GxShad2
         double[] pxy;
         int i, j;
 
-        if (bug > 0) GaGx.gaprnt(0, $"  xxx> {npo}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"  xxx> {npo}");
         if (npo < 3)
         {
             /* At least 3 points needed */
@@ -291,8 +293,8 @@ internal class GxShad2
         for (i = 0; i < npo; i++)
         {
             /* Scale from grid to xy */
-            GaSubs.gxconv(xpo[i], ypo[i], out pxy[cntpxy], out pxy[cntpxy + 1], 3);
-            if (bug > 0) GaGx.gaprnt(0, $"    {xpo[i]} {ypo[i]} {pxy[cntpxy]} {pxy[cntpxy + 1]}");
+            GradsDrawingInterface.gxconv(xpo[i], ypo[i], out pxy[cntpxy], out pxy[cntpxy + 1], 3);
+            if (bug > 0) _drawingContext.Logger?.LogInformation($"    {xpo[i]} {ypo[i]} {pxy[cntpxy]} {pxy[cntpxy + 1]}");
             cntpxy += 2;
         }
 
@@ -301,7 +303,7 @@ internal class GxShad2
         npo++;
         if (!nodraw)
         {
-            _drawingContext.GaSubs.gxfill(xy, npo); /* Output polygon */
+            _drawingContext.GradsDrawingInterface.gxfill(xy, npo); /* Output polygon */
         }
 
         npo = 0;
@@ -647,7 +649,7 @@ internal class GxShad2
         if (side == 1)
         {
             fl = s1flg[ij];
-            if (bug>0) GaGx.gaprnt(0, $"entering side 1 {ii} {jj} {fl}");
+            if (bug>0) _drawingContext.Logger?.LogInformation($"entering side 1 {ii} {jj} {fl}");
             if (fl == 5 || fl == 6) goto skip;
             if (fl == 1)
             {
@@ -675,7 +677,7 @@ internal class GxShad2
         if (side == 2)
         {
             fl = s2flg[ij];
-            if (bug > 0) GaGx.gaprnt(0, $"entering side 2 {ii} {jj} {fl}");
+            if (bug > 0) _drawingContext.Logger?.LogInformation($"entering side 2 {ii} {jj} {fl}");
             if (fl == 5 || fl == 6) goto skip;
             if (fl == 1)
             {
@@ -703,7 +705,7 @@ internal class GxShad2
         if (side == 3)
         {
             fl = s3flg[ij];
-            if (bug > 0) GaGx.gaprnt(0, $"entering side 3 {ii} {jj} {fl}");
+            if (bug > 0) _drawingContext.Logger?.LogInformation($"entering side 3 {ii} {jj} {fl}");
             if (fl == 5 || fl == 6) goto skip;
             if (fl == 2)
             {
@@ -731,7 +733,7 @@ internal class GxShad2
         if (side == 4)
         {
             fl = s4flg[ij];
-            if (bug > 0) GaGx.gaprnt(0, $"entering side 4 {ii} {jj} {fl}");
+            if (bug > 0) _drawingContext.Logger?.LogInformation($"entering side 4 {ii} {jj} {fl}");
             if (fl == 5 || fl == 6) goto skip;
             if (fl == 2)
             {
@@ -761,7 +763,7 @@ internal class GxShad2
         goto err4;
 
         side1i1: /* Enter on side 1; c1 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side1 c1 {ii} {jj}{ig} {jg}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side1 c1 {ii} {jj}{ig} {jg}");
         ij = jj * iis + ii;
         p1 = rr[ij];
         p2 = rr[ij + isize];
@@ -838,7 +840,7 @@ internal class GxShad2
         goto err1;
 
         side2i1: /* Enter on side 2; c1 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side2 c1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side2 c1 {ii} {jj}");
         ij = jj * iis +ii;
         p2 = rr[ij + isize];
         p3 = rr[ij + isize + 1];
@@ -915,7 +917,7 @@ internal class GxShad2
         goto err1;
 
         side3i1: /* Enter on side 3; c1 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side3 c1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side3 c1 {ii} {jj}");
         ij = jj * iis +ii;
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
@@ -992,7 +994,7 @@ internal class GxShad2
         goto err1;
 
         side4i1: /* Enter on side 4; c1 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side4 c1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side4 c1 {ii} {jj}");
         ij = jj * iis +ii;
         p1 = rr[ij];
         p4 = rr[ij + 1];
@@ -1069,7 +1071,7 @@ internal class GxShad2
         goto err1;
 
         side1i2: /* Enter on side 1; c2 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side1 c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side1 c2 {ii} {jj}");
         ij = jj * iis +ii;
         p1 = rr[ij];
         p2 = rr[ij + isize];
@@ -1146,7 +1148,7 @@ internal class GxShad2
         goto err2;
 
         side2i2: /* Enter on side 2; c2 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side2 c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side2 c2 {ii} {jj}");
         ij = jj * iis +ii;
         p2 = rr[ij + isize];
         p3 = rr[ij + isize + 1];
@@ -1223,7 +1225,7 @@ internal class GxShad2
         goto err2;
 
         side3i2: /* Enter on side 3; c2 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side3 c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side3 c2 {ii} {jj}");
         ij = jj * iis +ii;
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
@@ -1300,7 +1302,7 @@ internal class GxShad2
         goto err2;
 
         side4i2: /* Enter on side 4; c2 intersect */
-        if (bug > 0) GaGx.gaprnt(0, $"side4 c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side4 c2 {ii} {jj}");
         ij = jj * iis +ii;
         p1 = rr[ij];
         p4 = rr[ij + 1];
@@ -1377,7 +1379,7 @@ internal class GxShad2
         goto err2;
 
         side1b1: /* Hit boundary on side1; c1 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side1 b c1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side1 b c1 {ii} {jj}");
         p1 = rr[ij];
         p2 = rr[ij + isize];
         s2ppnt((double)(ii + 1), (double)(jj + 1) + (c1 - p1) / (p2 - p1));
@@ -1396,7 +1398,7 @@ internal class GxShad2
         goto corner2;
 
         side2b1: /* Hit boundary on side2; c1 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side2 b c1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side2 b c1 {ii} {jj}");
         p2 = rr[ij + isize];
         p3 = rr[ij + isize + 1];
         s2ppnt((double)(ii + 1) + (c1 - p2) / (p3 - p2), (double)(jj + 2));
@@ -1415,7 +1417,7 @@ internal class GxShad2
         goto corner3;
 
         side3b1: /* Hit boundary on side3; c1 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side3 b c1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side3 b c1 {ii} {jj}");
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 2), (double)(jj + 1) + (c1 - p4) / (p3 - p4));
@@ -1434,7 +1436,7 @@ internal class GxShad2
         goto corner4;
 
         side4b1: /* Hit boundary on side4; c1 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side4 b c1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side4 b c1 {ii} {jj}");
         p1 = rr[ij];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 1) + (c1 - p1) / (p4 - p1), (double)(jj + 1));
@@ -1453,7 +1455,7 @@ internal class GxShad2
         goto corner1;
 
         side1b2: /* Hit boundary on side1; c2 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side1 b c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side1 b c2 {ii} {jj}");
         p1 = rr[ij];
         p2 = rr[ij + isize];
         s2ppnt((double)(ii + 1), (double)(jj + 1) + (c2 - p1) / (p2 - p1));
@@ -1475,7 +1477,7 @@ internal class GxShad2
         goto corner2;
 
         side2b2: /* Hit boundary on side2; c2 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side2 b c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side2 b c2 {ii} {jj}");
         p2 = rr[ij + isize];
         p3 = rr[ij + isize + 1];
         s2ppnt((double)(ii + 1) + (c2 - p2) / (p3 - p2), (double)(jj + 2));
@@ -1494,7 +1496,7 @@ internal class GxShad2
         goto corner3;
 
         side3b2: /* Hit boundary on side3; c2 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side3 b c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side3 b c2 {ii} {jj}");
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 2), (double)(jj + 1) + (c2 - p4) / (p3 - p4));
@@ -1513,7 +1515,7 @@ internal class GxShad2
         goto corner4;
 
         side4b2: /* Hit boundary on side4; c2 intersect  */
-        if (bug > 0) GaGx.gaprnt(0, $"side4 b c2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"side4 b c2 {ii} {jj}");
         p1 = rr[ij];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 1) + (c2 - p1) / (p4 - p1), (double)(jj + 1));
@@ -1532,7 +1534,7 @@ internal class GxShad2
         goto corner1;
 
         corner1: /* Arriving at corner 1 from the right */
-        if (bug > 0) GaGx.gaprnt(0, $"corner 1 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 1 {ii} {jj}");
         s2ppnt((double)(ii + 1), (double)(jj + 1));
         ij = jj * iis +ii;
         if (sflg > 0)
@@ -1556,11 +1558,11 @@ internal class GxShad2
         if (s3flg[ij] == 14) goto side3i2;
         ii++;
         jj++;
-        GaGx.gaprnt(0, $"err 3 corner 1 {ii} {jj}");
+        _drawingContext.Logger?.LogInformation($"err 3 corner 1 {ii} {jj}");
         goto err3;
 
         corner2: /* Arriving at corner 2 from below */
-        if (bug > 0) GaGx.gaprnt(0, $"corner 2 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 2 {ii} {jj}");
         s2ppnt((double)(ii + 1), (double)(jj + 2));
         ij = jj * iis +ii;
         if (sflg > 0)
@@ -1584,11 +1586,11 @@ internal class GxShad2
         if (s4flg[ij - 1] == 14) goto side4i2;
         ii++;
         jj--;
-        GaGx.gaprnt(0, $"err 3 corner 2 {ii} {jj}");
+        _drawingContext.Logger?.LogInformation($"err 3 corner 2 {ii} {jj}");
         goto err3;
 
         corner3: /* Arriving at corner 3 from the left */
-        if (bug > 0) GaGx.gaprnt(0, $"corner 3 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 3 {ii} {jj}");
         s2ppnt((double)(ii + 2), (double)(jj + 2));
         ij = jj * iis +ii;
         if (sflg > 0)
@@ -1612,11 +1614,11 @@ internal class GxShad2
         if (s1flg[ij] == 13) goto side1i2;
         ii--;
         jj--;
-        GaGx.gaprnt(0, $"err 3 corner 3 {ii} {jj}");
+        _drawingContext.Logger?.LogInformation($"err 3 corner 3 {ii} {jj}");
         goto err3;
 
         corner4: /* Arriving at corner 4 from above */
-        if (bug > 0) GaGx.gaprnt(0, $"corner 4 {ii} {jj}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 4 {ii} {jj}");
         s2ppnt((double)(ii + 2), (double)(jj + 1));
         ij = jj * iis +ii;
         if (sflg > 0)
@@ -1640,11 +1642,11 @@ internal class GxShad2
         if (s2flg[ij + 1] == 13) goto side2i2;
         ii--;
         jj++;
-        GaGx.gaprnt(0, $"err 3 corner 4 {ii} {jj}");
+        _drawingContext.Logger?.LogInformation($"err 3 corner 4 {ii} {jj}");
         goto err3;
 
         done:
-        if (bug > 0) GaGx.gaprnt(0, $"done\n");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"done\n");
 
         if (xynum < 0) return (1);
 
@@ -1668,12 +1670,12 @@ internal class GxShad2
         }
 
         k++;
-        if (bug > 0) GaGx.gaprnt(0, $"pnum {pnum} {k}");
+        if (bug > 0) _drawingContext.Logger?.LogInformation($"pnum {pnum} {k}");
         if (k < 3) return (0);
 
         if (!nodraw)
         {
-            _drawingContext.GaSubs.gxfill(xxyy, k);
+            _drawingContext.GradsDrawingInterface.gxfill(xxyy, k);
         }
 
         if (bufopt)
@@ -1682,22 +1684,22 @@ internal class GxShad2
             if (rc > 0)
             {
                 s2frepbuf();
-                GaGx.gaprnt(0, $"Memory error in shade2: Unable to allocate Polygon Buffer\n");
+                _drawingContext.Logger?.LogInformation($"Memory error in shade2: Unable to allocate Polygon Buffer\n");
                 bufopt = false;
             }
         }
 
         if (bug > 0)
         {
-            n = GaSubs.lcolor;
-            _drawingContext.GaSubs.gxcolr(0);
-            _drawingContext.GaSubs.gxplot(xxyy[0], xxyy[1], 3);
+            n = GradsDrawingInterface.lcolor;
+            _drawingContext.GradsDrawingInterface.gxcolr(0);
+            _drawingContext.GradsDrawingInterface.gxplot(xxyy[0], xxyy[1], 3);
             for (ii = 1; ii < k; ii++)
             {
-                _drawingContext.GaSubs.gxplot(xxyy[ii * 2], xxyy[ii * 2 + 1], 2);
+                _drawingContext.GradsDrawingInterface.gxplot(xxyy[ii * 2], xxyy[ii * 2 + 1], 2);
             }
 
-            _drawingContext.GaSubs.gxcolr(n);
+            _drawingContext.GradsDrawingInterface.gxcolr(n);
         }
 
         return (0);
@@ -1706,19 +1708,19 @@ internal class GxShad2
         return (0);
 
         err1:
-        GaGx.gaprnt(0, $"Logic Error 1 in gxshad2 s2follow\n");
+        _drawingContext.Logger?.LogInformation($"Logic Error 1 in gxshad2 s2follow\n");
         return (1);
         err2:
-        GaGx.gaprnt(0, $"Logic Error 2 in gxshad2 s2follow\n");
+        _drawingContext.Logger?.LogInformation($"Logic Error 2 in gxshad2 s2follow\n");
         return (1);
         err3:
-        GaGx.gaprnt(0, $"Logic Error 3 in gxshad2 s2follow\n");
+        _drawingContext.Logger?.LogInformation($"Logic Error 3 in gxshad2 s2follow\n");
         return (1);
         err4:
-        GaGx.gaprnt(0, $"Logic Error 4 in gxshad2 s2follow\n");
+        _drawingContext.Logger?.LogInformation($"Logic Error 4 in gxshad2 s2follow\n");
         return (1);
         cerr:
-        GaGx.gaprnt(0, $"Logic Error 5 in gxshad2 s2follow\n");
+        _drawingContext.Logger?.LogInformation($"Logic Error 5 in gxshad2 s2follow\n");
         return (1);
     }
 
@@ -1926,14 +1928,14 @@ internal class GxShad2
         if (pnum > xynum - 3)
         {
             xynum = xynum * 2;
-            if (bug > 0) GaGx.gaprnt(0, $"Poly buff memory for {xynum} points");
+            if (bug > 0) _drawingContext.Logger?.LogInformation($"Poly buff memory for {xynum} points");
             xynew = new double[xynum * 2];
             
             for (i = 0; i < pnum * 2; i++) xynew[i] = xxyy[i];
             xxyy = xynew;
         }
 
-        GaSubs.gxconv(x, y, out xx, out yy, 3);
+        GradsDrawingInterface.gxconv(x, y, out xx, out yy, 3);
         xxyy[pnum * 2 ] = xx;
         xxyy[pnum * 2 + 1 ]= yy;
 
@@ -2004,64 +2006,64 @@ internal class GxShad2
         double sz, xxx, yyy;
 
         sz = 0.03;
-        _drawingContext.GaSubs.gxclip(0.0, 11.0, 0.0, 8.5);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, 11.0, 0.0, 8.5);
         for (jg = 0; jg < jsize - 1; jg++)
         {
             for (ig = 0; ig < isize - 1; ig++)
             {
                 offset = jg * isize + ig;
 
-                if (pflg[offset]>0) _drawingContext.GaSubs.gxcolr(1);
-                else _drawingContext.GaSubs.gxcolr(2);
-                GaSubs.gxconv((double)ig + 1.0, (double)jg + 1.0, out xxx, out yyy, 3);
-                _drawingContext.GaSubs.gxmark(3, xxx, yyy, sz);
+                if (pflg[offset]>0) _drawingContext.GradsDrawingInterface.gxcolr(1);
+                else _drawingContext.GradsDrawingInterface.gxcolr(2);
+                GradsDrawingInterface.gxconv((double)ig + 1.0, (double)jg + 1.0, out xxx, out yyy, 3);
+                _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 if (s1flg[offset]>0)
                 {
-                    _drawingContext.GaSubs.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.gxcolr(3);
                     /*       if (*(s1flg+offset)>7) gxcolr(12);
                              if (*(s1flg+offset)>10 && *(s1flg+offset)<20) gxcolr(6); */
-                    if (s1flg[offset] > 9) _drawingContext.GaSubs.gxcolr(6);
+                    if (s1flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
                     if (s1flg[offset] == 88)
                     {
-                        _drawingContext.GaSubs.gxcolr(6);
+                        _drawingContext.GradsDrawingInterface.gxcolr(6);
                         mk = 1;
                         sz = 0.06;
                     }
 
-                    GaSubs.gxconv((double)ig + 1.1, (double)jg + 1.5, out xxx, out yyy, 3);
-                    _drawingContext.GaSubs.gxmark(mk, xxx, yyy, sz);
+                    GradsDrawingInterface.gxconv((double)ig + 1.1, (double)jg + 1.5, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxmark(mk, xxx, yyy, sz);
                 }
 
                 if (s2flg[offset]>0)
                 {
-                    _drawingContext.GaSubs.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.gxcolr(3);
                     /* if (*(s2flg+offset)>7) gxcolr(12);
                     if (*(s2flg+offset)>10 && *(s2flg+offset)<20) gxcolr(6); */
-                    if (s2flg[offset] > 9) _drawingContext.GaSubs.gxcolr(6);
-                    GaSubs.gxconv((double)ig + 1.5, (double)jg + 1.9, out xxx, out yyy, 3);
-                    _drawingContext.GaSubs.gxmark(3, xxx, yyy, sz);
+                    if (s2flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
+                    GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.9, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
                 if (s3flg[offset]>0)
                 {
-                    _drawingContext.GaSubs.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.gxcolr(3);
                     /* if (*(s3flg+offset)>7) gxcolr(12);
                     if (*(s3flg+offset)>90) gxcolr(7);
                     if (*(s3flg+offset)>10 && *(s3flg+offset)<20) gxcolr(6); */
-                    if (s3flg[offset] > 9) _drawingContext.GaSubs.gxcolr(6);
-                    GaSubs.gxconv((double)ig + 1.9, (double)jg + 1.5, out xxx, out yyy, 3);
-                    _drawingContext.GaSubs.gxmark(3, xxx, yyy, sz);
+                    if (s3flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
+                    GradsDrawingInterface.gxconv((double)ig + 1.9, (double)jg + 1.5, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
                 if (s4flg[offset]>0)
                 {
-                    _drawingContext.GaSubs.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.gxcolr(3);
                     /* if (*(s4flg+offset)>7) gxcolr(12);
                     if (*(s4flg+offset)>90) gxcolr(7);
                     if (*(s4flg+offset)>10 && *(s4flg+offset)<20) gxcolr(6); */
-                    if (s4flg[offset] > 9) _drawingContext.GaSubs.gxcolr(6);
-                    GaSubs.gxconv((double)ig + 1.5, (double)jg + 1.1, out xxx, out yyy, 3);
-                    _drawingContext.GaSubs.gxmark(3, xxx, yyy, sz);
+                    if (s4flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
+                    GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.1, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
             }
         }
@@ -2094,7 +2096,7 @@ internal class GxShad2
 
         for (i = 0; i < pcnt * 2; i++) ppbuf.xy[i] = xxyy[i];
 
-        ppbuf.color = GaSubs.lcolor;
+        ppbuf.color = GradsDrawingInterface.lcolor;
         ppbuf.index = gindex;
         ppbuf.clev1 = blev;
         ppbuf.clev2 = alev;
@@ -2154,7 +2156,7 @@ internal class GxShad2
 //         pbuf = s2pbufanch;
 //         if (pbuf == NULL)
 //         {
-//             GaGx.gaprnt(0, $"Error in s2shpwrt: polygon buffer is empty\n");
+//             _drawingContext.Logger?.LogInformation($"Error in s2shpwrt: polygon buffer is empty\n");
 //             rc = -1;
 //             goto cleanup;
 //         }
@@ -2166,21 +2168,21 @@ internal class GxShad2
 //                 /* allocate memory for lons and lats of the vertices in polygon */
 //                 if ((lons = (double*)galloc(pbuf.len * sizeof(double), "shplons")) == NULL)
 //                 {
-//                     GaGx.gaprnt(0, $"Error in s2shpwrt: unable to allocate memory for lon array\n");
+//                     _drawingContext.Logger?.LogInformation($"Error in s2shpwrt: unable to allocate memory for lon array\n");
 //                     rc = -1;
 //                     goto cleanup;
 //                 }
 //
 //                 if ((lats = (double*)galloc(pbuf.len * sizeof(double), "shplats")) == NULL)
 //                 {
-//                     GaGx.gaprnt(0, $"Error in s2shpwrt: unable to allocate memory for lat array\n");
+//                     _drawingContext.Logger?.LogInformation($"Error in s2shpwrt: unable to allocate memory for lat array\n");
 //                     rc = -1;
 //                     goto cleanup;
 //                 }
 //
 //                 if ((vals = (double*)galloc(pbuf.len * sizeof(double), "shpvals")) == NULL)
 //                 {
-//                     GaGx.gaprnt(0, $"Error in s2shpwrt: unable to allocate memory for val array\n");
+//                     _drawingContext.Logger?.LogInformation($"Error in s2shpwrt: unable to allocate memory for val array\n");
 //                     rc = -1;
 //                     goto cleanup;
 //                 }
@@ -2202,7 +2204,7 @@ internal class GxShad2
 //                 SHPDestroyObject(shp);
 //                 if (i != shpid)
 //                 {
-//                     GaGx.gaprnt(0, $"Error in s2shpwrt: SHPWriteObject returned %d, shpid=%d\n", i, shpid);
+//                     _drawingContext.Logger?.LogInformation($"Error in s2shpwrt: SHPWriteObject returned %d, shpid=%d\n", i, shpid);
 //                     rc = -1;
 //                     goto cleanup;
 //                 }
@@ -2296,7 +2298,7 @@ internal class GxShad2
         // pbuf = s2pbufanch;
         // if (pbuf == NULL)
         // {
-        //     GaGx.gaprnt(0, $"Error in s2polyvert: polygon buffer is empty\n");
+        //     _drawingContext.Logger?.LogInformation($"Error in s2polyvert: polygon buffer is empty\n");
         //     err = 1;
         //     goto cleanup;
         // }
@@ -2306,63 +2308,63 @@ internal class GxShad2
         //     if (pbuf.xy)
         //     {
         //         /* write out headers for each polygon */
-        //         snGaGx.gaprnt(0, $pout, 511, "    <Placemark>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "    <Placemark>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 1;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "      <styleUrl>#%d</styleUrl>\n", pbuf.color);
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      <styleUrl>#%d</styleUrl>\n", pbuf.color);
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 2;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "      <name>%g to %g</name>\n", pbuf.clev1, pbuf.clev2);
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      <name>%g to %g</name>\n", pbuf.clev1, pbuf.clev2);
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 3;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "      <Polygon>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      <Polygon>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 4;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "        <altitudeMode>clampToGround</altitudeMode>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        <altitudeMode>clampToGround</altitudeMode>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 5;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "        <tessellate>1</tessellate>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        <tessellate>1</tessellate>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 6;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "        <outerBoundaryIs>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        <outerBoundaryIs>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 7;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "          <LinearRing>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "          <LinearRing>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 8;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "            <coordinates>\n              ");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "            <coordinates>\n              ");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 9;
@@ -2379,7 +2381,7 @@ internal class GxShad2
         //             if (lat > 90) lat = 90;
         //             if (lat < -90) lat = -90;
         //
-        //             snGaGx.gaprnt(0, $pout, 511, "%g,%g,0 ", lon, lat);
+        //             sn_drawingContext.Logger?.LogInformation($pout, 511, "%g,%g,0 ", lon, lat);
         //             if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //             {
         //                 err = 10;
@@ -2388,8 +2390,8 @@ internal class GxShad2
         //
         //             if (j == 6 || i == (pbuf.len - 1))
         //             {
-        //                 if (j == 6) snGaGx.gaprnt(0, $pout, 511, "\n              ");
-        //                 else snGaGx.gaprnt(0, $pout, 511, "\n");
+        //                 if (j == 6) sn_drawingContext.Logger?.LogInformation($pout, 511, "\n              ");
+        //                 else sn_drawingContext.Logger?.LogInformation($pout, 511, "\n");
         //                 if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //                 {
         //                     err = 11;
@@ -2403,35 +2405,35 @@ internal class GxShad2
         //         }
         //
         //         /* write out footers for each polygon */
-        //         snGaGx.gaprnt(0, $pout, 511, "            </coordinates>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "            </coordinates>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 12;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "          </LinearRing>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "          </LinearRing>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 13;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "        </outerBoundaryIs>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        </outerBoundaryIs>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 14;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "      </Polygon>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      </Polygon>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 15;
         //             goto cleanup;
         //         }
         //
-        //         snGaGx.gaprnt(0, $pout, 511, "    </Placemark>\n");
+        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "    </Placemark>\n");
         //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
         //         {
         //             err = 16;

@@ -2,21 +2,12 @@
 
 public interface IDrawingEngine
 {
+    
     void gxpcfg();
     bool gxpckfont();
     void gxpbgn(double xsz, double ysz);
     void gxpinit(double xsz, double ysz);
     void gxpend();
-    /* Render the hardcopy output. 
-
-    fnout -- output filename
-    xin,yin -- image sizes (-999 for non-image formats)
-    bwin -- background color
-    fmtflg -- output format 
-    bgImage, fgImage -- background/foreground image filenames
-    tcolor -- transparent color 
-*/
-
     int gxprint(string fnout, int xin, int yin, int bwin, int fmtflg,
         string bgImage, string fgImage, int tcolor, double border);
 

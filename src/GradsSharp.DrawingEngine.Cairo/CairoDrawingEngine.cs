@@ -1,8 +1,11 @@
 ﻿using Cairo;
+using GradsSharp.Data.Grads;
+using GradsSharp.Drawing.Grads;
+using Microsoft.Extensions.Logging;
 
-namespace GradsSharp.Drawing.Grads;
+namespace GradsSharp.DrawingEngine.Cairo;
 
-internal class CairoDrawingEngine : IDrawingEngine
+public class CairoDrawingEngine : IDrawingEngine
 {
     private const int SX = 800;
 
@@ -50,11 +53,12 @@ internal class CairoDrawingEngine : IDrawingEngine
     static double clx, cly, clw, clh; /* current clipping coordinates */
     static double clxsav, clysav, clwsav, clhsav; /* saved clipping coordinates */
 
-    private DrawingContext _drawingContext;
+    //private DrawingContext GradsEngine;
+    private GradsEngine _gradsEngine;
 
-    public CairoDrawingEngine(DrawingContext drawingContext)
+    public CairoDrawingEngine(GradsEngine engine)
     {
-        _drawingContext = drawingContext;
+        _gradsEngine = engine;
     }
 
     public void gxpcfg()
@@ -154,20 +158,20 @@ internal class CairoDrawingEngine : IDrawingEngine
         if (fmtflg != 1 && fmtflg != 2 && fmtflg != 3 && fmtflg != 4 && fmtflg != 5) return (9);
 
         if (tcolor != -1)
-            _drawingContext.GxDb.gxdbsettransclr(tcolor); /* tell graphics database about transparent color override */
+            _gradsEngine.GradsDatabase.gxdbsettransclr(tcolor); /* tell graphics database about transparent color override */
 
         /* initialize the output for vector graphics or image */
         int rc = gxChinit(xsize, ysize, xin, yin, bwin, fnout, fmtflg, bgImage, border);
         if (rc > 0) return (rc);
 
         /* draw the contents of the metabuffer */
-        _drawingContext.GxMeta.gxhdrw(0, 1);
+        _gradsEngine.DrawBuffersToOutput();
         if (rc > 0) return (rc);
 
         /* finish up */
         rc = gxChend(fnout, fmtflg, fgImage);
 
-        _drawingContext.GxDb.gxdbsettransclr(-1); /* unset transparent color override */
+        _gradsEngine.GradsDatabase.gxdbsettransclr(-1); /* unset transparent color override */
         return (rc);
     }
 
@@ -193,8 +197,8 @@ internal class CairoDrawingEngine : IDrawingEngine
                 status = sfc2.Status;
                 if (status != Status.Success)
                 {
-                    GaGx.gaprnt(0, $"Error in gxChend: unable to import foreground image {fgImage}");
-                    GaGx.gaprnt(0, $"Cairo status: {status}");
+                    GradsEngine.Logger?.LogInformation($"Error in gxChend: unable to import foreground image {fgImage}");
+                    GradsEngine.Logger?.LogInformation($"Cairo status: {status}");
                     sfc2.Finish();
                     sfc2.Dispose();
                     return (8);
@@ -205,8 +209,8 @@ internal class CairoDrawingEngine : IDrawingEngine
                 fgheight = ((ImageSurface)sfc2).Height;
                 if (fgwidth != width || fgheight != height)
                 {
-                    GaGx.gaprnt(0, $" foreground image size is {fgwidth} x {fgheight}");
-                    GaGx.gaprnt(0, $"     output image size is {width} x {height} ");
+                    GradsEngine.Logger?.LogInformation($" foreground image size is {fgwidth} x {fgheight}");
+                    GradsEngine.Logger?.LogInformation($"     output image size is {width} x {height} ");
                     sfc2.Finish();
                     sfc2.Dispose();
                     return (11);
@@ -226,8 +230,8 @@ internal class CairoDrawingEngine : IDrawingEngine
         status = surface.Status;
         if (status != Status.Success)
         {
-            GaGx.gaprnt(0, $"Error in gxChend: an error occured during rendering of hardcopy surface ");
-            GaGx.gaprnt(0, $"Cairo status: {status}");
+            GradsEngine.Logger?.LogInformation($"Error in gxChend: an error occured during rendering of hardcopy surface ");
+            GradsEngine.Logger?.LogInformation($"Cairo status: {status}");
             surface.Finish();
             surface.Dispose();
             return (1);
@@ -246,7 +250,7 @@ internal class CairoDrawingEngine : IDrawingEngine
         rotate = 0; /* unset rotation for landscape hardcopy */
         brdrflg = 0; /* reset border flag for vector graphic output */
         brdrwid = 0.0; /* reset border width for vector graphic output */
-        GxDb.gxdboutbck(-1); /* unset output background color */
+        _gradsEngine.GradsDatabase.gxdboutbck(-1); /* unset output background color */
 
         /* Reset everything back to the interactive/batch surface for drawing */
         Hsurface = null;
@@ -424,8 +428,8 @@ internal class CairoDrawingEngine : IDrawingEngine
                 status = surface.Status;
                 if (status != Status.Success)
                 {
-                    GaGx.gaprnt(0, $"Error in gxChinit: unable to import background image {bgImage}");
-                    GaGx.gaprnt(0, $"Cairo status: {status}");
+                    GradsEngine.Logger?.LogInformation($"Error in gxChinit: unable to import background image {bgImage}");
+                    GradsEngine.Logger?.LogInformation($"Cairo status: {status}");
                     surface.Finish();
                     surface.Dispose();
                     return (7);
@@ -436,8 +440,8 @@ internal class CairoDrawingEngine : IDrawingEngine
                 bgheight = ((ImageSurface)surface).Height;
                 if (bgwidth != width || bgheight != height)
                 {
-                    GaGx.gaprnt(0, $" background image size is {bgwidth} x {bgheight}");
-                    GaGx.gaprnt(0, $"     output image size is {width} x {height}");
+                    GradsEngine.Logger?.LogInformation($" background image size is {bgwidth} x {bgheight}");
+                    GradsEngine.Logger?.LogInformation($"     output image size is {width} x {height}");
                     surface.Finish();
                     surface.Dispose();
                     return (10);
@@ -454,8 +458,8 @@ internal class CairoDrawingEngine : IDrawingEngine
         status = surface.Status;
         if (status != Status.Success)
         {
-            GaGx.gaprnt(0, "Error in gxChinit: failed to initialize hardcopy surface ");
-            GaGx.gaprnt(0, $"Cairo status {status}");
+            GradsEngine.Logger?.LogInformation("Error in gxChinit: failed to initialize hardcopy surface ");
+            GradsEngine.Logger?.LogInformation($"Cairo status {status}");
             surface.Finish();
             surface.Dispose();
             return (1);
@@ -472,7 +476,7 @@ internal class CairoDrawingEngine : IDrawingEngine
         gxCaa(1); /* initialize anti-aliasing to be ON */
 
         force = 1; /* force a color change */
-        bcol = GxDb.gxdbkq();
+        bcol = _gradsEngine.GradsDatabase.gxdbkq();
         if (bcol > 1)
         {
             /* User has set the background to be a color other than black/white.
@@ -480,19 +484,19 @@ internal class CairoDrawingEngine : IDrawingEngine
                cover whatever we draw here to initalize the output */
             if (bwin > -900)
             {
-                GaGx.gaprnt(0, $"Warning: Background color cannot be changed at print time  ");
-                GaGx.gaprnt(0, $" if it has been set to a color other than black or white. ");
-                GaGx.gaprnt(0, $" The current background color is {bcol}. ");
+                GradsEngine.Logger?.LogInformation($"Warning: Background color cannot be changed at print time  ");
+                GradsEngine.Logger?.LogInformation($" if it has been set to a color other than black or white. ");
+                GradsEngine.Logger?.LogInformation($" The current background color is {bcol}. ");
                 if (bwin == 1)
-                    GaGx.gaprnt(0, " The option \"white\" will be ignored. ");
+                    GradsEngine.Logger?.LogInformation(" The option \"white\" will be ignored. ");
                 else
-                    GaGx.gaprnt(0, " The option \"black\" will be ignored. ");
+                    GradsEngine.Logger?.LogInformation(" The option \"black\" will be ignored. ");
             }
         }
         else
         {
             if (bwin > -900)
-                GxDb.gxdboutbck(bwin); /* change the background color if user provided an override */
+                _gradsEngine.GradsDatabase.gxdboutbck(bwin); /* change the background color if user provided an override */
             gxpcol(0); /* 0 here means 'background' */
             cr.Paint(); /* paint it */
         }
@@ -539,7 +543,7 @@ internal class CairoDrawingEngine : IDrawingEngine
         if (drawing > 0) cr.Stroke();
         drawing = 0;
         lcolor = clr; /* outside this routine lcolor 0/1 still means background/foreground */
-        bcol = GxDb.gxdbkq(); /* get background color */
+        bcol = _gradsEngine.GradsDatabase.gxdbkq(); /* get background color */
         if (bcol == 1)
         {
             /* if background is white ...  */
@@ -547,8 +551,8 @@ internal class CairoDrawingEngine : IDrawingEngine
             else if (clr == 1) clr = 0; /*  ...change color 1 to black (0) */
         }
 
-        var dbq = _drawingContext.GxDb.gxdbqcol(clr);
-        if (clr == _drawingContext.GxDb.gxdbqtransclr())
+        var dbq = _gradsEngine.GradsDatabase.gxdbqcol(clr);
+        if (clr == _gradsEngine.GradsDatabase.gxdbqtransclr())
         {
             /* If this is the transparent color, override values  */
             dbq.Item1 = 0;
@@ -587,7 +591,7 @@ internal class CairoDrawingEngine : IDrawingEngine
                         surfmask = new ImageSurface(Format.Argb32, width, height);
                         crmask = new Context(surfmask); /* create a new graphics context */
                         crmask.SetSourceRGBA(1.0, 1.0, 1.0, 1.0); /* set mask color */
-                        wid = _drawingContext.GxDb.gxdbqwid(lwidth - 1); /* set current line width */
+                        wid = _gradsEngine.GradsDatabase.gxdbqwid(lwidth - 1); /* set current line width */
                         crmask.LineWidth = wid;
                         crmask.LineCap = LineCap.Round; /* set line drawing specs */
                         crmask.LineJoin = LineJoin.Round;
@@ -637,8 +641,8 @@ internal class CairoDrawingEngine : IDrawingEngine
         //     surfacep1 = cairo_image_surface_create_from_png(dbq.fname);
         //     status = cairo_surface_status(surfacep1);
         //     if (status) {
-        //         GaGx.gaprnt(0, ("Error in gxCpattc: unable to import tile image %s \n", dbq.fname);
-        //         GaGx.gaprnt(0, ("Cairo status: %s\n", cairo_status_to_string(status));
+        //         GradsEngine.Logger?.LogInformation(("Error in gxCpattc: unable to import tile image %s \n", dbq.fname);
+        //         GradsEngine.Logger?.LogInformation(("Cairo status: %s\n", cairo_status_to_string(status));
         //         cairo_surface_finish(surfacep1);
         //         cairo_surface_destroy(surfacep1);
         //         return;
@@ -769,7 +773,7 @@ internal class CairoDrawingEngine : IDrawingEngine
         drawing = 0;
         lwidth = wid;
         double
-            w = _drawingContext.GxDb
+            w = _gradsEngine.GradsDatabase
                 .gxdbqwid(wid - 1); /* at this point wid still starts at 1, so subtract to get index right */
         cr.LineWidth = w;
     }
@@ -946,7 +950,7 @@ internal class CairoDrawingEngine : IDrawingEngine
         FontSlant citalic;
 
         /* get font info from graphics database */
-        (string, bool, int) fontInfo = _drawingContext.GxDb.gxdbqfont(fn); 
+        (string, bool, int) fontInfo = _gradsEngine.GradsDatabase.gxdbqfont(fn); 
         
         /* font 0-5 (but not 3) and hershflag=1 in gxmeta.c, so we use cairo to draw something hershey-like */
         if (fn < 6) {

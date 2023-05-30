@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Models.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -164,7 +165,7 @@ internal class GaGx
     {
         int rc = 0;
         var pcm = _drawingContext.CommonData;
-        rc = _drawingContext.GaSubs.gxstrt(_drawingContext.CommonData.xsiz, _drawingContext.CommonData.ysiz,
+        rc = _drawingContext.GradsDrawingInterface.gxstrt(_drawingContext.CommonData.xsiz, _drawingContext.CommonData.ysiz,
             _drawingContext.CommonData.batflg, _drawingContext.CommonData.hbufsz, _drawingContext.CommonData.gxdopt,
             _drawingContext.CommonData.gxpopt, _drawingContext.CommonData.xgeom);
         if (rc != 0) return (rc);
@@ -220,18 +221,18 @@ internal class GaGx
                     if (pcm.gout2a == 7) gafwrt();
                     else if (pcm.gout2a == 12)
                     {
-                        gaprnt(0, "Invalid dimension environment for GeoTIFF: ");
-                        gaprnt(0, "  Longitude and Latitude must be varying ");
+                        _drawingContext.Logger?.LogInformation("Invalid dimension environment for GeoTIFF: ");
+                        _drawingContext.Logger?.LogInformation("  Longitude and Latitude must be varying ");
                     }
                     else if (pcm.gout2a == 13)
                     {
-                        gaprnt(0, "Invalid dimension environment for KML: ");
-                        gaprnt(0, "  Longitude and Latitude must be varying ");
+                        _drawingContext.Logger?.LogInformation("Invalid dimension environment for KML: ");
+                        _drawingContext.Logger?.LogInformation("  Longitude and Latitude must be varying ");
                     }
                     else if (pcm.gout2a == 15)
                     {
-                        gaprnt(0, "Invalid dimension environment for Shapefile: ");
-                        gaprnt(0, "  Longitude and Latitude must be varying ");
+                        _drawingContext.Logger?.LogInformation("Invalid dimension environment for Shapefile: ");
+                        _drawingContext.Logger?.LogInformation("  Longitude and Latitude must be varying ");
                     }
                     else
                     {
@@ -239,7 +240,7 @@ internal class GaGx
                             pout = String.Format("Result value = {0:g} ", pgr.rmin);
                         else
                             pout = String.Format("Result value = {0:g} ", pcm.undef);
-                        gaprnt(2, pout);
+                        _drawingContext.Logger?.LogInformation(pout);
                     }
                 }
                 else if (pgr.jdim == -1)
@@ -248,18 +249,18 @@ internal class GaGx
                     if (pcm.gout2a == 7) gafwrt();
                     else if (pcm.gout2a == 12)
                     {
-                        gaprnt(0, "Invalid dimension environment for GeoTIFF: \n");
-                        gaprnt(0, "  Longitude and Latitude must be varying \n");
+                        _drawingContext.Logger?.LogInformation("Invalid dimension environment for GeoTIFF: \n");
+                        _drawingContext.Logger?.LogInformation("  Longitude and Latitude must be varying \n");
                     }
                     else if (pcm.gout2a == 13)
                     {
-                        gaprnt(0, "Invalid dimension environment for KML: \n");
-                        gaprnt(0, "  Longitude and Latitude must be varying \n");
+                        _drawingContext.Logger?.LogInformation("Invalid dimension environment for KML: \n");
+                        _drawingContext.Logger?.LogInformation("  Longitude and Latitude must be varying \n");
                     }
                     else if (pcm.gout2a == 15)
                     {
-                        gaprnt(0, "Invalid dimension environment for Shapefile: \n");
-                        gaprnt(0, "  Longitude and Latitude must be varying \n");
+                        _drawingContext.Logger?.LogInformation("Invalid dimension environment for Shapefile: \n");
+                        _drawingContext.Logger?.LogInformation("  Longitude and Latitude must be varying \n");
                     }
                     else if (pcm.gout2b == 5 && pcm.numgrd > 1) gascat();
                     else if (pcm.gout1 == 1) gagrph(0);
@@ -287,7 +288,7 @@ internal class GaGx
                         else if (pcm.gout2a == 17) gacntr(5, 0); /* gxshad2b  */
                         else
                         {
-                            gaprnt(0, "Internal logic error: invalid gout2a value\n");
+                            _drawingContext.Logger?.LogInformation("Internal logic error: invalid gout2a value\n");
                             return;
                         }
                     }
@@ -317,7 +318,7 @@ internal class GaGx
                 // }
                 // else if (stn.idim == 2 && stn.jdim == -1) gapprf();
                 // else if (stn.idim == 3 && stn.jdim == -1) gatser();
-                // else gaprnt(0, "Invalid station data dimension environment\n");
+                // else _drawingContext.Logger?.LogInformation("Invalid station data dimension environment\n");
             }
         }
 
@@ -335,12 +336,12 @@ internal class GaGx
     void gawgdstime(string outfile, double[] val)
     {
         // snprintf(pout, 1255, "pre-byteswapped time: %g", *val);
-        // gaprnt(0, pout);
+        // _drawingContext.Logger?.LogInformation(pout);
         // if (BYTEORDER != 1) {  /* always write big endian for the GDS */
         //     ganbswp((char *) val, sizeof(double));
         // }
         // snprintf(pout, 1255, "byteswapped time: %g", *val);
-        // gaprnt(0, pout);
+        // _drawingContext.Logger?.LogInformation(pout);
         // fwrite(val, sizeof(double), 1, outfile);
     }
 
@@ -364,20 +365,20 @@ internal class GaGx
         //  size_t sz;
         //
         //  if (pcm.wgds.fname == NULL) {
-        //      gaprnt(0, "error: no file specified (use \"set writegds\").\n");
+        //      _drawingContext.Logger?.LogInformation("error: no file specified (use \"set writegds\").\n");
         //      return;
         //  }
         //  outfile = fopen(pcm.wgds.fname, "ab");
         //  if (outfile == NULL) {
-        //      gaprnt(0, "error: WRITEGDS unable to open ");
-        //      gaprnt(0, pcm.wgds.fname);
-        //      gaprnt(0, " for write\n");
+        //      _drawingContext.Logger?.LogInformation("error: WRITEGDS unable to open ");
+        //      _drawingContext.Logger?.LogInformation(pcm.wgds.fname);
+        //      _drawingContext.Logger?.LogInformation(" for write\n");
         //      return;
         //  }
-        //  gaprnt(0, "got options and opened file\n");
+        //  _drawingContext.Logger?.LogInformation("got options and opened file\n");
         //
         //  if (pcm.wgds.opts == NULL) {
-        //      gaprnt(0, "No options specified. Defaulting to full output (\"sxyztdi\").\n");
+        //      _drawingContext.Logger?.LogInformation("No options specified. Defaulting to full output (\"sxyztdi\").\n");
         //      sendoptions = "sxyztdi";
         //  } else {
         //      sendoptions = pcm.wgds.opts;
@@ -388,8 +389,8 @@ internal class GaGx
         //   *  that there is no more data. This is separate from gaoutgds() so
         //   *  that time loops can be written as a single sequence.
         //   */
-        //      gaprnt(0, "Finishing sequence:\n");
-        //      gaprnt(0, "EOS\n");
+        //      _drawingContext.Logger?.LogInformation("Finishing sequence:\n");
+        //      _drawingContext.Logger?.LogInformation("EOS\n");
         //      fwrite(endrec, sizeof(char), 4, outfile);
         //      fclose(outfile);
         //      return;
@@ -409,7 +410,7 @@ internal class GaGx
         //  sz = sizeof(int) * numvars;
         //  varlevels = (int *) galloc(sz, "varlevels");
         //  if (currpt == NULL || varlevels == NULL) {
-        //      gaprnt(0, "error: memory allocation failed\n");
+        //      _drawingContext.Logger?.LogInformation("error: memory allocation failed\n");
         //      fclose(outfile);
         //      return;
         //  }
@@ -433,35 +434,35 @@ internal class GaGx
         //      ref = currpt[0];
         //      coardstime = ref.tim; /* change to meaningful conversion */
         //
-        //      gaprnt(0, "SOI ");
+        //      _drawingContext.Logger?.LogInformation("SOI ");
         //      fwrite(startrec, sizeof(char), 4, outfile);
         //
-        //      gaprnt(0, ">>\t");
+        //      _drawingContext.Logger?.LogInformation(">>\t");
         //
         //      if (sendstnid) {
         //          snprintf(pout, 1255, "stnid: %.8s  ", ref.stid);
-        //          gaprnt(0, pout);
+        //          _drawingContext.Logger?.LogInformation(pout);
         //          fwrite(stnidlen, sizeof(char), 4, outfile);
         //          fwrite(&(ref.stid), sizeof(char), 8, outfile);
         //      }
         //      if (sendlon) {
         //          snprintf(pout, 1255, "lon: %f  ", ref.lon);
-        //          gaprnt(0, pout);
+        //          _drawingContext.Logger?.LogInformation(pout);
         //          outFloat = ref.lon;
         //          gawgdsval(outfile, &outFloat);
         //      }
         //      if (sendlat) {
         //          snprintf(pout, 1255, "lat: %f  ", ref.lat);
-        //          gaprnt(0, pout);
+        //          _drawingContext.Logger?.LogInformation(pout);
         //          outFloat = ref.lat;
         //          gawgdsval(outfile, &outFloat);
         //      }
         //      if (sendtime) {
         //          snprintf(pout, 1255, "time: %f  ", coardstime);
-        //          gaprnt(0, pout);
+        //          _drawingContext.Logger?.LogInformation(pout);
         //          gawgdstime(outfile, &coardstime);
         //      }
-        //      gaprnt(0, "\n\t");
+        //      _drawingContext.Logger?.LogInformation("\n\t");
         //
         //      /* level independent data */
         //      /* write data value and move ptr to next report simultaneously */
@@ -471,14 +472,14 @@ internal class GaGx
         //              currpt[i].lat != ref.lat ||
         //              currpt[i].lon != ref.lon ||
         //              currpt[i].tim != ref.tim) {
-        //              gaprnt(0, "error: bad structure in result\n");
+        //              _drawingContext.Logger?.LogInformation("error: bad structure in result\n");
         //              retval = 1;
         //              goto cleanup;
         //          }
         //          if (sendind) {
         //              snprintf(pout, 1255, "[%s: %f]  ",
         //                       pcm.result[i].stn.pvar.abbrv, currpt[i].val);
-        //              gaprnt(0, pout);
+        //              _drawingContext.Logger?.LogInformation(pout);
         //              outFloat = currpt[i].val;
         //              gawgdsval(outfile, &outFloat);
         //          }
@@ -495,12 +496,12 @@ internal class GaGx
         //
         //              levelref = currpt[levelstart];
         //
-        //              gaprnt(0, "\n\tSOI ");
+        //              _drawingContext.Logger?.LogInformation("\n\tSOI ");
         //              fwrite(startrec, sizeof(char), 4, outfile);
         //
         //              if (sendlev) {
         //                  snprintf(pout, 1255, "lev: %f  ", levelref.lev);
-        //                  gaprnt(0, pout);
+        //                  _drawingContext.Logger?.LogInformation(pout);
         //                  outFloat = levelref.lev;
         //                  gawgdsval(outfile, &outFloat);
         //              }
@@ -512,36 +513,36 @@ internal class GaGx
         //                      currpt[i].lon != ref.lon ||
         //                      currpt[i].tim != ref.tim ||
         //                      currpt[i].lev != levelref.lev) {
-        //                      gaprnt(0, "error: bad structure in result\n");
+        //                      _drawingContext.Logger?.LogInformation("error: bad structure in result\n");
         //                      retval = 1;
         //                      goto cleanup;
         //                  }
         //                  if (senddep) {
         //                      snprintf(pout, 1255, "[%s: %f]  ", pcm.result[i].stn.pvar.abbrv,
         //                               currpt[i].val);
-        //                      gaprnt(0, pout);
+        //                      _drawingContext.Logger?.LogInformation(pout);
         //                      outFloat = currpt[i].val;
         //                      gawgdsval(outfile, &outFloat);
         //                  }
         //                  currpt[i] = currpt[i].rpt;
         //              }
         //          }
-        //          gaprnt(0, "\n\tEOS ");
+        //          _drawingContext.Logger?.LogInformation("\n\tEOS ");
         //          fwrite(endrec, sizeof(char), 4, outfile);
         //      }
         //
-        //      gaprnt(0, "\n");
+        //      _drawingContext.Logger?.LogInformation("\n");
         //      numreps++;
         //  }
         //
         //  /* don't write the final EOS, so that time loops can be concatenated
         // * as a single sequence.  */
-        //  /*    gaprnt(0, "EOS\n"); */
+        //  /*    _drawingContext.Logger?.LogInformation("EOS\n"); */
         //  /*    fwrite(endrec, sizeof(char), 4, outfile); */
         //
         //  snprintf(pout, 1255, "WRITEGDS: %d reports x %d vars written as %d records\n",
         //           pcm.result[0].stn.rnum, numvars, numreps);
-        //  gaprnt(0, pout);
+        //  _drawingContext.Logger?.LogInformation(pout);
         //
         //  cleanup:
         //  fclose(outfile);
@@ -568,7 +569,7 @@ internal class GaGx
             pgr = pcm.result[0].pgr;
             siz = pgr.isiz * pgr.jsiz;
             pout = String.Format("Printing Grid -- {0} Values -- Undef = {1}", siz, pcm.undef);
-            gaprnt(2, pout);
+            _drawingContext.Logger?.LogInformation(pout);
             gr = pgr.grid;
             gru = pgr.umask;
             lnum = 0;
@@ -598,7 +599,7 @@ internal class GaGx
                         pout.PadRight(pcm.prbnum + pout.Length);
                     }
 
-                    gaprnt(2, pout);
+                    _drawingContext.Logger?.LogInformation(pout);
                 }
                 else
                 {
@@ -606,13 +607,13 @@ internal class GaGx
                         pout = String.Format(pcm.prstr, pcm.undef);
                     else
                         pout = String.Format("{0:g}", gr[cntgr]);
-                    gaprnt(2, pout);
+                    _drawingContext.Logger?.LogInformation(pout);
                 }
 
                 lnum++;
                 if (lnum >= pcm.prlnum)
                 {
-                    gaprnt(2, "\n");
+                    _drawingContext.Logger?.LogInformation("\n");
                     lnum = 0;
                 }
 
@@ -620,14 +621,14 @@ internal class GaGx
                 cntgru++;
             }
 
-            if (lnum > 0) gaprnt(2, "\n");
+            if (lnum > 0) _drawingContext.Logger?.LogInformation("\n");
         }
         else
         {
             /* Data type station */
             // stn = pcm.result[0].stn;
             // snprintf(pout, 1255, "Printing Stations -- %i Reports -- Undef = %g\n", stn.rnum, pcm.undef);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // rpt = stn.rpt;
             // while (rpt)
             // {
@@ -635,7 +636,7 @@ internal class GaGx
             //         rpt.stid[0], rpt.stid[1], rpt.stid[2], rpt.stid[3],
             //         rpt.stid[4], rpt.stid[5], rpt.stid[6], rpt.stid[7],
             //         rpt.lon, rpt.lat, rpt.lev);
-            //     gaprnt(2, pout);
+            //     _drawingContext.Logger?.LogInformation(pout);
             //     if (pcm.prstr)
             //     {
             //         if (rpt.umask == 0 && pcm.prudef)
@@ -664,8 +665,8 @@ internal class GaGx
             //             snprintf(pout, 1255, "%g ", rpt.val);
             //     }
             //
-            //     gaprnt(2, pout);
-            //     gaprnt(2, "\n");
+            //     _drawingContext.Logger?.LogInformation(pout);
+            //     _drawingContext.Logger?.LogInformation("\n");
             //     rpt = rpt.rpt;
             // }
         }
@@ -690,17 +691,17 @@ internal class GaGx
         if (pcm.type[0] == 1)
         {
             pgr = pcm.result[0].pgr;
-            gaprnt(2, "Data Type = grid\n");
+            _drawingContext.Logger?.LogInformation("Data Type = grid\n");
             pout = $"Dimensions {pgr.idim} {pgr.jdim}";
-            gaprnt(2, pout);
+            _drawingContext.Logger?.LogInformation(pout);
             if (pgr.idim > -1)
             {
                 pout = $"I Dimension = {pgr.dimmin[pgr.idim]} to {pgr.dimmax[pgr.idim]}";
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 /* Linear scaling info */
                 if (pgr.idim > -1 && pgr.ilinr == 1)
                 {
-                    gaprnt(2, " Linear");
+                    _drawingContext.Logger?.LogInformation(" Linear");
                     if (pgr.idim == 3)
                     {
                         GaUtil.gr2t(pgr.ivals, pgr.dimmin[3], out dtim);
@@ -717,43 +718,43 @@ internal class GaGx
                             pout = String.Format(" {0} {1}mn\n", lab, pgr.ivals[6]);
                         }
 
-                        gaprnt(2, pout);
+                        _drawingContext.Logger?.LogInformation(pout);
                     }
                     else
                     {
                         conv = pgr.igrab;
                         pout = $"{conv(pgr.ivals, pgr.dimmin[pgr.idim])} {pgr.ivals[0]}";
-                        gaprnt(2, pout);
+                        _drawingContext.Logger?.LogInformation(pout);
                     }
                 }
 
                 /* Levels scaling info */
                 if (pgr.idim > -1 && pgr.ilinr != 1)
                 {
-                    gaprnt(2, " Levels");
+                    _drawingContext.Logger?.LogInformation(" Levels");
                     conv = pgr.igrab;
                     for (i = pgr.dimmin[pgr.idim]; i <= pgr.dimmax[pgr.idim]; i++)
                     {
                         pout = $"{conv(pgr.ivals, i)}";
-                        gaprnt(2, pout);
+                        _drawingContext.Logger?.LogInformation(pout);
                     }
 
-                    gaprnt(2, "\n");
+                    _drawingContext.Logger?.LogInformation("\n");
                 }
             }
             else
             {
-                gaprnt(2, "I Dimension = -999 to -999\n");
+                _drawingContext.Logger?.LogInformation("I Dimension = -999 to -999\n");
             }
 
             if (pgr.jdim > -1)
             {
                 String.Format("J Dimension = {0} to {1}", pgr.dimmin[pgr.jdim], pgr.dimmax[pgr.jdim]);
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 /* Linear scaling info */
                 if (pgr.jdim > -1 && pgr.jlinr == 1)
                 {
-                    gaprnt(2, " Linear");
+                    _drawingContext.Logger?.LogInformation(" Linear");
                     if (pgr.jdim == 3)
                     {
                         GaUtil.gr2t(pgr.jvals, pgr.dimmin[3], out dtim);
@@ -770,40 +771,40 @@ internal class GaGx
                             pout = String.Format(" {0} {1}mo\n", lab, pgr.ivals[6]);
                         }
 
-                        gaprnt(2, pout);
+                        _drawingContext.Logger?.LogInformation(pout);
                     }
                     else
                     {
                         conv = pgr.jgrab;
                         pout = $"{conv(pgr.jvals, pgr.dimmin[pgr.jdim])} {pgr.jvals[0]}";
-                        gaprnt(2, pout);
+                        _drawingContext.Logger?.LogInformation(pout);
                     }
                 }
 
                 /* Levels scaling info */
                 if (pgr.jdim > -1 && pgr.jlinr != 1)
                 {
-                    gaprnt(2, " Levels");
+                    _drawingContext.Logger?.LogInformation(" Levels");
                     conv = pgr.jgrab;
                     for (i = pgr.dimmin[pgr.jdim]; i <= pgr.dimmax[pgr.jdim]; i++)
                     {
                         pout = $"{conv(pgr.jvals, i)}";
-                        gaprnt(2, pout);
+                        _drawingContext.Logger?.LogInformation(pout);
                     }
 
-                    gaprnt(2, "\n");
+                    _drawingContext.Logger?.LogInformation("\n");
                 }
             }
             else
             {
-                gaprnt(2, "J Dimension = -999 to -999\n");
+                _drawingContext.Logger?.LogInformation("J Dimension = -999 to -999\n");
             }
 
             siz = pgr.isiz * pgr.jsiz;
             pout = $"Sizes = {pgr.isiz} {pgr.jsiz} {siz}";
-            gaprnt(2, pout);
+            _drawingContext.Logger?.LogInformation(pout);
             pout = $"Undef value = {pcm.undef}";
-            gaprnt(2, pout);
+            _drawingContext.Logger?.LogInformation(pout);
             ucnt = 0;
             gcnt = 0;
             sum = 0;
@@ -823,12 +824,12 @@ internal class GaGx
             }
 
             pout = $"Undef count = {ucnt}  Valid count = {gcnt}";
-            gaprnt(2, pout);
+            _drawingContext.Logger?.LogInformation(pout);
             if (pgr.idim > -1)
             {
                 GaUtil.gamnmx(pgr);
                 pout = $"Min, Max = {pgr.rmin} {pgr.rmax}";
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 cint = 0.0;
                 gacsel(pgr.rmin, pgr.rmax, ref cint, out cmin, out cmax);
 
@@ -846,19 +847,19 @@ internal class GaGx
                 }
 
                 pout = $"Cmin, cmax, cint = {cmin} {cmax} {cint}";
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 gcntm1 = gcnt - 1;
                 if (gcntm1 <= 0) gcntm1 = 1;
                 gcnto = gcnt;
                 if (gcnt <= 0) gcnt = 1;
                 pout = $"Stats[sum,sumsqr,root(sumsqr),n]:     {sum} {sumsqr} {Math.Sqrt(sumsqr)} {gcnto}";
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 pout =
                     $"Stats[(sum,sumsqr,root(sumsqr))/n]:     {sum / gcnt} {sumsqr / gcnt} {Math.Sqrt(sumsqr / gcnt)}";
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 pout =
                     $"Stats[(sum,sumsqr,root(sumsqr))/(n-1)]: {sum / gcntm1} {sumsqr / gcntm1} {Math.Sqrt(sumsqr / gcntm1)}";
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 dum = (sumsqr / gcnt) - ((sum / gcnt) * (sum / gcnt));
                 if (dum > 0)
                 {
@@ -869,7 +870,7 @@ internal class GaGx
                     pout = $"Stats[(sigma,var)(n)]:     {0.0} {0.0}";
                 }
 
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
                 dum = dum * (gcnt / gcntm1);
                 if (dum > 0)
                 {
@@ -880,38 +881,38 @@ internal class GaGx
                     pout = $"Stats[(sigma,var)(n-1)]:   {0.0} {0.0}";
                 }
 
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
             }
             else
             {
                 pout = $"Min, Max = {pgr.rmin} {pgr.rmin}";
-                gaprnt(2, pout);
+                _drawingContext.Logger?.LogInformation(pout);
             }
         }
         else
         {
             throw new NotImplementedException();
             /* Data type station */
-            // gaprnt(2, "Data Type = station\n");
+            // _drawingContext.Logger?.LogInformation("Data Type = station\n");
             // stn = pcm.result[0].stn;
             // snprintf(pout, 1255, "Dimensions = %i %i\n", stn.idim, stn.jdim);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // if (stn.idim > -1)
             // {
             //     if (stn.idim != 3)
             //     {
             //         snprintf(pout, 1255, "I Dimension = %g to %g\n", stn.dmin[stn.idim], stn.dmax[stn.idim]);
-            //         gaprnt(2, pout);
+            //         _drawingContext.Logger?.LogInformation(pout);
             //     }
             //     else
             //     {
             //         snprintf(pout, 1255, "I Dimension = %i to %i\n", stn.tmin, stn.tmax);
-            //         gaprnt(2, pout);
+            //         _drawingContext.Logger?.LogInformation(pout);
             //     }
             // }
             // else
             // {
-            //     gaprnt(2, "I Dimension = -999 to -999\n");
+            //     _drawingContext.Logger?.LogInformation("I Dimension = -999 to -999\n");
             // }
             //
             // if (stn.jdim > -1)
@@ -919,23 +920,23 @@ internal class GaGx
             //     if (stn.jdim != 3)
             //     {
             //         snprintf(pout, 1255, "J Dimension = %g to %g\n", stn.dmin[stn.jdim], stn.dmax[stn.jdim]);
-            //         gaprnt(2, pout);
+            //         _drawingContext.Logger?.LogInformation(pout);
             //     }
             //     else
             //     {
             //         snprintf(pout, 1255, "J Dimension = %i to %i\n", stn.tmin, stn.tmax);
-            //         gaprnt(2, pout);
+            //         _drawingContext.Logger?.LogInformation(pout);
             //     }
             // }
             // else
             // {
-            //     gaprnt(2, "J Dimension = -999 to -999\n");
+            //     _drawingContext.Logger?.LogInformation("J Dimension = -999 to -999\n");
             // }
             //
             // snprintf(pout, 1255, "Stn count = %i\n", stn.rnum);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // snprintf(pout, 1255, "Undef value = %g\n", pcm.undef);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // ucnt = 0;
             // gcnt = 0;
             // sum = 0;
@@ -969,9 +970,9 @@ internal class GaGx
             // }
             //
             // snprintf(pout, 1255, "Undef count = %i  Valid count = %i \n", ucnt, gcnt);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // snprintf(pout, 1255, "Min, Max = %g %g\n", rmin, rmax);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // cint = 0.0;
             //
             // gacsel(rmin, rmax, &cint, &cmin, &cmax);
@@ -989,7 +990,7 @@ internal class GaGx
             // }
             //
             // snprintf(pout, 1255, "Cmin, cmax, cint = %g %g %g\n", cmin, cmax, cint);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             //
             // gcntm1 = gcnt - 1;
             // if (gcntm1 <= 0) gcntm1 = 1;
@@ -997,13 +998,13 @@ internal class GaGx
             // if (gcnt <= 0) gcnt = 1;
             // snprintf(pout, 1255, "Stats[sum,sumsqr,root(sumsqr),n]:     %g %g %g %d\n",
             //     sum, sumsqr, sqrt(sumsqr), gcnto);
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // snprintf(pout, 1255, "Stats[(sum,sumsqr,root(sumsqr))/n)]:     %g %g %g\n",
             //     sum / gcnt, sumsqr / gcnt, sqrt(sumsqr / gcnt));
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // snprintf(pout, 1255, "Stats[(sum,sumsqr,root(sumsqr))/(n-1))]: %g %g %g\n",
             //     sum / gcntm1, sumsqr / gcntm1, sqrt(sumsqr / gcntm1));
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // dum = (sumsqr / gcnt) - ((sum / gcnt) * (sum / gcnt));
             // if (dum > 0)
             // {
@@ -1014,7 +1015,7 @@ internal class GaGx
             //     snprintf(pout, 1255, "Stats[(sigma,var)(n)]:     %g %g\n", 0.0, 0.0);
             // }
             //
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             // dum = dum * (gcnt / gcntm1);
             // if (dum > 0)
             // {
@@ -1025,17 +1026,17 @@ internal class GaGx
             //     snprintf(pout, 1255, "Stats[(sigma,var)(n-1)]:   %g %g\n", 0.0, 0.0);
             // }
             //
-            // gaprnt(2, pout);
+            // _drawingContext.Logger?.LogInformation(pout);
             //
             // if (pcm.stnprintflg)
             // {
             //     snprintf(pout, 1255, "Printing station values:  #obs = %d\n", gcnt);
-            //     gaprnt(2, pout);
+            //     _drawingContext.Logger?.LogInformation(pout);
             //     gcnt = 0;
             //     ucnt = 0;
             //     rpt = stn.rpt;
             //     snprintf(pout, 1255, "OB    ID       LON      LAT      LEV      VAL\n");
-            //     gaprnt(2, pout);
+            //     _drawingContext.Logger?.LogInformation(pout);
             //     while (rpt)
             //     {
             //         if (rpt.umask == 0) ucnt++;
@@ -1044,7 +1045,7 @@ internal class GaGx
             //             gcnt++;
             //             snprintf(pout, 1255, "%-5i %.8s %-8.6g %-8.6g %-8.6g %-8.6g\n",
             //                 gcnt, rpt.stid, rpt.lon, rpt.lat, rpt.lev, rpt.val);
-            //             gaprnt(2, pout);
+            //             _drawingContext.Logger?.LogInformation(pout);
             //         }
             //
             //         rpt = rpt.rpt;
@@ -1065,7 +1066,7 @@ internal class GaGx
         //
         // if (pcm.numgrd < 3 || pcm.type[0] != 0 || pcm.type[1] != 1 || pcm.type[2] != 1)
         // {
-        //     gaprnt(0, "Error: Invalid data types for findstn\n");
+        //     _drawingContext.Logger?.LogInformation("Error: Invalid data types for findstn\n");
         //     return;
         // }
         //
@@ -1098,9 +1099,9 @@ internal class GaGx
         // {
         //     srpt.stid[7] = '\0';
         //     snprintf(pout, 1255, "%s %g %g %g\n", srpt.stid, srpt.lon, srpt.lat, r);
-        //     gaprnt(2, pout);
+        //     _drawingContext.Logger?.LogInformation(pout);
         // }
-        // else gaprnt(2, "No stations found\n");
+        // else _drawingContext.Logger?.LogInformation("No stations found\n");
         //
         // gagsav(21, pcm, NULL);
     }
@@ -1544,8 +1545,8 @@ internal class GaGx
         if (var < 0.01)
         {
             rad *= 2.0;
-            if (rad + blen * 0.3 > rad * 1.4) _drawingContext.GaSubs.gxmark(2, x, y, rad + blen * 0.3);
-            else _drawingContext.GaSubs.gxmark(2, x, y, rad * 1.4);
+            if (rad + blen * 0.3 > rad * 1.4) _drawingContext.GradsDrawingInterface.gxmark(2, x, y, rad + blen * 0.3);
+            else _drawingContext.GradsDrawingInterface.gxmark(2, x, y, rad * 1.4);
             return;
         }
         else
@@ -1574,8 +1575,8 @@ internal class GaGx
         yp1 = y + plen * Math.Sin(dir);
         xp2 = x + rad * Math.Cos(dir);
         yp2 = y + rad * Math.Sin(dir);
-        _drawingContext.GaSubs.gxplot(xp2, yp2, 3);
-        _drawingContext.GaSubs.gxplot(xp1, yp1, 2);
+        _drawingContext.GradsDrawingInterface.gxplot(xp2, yp2, 3);
+        _drawingContext.GradsDrawingInterface.gxplot(xp1, yp1, 2);
 
         /* Start out at the end of the pointer and add barbs
          til we run out of barbs to add.  */
@@ -1604,9 +1605,9 @@ internal class GaGx
             xp3 = x + (plen - bgap * 1.45) * Math.Cos(dir);
             yp3 = y + (plen - bgap * 1.45) * Math.Sin(dir);
             /* draw the pennant outline */
-            _drawingContext.GaSubs.gxplot(xp1, yp1, 3);
-            _drawingContext.GaSubs.gxplot(xp2, yp2, 2);
-            _drawingContext.GaSubs.gxplot(xp3, yp3, 2);
+            _drawingContext.GradsDrawingInterface.gxplot(xp1, yp1, 3);
+            _drawingContext.GradsDrawingInterface.gxplot(xp2, yp2, 2);
+            _drawingContext.GradsDrawingInterface.gxplot(xp3, yp3, 2);
             if (fillflg)
             {
                 /* fill in the pennant flag */
@@ -1618,7 +1619,7 @@ internal class GaGx
                 xy[5] = yp3;
                 xy[6] = xp1;
                 xy[7] = yp1;
-                _drawingContext.GaSubs.gxfill(xy, 4);
+                _drawingContext.GradsDrawingInterface.gxfill(xy, 4);
             }
 
             plen -= bgap * 1.6;
@@ -1638,8 +1639,8 @@ internal class GaGx
             yp1 = y + plen * Math.Sin(dir);
             xp2 = xp1 + blen * cosd70;
             yp2 = yp1 + blen * sind70;
-            _drawingContext.GaSubs.gxplot(xp1, yp1, 3);
-            _drawingContext.GaSubs.gxplot(xp2, yp2, 2);
+            _drawingContext.GradsDrawingInterface.gxplot(xp1, yp1, 3);
+            _drawingContext.GradsDrawingInterface.gxplot(xp2, yp2, 2);
             plen -= bgap;
             var -= 10.0;
             flag = false;
@@ -1652,8 +1653,8 @@ internal class GaGx
             yp1 = y + plen * Math.Sin(dir);
             xp2 = xp1 + 0.5 * blen * cosd70;
             yp2 = yp1 + 0.5 * blen * sind70;
-            _drawingContext.GaSubs.gxplot(xp1, yp1, 3);
-            _drawingContext.GaSubs.gxplot(xp2, yp2, 2);
+            _drawingContext.GradsDrawingInterface.gxplot(xp1, yp1, 3);
+            _drawingContext.GradsDrawingInterface.gxplot(xp2, yp2, 2);
         }
     }
 
@@ -1692,7 +1693,7 @@ internal class GaGx
         //         pgr = pcm.result[i].pgr;
         //         if (i == 0 || pgr.idim != -1)
         //         {
-        //             gaprnt(0, "Invalid data:  Station data required\n");
+        //             _drawingContext.Logger?.LogInformation("Invalid data:  Station data required\n");
         //             return;
         //         }
         //     }
@@ -2015,7 +2016,7 @@ internal class GaGx
         //     dir = gxaarw(rpt.lon, rpt.lat);
         //     if (dir < -900.0)
         //     {
-        //         gaprnt(0, "Error: vector/barb not compatible with current map projection\n");
+        //         _drawingContext.Logger?.LogInformation("Error: vector/barb not compatible with current map projection\n");
         //         return (1);
         //     }
         //
@@ -2235,7 +2236,7 @@ internal class GaGx
 //         frpt = rpt; /* Plot stnid = 1st report */
 //         if (rpt == NULL)
 //         {
-//             gaprnt(0, "No stations to plot\n");
+//             _drawingContext.Logger?.LogInformation("No stations to plot\n");
 //             return;
 //         }
 //
@@ -2259,7 +2260,7 @@ internal class GaGx
 //
 //         if (rmin > rmax)
 //         {
-//             gaprnt(0, "All stations undefined for this variable\n");
+//             _drawingContext.Logger?.LogInformation("All stations undefined for this variable\n");
 //             return;
 //         }
 //
@@ -2445,7 +2446,7 @@ internal class GaGx
     //
     //     if (stn.rpt == NULL)
     //     {
-    //         gaprnt(0, "No station values to plot\n");
+    //         _drawingContext.Logger?.LogInformation("No station values to plot\n");
     //         return;
     //     }
     //
@@ -2467,7 +2468,7 @@ internal class GaGx
     //
     //     if (rmin > rmax)
     //     {
-    //         gaprnt(0, "All stations values are undefined\n");
+    //         _drawingContext.Logger?.LogInformation("All stations values are undefined\n");
     //         return;
     //     }
     //
@@ -2629,8 +2630,8 @@ internal class GaGx
         //         {
         //             if (cmn <= 0.0 || cmx <= 0.0)
         //             {
-        //                 gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-        //                 gaprnt(1, "Linear scaling used\n");
+        //                 _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+        //                 _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //             }
         //             else
         //             {
@@ -2661,8 +2662,8 @@ internal class GaGx
         //             {
         //                 if (x1 <= 0.0 || x2 <= 0.0)
         //                 {
-        //                     gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-        //                     gaprnt(1, "Linear scaling used\n");
+        //                     _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+        //                     _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //                 }
         //                 else
         //                 {
@@ -2686,8 +2687,8 @@ internal class GaGx
         //             {
         //                 if (cmn <= 0.0 || cmx <= 0.0)
         //                 {
-        //                     gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-        //                     gaprnt(1, "Linear scaling used\n");
+        //                     _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+        //                     _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //                 }
         //                 else
         //                 {
@@ -2711,8 +2712,8 @@ internal class GaGx
         //             {
         //                 if (cmn <= 0.0 || cmx <= 0.0 || x1 <= 0.0 || x2 <= 0.0)
         //                 {
-        //                     gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-        //                     gaprnt(1, "Linear scaling used\n");
+        //                     _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+        //                     _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //                 }
         //                 else
         //                 {
@@ -2729,8 +2730,8 @@ internal class GaGx
         //         {
         //             if (x1 <= 0.0 || x2 <= 0.0)
         //             {
-        //                 gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-        //                 gaprnt(1, "Linear scaling used\n");
+        //                 _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+        //                 _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //             }
         //             else
         //             {
@@ -2753,8 +2754,8 @@ internal class GaGx
         //         {
         //             if (x1 < -90.0 || x2 > 90.0)
         //             {
-        //                 gaprnt(1, "Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
-        //                 gaprnt(1, "Linear scaling used\n");
+        //                 _drawingContext.Logger?.LogInformation("Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
+        //                 _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //             }
         //             else
         //             {
@@ -2875,8 +2876,8 @@ internal class GaGx
         //         {
         //             if (x1 <= 0.0 || x2 <= 0.0)
         //             {
-        //                 gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-        //                 gaprnt(1, "Linear scaling used\n");
+        //                 _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+        //                 _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //             }
         //             else
         //             {
@@ -2900,8 +2901,8 @@ internal class GaGx
         //         {
         //             if (x1 < -90.0 || x2 > 90.0)
         //             {
-        //                 gaprnt(1, "Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
-        //                 gaprnt(1, "Linear scaling used\n");
+        //                 _drawingContext.Logger?.LogInformation("Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
+        //                 _drawingContext.Logger?.LogInformation("Linear scaling used\n");
         //             }
         //             else
         //             {
@@ -2986,7 +2987,7 @@ internal class GaGx
         int idim, jdim;
 
         d2r = Math.PI / 180;
-        _drawingContext.GaSubs.gxrset(3); /* Reset all scaling */
+        _drawingContext.GradsDrawingInterface.gxrset(3); /* Reset all scaling */
         _drawingContext.GxWmap.gxrsmapt(); /* Reset map type */
 
         /* Set up linear level scaling (level 1) and map level scaling
@@ -3044,13 +3045,13 @@ internal class GaGx
                 {
                     if (x1 <= 0.0 || x2 <= 0.0)
                     {
-                        gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-                        gaprnt(1, "Linear scaling used\n");
+                        _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+                        _drawingContext.Logger?.LogInformation("Linear scaling used\n");
                     }
                     else
                     {
-                        _drawingContext.GaSubs.gxproj(galnx);
-                        _drawingContext.GaSubs.gxback(gaalnx);
+                        _drawingContext.GradsDrawingInterface.gxproj(galnx);
+                        _drawingContext.GradsDrawingInterface.gxback(gaalnx);
                         x1 = Math.Log(x1);
                         x2 = Math.Log(x2);
                     }
@@ -3060,13 +3061,13 @@ internal class GaGx
                     /* can't have zlog and coslat both */
                     if (x1 < -90.0 || x2 > 90.0)
                     {
-                        gaprnt(1, "Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
-                        gaprnt(1, "Linear scaling used\n");
+                        _drawingContext.Logger?.LogInformation("Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
+                        _drawingContext.Logger?.LogInformation("Linear scaling used\n");
                     }
                     else
                     {
-                        _drawingContext.GaSubs.gxproj(gaclx);
-                        _drawingContext.GaSubs.gxback(gaaclx);
+                        _drawingContext.GradsDrawingInterface.gxproj(gaclx);
+                        _drawingContext.GradsDrawingInterface.gxback(gaaclx);
                         x1 = Math.Sin(x1 * d2r);
                         x2 = Math.Sin(x2 * d2r);
                     }
@@ -3086,13 +3087,13 @@ internal class GaGx
                 {
                     if (y1 <= 0.0 || y2 <= 0.0)
                     {
-                        gaprnt(1, "Cannot use log scaling when coordinates <= 0\n");
-                        gaprnt(1, "Linear scaling used\n");
+                        _drawingContext.Logger?.LogInformation("Cannot use log scaling when coordinates <= 0\n");
+                        _drawingContext.Logger?.LogInformation("Linear scaling used\n");
                     }
                     else
                     {
-                        _drawingContext.GaSubs.gxproj(galny);
-                        _drawingContext.GaSubs.gxback(gaalny);
+                        _drawingContext.GradsDrawingInterface.gxproj(galny);
+                        _drawingContext.GradsDrawingInterface.gxback(gaalny);
                         y1 = Math.Log(y1);
                         y2 = Math.Log(y2);
                     }
@@ -3102,13 +3103,13 @@ internal class GaGx
                     /* can't have zlog and coslat both */
                     if (y1 < -90.0 || y2 > 90.0)
                     {
-                        gaprnt(1, "Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
-                        gaprnt(1, "Linear scaling used\n");
+                        _drawingContext.Logger?.LogInformation("Cannot use cos lat scaling when coordinates exceed -90 to 90\n");
+                        _drawingContext.Logger?.LogInformation("Linear scaling used\n");
                     }
                     else
                     {
-                        _drawingContext.GaSubs.gxproj(gacly);
-                        _drawingContext.GaSubs.gxback(gaacly);
+                        _drawingContext.GradsDrawingInterface.gxproj(gacly);
+                        _drawingContext.GradsDrawingInterface.gxback(gaacly);
                         y1 = Math.Sin(y1 * d2r);
                         y2 = Math.Sin(y2 * d2r);
                     }
@@ -3131,7 +3132,7 @@ internal class GaGx
                 yt2 = y1;
             }
 
-            _drawingContext.GaSubs.gxscal(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2, xt1, xt2, yt1, yt2);
+            _drawingContext.GradsDrawingInterface.gxscal(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2, xt1, xt2, yt1, yt2);
         }
 
         /* Now set up level 2 grid scaling done through gaconv */
@@ -3154,7 +3155,7 @@ internal class GaGx
             jvars = pgr.jvals;
         }
 
-        _drawingContext.GaSubs.gxgrid(gaconv);
+        _drawingContext.GradsDrawingInterface.gxgrid(gaconv);
 
         if (idim == 5)
         {
@@ -3185,7 +3186,7 @@ internal class GaGx
         //
         // if (pcm.numgrd < 2)
         // {
-        //     gaprnt(0, "Error plotting linefill:  Only one grid provided\n");
+        //     _drawingContext.Logger?.LogInformation("Error plotting linefill:  Only one grid provided\n");
         //     return;
         // }
         //
@@ -3194,8 +3195,8 @@ internal class GaGx
         // if (pgr1.idim != pgr2.idim || pgr1.jdim != -1 ||
         //     pgr2.jdim != -1 || GaExpr.gagchk(pgr1, pgr2, pgr1.idim) > 0)
         // {
-        //     gaprnt(0, "Error plotting linefill:  Invalid grids --");
-        //     gaprnt(0, " different scaling\n");
+        //     _drawingContext.Logger?.LogInformation("Error plotting linefill:  Invalid grids --");
+        //     _drawingContext.Logger?.LogInformation(" different scaling\n");
         //     return;
         // }
         //
@@ -3203,7 +3204,7 @@ internal class GaGx
         // GaUtil.gamnmx(pgr2);
         // if (pgr1.umin == 0 || pgr2.umin == 0)
         // {
-        //     gaprnt(1, "Cannot plot data - all undefined values \n");
+        //     _drawingContext.Logger?.LogInformation("Cannot plot data - all undefined values \n");
         //     return;
         // }
         //
@@ -3231,7 +3232,7 @@ internal class GaGx
         // xy = (double*)galloc(sz, "gridxy");
         // if (u == NULL || v1 == NULL || v2 == NULL || xy == NULL)
         // {
-        //     gaprnt(0, "Memory allocation error in linefill\n");
+        //     _drawingContext.Logger?.LogInformation("Memory allocation error in linefill\n");
         //     return;
         // }
         //
@@ -3265,7 +3266,7 @@ internal class GaGx
         //     gree(v1, "f281");
         //     gree(v2, "f282");
         //     gree(xy, "f283");
-        //     gaprnt(1, "Cannot plot data - too many undefined values \n");
+        //     _drawingContext.Logger?.LogInformation("Cannot plot data - too many undefined values \n");
         //     return;
         // }
         //
@@ -3525,7 +3526,7 @@ internal class GaGx
     //     xy = xyb;
     //     if (cnt < 2)
     //     {
-    //         gaprnt(0, "Internal Logic check 4 in linefill\n");
+    //         _drawingContext.Logger?.LogInformation("Internal Logic check 4 in linefill\n");
     //         return;
     //     }
     //
@@ -3586,7 +3587,7 @@ internal class GaGx
         // gamnmx(pgr);
         // if (pgr.umin == 0)
         // {
-        //     gaprnt(1, "Cannot plot data - all undefined values \n");
+        //     _drawingContext.Logger?.LogInformation("Cannot plot data - all undefined values \n");
         //     _drawingContext.GaSubs.gxcolr(1);
         //     if (pcm.dwrnflg) _drawingContext.GaSubs.gxchpl("Entire Grid Undefined", 21, 3.0, 4.5, 0.3, 0.25, 0.0);
         //     return;
@@ -3604,8 +3605,8 @@ internal class GaGx
         //         gagchk(pgr2, pgr, pgr.idim) || gagchk(pgr2, pgr, pgr.jdim))
         //     {
         //         flag = 0;
-        //         gaprnt(0, "Error in line/bar graph:  Invalid 2nd field");
-        //         gaprnt(0, "   2nd grid ignored -- has different scaling");
+        //         _drawingContext.Logger?.LogInformation("Error in line/bar graph:  Invalid 2nd field");
+        //         _drawingContext.Logger?.LogInformation("   2nd grid ignored -- has different scaling");
         //     }
         //     else
         //     {
@@ -3614,7 +3615,7 @@ internal class GaGx
         //             gamnmx(pgr2);
         //             if (pgr2.umin == 0)
         //             {
-        //                 gaprnt(1, "Cannot plot data - 2nd arg all undefined values \n");
+        //                 _drawingContext.Logger?.LogInformation("Cannot plot data - 2nd arg all undefined values \n");
         //                 return;
         //             }
         //
@@ -3631,8 +3632,8 @@ internal class GaGx
         //             gagchk(pgr3, pgr, pgr.idim) || gagchk(pgr3, pgr, pgr.jdim))
         //         {
         //             flag = 1;
-        //             gaprnt(0, "Error in line/bar graph:  Invalid 3rd field");
-        //             gaprnt(0, "   3rd grid ignored -- has different scaling");
+        //             _drawingContext.Logger?.LogInformation("Error in line/bar graph:  Invalid 3rd field");
+        //             _drawingContext.Logger?.LogInformation("   3rd grid ignored -- has different scaling");
         //         }
         //     }
         // }
@@ -3674,8 +3675,8 @@ internal class GaGx
         //         else xz = pcm.xsiz2;
         //         if (bflg == 1 && (xz < pcm.xsiz1 || xz > pcm.xsiz2))
         //         {
-        //             gaprnt(0, "Error drawing bargraph: base value out of range\n");
-        //             gaprnt(0, "    Drawing graph from bottom\n");
+        //             _drawingContext.Logger?.LogInformation("Error drawing bargraph: base value out of range\n");
+        //             _drawingContext.Logger?.LogInformation("    Drawing graph from bottom\n");
         //             bflg = 0;
         //             xz = pcm.xsiz1;
         //         }
@@ -3750,8 +3751,8 @@ internal class GaGx
         //         else yz = pcm.ysiz2;
         //         if (bflg == 1 && (yz < pcm.ysiz1 || yz > pcm.ysiz2))
         //         {
-        //             gaprnt(0, "Error drawing bargraph: base value out of range\n");
-        //             gaprnt(0, "    Drawing graph from bottom\n");
+        //             _drawingContext.Logger?.LogInformation("Error drawing bargraph: base value out of range\n");
+        //             _drawingContext.Logger?.LogInformation("    Drawing graph from bottom\n");
         //             bflg = 0;
         //             yz = pcm.ysiz1;
         //         }
@@ -4003,7 +4004,7 @@ internal class GaGx
 
         if (pcm.numgrd < 2)
         {
-            gaprnt(0, "Error plotting streamlines:  Only one grid provided\n");
+            _drawingContext.Logger?.LogInformation("Error plotting streamlines:  Only one grid provided\n");
             return;
         }
 
@@ -4012,8 +4013,8 @@ internal class GaGx
         if (pgru.idim != pgrv.idim || pgru.jdim != pgrv.jdim ||
             GaExpr.gagchk(pgru, pgrv, pgru.idim) > 1 || GaExpr.gagchk(pgru, pgrv, pgru.jdim) > 1)
         {
-            gaprnt(0, "Error plotting streamlines:  Invalid grids\n");
-            gaprnt(0, "   Vector component grids have difference scaling\n");
+            _drawingContext.Logger?.LogInformation("Error plotting streamlines:  Invalid grids\n");
+            _drawingContext.Logger?.LogInformation("   Vector component grids have difference scaling\n");
             return;
         }
 
@@ -4026,8 +4027,8 @@ internal class GaGx
                 GaExpr.gagchk(pgrc, pgru, pgru.idim) > 1 || GaExpr.gagchk(pgrc, pgru, pgru.jdim) > 1)
             {
                 flag = false;
-                gaprnt(0, "Error plotting streamlines:  Invalid color grid");
-                gaprnt(0, "   Color grid ignored -- has different scaling");
+                _drawingContext.Logger?.LogInformation("Error plotting streamlines:  Invalid color grid");
+                _drawingContext.Logger?.LogInformation("   Color grid ignored -- has different scaling");
             }
         }
 
@@ -4039,8 +4040,8 @@ internal class GaGx
             if (flag) pgrc = gaflip(pgrc);
         }
 
-        _drawingContext.GaSubs.gxstyl(1);
-        _drawingContext.GaSubs.gxwide(1);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxwide(1);
         gas2d(pgru, true); /* Set up scaling, draw map if apprprt */
 
         gafram();
@@ -4052,7 +4053,7 @@ internal class GaGx
             GaUtil.gamnmx(pgrc);
             if (pgrc.umin == 0)
             {
-                gaprnt(0, "Connot color vectors -- Color grid all undefined\n");
+                _drawingContext.Logger?.LogInformation("Connot color vectors -- Color grid all undefined\n");
                 flag = false;
             }
             else gaselc(pgrc.rmin, pgrc.rmax);
@@ -4070,10 +4071,10 @@ internal class GaGx
 
         if (pcm.ccolor >= 0) lcol = pcm.ccolor;
         else lcol = 1;
-        _drawingContext.GaSubs.gxcolr(lcol);
-        _drawingContext.GaSubs.gxstyl(pcm.cstyle);
-        _drawingContext.GaSubs.gxwide(pcm.cthick);
-        _drawingContext.GaSubs.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
+        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+        _drawingContext.GradsDrawingInterface.gxstyl(pcm.cstyle);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
+        _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
 
         if (flag)
         {
@@ -4088,10 +4089,10 @@ internal class GaGx
                 pcm.strmarrd, pcm.strmarrsz, pcm.strmarrt);
         }
 
-        _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GaSubs.gxwide(4);
-        _drawingContext.GaSubs.gxcolr(pcm.anncol);
-        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxwide(4);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgru.idim, pgru.jdim);
         gagsav(9);
@@ -4113,7 +4114,7 @@ internal class GaGx
 
         if (pcm.numgrd < 2)
         {
-            gaprnt(0, "Error plotting vector field:  Only one grid provided\n");
+            _drawingContext.Logger?.LogInformation("Error plotting vector field:  Only one grid provided\n");
             return;
         }
 
@@ -4122,8 +4123,8 @@ internal class GaGx
         if (pgru.idim != pgrv.idim || pgru.jdim != pgrv.jdim ||
             GaExpr.gagchk(pgru, pgrv, pgru.idim) > 1 || GaExpr.gagchk(pgru, pgrv, pgru.jdim) > 1)
         {
-            gaprnt(0, "Error plotting vector/barb field:  Invalid grids\n");
-            gaprnt(0, "   Vector component grids have difference scaling\n");
+            _drawingContext.Logger?.LogInformation("Error plotting vector/barb field:  Invalid grids\n");
+            _drawingContext.Logger?.LogInformation("   Vector component grids have difference scaling\n");
             return;
         }
 
@@ -4136,8 +4137,8 @@ internal class GaGx
                 GaExpr.gagchk(pgrc, pgru, pgru.idim) > 1 || GaExpr.gagchk(pgrc, pgru, pgru.jdim) > 1)
             {
                 flag = false;
-                gaprnt(0, "Error plotting vector/barb field:  Invalid color grid");
-                gaprnt(0, "   Color grid ignored -- has different scaling");
+                _drawingContext.Logger?.LogInformation("Error plotting vector/barb field:  Invalid color grid");
+                _drawingContext.Logger?.LogInformation("   Color grid ignored -- has different scaling");
             }
         }
 
@@ -4149,8 +4150,8 @@ internal class GaGx
             if (flag) pgrc = gaflip(pgrc);
         }
 
-        _drawingContext.GaSubs.gxstyl(1);
-        _drawingContext.GaSubs.gxwide(1);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxwide(1);
         gas2d(pgru, true); /* Set up scaling, draw map if apprprt */
 
         gafram();
@@ -4162,7 +4163,7 @@ internal class GaGx
             GaUtil.gamnmx(pgrc);
             if (pgrc.umin == 0)
             {
-                gaprnt(0, "Cannot color vectors/barbs -- Color grid all undefined\n");
+                _drawingContext.Logger?.LogInformation("Cannot color vectors/barbs -- Color grid all undefined\n");
                 flag = false;
             }
             else gaselc(pgrc.rmin, pgrc.rmax);
@@ -4172,22 +4173,22 @@ internal class GaGx
         GaUtil.gamnmx(pgrv);
         if (pgru.umin == 0)
         {
-            gaprnt(0, "Cannot draw vectors/barbs -- U field all undefined\n");
+            _drawingContext.Logger?.LogInformation("Cannot draw vectors/barbs -- U field all undefined\n");
             return;
         }
 
         if (pgrv.umin == 0)
         {
-            gaprnt(0, "Cannot draw vectors/barbs -- V field all undefined\n");
+            _drawingContext.Logger?.LogInformation("Cannot draw vectors/barbs -- V field all undefined\n");
             return;
         }
 
         if (pcm.ccolor >= 0) lcol = pcm.ccolor;
         else lcol = 1;
-        _drawingContext.GaSubs.gxcolr(lcol);
-        _drawingContext.GaSubs.gxstyl(1);
-        _drawingContext.GaSubs.gxwide(pcm.cthick);
-        _drawingContext.GaSubs.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
+        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
+        _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
         if (!pcm.arrflg)
         {
             umax = pgru.rmax;
@@ -4254,12 +4255,12 @@ internal class GaGx
             {
                 if (umask[cntum] != 0 && vmask[cntvm] != 0)
                 {
-                    GaSubs.gxconv((double)i, (double)j, out x, out y, 3);
-                    _drawingContext.GaSubs.gxgrmp((double)i, (double)j, out lon, out lat);
+                    GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxgrmp((double)i, (double)j, out lon, out lat);
                     adj = _drawingContext.GxWmap.gxaarw(lon, lat);
                     if (adj < -900.0)
                     {
-                        gaprnt(0, "Error: vector/barb not compatible with current map projection\n");
+                        _drawingContext.Logger?.LogInformation("Error: vector/barb not compatible with current map projection\n");
                         return;
                     }
 
@@ -4269,11 +4270,11 @@ internal class GaGx
                     if (hflg == 3) hemflg = true;
                     if (flag)
                     {
-                        if (cmask[cntcm] == 0) _drawingContext.GaSubs.gxcolr(15);
+                        if (cmask[cntcm] == 0) _drawingContext.GradsDrawingInterface.gxcolr(15);
                         else
                         {
                             lcol = gashdc(c[cntc]);
-                            if (lcol > -1) _drawingContext.GaSubs.gxcolr(lcol);
+                            if (lcol > -1) _drawingContext.GradsDrawingInterface.gxcolr(lcol);
                         }
                     }
 
@@ -4313,22 +4314,22 @@ internal class GaGx
             }
         }
 
-        _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
 
         if (pcm.arlflg && vscal > 0.0 && !brbflg)
         {
-            _drawingContext.GaSubs.gxcolr(pcm.anncol);
-            _drawingContext.GaSubs.gxwide(pcm.annthk - 2);
+            _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+            _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk - 2);
             gaarrw(pcm.xsiz2 - 2.0, pcm.ysiz1 - 0.5, 0.0, pcm.arrsiz, pcm.ahdsiz);
             pout = String.Format("{0:g}", vscal);
             len = pout.Length;
             x = pcm.xsiz2 - 2.0 + (pcm.arrsiz / 2.0) - 0.5 * 0.13 * (double)len;
-            _drawingContext.GaSubs.gxchpl(pout, len, x, pcm.ysiz1 - 0.7, 0.13, 0.13, 0.0);
+            _drawingContext.GradsDrawingInterface.gxchpl(pout, len, x, pcm.ysiz1 - 0.7, 0.13, 0.13, 0.0);
         }
 
-        _drawingContext.GaSubs.gxwide(4);
-        _drawingContext.GaSubs.gxcolr(pcm.anncol);
-        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        _drawingContext.GradsDrawingInterface.gxwide(4);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgru.idim, pgru.jdim);
         if (brbflg) gagsav(15);
@@ -4353,13 +4354,13 @@ internal class GaGx
 
         if (pcm.numgrd < 2)
         {
-            gaprnt(0, "Error plotting scatter field:  Only one grid provided\n");
+            _drawingContext.Logger?.LogInformation("Error plotting scatter field:  Only one grid provided\n");
             return;
         }
 
         if (pcm.type[0] == 0 || pcm.type[1] == 0)
         {
-            gaprnt(0, "Error plotting scatter field:  stn argument(s) used\n");
+            _drawingContext.Logger?.LogInformation("Error plotting scatter field:  stn argument(s) used\n");
             return;
         }
 
@@ -4369,8 +4370,8 @@ internal class GaGx
             GaExpr.gagchk(pgr1, pgr2, pgr1.idim) > 1 ||
             (pgr1.jdim > -1 && GaExpr.gagchk(pgr1, pgr2, pgr1.jdim) > 1))
         {
-            gaprnt(0, "Error plotting scatter plot:  Invalid grids\n");
-            gaprnt(0, "   The two grids have difference scaling\n");
+            _drawingContext.Logger?.LogInformation("Error plotting scatter plot:  Invalid grids\n");
+            _drawingContext.Logger?.LogInformation("   The two grids have difference scaling\n");
             return;
         }
 
@@ -4383,8 +4384,8 @@ internal class GaGx
                 GaExpr.gagchk(pgrc, pgr1, pgr1.idim) > 1 || GaExpr.gagchk(pgrc, pgr2, pgr2.jdim) > 1)
             {
                 flag = false;
-                gaprnt(0, "Error plotting scatter plot:  Invalid color grid");
-                gaprnt(0, "   Color grid ignored -- has different scaling");
+                _drawingContext.Logger?.LogInformation("Error plotting scatter plot:  Invalid color grid");
+                _drawingContext.Logger?.LogInformation("   Color grid ignored -- has different scaling");
             }
         }
 
@@ -4395,13 +4396,13 @@ internal class GaGx
         GaUtil.gamnmx(pgr2);
         if (pgr1.umin == 0)
         {
-            gaprnt(0, "Cannot draw scatter plot -- 1st field all undefined\n");
+            _drawingContext.Logger?.LogInformation("Cannot draw scatter plot -- 1st field all undefined\n");
             return;
         }
 
         if (pgr2.umin == 0)
         {
-            gaprnt(0, "Cannot draw scatter plot -- 2nd field all undefined\n");
+            _drawingContext.Logger?.LogInformation("Cannot draw scatter plot -- 2nd field all undefined\n");
             return;
         }
 
@@ -4421,7 +4422,7 @@ internal class GaGx
         }
 
         gafram();
-        _drawingContext.GaSubs.gxwide(pcm.cthick);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
         idiv = 1.0;
         jdiv = 1.0;
 
@@ -4430,7 +4431,7 @@ internal class GaGx
             GaUtil.gamnmx(pgrc);
             if (pgrc.umin == 0)
             {
-                gaprnt(0, "Cannot colorize scatterplot -- Color grid all undefined\n");
+                _drawingContext.Logger?.LogInformation("Cannot colorize scatterplot -- Color grid all undefined\n");
                 flag = false;
             }
             else gaselc(pgrc.rmin, pgrc.rmax);
@@ -4480,12 +4481,12 @@ internal class GaGx
         }
 
         pout = String.Format("{0:g} {1:g} {2:g} {2:g}", cmin1, cmax1, cmin2, cmax2);
-        gaprnt(2, pout);
-        _drawingContext.GaSubs.gxscal(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2,
+        _drawingContext.Logger?.LogInformation(pout);
+        _drawingContext.GradsDrawingInterface.gxscal(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2,
             cmin1, cmax1, cmin2, cmax2);
         pass = pcm.gpass[3];
         if (pass > 5) pass = 5;
-        _drawingContext.GaSubs.gxwide(pcm.cthick);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
         siz = pgr1.isiz * pgr1.jsiz;
         r1 = pgr1.grid;
         r2 = pgr2.grid;
@@ -4515,14 +4516,14 @@ internal class GaGx
                     if (cmask[cmcnt] == 0)
                     {
                         /* if color grid has missing data, use color 15 */
-                        _drawingContext.GaSubs.gxcolr(15);
+                        _drawingContext.GradsDrawingInterface.gxcolr(15);
                     }
                     else
                     {
                         lcol = gashdc(c[ccnt]);
                         if (lcol > -1)
                         {
-                            _drawingContext.GaSubs.gxcolr(lcol);
+                            _drawingContext.GradsDrawingInterface.gxcolr(lcol);
                         }
                         else
                         {
@@ -4533,15 +4534,15 @@ internal class GaGx
                 else
                 {
                     /* if no color grid is given, draw it the old way */
-                    if (pcm.ccolor < 0) _drawingContext.GaSubs.gxcolr(1);
-                    else _drawingContext.GaSubs.gxcolr(pcm.ccolor);
+                    if (pcm.ccolor < 0) _drawingContext.GradsDrawingInterface.gxcolr(1);
+                    else _drawingContext.GradsDrawingInterface.gxcolr(pcm.ccolor);
                 }
 
                 if (drawthismark)
                 {
-                    GaSubs.gxconv(r1[r1cnt], r2[r2cnt], out x, out y, 1);
+                    GradsDrawingInterface.gxconv(r1[r1cnt], r2[r2cnt], out x, out y, 1);
                     im = pcm.cmark;
-                    _drawingContext.GaSubs.gxmark(im, x, y, pcm.digsiz * 0.5);
+                    _drawingContext.GradsDrawingInterface.gxmark(im, x, y, pcm.digsiz * 0.5);
                 }
             }
 
@@ -4574,25 +4575,25 @@ internal class GaGx
 
         if (cmin1 < 0.0 && cmax1 > 0.0)
         {
-            _drawingContext.GaSubs.gxstyl(1);
-            _drawingContext.GaSubs.gxwide(3);
-            GaSubs.gxconv(0.0, cmin2, out x, out y, 1);
-            _drawingContext.GaSubs.gxplot(x, y, 3);
-            GaSubs.gxconv(0.0, cmax2, out x, out y, 1);
-            _drawingContext.GaSubs.gxplot(x, y, 2);
+            _drawingContext.GradsDrawingInterface.gxstyl(1);
+            _drawingContext.GradsDrawingInterface.gxwide(3);
+            GradsDrawingInterface.gxconv(0.0, cmin2, out x, out y, 1);
+            _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
+            GradsDrawingInterface.gxconv(0.0, cmax2, out x, out y, 1);
+            _drawingContext.GradsDrawingInterface.gxplot(x, y, 2);
         }
 
         if (cmin2 < 0.0 && cmax2 > 0.0)
         {
-            _drawingContext.GaSubs.gxstyl(1);
-            _drawingContext.GaSubs.gxwide(3);
-            GaSubs.gxconv(cmin1, 0.0, out x, out y, 1);
-            _drawingContext.GaSubs.gxplot(x, y, 3);
-            GaSubs.gxconv(cmax1, 0.0, out x, out y, 1);
-            _drawingContext.GaSubs.gxplot(x, y, 2);
+            _drawingContext.GradsDrawingInterface.gxstyl(1);
+            _drawingContext.GradsDrawingInterface.gxwide(3);
+            GradsDrawingInterface.gxconv(cmin1, 0.0, out x, out y, 1);
+            _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
+            GradsDrawingInterface.gxconv(cmax1, 0.0, out x, out y, 1);
+            _drawingContext.GradsDrawingInterface.gxplot(x, y, 2);
         }
 
-        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gagsav(7);
         pcm.gpass[3]++;
@@ -4606,19 +4607,19 @@ internal class GaGx
 
         if (siz < 0.0001)
         {
-            _drawingContext.GaSubs.gxmark(2, x, y, 0.01);
+            _drawingContext.GradsDrawingInterface.gxmark(2, x, y, 0.01);
             return;
         }
 
-        _drawingContext.GaSubs.gxplot(x, y, 3);
+        _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
         xx = x + siz * Math.Cos(ang);
         yy = y + siz * Math.Sin(ang);
-        _drawingContext.GaSubs.gxplot(xx, yy, 2);
+        _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 2);
         if (asiz == 0.0) return;
         if (asiz < 0.0) asiz = -1.0 * asiz * siz;
-        _drawingContext.GaSubs.gxplot(xx + asiz * Math.Cos(ang + a150), yy + asiz * Math.Sin(ang + a150), 2);
-        _drawingContext.GaSubs.gxplot(xx, yy, 3);
-        _drawingContext.GaSubs.gxplot(xx + asiz * Math.Cos(ang - a150), yy + asiz * Math.Sin(ang - a150), 2);
+        _drawingContext.GradsDrawingInterface.gxplot(xx + asiz * Math.Cos(ang + a150), yy + asiz * Math.Sin(ang + a150), 2);
+        _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 3);
+        _drawingContext.GradsDrawingInterface.gxplot(xx + asiz * Math.Cos(ang - a150), yy + asiz * Math.Sin(ang - a150), 2);
     }
 
 /* Do 2-D grid value plot */
@@ -4644,8 +4645,8 @@ internal class GaGx
                 GaExpr.gagchk(pgrm, pgr, pgr.idim) > 1 || GaExpr.gagchk(pgrm, pgr, pgr.jdim) > 1)
             {
                 flag = false;
-                gaprnt(0, "Error plotting grid values:  Invalid Mask grid");
-                gaprnt(0, "   Mask grid ignored -- has different scaling");
+                _drawingContext.Logger?.LogInformation("Error plotting grid values:  Invalid Mask grid");
+                _drawingContext.Logger?.LogInformation("   Mask grid ignored -- has different scaling");
             }
         }
 
@@ -4656,33 +4657,33 @@ internal class GaGx
             if (flag) pgrm = gaflip(pgrm);
         }
 
-        _drawingContext.GaSubs.gxstyl(1);
-        _drawingContext.GaSubs.gxwide(1);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxwide(1);
         gas2d(pgr, true); /* Draw map and set up scaling */
 
         gafram();
-        _drawingContext.GaSubs.gxwide(pcm.cthick);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
         idiv = 1.0;
         jdiv = 1.0;
         if (pcm.ccolor >= 0) lcol = pcm.ccolor;
         else lcol = 1;
-        _drawingContext.GaSubs.gxcolr(lcol);
-        _drawingContext.GaSubs.gxstyl(1);
-        _drawingContext.GaSubs.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
+        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
 
         /* Draw grid lines  */
 
         if (pcm.gridln != -1)
         {
-            if (pcm.gridln > -1) _drawingContext.GaSubs.gxcolr(pcm.gridln);
+            if (pcm.gridln > -1) _drawingContext.GradsDrawingInterface.gxcolr(pcm.gridln);
             for (i = 1; i <= pgr.isiz; i++)
             {
                 for (j = 1; j <= pgr.jsiz; j++)
                 {
-                    GaSubs.gxconv((double)(i) + 0.5, (double)(j) - 0.5, out xlo, out ylo, 3);
-                    GaSubs.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out xhi, out yhi, 3);
-                    _drawingContext.GaSubs.gxplot(xlo, ylo, 3);
-                    _drawingContext.GaSubs.gxplot(xhi, yhi, 2);
+                    GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) - 0.5, out xlo, out ylo, 3);
+                    GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out xhi, out yhi, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(xlo, ylo, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(xhi, yhi, 2);
                 }
             }
 
@@ -4690,10 +4691,10 @@ internal class GaGx
             {
                 for (i = 1; i <= pgr.isiz; i++)
                 {
-                    GaSubs.gxconv((double)(i) - 0.5, (double)(j) + 0.5, out xlo, out ylo, 3);
-                    GaSubs.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out xhi, out yhi, 3);
-                    _drawingContext.GaSubs.gxplot(xlo, ylo, 3);
-                    _drawingContext.GaSubs.gxplot(xhi, yhi, 2);
+                    GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) + 0.5, out xlo, out ylo, 3);
+                    GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out xhi, out yhi, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(xlo, ylo, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(xhi, yhi, 2);
                 }
             }
         }
@@ -4716,21 +4717,21 @@ internal class GaGx
                 {
                     if (flag && mmask[mmcnt] != 0 && m[mcnt] <= 0.0)
                     {
-                        _drawingContext.GaSubs.gxwide(1);
-                        _drawingContext.GaSubs.gxcolr(15);
+                        _drawingContext.GradsDrawingInterface.gxwide(1);
+                        _drawingContext.GradsDrawingInterface.gxcolr(15);
                     }
                     else
                     {
-                        _drawingContext.GaSubs.gxwide(pcm.cthick);
-                        _drawingContext.GaSubs.gxcolr(lcol);
+                        _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
+                        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
                     }
 
-                    GaSubs.gxconv((double)i, (double)j, out xlo, out ylo, 3);
+                    GradsDrawingInterface.gxconv((double)i, (double)j, out xlo, out ylo, 3);
                     String.Format("{0:" + pcm.dignum + "f}", (float)r[rcnt]);
                     len = lab.Length;
                     cwid = pcm.digsiz * (double)len;
                     _drawingContext.GxChpl.gxchln(lab, len, pcm.digsiz, out cwid);
-                    _drawingContext.GaSubs.gxchpl(lab, len, xlo - cwid * 0.5, ylo - pcm.digsiz * 0.5,
+                    _drawingContext.GradsDrawingInterface.gxchpl(lab, len, xlo - cwid * 0.5, ylo - pcm.digsiz * 0.5,
                         pcm.digsiz, pcm.digsiz, 0.0);
                 }
 
@@ -4744,10 +4745,10 @@ internal class GaGx
             }
         }
 
-        _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GaSubs.gxcolr(pcm.anncol);
-        _drawingContext.GaSubs.gxwide(4);
-        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.gxwide(4);
+        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgr.idim, pgr.jdim);
         gagsav(4);
@@ -5237,7 +5238,7 @@ internal class GaGx
 //
 //   return;
 // #else
-//     gaprnt(0, "Creating shapefiles is not supported in this build\n");
+//     _drawingContext.Logger?.LogInformation("Creating shapefiles is not supported in this build\n");
 // #endif
     }
 
@@ -5295,20 +5296,20 @@ internal class GaGx
         //
         // /* Determine if output is a grid or a station result */
         // if (pcm.type[0] != 1) {
-        //     gaprnt(0, "Error in gakml: expression is not a grid \n");
+        //     _drawingContext.Logger?.LogInformation("Error in gakml: expression is not a grid \n");
         //     goto cleanup;
         // }
         //
         // /* Make sure projection is latlon */
         // if (pcm.mproj != 2) {
-        //     gaprnt(0, "Error in gakml: mproj latlon required for gxout kml\n");
+        //     _drawingContext.Logger?.LogInformation("Error in gakml: mproj latlon required for gxout kml\n");
         //     goto cleanup;
         // }
         //
         // /* Make sure we have an X-Y plot */
         // pgr = pcm.result[0].pgr;
         // if (pgr.idim != 0 || pgr.jdim != 1) {
-        //     gaprnt(0, "Error in gakml: Grid is not varying in X and Y \n");
+        //     _drawingContext.Logger?.LogInformation("Error in gakml: Grid is not varying in X and Y \n");
         //     goto cleanup;
         // }
         //
@@ -5318,7 +5319,7 @@ internal class GaGx
         // /* Determine data min/max, make sure grid is not undefined */
         // gamnmx(pgr);
         // if (pgr.umin == 0) {
-        //     gaprnt(0, "Error in gakml: Entire grid is undefined \n");
+        //     _drawingContext.Logger?.LogInformation("Error in gakml: Entire grid is undefined \n");
         //     goto cleanup;
         // }
         //
@@ -5332,7 +5333,7 @@ internal class GaGx
         //         snprintf(pout, 1255, "Error: fopen failed for KML text output file %s\n", pcm.kmlname);
         //     else
         //         snprintf(pout, 1255, "Error: fopen failed for KML text output file grads.kml\n");
-        //     gaprnt(0, pout);
+        //     _drawingContext.Logger?.LogInformation(pout);
         //     goto cleanup;
         // }
         //
@@ -5409,7 +5410,7 @@ internal class GaGx
         //             snprintf(pout, 1255, "%d contours written to KML file %s\n", rc, pcm.kmlname);
         //         else
         //             snprintf(pout, 1255, "%d contours written to KML file grads.kml\n", rc);
-        //         gaprnt(2, pout);
+        //         _drawingContext.Logger?.LogInformation(pout);
         //     } else err = 1;
         // }
         //     /* Polygons */
@@ -5482,7 +5483,7 @@ internal class GaGx
         //             snprintf(pout, 1255, "%d polygons written to KML file %s\n", rc, pcm.kmlname);
         //         else
         //             snprintf(pout, 1255, "%d polygons written to KML file grads.kml\n", rc);
-        //         gaprnt(2, pout);
+        //         _drawingContext.Logger?.LogInformation(pout);
         //     } else err = 1;
         //
         // }
@@ -5505,7 +5506,7 @@ internal class GaGx
         //     s2setdraw(0);   /* restore drawing of polygons */
         // }
         // if (kmlfp) fclose(kmlfp);    /* close the file */
-        // if (err) gaprnt(0, "Error from fwrite when writing KML file\n");
+        // if (err) _drawingContext.Logger?.LogInformation("Error from fwrite when writing KML file\n");
         return;
     }
 
@@ -5899,10 +5900,10 @@ internal class GaGx
 //
 // #else
 //     if (kmlflg) {
-//         gaprnt(0, "Error: Creating TIFF images for KML output is not supported in this build. \n");
-//         gaprnt(0, "  Try the \'-line\' option with \'set kml\' to output contour lines in KML format instead.\n");
+//         _drawingContext.Logger?.LogInformation("Error: Creating TIFF images for KML output is not supported in this build. \n");
+//         _drawingContext.Logger?.LogInformation("  Try the \'-line\' option with \'set kml\' to output contour lines in KML format instead.\n");
 //     } else
-//         gaprnt(0, "Error: Creating GeoTIFF files is not supported in this build\n");
+//         _drawingContext.Logger?.LogInformation("Error: Creating GeoTIFF files is not supported in this build\n");
 // #endif
     }
 
@@ -5976,7 +5977,7 @@ internal class GaGx
     //             snprintf(pout, 1255, "Error: fopen failed for KML text output file %s\n", pcm.kmlname);
     //         else
     //             snprintf(pout, 1255, "Error: fopen failed for KML text output file grads.kml\n");
-    //         gaprnt(0, pout);
+    //         _drawingContext.Logger?.LogInformation(pout);
     //         return (1);
     //     }
     //
@@ -6104,7 +6105,7 @@ internal class GaGx
     //     cleanup:
     //     /* close the file */
     //     fclose(kmlfp);
-    //     if (err) gaprnt(0, "Error from fwrite when writing KML file\n");
+    //     if (err) _drawingContext.Logger?.LogInformation("Error from fwrite when writing KML file\n");
     //     return (err);
     // }
 
@@ -6149,26 +6150,26 @@ internal class GaGx
         //         strcpy(fmode, "ab");
         //         if (fexists) {
         //             snprintf(pout, 1255, "Appending data to file %s.\n", pcm.fwname);
-        //             gaprnt(2, pout);
+        //             _drawingContext.Logger?.LogInformation(pout);
         //         }
         //     } else {
         //         strcpy(fmode, "wb");
         //         if (fexists) {
         //             snprintf(pout, 1255, "Replacing file %s.\n", pcm.fwname);
-        //             gaprnt(2, pout);
+        //             _drawingContext.Logger?.LogInformation(pout);
         //         }
         //     }
         //
         //     if (pcm.fwname) pcm.ffile = fopen(pcm.fwname, fmode);
         //     else pcm.ffile = fopen("grads.fwrite", fmode);
         //     if (pcm.ffile == NULL) {
-        //         gaprnt(0, "Error opening output file for fwrite\n");
+        //         _drawingContext.Logger?.LogInformation("Error opening output file for fwrite\n");
         //         if (pcm.fwname) {
-        //             gaprnt(0, "  File name is: ");
-        //             gaprnt(0, pcm.fwname);
-        //             gaprnt(0, "\n");
+        //             _drawingContext.Logger?.LogInformation("  File name is: ");
+        //             _drawingContext.Logger?.LogInformation(pcm.fwname);
+        //             _drawingContext.Logger?.LogInformation("\n");
         //         } else {
-        //             gaprnt(0, "  File name is: grads.fwrite\n");
+        //             _drawingContext.Logger?.LogInformation("  File name is: grads.fwrite\n");
         //         }
         //         return;
         //     }
@@ -6182,7 +6183,7 @@ internal class GaGx
         // fval = (gafloat *) galloc(sz, "fwrite1");
         // fval0 = fval;
         // if (fval == NULL) {
-        //     gaprnt(0, "Error allocating memory for fwrite\n");
+        //     _drawingContext.Logger?.LogInformation("Error allocating memory for fwrite\n");
         //     return;
         // }
         // for (i = 0; i < size; i++) {
@@ -6266,7 +6267,7 @@ internal class GaGx
         //         ret = ferror(pcm.ffile);
         //         if (ret || (write != xsiz)) {
         //             snprintf(pout, 1255, "Error writing data for fwrite: %s\n", strerror(errno));
-        //             gaprnt(0, pout);
+        //             _drawingContext.Logger?.LogInformation(pout);
         //         }
         //         written = written + write;
         //         goff = goff + incr;
@@ -6278,7 +6279,7 @@ internal class GaGx
         //     ret = ferror(pcm.ffile);
         //     if (ret || (written != size)) {
         //         snprintf(pout, 1255, "Error writing data for fwrite: %s\n", strerror(errno));
-        //         gaprnt(0, pout);
+        //         _drawingContext.Logger?.LogInformation(pout);
         //     }
         //     if (pcm.fwsqflg) fwrite(&rdw, sizeof(int), 1, pcm.ffile);
         // }
@@ -6286,17 +6287,17 @@ internal class GaGx
         // if (pcm.ffile != stdout) {
         //     if (pcm.fwname) {
         //         snprintf(pout, 1255, "Wrote %ld of %i elements to ", written, exsz);
-        //         gaprnt(2, pout);
-        //         gaprnt(2, pcm.fwname);
+        //         _drawingContext.Logger?.LogInformation(pout);
+        //         _drawingContext.Logger?.LogInformation(pcm.fwname);
         //     } else {
         //         snprintf(pout, 1255, "Wrote %ld of %i elements to grads.fwrite", written, exsz);
-        //         gaprnt(2, pout);
+        //         _drawingContext.Logger?.LogInformation(pout);
         //     }
         //
-        //     if (pcm.fwsqflg) gaprnt(2, " as Sequential");
-        //     else gaprnt(2, " as Stream");
-        //     if (pcm.fwenflg) gaprnt(2, " Big_Endian\n");
-        //     else gaprnt(2, " Little_Endian\n");
+        //     if (pcm.fwsqflg) _drawingContext.Logger?.LogInformation(" as Sequential");
+        //     else _drawingContext.Logger?.LogInformation(" as Stream");
+        //     if (pcm.fwenflg) _drawingContext.Logger?.LogInformation(" Big_Endian\n");
+        //     else _drawingContext.Logger?.LogInformation(" Little_Endian\n");
         // }
         //
         // gagsav(20, pcm, NULL);
@@ -6326,8 +6327,8 @@ internal class GaGx
         // if (pcm.sfile == NULL) {
         //     pcm.sfile = fopen("grads.stnwrt", "wb");
         //     if (pcm.sfile == NULL) {
-        //         gaprnt(0, "Error opening output file for stnwrt\n");
-        //         gaprnt(0, "  File name is: grads.stnwrt\n");
+        //         _drawingContext.Logger?.LogInformation("Error opening output file for stnwrt\n");
+        //         _drawingContext.Logger?.LogInformation("  File name is: grads.stnwrt\n");
         //         return;
         //     }
         // }
@@ -6372,7 +6373,7 @@ internal class GaGx
         gas2d(pgr, false); /* Set up scaling */
         idiv = 1.0;
         jdiv = 1.0;
-        _drawingContext.GaSubs.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
+        _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
 
         /* Allocate point buffer */
 
@@ -6413,7 +6414,7 @@ internal class GaGx
                         for (ii = isav; ii <= i; ii++)
                         {
                             double cx, cy;
-                            GaSubs.gxconv((double)(ii) - 0.5, (double)(j) + 0.5, out cx, out cy, 3);
+                            GradsDrawingInterface.gxconv((double)(ii) - 0.5, (double)(j) + 0.5, out cx, out cy, 3);
                             xybuf[xy] = cx;
                             xybuf[xy + 1] = cy;
                             xy += 2;
@@ -6422,7 +6423,7 @@ internal class GaGx
                         for (ii = i; ii >= isav; ii--)
                         {
                             double cx, cy;
-                            GaSubs.gxconv((double)(ii) - 0.5, (double)(j) - 0.5, out cx, out cy, 3);
+                            GradsDrawingInterface.gxconv((double)(ii) - 0.5, (double)(j) - 0.5, out cx, out cy, 3);
                             xybuf[xy] = cx;
                             xybuf[xy + 1] = cy;
                             xy += 2;
@@ -6430,8 +6431,8 @@ internal class GaGx
 
                         xybuf[xy] = xybuf[0];
                         xybuf[xy + 1] = xybuf[1];
-                        _drawingContext.GaSubs.gxcolr(scol);
-                        _drawingContext.GaSubs.gxfill(xybuf, (1 + i - isav) * 2 + 1);
+                        _drawingContext.GradsDrawingInterface.gxcolr(scol);
+                        _drawingContext.GradsDrawingInterface.gxfill(xybuf, (1 + i - isav) * 2 + 1);
                     }
 
                     isav = i;
@@ -6448,7 +6449,7 @@ internal class GaGx
                 for (ii = isav; ii <= pgr.isiz + 1; ii++)
                 {
                     double cx, cy;
-                    GaSubs.gxconv((double)(ii) - 0.5, (double)(j) + 0.5, out cx, out cy, 3);
+                    GradsDrawingInterface.gxconv((double)(ii) - 0.5, (double)(j) + 0.5, out cx, out cy, 3);
                     xybuf[xy] = cx;
                     xybuf[xy + 1] = cy;
                     xy += 2;
@@ -6457,7 +6458,7 @@ internal class GaGx
                 for (ii = pgr.isiz + 1; ii >= isav; ii--)
                 {
                     double cx, cy;
-                    GaSubs.gxconv((double)(ii) - 0.5, (double)(j) - 0.5, out cx, out cy, 3);
+                    GradsDrawingInterface.gxconv((double)(ii) - 0.5, (double)(j) - 0.5, out cx, out cy, 3);
                     xybuf[xy] = cx;
                     xybuf[xy + 1] = cy;
                     xy += 2;
@@ -6465,21 +6466,21 @@ internal class GaGx
 
                 xybuf[xy] = xybuf[0];
                 xybuf[xy + 1] = xybuf[1];
-                _drawingContext.GaSubs.gxcolr(scol);
-                _drawingContext.GaSubs.gxfill(xybuf, (2 + pgr.isiz - isav) * 2 + 1);
+                _drawingContext.GradsDrawingInterface.gxcolr(scol);
+                _drawingContext.GradsDrawingInterface.gxfill(xybuf, (2 + pgr.isiz - isav) * 2 + 1);
             }
         }
 
         if (xybuf[siz - 1] != -1)
         {
-            gaprnt(0, "Logic Error 16 in gafgrd.  Please report error.\n");
+            _drawingContext.Logger?.LogInformation("Logic Error 16 in gafgrd.  Please report error.\n");
         }
 
         if (pgr.idim == 0 && pgr.jdim == 1) gawmap(false);
-        _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GaSubs.gxcolr(pcm.anncol);
-        _drawingContext.GaSubs.gxwide(4);
-        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.gxwide(4);
+        if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgr.idim, pgr.jdim);
         gafram();
@@ -6527,8 +6528,8 @@ internal class GaGx
         if (filflg == 3 &&
             (pcm.mproj < 1 || pcm.mproj > 2 || pgr.idim != 0 || pgr.jdim != 1))
         {
-            gaprnt(0, "Invalid dimension and/or scaling environment for gxout imap\n");
-            gaprnt(0, "   Mproj latlon or scaled required; x/y varying plot required\n");
+            _drawingContext.Logger?.LogInformation("Invalid dimension and/or scaling environment for gxout imap\n");
+            _drawingContext.Logger?.LogInformation("   Mproj latlon or scaled required; x/y varying plot required\n");
             return 1;
         }
 
@@ -6539,8 +6540,8 @@ internal class GaGx
             {
                 if (pcm.clevs[i] <= pcm.clevs[i - 1])
                 {
-                    gaprnt(2, "Invalid user-specified contour levels for shaded output.\n");
-                    gaprnt(2, "   Contour levels must be strictly increasing.\n");
+                    _drawingContext.Logger?.LogInformation("Invalid user-specified contour levels for shaded output.\n");
+                    _drawingContext.Logger?.LogInformation("   Contour levels must be strictly increasing.\n");
                     return 1;
                 }
             }
@@ -6553,8 +6554,8 @@ internal class GaGx
                 (!pcm.rotate && pgr.idim == 2 && pgr.jdim == 3))
                 pgr = gaflip(pgr);
 
-            _drawingContext.GaSubs.gxstyl(1);
-            _drawingContext.GaSubs.gxwide(1);
+            _drawingContext.GradsDrawingInterface.gxstyl(1);
+            _drawingContext.GradsDrawingInterface.gxwide(1);
             if (filflg > 0) gas2d(pgr, false); /* No map yet if shaded cntrs */
             else gas2d(pgr, true); /* Scaling plus map */
         }
@@ -6563,9 +6564,9 @@ internal class GaGx
         GaUtil.gamnmx(pgr);
         if (pgr.umin == 0)
         {
-            gaprnt(1, "Cannot contour grid - all undefined values \n");
-            _drawingContext.GaSubs.gxcolr(1);
-            if (pcm.dwrnflg) _drawingContext.GaSubs.gxchpl("Entire Grid Undefined", 21, 3.0, 4.5, 0.3, 0.25, 0.0);
+            _drawingContext.Logger?.LogInformation("Cannot contour grid - all undefined values \n");
+            _drawingContext.GradsDrawingInterface.gxcolr(1);
+            if (pcm.dwrnflg) _drawingContext.GradsDrawingInterface.gxchpl("Entire Grid Undefined", 21, 3.0, 4.5, 0.3, 0.25, 0.0);
             return 1;
         }
 
@@ -6592,13 +6593,13 @@ internal class GaGx
                     pcm.gout2a = isav;
                     pcm.fgcnt = 0;
                     //snprintf(pout, 1255, "Constant field.  Value = %g\n", pgr.rmin);
-                    //gaprnt(1, pout);
+                    //_drawingContext.Logger?.LogInformation(pout);
                 }
                 else
                 {
                     /* just print the message */
                     //snprintf(pout, 1255, "Constant field.  Value = %g\n", pgr.rmin);
-                    //gaprnt(1, pout);
+                    //_drawingContext.Logger?.LogInformation(pout);
                 }
 
                 return 1;
@@ -6611,7 +6612,7 @@ internal class GaGx
             if (pmax > pcm.cmax) pmax = pcm.cmax;
             if ((pmax - pmin) / cint > 100.0)
             {
-                gaprnt(0, "Too many contour levels -- adjusting cint\n");
+                _drawingContext.Logger?.LogInformation("Too many contour levels -- adjusting cint\n");
                 while ((pmax - pmin) / cint > 100.0) cint *= 10.0;
                 pcm.cint = cint;
                 gacsel(pgr.rmin, pgr.rmax, ref cint, out cmin, out cmax);
@@ -6619,7 +6620,7 @@ internal class GaGx
         }
 
         /* set contour color */
-        if (pcm.ccolor >= 0) _drawingContext.GaSubs.gxcolr(pcm.ccolor);
+        if (pcm.ccolor >= 0) _drawingContext.GradsDrawingInterface.gxcolr(pcm.ccolor);
         if (pcm.ccolor < 0 && pcm.rainmn == 0.0 && pcm.rainmx == 0.0 && pcm.cflag == 0)
         {
             pcm.rainmn = cmin;
@@ -6699,9 +6700,9 @@ internal class GaGx
 
                 if (umin == 0)
                 {
-                    gaprnt(1, "Cannot contour grid - all undefined values \n");
+                    _drawingContext.Logger?.LogInformation("Cannot contour grid - all undefined values \n");
                     if (pcm.dwrnflg)
-                        _drawingContext.GaSubs.gxchpl("Entire Grid Undefined", 21, 3.0, 4.5, 0.3, 0.25, 0.0);
+                        _drawingContext.GradsDrawingInterface.gxchpl("Entire Grid Undefined", 21, 3.0, 4.5, 0.3, 0.25, 0.0);
                     return 1;
                 }
 
@@ -6712,22 +6713,22 @@ internal class GaGx
 
         if (pcm.cflag > 0)
         {
-            gaprnt(2, "Contouring at clevs = ");
+            _drawingContext.Logger?.LogInformation("Contouring at clevs = ");
             for (i = 0; i < pcm.cflag; i++)
             {
                 //snprintf(pout, 1255, " %g", pcm.clevs[i]);
-                gaprnt(2, $" {pcm.clevs[i]}");
+                _drawingContext.Logger?.LogInformation($" {pcm.clevs[i]}");
             }
 
-            gaprnt(2, "");
+            _drawingContext.Logger?.LogInformation("");
         }
         else
         {
             //snprintf(pout, 1255, "Contouring: %g to %g interval %g \n", cmin, cmax, cint);
-            gaprnt(2, $"Contouring: {cmin} to {cmax} interval {cint}");
+            _drawingContext.Logger?.LogInformation($"Contouring: {cmin} to {cmax} interval {cint}");
         }
 
-        _drawingContext.GaSubs.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
+        _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
         if (pcm.rbflg > 0) irb = pcm.rbflg - 1;
         else irb = 12;
         rrb = irb + 1;
@@ -6790,7 +6791,7 @@ internal class GaGx
         }
         else
         {
-            _drawingContext.GaSubs.gxwide(pcm.cthick);
+            _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
             cntrcnt = 0;
             cntrcol = -1;
             if (pcm.cflag > 0)
@@ -6799,8 +6800,8 @@ internal class GaGx
                 for (i = 0; i < pcm.cflag; i++)
                 {
                     rr = pcm.clevs[i];
-                    if (rr < 0.0 && pcm.cstyle == -9) _drawingContext.GaSubs.gxstyl(3);
-                    else _drawingContext.GaSubs.gxstyl(pcm.cstyle);
+                    if (rr < 0.0 && pcm.cstyle == -9) _drawingContext.GradsDrawingInterface.gxstyl(3);
+                    else _drawingContext.GradsDrawingInterface.gxstyl(pcm.cstyle);
                     if (pcm.ccolor < 0 && pcm.ccflg == 0)
                     {
                         /* user has not specified contour colors */
@@ -6812,12 +6813,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GaSubs.gxcolr(pcm.rbcols[ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[ii]);
                                 cntrcol = pcm.rbcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GaSubs.gxcolr(pcm.rbcols[irb - ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[irb - ii]);
                                 cntrcol = pcm.rbcols[irb - ii];
                             }
                         }
@@ -6825,12 +6826,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GaSubs.gxcolr(rcols[ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[ii]);
                                 cntrcol = rcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GaSubs.gxcolr(rcols[12 - ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[12 - ii]);
                                 cntrcol = rcols[12 - ii];
                             }
                         }
@@ -6841,7 +6842,7 @@ internal class GaGx
                         /* overlays */
                         ii = i;
                         if (ii >= pcm.ccflg) ii = pcm.ccflg - 1;
-                        _drawingContext.GaSubs.gxcolr(pcm.ccols[ii]);
+                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.ccols[ii]);
                         cntrcol = pcm.ccols[ii];
                     }
 
@@ -6858,7 +6859,7 @@ internal class GaGx
                     scntr.label = chlab;
                     scntr.spline = pcm.cterp;
                     scntr.ltype = pcm.clab;
-                    scntr.ccol = GaSubs.lcolor;
+                    scntr.ccol = GradsDrawingInterface.lcolor;
                     scntr.labcol = pcm.clcol;
                     scntr.labwid = pcm.clthck;
                     scntr.labsiz = pcm.clsiz;
@@ -6904,8 +6905,8 @@ internal class GaGx
                     if (rl < pcm.cmin || rl > pcm.cmax) continue;
                     if (pcm.blkflg && rl >= pcm.blkmin && rl <= pcm.blkmax) continue;
                     rr = rl;
-                    if (rr < 0.0 && pcm.cstyle == -9) _drawingContext.GaSubs.gxstyl(3);
-                    else _drawingContext.GaSubs.gxstyl(pcm.cstyle);
+                    if (rr < 0.0 && pcm.cstyle == -9) _drawingContext.GradsDrawingInterface.gxstyl(3);
+                    else _drawingContext.GradsDrawingInterface.gxstyl(pcm.cstyle);
                     if (pcm.ccolor < 0)
                     {
                         ii = (int)(rrb * (rr - pcm.rainmn) / (pcm.rainmx - pcm.rainmn));
@@ -6915,12 +6916,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GaSubs.gxcolr(pcm.rbcols[ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[ii]);
                                 cntrcol = pcm.rbcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GaSubs.gxcolr(pcm.rbcols[irb - ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[irb - ii]);
                                 cntrcol = pcm.rbcols[irb - ii];
                             }
                         }
@@ -6928,12 +6929,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GaSubs.gxcolr(rcols[ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[ii]);
                                 cntrcol = rcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GaSubs.gxcolr(rcols[12 - ii]);
+                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[12 - ii]);
                                 cntrcol = rcols[12 - ii];
                             }
                         }
@@ -6985,7 +6986,7 @@ internal class GaGx
                     scntr.label = chlab;
                     scntr.spline = pcm.cterp;
                     scntr.ltype = pcm.clab;
-                    scntr.ccol = GaSubs.lcolor;
+                    scntr.ccol = GradsDrawingInterface.lcolor;
                     scntr.labcol = pcm.clcol;
                     scntr.labwid = pcm.clthck;
                     scntr.labsiz = pcm.clsiz;
@@ -7028,8 +7029,8 @@ internal class GaGx
                 }
                 else
                 {
-                    if (pcm.clcol > -1) _drawingContext.GaSubs.gxcolr(pcm.clcol);
-                    if (pcm.clthck > -1) _drawingContext.GaSubs.gxwide(pcm.clthck);
+                    if (pcm.clcol > -1) _drawingContext.GradsDrawingInterface.gxcolr(pcm.clcol);
+                    if (pcm.clthck > -1) _drawingContext.GradsDrawingInterface.gxwide(pcm.clthck);
                     _drawingContext.GxContour.gxclab(pcm.clsiz, pcm.clab > 0, pcm.clcol);
                 }
 
@@ -7043,13 +7044,13 @@ internal class GaGx
             rrrmask = Array.Empty<byte>();
         }
 
-        _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GaSubs.gxcolr(pcm.anncol);
-        _drawingContext.GaSubs.gxwide(4);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.gxwide(4);
         if (shpflg == 0)
         {
             if (pcm.pass == 0 && pcm.grdsflg)
-                _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+                _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
             if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
             gaaxpl(pgr.idim, pgr.jdim);
             gafram();
@@ -7133,11 +7134,11 @@ internal class GaGx
             if (pcm.xlpos != 0.0)
             {
                 /* X axis is offset from frame */
-                _drawingContext.GaSubs.gxcolr(pcm.anncol);
-                _drawingContext.GaSubs.gxwide(pcm.annthk);
-                _drawingContext.GaSubs.gxstyl(1);
-                _drawingContext.GaSubs.gxplot(pcm.xsiz1, pos, 3);
-                _drawingContext.GaSubs.gxplot(pcm.xsiz2, pos, 2);
+                _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
+                _drawingContext.GradsDrawingInterface.gxstyl(1);
+                _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, pos, 3);
+                _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz2, pos, 2);
             }
         }
         else
@@ -7150,11 +7151,11 @@ internal class GaGx
             if (pcm.ylpos != 0.0)
             {
                 /* Y axis is offset from frame */
-                _drawingContext.GaSubs.gxcolr(pcm.anncol);
-                _drawingContext.GaSubs.gxwide(pcm.annthk);
-                _drawingContext.GaSubs.gxstyl(1);
-                _drawingContext.GaSubs.gxplot(pos, pcm.ysiz1, 3);
-                _drawingContext.GaSubs.gxplot(pos, pcm.ysiz2, 2);
+                _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
+                _drawingContext.GradsDrawingInterface.gxstyl(1);
+                _drawingContext.GradsDrawingInterface.gxplot(pos, pcm.ysiz1, 3);
+                _drawingContext.GradsDrawingInterface.gxplot(pos, pcm.ysiz2, 2);
             }
         }
 
@@ -7202,8 +7203,8 @@ internal class GaGx
             vmax = pcm.axmax;
             vincr = pcm.axint;
             dim = 5;
-            gaprnt(1, "Warning:  X axis labels overridden by SET XAXIS.\n");
-            gaprnt(1, "   Labels may not reflect correct scaling for dimensions or data.\n");
+            _drawingContext.Logger?.LogInformation("Warning:  X axis labels overridden by SET XAXIS.\n");
+            _drawingContext.Logger?.LogInformation("   Labels may not reflect correct scaling for dimensions or data.\n");
         }
 
         if (axis == 0 && pcm.ayflg > 0 && (dim != 2 || !pcm.zlog))
@@ -7212,14 +7213,14 @@ internal class GaGx
             vmax = pcm.aymax;
             vincr = pcm.ayint;
             dim = 5;
-            gaprnt(1, "Warning:  Y axis labels overridden by SET YAXIS.\n");
-            gaprnt(1, "   Labels may not reflect correct scaling for dimensions or data.\n");
+            _drawingContext.Logger?.LogInformation("Warning:  Y axis labels overridden by SET YAXIS.\n");
+            _drawingContext.Logger?.LogInformation("   Labels may not reflect correct scaling for dimensions or data.\n");
         }
 
         if (vmin == vmax)
         {
             /* no precision check */
-            gaprnt(0, "gaaxis internal logic check 24\n");
+            _drawingContext.Logger?.LogInformation("gaaxis internal logic check 24\n");
             return;
         }
 
@@ -7290,7 +7291,7 @@ internal class GaGx
                 gacsel(vmin, vmax, ref vincr, out vstrt, out vend);
                 if (GaUtil.dequal(vincr, 0.0, 1e-08) == 0)
                 {
-                    gaprnt(0, "gaaxis internal logic check 25\n");
+                    _drawingContext.Logger?.LogInformation("gaaxis internal logic check 25\n");
                     return;
                 }
 
@@ -7315,9 +7316,9 @@ internal class GaGx
         }
 
         /* draw labels, tic marks, and grid lines */
-        _drawingContext.GaSubs.gxcolr(colr);
-        _drawingContext.GaSubs.gxwide(thck);
-        _drawingContext.GaSubs.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+        _drawingContext.GradsDrawingInterface.gxwide(thck);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
         if (dim != 3)
         {
             /* determine the label values */
@@ -7368,9 +7369,9 @@ internal class GaGx
                 if (axis > 0)
                 {
                     x = (v * m) + b;
-                    if (dim == 2 && pcm.zlog) GaSubs.gxconv(v, pos, out x, out tt, 2);
-                    else if (dim == 1 && pcm.coslat) GaSubs.gxconv(v, pos, out x, out tt, 2);
-                    else if (pcm.log1d > 0) GaSubs.gxconv(v, pos, out x, out tt, 2);
+                    if (dim == 2 && pcm.zlog) GradsDrawingInterface.gxconv(v, pos, out x, out tt, 2);
+                    else if (dim == 1 && pcm.coslat) GradsDrawingInterface.gxconv(v, pos, out x, out tt, 2);
+                    else if (pcm.log1d > 0) GradsDrawingInterface.gxconv(v, pos, out x, out tt, 2);
                     if (x < pcm.xsiz1 - 0.05 || x > pcm.xsiz2 + 0.05)
                     {
                         i++;
@@ -7378,20 +7379,20 @@ internal class GaGx
                     }
 
                     /* X tic marks */
-                    _drawingContext.GaSubs.gxplot(x, pos, 3);
-                    if (pcm.xlside > 0) _drawingContext.GaSubs.gxplot(x, pos + (cs * 0.4), 2);
-                    else _drawingContext.GaSubs.gxplot(x, pos - (cs * 0.4), 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(x, pos, 3);
+                    if (pcm.xlside > 0) _drawingContext.GradsDrawingInterface.gxplot(x, pos + (cs * 0.4), 2);
+                    else _drawingContext.GradsDrawingInterface.gxplot(x, pos - (cs * 0.4), 2);
                     /* X grid lines */
                     if (pcm.grflag == 1 || pcm.grflag == 3)
                     {
-                        _drawingContext.GaSubs.gxwide(pcm.grthck);
-                        _drawingContext.GaSubs.gxstyl(pcm.grstyl);
-                        _drawingContext.GaSubs.gxcolr(pcm.grcolr);
-                        _drawingContext.GaSubs.gxplot(x, pcm.ysiz1, 3);
-                        _drawingContext.GaSubs.gxplot(x, pcm.ysiz2, 2);
-                        _drawingContext.GaSubs.gxcolr(colr);
-                        _drawingContext.GaSubs.gxwide(thck);
-                        _drawingContext.GaSubs.gxstyl(1);
+                        _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
+                        _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
+                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz1, 3);
+                        _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz2, 2);
+                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.gxwide(thck);
+                        _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
 
                     x = x - cwid * 0.4;
@@ -7401,9 +7402,9 @@ internal class GaGx
                 else
                 {
                     y = (v * m) + b;
-                    if (dim == 2 && pcm.zlog) GaSubs.gxconv(pcm.xsiz1, v, out tt, out y, 2);
-                    else if (dim == 1 && pcm.coslat) GaSubs.gxconv(pcm.xsiz1, v, out tt, out y, 2);
-                    else if (pcm.log1d > 0) GaSubs.gxconv(pcm.xsiz1, v, out tt, out y, 2);
+                    if (dim == 2 && pcm.zlog) GradsDrawingInterface.gxconv(pcm.xsiz1, v, out tt, out y, 2);
+                    else if (dim == 1 && pcm.coslat) GradsDrawingInterface.gxconv(pcm.xsiz1, v, out tt, out y, 2);
+                    else if (pcm.log1d > 0) GradsDrawingInterface.gxconv(pcm.xsiz1, v, out tt, out y, 2);
                     if (y < pcm.ysiz1 - 0.05 || y > pcm.ysiz2 + 0.05)
                     {
                         i++;
@@ -7411,15 +7412,15 @@ internal class GaGx
                     }
 
                     /* Y tic marks */
-                    _drawingContext.GaSubs.gxplot(pos, y, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(pos, y, 3);
                     if (pcm.ylside > 0)
                     {
-                        _drawingContext.GaSubs.gxplot(pos + (cs * 0.4), y, 2);
+                        _drawingContext.GradsDrawingInterface.gxplot(pos + (cs * 0.4), y, 2);
                         x = pos + cs * 0.8;
                     }
                     else
                     {
-                        _drawingContext.GaSubs.gxplot(pos - (cs * 0.4), y, 2);
+                        _drawingContext.GradsDrawingInterface.gxplot(pos - (cs * 0.4), y, 2);
                         x = pos - (cwid + cs) * 0.8;
                         if (pcm.yllow < (cwid + cs) * 0.8) pcm.yllow = (cwid + cs) * 0.8;
                     }
@@ -7427,20 +7428,20 @@ internal class GaGx
                     /* X grid lines */
                     if (pcm.grflag == 1 || pcm.grflag == 2)
                     {
-                        _drawingContext.GaSubs.gxwide(pcm.grthck);
-                        _drawingContext.GaSubs.gxstyl(pcm.grstyl);
-                        _drawingContext.GaSubs.gxcolr(pcm.grcolr);
-                        _drawingContext.GaSubs.gxplot(pcm.xsiz1, y, 3);
-                        _drawingContext.GaSubs.gxplot(pcm.xsiz2, y, 2);
-                        _drawingContext.GaSubs.gxwide(thck);
-                        _drawingContext.GaSubs.gxcolr(colr);
-                        _drawingContext.GaSubs.gxstyl(1);
+                        _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
+                        _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
+                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, y, 3);
+                        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz2, y, 2);
+                        _drawingContext.GradsDrawingInterface.gxwide(thck);
+                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
 
                     y = y - (cs * 0.5);
                 }
 
-                _drawingContext.GaSubs.gxchpl(lab, len, x, y, cs, cs * 0.8, 0.0);
+                _drawingContext.GradsDrawingInterface.gxchpl(lab, len, x, y, cs, cs * 0.8, 0.0);
                 if (lab.Length > 8)
                 {
                     lab = lab.Substring(0, 8);
@@ -7461,19 +7462,19 @@ internal class GaGx
                 if (axis > 0)
                 {
                     x = (v * m) + b;
-                    _drawingContext.GaSubs.gxplot(x, pos, 3);
-                    if (pcm.xlside > 0) _drawingContext.GaSubs.gxplot(x, pos + (cs * 0.4), 2);
-                    else _drawingContext.GaSubs.gxplot(x, pos - (cs * 0.4), 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(x, pos, 3);
+                    if (pcm.xlside > 0) _drawingContext.GradsDrawingInterface.gxplot(x, pos + (cs * 0.4), 2);
+                    else _drawingContext.GradsDrawingInterface.gxplot(x, pos - (cs * 0.4), 2);
                     if (pcm.grflag == 1 || pcm.grflag == 3)
                     {
-                        _drawingContext.GaSubs.gxwide(pcm.grthck);
-                        _drawingContext.GaSubs.gxstyl(pcm.grstyl);
-                        _drawingContext.GaSubs.gxcolr(pcm.grcolr);
-                        _drawingContext.GaSubs.gxplot(x, pcm.ysiz1, 3);
-                        _drawingContext.GaSubs.gxplot(x, pcm.ysiz2, 2);
-                        _drawingContext.GaSubs.gxwide(thck);
-                        _drawingContext.GaSubs.gxcolr(colr);
-                        _drawingContext.GaSubs.gxstyl(1);
+                        _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
+                        _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
+                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz1, 3);
+                        _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz2, 2);
+                        _drawingContext.GradsDrawingInterface.gxwide(thck);
+                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
 
                     if (pcm.xlside > 0) y = pos + (cs * 0.7);
@@ -7488,7 +7489,7 @@ internal class GaGx
                             cwid = len * cs;
                             _drawingContext.GxChpl.gxchln(lab.Substring(ii), len, cs, out cwid);
                             xx = x - cwid * 0.4;
-                            _drawingContext.GaSubs.gxchpl(lab.Substring(ii), len, xx, y, cs, cs * 0.8, 0.0);
+                            _drawingContext.GradsDrawingInterface.gxchpl(lab.Substring(ii), len, xx, y, cs, cs * 0.8, 0.0);
                         }
 
                         if (pcm.xlside > 0) y = y + cs * 1.4;
@@ -7511,7 +7512,7 @@ internal class GaGx
                             cwid = len * cs;
                             _drawingContext.GxChpl.gxchln(lab.Substring(ii), len, cs, out cwid);
                             xx = x - cwid * 0.4;
-                            _drawingContext.GaSubs.gxchpl(lab.Substring(ii), len, xx, y, cs, cs * 0.8, 0.0);
+                            _drawingContext.GradsDrawingInterface.gxchpl(lab.Substring(ii), len, xx, y, cs, cs * 0.8, 0.0);
                         }
 
                         if (pcm.xlside > 0) y = y + cs * 1.4;
@@ -7529,7 +7530,7 @@ internal class GaGx
                                 cwid = len * cs;
                                 _drawingContext.GxChpl.gxchln(lab.Substring(ii), len, cs, out cwid);
                                 xx = x - cwid * 0.4;
-                                _drawingContext.GaSubs.gxchpl(lab.Substring(ii), len, xx, y, cs, cs * 0.8, 0.0);
+                                _drawingContext.GradsDrawingInterface.gxchpl(lab.Substring(ii), len, xx, y, cs, cs * 0.8, 0.0);
                             }
                         }
                     }
@@ -7539,19 +7540,19 @@ internal class GaGx
                 else
                 {
                     y = (v * m) + b;
-                    _drawingContext.GaSubs.gxplot(pos, y, 3);
-                    if (pcm.ylside > 0) _drawingContext.GaSubs.gxplot(pos + (cs * 0.4), y, 2);
-                    else _drawingContext.GaSubs.gxplot(pos - (cs * 0.4), y, 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(pos, y, 3);
+                    if (pcm.ylside > 0) _drawingContext.GradsDrawingInterface.gxplot(pos + (cs * 0.4), y, 2);
+                    else _drawingContext.GradsDrawingInterface.gxplot(pos - (cs * 0.4), y, 2);
                     if (pcm.grflag == 1 || pcm.grflag == 2)
                     {
-                        _drawingContext.GaSubs.gxwide(pcm.grthck);
-                        _drawingContext.GaSubs.gxstyl(pcm.grstyl);
-                        _drawingContext.GaSubs.gxcolr(pcm.grcolr);
-                        _drawingContext.GaSubs.gxplot(pcm.xsiz1, y, 3);
-                        _drawingContext.GaSubs.gxplot(pcm.xsiz2, y, 2);
-                        _drawingContext.GaSubs.gxwide(thck);
-                        _drawingContext.GaSubs.gxcolr(colr);
-                        _drawingContext.GaSubs.gxstyl(1);
+                        _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
+                        _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
+                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, y, 3);
+                        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz2, y, 2);
+                        _drawingContext.GradsDrawingInterface.gxwide(thck);
+                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
 
                     ii = 0;
@@ -7578,7 +7579,7 @@ internal class GaGx
                             if (pcm.yllow < (cwid + cs) * 0.8) pcm.yllow = (cwid + cs) * 0.8;
                         }
 
-                        _drawingContext.GaSubs.gxchpl(lab.Substring(ii), len, x, y, cs, cs * 0.8, 0.0);
+                        _drawingContext.GradsDrawingInterface.gxchpl(lab.Substring(ii), len, x, y, cs, cs * 0.8, 0.0);
                     }
                 }
 
@@ -7643,8 +7644,8 @@ internal class GaGx
             rc = _drawingContext.GxWmap.gxnste(mpj);
             if (rc > 0)
             {
-                gaprnt(0, "Map Projection Error:  Invalid coords for NPS\n");
-                gaprnt(0, "  Will use linear lat-lon projection\n");
+                _drawingContext.Logger?.LogInformation("Map Projection Error:  Invalid coords for NPS\n");
+                _drawingContext.Logger?.LogInformation("  Will use linear lat-lon projection\n");
                 flag = 1;
             }
         }
@@ -7653,8 +7654,8 @@ internal class GaGx
             rc = _drawingContext.GxWmap.gxsste(mpj);
             if (rc > 0)
             {
-                gaprnt(0, "Map Projection Error:  Invalid coords for SPS\n");
-                gaprnt(0, "  Will use linear lat-lon projection\n");
+                _drawingContext.Logger?.LogInformation("Map Projection Error:  Invalid coords for SPS\n");
+                _drawingContext.Logger?.LogInformation("  Will use linear lat-lon projection\n");
                 flag = 1;
             }
         }
@@ -7663,8 +7664,8 @@ internal class GaGx
             rc = _drawingContext.GxWmap.gxrobi(mpj);
             if (rc > 0)
             {
-                gaprnt(0, "Map Projection Error:  Invalid coords for Robinson\n");
-                gaprnt(0, "  Will use linear lat-lon projection\n");
+                _drawingContext.Logger?.LogInformation("Map Projection Error:  Invalid coords for Robinson\n");
+                _drawingContext.Logger?.LogInformation("  Will use linear lat-lon projection\n");
                 flag = 1;
             }
         }
@@ -7673,8 +7674,8 @@ internal class GaGx
             rc = _drawingContext.GxWmap.gxmoll(mpj);
             if (rc > 0)
             {
-                gaprnt(0, "Map Projection Error:  Invalid coords for Mollweide\n");
-                gaprnt(0, "  Will use linear lat-lon projection\n");
+                _drawingContext.Logger?.LogInformation("Map Projection Error:  Invalid coords for Mollweide\n");
+                _drawingContext.Logger?.LogInformation("  Will use linear lat-lon projection\n");
                 flag = 1;
             }
         }
@@ -7692,8 +7693,8 @@ internal class GaGx
             rc = _drawingContext.GxWmap.gxortg(mpj);
             if (rc > 0)
             {
-                gaprnt(0, "Map Projection Error:  Invalid coords for Orthographic Projection\n");
-                gaprnt(0, "  Will use linear lat-lon projection\n");
+                _drawingContext.Logger?.LogInformation("Map Projection Error:  Invalid coords for Orthographic Projection\n");
+                _drawingContext.Logger?.LogInformation("  Will use linear lat-lon projection\n");
                 flag = 1;
             }
         }
@@ -7702,8 +7703,8 @@ internal class GaGx
             rc = _drawingContext.GxWmap.gxlamc(mpj);
             if (rc > 0)
             {
-                gaprnt(0, "Map Projection Error:  Invalid coords for Lambert conformal Projection\n");
-                gaprnt(0, "  Will use linear lat-lon projection\n");
+                _drawingContext.Logger?.LogInformation("Map Projection Error:  Invalid coords for Lambert conformal Projection\n");
+                _drawingContext.Logger?.LogInformation("  Will use linear lat-lon projection\n");
                 flag = 1;
             }
         }
@@ -7712,7 +7713,7 @@ internal class GaGx
         else if (pcm.mproj < 2) rc = _drawingContext.GxWmap.gxscld(mpj, pcm.xflip, pcm.yflip);
         if (rc > 0)
         {
-            gaprnt(0, "Map Projection Error:  Internal Logic check\n");
+            _drawingContext.Logger?.LogInformation("Map Projection Error:  Internal Logic check\n");
             return;
         }
 
@@ -7735,7 +7736,7 @@ internal class GaGx
 
         if (pcm.mproj == 0 || (pcm.pass > 0 && iflg)) return;
         if (pcm.mpdraw == 0) return;
-        _drawingContext.GaSubs.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
+        _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
         if (pcm.mapcol < 0)
         {
             /* set default map color, style, thickness */
@@ -7777,7 +7778,7 @@ internal class GaGx
             i++;
         }
 
-        _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
     }
 
 /* Select a contour interval.  */
@@ -8350,98 +8351,98 @@ internal class GaGx
                 Math.Abs(ltmax - 90.0) < 1.0)
             {
                 cs = 0.10;
-                GaSubs.gxconv(-180.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("180", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(-90.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90W", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(0.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("0", 1, x1 - cs * 0.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(90.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90E", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("180", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-180.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("180", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-90.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90W", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("0", 1, x1 - cs * 0.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(90.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90E", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("180", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
 
-                GaSubs.gxconv(-180.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("180", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(-90.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90W", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(0.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("0", 1, x1 - cs * 0.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(90.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90E", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("180", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-180.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("180", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-90.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90W", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("0", 1, x1 - cs * 0.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(90.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90E", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("180", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
 
-                GaSubs.gxconv(-180.0, -60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60S", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(-180.0, -30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30S", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(-180.0, 0.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("EQ", 2, x1 - cs * 2.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(-180.0, 30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30N", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(-180.0, 60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60N", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-180.0, -60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60S", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-180.0, -30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30S", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-180.0, 0.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("EQ", 2, x1 - cs * 2.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-180.0, 30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30N", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(-180.0, 60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60N", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
 
-                GaSubs.gxconv(180.0, -60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60S", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, -30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30S", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, 0.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("EQ", 2, x1 + cs * 0.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, 30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30N", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, 60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60N", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, -60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60S", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, -30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30S", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, 0.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("EQ", 2, x1 + cs * 0.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, 30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30N", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, 60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60N", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
             }
             /* these are labels when lon ranges from 0 to 360 */
             else if (Math.Abs(lnmin + 0.0) < 1.0 && Math.Abs(lnmax - 360.0) < 1.0 && Math.Abs(ltmin + 90.0) < 1.0 &&
                      Math.Abs(ltmax - 90.0) < 1.0)
             {
                 cs = 0.10;
-                GaSubs.gxconv(0.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("0", 1, x1 - cs * 0.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(90.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90E", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("180", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(270.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90W", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(360.0, 90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("0", 1, x1 - cs * 0.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("0", 1, x1 - cs * 0.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(90.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90E", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("180", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(270.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90W", 3, x1 - cs * 1.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(360.0, 90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("0", 1, x1 - cs * 0.5, y1 + cs * 0.6, cs * 1.1, cs, 0.0);
 
-                GaSubs.gxconv(0.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("0", 1, x1 - cs * 0.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(90.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90E", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(180.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("180", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(270.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("90W", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(360.0, -90.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("0", 1, x1 - cs * 0.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("0", 1, x1 - cs * 0.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(90.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90E", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(180.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("180", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(270.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("90W", 3, x1 - cs * 1.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(360.0, -90.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("0", 1, x1 - cs * 0.5, y1 - cs * 1.6, cs * 1.1, cs, 0.0);
 
-                GaSubs.gxconv(0.0, -60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60S", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(0.0, -30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30S", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(0.0, 0.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("EQ", 2, x1 - cs * 2.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(0.0, 30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30N", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(0.0, 60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60N", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, -60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60S", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, -30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30S", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, 0.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("EQ", 2, x1 - cs * 2.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, 30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30N", 3, x1 - cs * 4.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(0.0, 60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60N", 3, x1 - cs * 4.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
 
-                GaSubs.gxconv(360.0, -60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60S", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(360.0, -30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30S", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(360.0, 0.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("EQ", 2, x1 + cs * 0.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(360.0, 30.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("30N", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
-                GaSubs.gxconv(360.0, 60.0, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxchpl("60N", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(360.0, -60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60S", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(360.0, -30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30S", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(360.0, 0.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("EQ", 2, x1 + cs * 0.7, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(360.0, 30.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("30N", 3, x1 + cs * 1.0, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
+                GradsDrawingInterface.gxconv(360.0, 60.0, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxchpl("60N", 3, x1 + cs * 1.5, y1 - cs * 0.55, cs * 1.1, cs, 0.0);
             }
 
             /* draw longitude lines */
@@ -8450,24 +8451,24 @@ internal class GaGx
                 if (ln < lnmin + 10.0 || ln > lnmax - 10.0)
                 {
                     /* these form the frame, so use annotation color and thickness */
-                    _drawingContext.GaSubs.gxstyl(1);
-                    _drawingContext.GaSubs.gxcolr(pcm.anncol);
-                    _drawingContext.GaSubs.gxwide(pcm.annthk);
+                    _drawingContext.GradsDrawingInterface.gxstyl(1);
+                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                    _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
                 }
                 else
                 {
                     /* these are grid lines */
-                    _drawingContext.GaSubs.gxstyl(pcm.grstyl);
-                    _drawingContext.GaSubs.gxcolr(pcm.grcolr);
-                    _drawingContext.GaSubs.gxwide(pcm.grthck);
+                    _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
+                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                    _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                 }
 
-                GaSubs.gxconv(ln, ltmin, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxplot(x1, y1, 3);
+                GradsDrawingInterface.gxconv(ln, ltmin, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 3);
                 for (lt = ltmin; lt < ltmax + 1.0; lt += 2.0)
                 {
-                    GaSubs.gxconv(ln, lt, out x1, out y1, 2);
-                    _drawingContext.GaSubs.gxplot(x1, y1, 2);
+                    GradsDrawingInterface.gxconv(ln, lt, out x1, out y1, 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 2);
                 }
             }
 
@@ -8477,24 +8478,24 @@ internal class GaGx
                 if (lt < ltmin + 10.0 || lt > ltmax - 10.0)
                 {
                     /* these form the frame, so use annotation color and thickness */
-                    _drawingContext.GaSubs.gxstyl(1);
-                    _drawingContext.GaSubs.gxcolr(pcm.anncol);
-                    _drawingContext.GaSubs.gxwide(pcm.annthk);
+                    _drawingContext.GradsDrawingInterface.gxstyl(1);
+                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                    _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
                 }
                 else
                 {
                     /* these are grid lines */
-                    _drawingContext.GaSubs.gxstyl(pcm.grstyl);
-                    _drawingContext.GaSubs.gxcolr(pcm.grcolr);
-                    _drawingContext.GaSubs.gxwide(pcm.grthck);
+                    _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
+                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                    _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                 }
 
-                GaSubs.gxconv(lnmin, lt, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxplot(x1, y1, 3);
+                GradsDrawingInterface.gxconv(lnmin, lt, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 3);
                 for (ln = lnmin; ln < lnmax + 1.0; ln += 2.0)
                 {
-                    GaSubs.gxconv(ln, lt, out x1, out y1, 2);
-                    _drawingContext.GaSubs.gxplot(x1, y1, 2);
+                    GradsDrawingInterface.gxconv(ln, lt, out x1, out y1, 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 2);
                 }
             }
 
@@ -8508,7 +8509,7 @@ internal class GaGx
         gacsel(lnmin, lnmax, ref lnincr, out lnstrt, out lnend);
         if (lnincr == 0.0)
         {
-            gaprnt(0, "gaaxis internal logic check 25\n");
+            _drawingContext.Logger?.LogInformation("gaaxis internal logic check 25\n");
             return;
         }
 
@@ -8527,7 +8528,7 @@ internal class GaGx
         gacsel(ltmin, ltmax, ref ltincr, out ltstrt, out ltend);
         if (ltincr == 0.0)
         {
-            gaprnt(0, "gaaxis internal logic check 25\n");
+            _drawingContext.Logger?.LogInformation("gaaxis internal logic check 25\n");
             return;
         }
 
@@ -8564,16 +8565,16 @@ internal class GaGx
             ltmax = ltend;
         }
 
-        _drawingContext.GaSubs.gxstyl(pcm.grstyl);
-        _drawingContext.GaSubs.gxcolr(pcm.grcolr);
-        _drawingContext.GaSubs.gxwide(pcm.grthck);
-        _drawingContext.GaSubs.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
+        _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
+        _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
         for (v = lnstrt; v < lnend + lnincr * 0.5; v += lnincr)
         {
-            GaSubs.gxconv(v, ltmin, out x1, out y1, 2);
-            GaSubs.gxconv(v, ltmax, out x2, out y2, 2);
-            _drawingContext.GaSubs.gxplot(x1, y1, 3);
-            _drawingContext.GaSubs.gxplot(x2, y2, 2);
+            GradsDrawingInterface.gxconv(v, ltmin, out x1, out y1, 2);
+            GradsDrawingInterface.gxconv(v, ltmax, out x2, out y2, 2);
+            _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 3);
+            _drawingContext.GradsDrawingInterface.gxplot(x2, y2, 2);
         }
 
         if (lndif > 180.0) plincr = lndif / 100.0;
@@ -8581,12 +8582,12 @@ internal class GaGx
         else plincr = lndif / 25.0;
         for (v = ltstrt; v < ltend + ltincr * 0.5; v += ltincr)
         {
-            GaSubs.gxconv(lnmin, v, out x1, out y1, 2);
-            _drawingContext.GaSubs.gxplot(x1, y1, 3);
+            GradsDrawingInterface.gxconv(lnmin, v, out x1, out y1, 2);
+            _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 3);
             for (s = lnmin + plincr; s < lnmax + plincr * 0.5; s += plincr)
             {
-                GaSubs.gxconv(s, v, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxplot(x1, y1, 2);
+                GradsDrawingInterface.gxconv(s, v, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 2);
             }
         }
 
@@ -8594,30 +8595,30 @@ internal class GaGx
 
         if (pcm.frame == 2)
         {
-            _drawingContext.GaSubs.gxcolr(pcm.anncol);
-            _drawingContext.GaSubs.gxwide(pcm.annthk);
-            _drawingContext.GaSubs.gxstyl(1);
+            _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+            _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
+            _drawingContext.GradsDrawingInterface.gxstyl(1);
             /* for orthographic projections */
             if (pcm.mproj == 7)
             {
                 /* draw line along min longitude */
                 v = lnmin;
-                GaSubs.gxconv(v, ltmin, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxplot(x1, y1, 3);
+                GradsDrawingInterface.gxconv(v, ltmin, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 3);
                 for (s = ltmin + plincr; s < ltmax + plincr * 0.5; s += plincr)
                 {
-                    GaSubs.gxconv(v, s, out x1, out y1, 2);
-                    _drawingContext.GaSubs.gxplot(x1, y1, 2);
+                    GradsDrawingInterface.gxconv(v, s, out x1, out y1, 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 2);
                 }
 
                 /* draw 2nd line along max longitude */
                 v = lnmax;
-                GaSubs.gxconv(v, ltmin, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxplot(x1, y1, 3);
+                GradsDrawingInterface.gxconv(v, ltmin, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 3);
                 for (s = ltmin + plincr; s < ltmax + plincr * 0.5; s += plincr)
                 {
-                    GaSubs.gxconv(v, s, out x1, out y1, 2);
-                    _drawingContext.GaSubs.gxplot(x1, y1, 2);
+                    GradsDrawingInterface.gxconv(v, s, out x1, out y1, 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 2);
                 }
             }
             /* for other projections: nps, sps */
@@ -8626,18 +8627,18 @@ internal class GaGx
                 if (pcm.mproj == 3) v = ltmin;
                 else v = ltmax;
                 /* draw line around latitude circle */
-                GaSubs.gxconv(lnmin, v, out x1, out y1, 2);
-                _drawingContext.GaSubs.gxplot(x1, y1, 3);
+                GradsDrawingInterface.gxconv(lnmin, v, out x1, out y1, 2);
+                _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 3);
                 for (s = lnmin + plincr; s < lnmax + plincr * 0.5; s += plincr)
                 {
-                    GaSubs.gxconv(s, v, out x1, out y1, 2);
-                    _drawingContext.GaSubs.gxplot(x1, y1, 2);
+                    GradsDrawingInterface.gxconv(s, v, out x1, out y1, 2);
+                    _drawingContext.GradsDrawingInterface.gxplot(x1, y1, 2);
                 }
             }
         }
 
-        _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GaSubs.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
     }
 
 /* Plot weather symbol */
@@ -8662,17 +8663,17 @@ internal class GaGx
                 else if (type == 19 || type == 20) icol = 2;
                 else if (type == 31 || type == 32) icol = 0;
                 else icol = scol[part];
-                _drawingContext.GaSubs.gxcolr(wxcols[icol]);
+                _drawingContext.GradsDrawingInterface.gxcolr(wxcols[icol]);
             }
-            else _drawingContext.GaSubs.gxcolr(colr);
+            else _drawingContext.GradsDrawingInterface.gxcolr(colr);
 
             x = xpos + sxpos[i + ioff] * scale;
             y = ypos + sypos[i + ioff] * scale;
             wxprim(part, x, y, scale);
         }
 
-        if (type == 40 || type == 42) _drawingContext.GaSubs.gxmark(2, x, y, scale * 0.4);
-        if (type == 41 || type == 43) _drawingContext.GaSubs.gxmark(3, x, y, scale * 0.4);
+        if (type == 40 || type == 42) _drawingContext.GradsDrawingInterface.gxmark(2, x, y, scale * 0.4);
+        if (type == 41 || type == 43) _drawingContext.GradsDrawingInterface.gxmark(3, x, y, scale * 0.4);
     }
 
 
@@ -8699,14 +8700,14 @@ internal class GaGx
             }
             else
             {
-                _drawingContext.GaSubs.gxplot(x, y, spens[i + pos]);
+                _drawingContext.GradsDrawingInterface.gxplot(x, y, spens[i + pos]);
             }
 
             if (y < wxymin) wxymin = y;
             if (y > wxymax) wxymax = y;
         }
 
-        if (part == 1 || part == 2) _drawingContext.GaSubs.gxfill(xy, len);
+        if (part == 1 || part == 2) _drawingContext.GradsDrawingInterface.gxfill(xy, len);
     }
 
     void gagsav(int type)
@@ -8847,23 +8848,23 @@ internal class GaGx
                     {
                         if (v[cntv] > vs[k] && v[cntv] <= vs[k + 1])
                         {
-                            _drawingContext.GaSubs.gxcolr(clrs[k]);
-                            GaSubs.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
+                            _drawingContext.GradsDrawingInterface.gxcolr(clrs[k]);
+                            GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
                             xybox[0] = x;
                             xybox[1] = y;
-                            GaSubs.gxconv((double)(i) + 0.5, (double)(j) - 0.5, out x, out y, 3);
+                            GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) - 0.5, out x, out y, 3);
                             xybox[2] = x;
                             xybox[3] = y;
-                            GaSubs.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out x, out y, 3);
+                            GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out x, out y, 3);
                             xybox[4] = x;
                             xybox[5] = y;
-                            GaSubs.gxconv((double)(i) - 0.5, (double)(j) + 0.5, out x, out y, 3);
+                            GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) + 0.5, out x, out y, 3);
                             xybox[6] = x;
                             xybox[7] = y;
-                            GaSubs.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
+                            GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
                             xybox[8] = x;
                             xybox[9] = y;
-                            _drawingContext.GaSubs.gxfill(xybox, 5);
+                            _drawingContext.GradsDrawingInterface.gxfill(xybox, 5);
                             flag = false;
                             break;
                         }
@@ -8871,23 +8872,23 @@ internal class GaGx
 
                     if (flag)
                     {
-                        _drawingContext.GaSubs.gxcolr(clrs[lvs - 1]);
-                        GaSubs.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
+                        _drawingContext.GradsDrawingInterface.gxcolr(clrs[lvs - 1]);
+                        GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
                         xybox[0] = x;
                         xybox[1] = y;
-                        GaSubs.gxconv((double)(i) + 0.5, (double)(j) - 0.5, out x, out y, 3);
+                        GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) - 0.5, out x, out y, 3);
                         xybox[2] = x;
                         xybox[3] = y;
-                        GaSubs.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out x, out y, 3);
+                        GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out x, out y, 3);
                         xybox[4] = x;
                         xybox[5] = y;
-                        GaSubs.gxconv((double)(i) - 0.5, (double)(j) + 0.5, out x, out y, 3);
+                        GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) + 0.5, out x, out y, 3);
                         xybox[6] = x;
                         xybox[7] = y;
-                        GaSubs.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
+                        GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
                         xybox[8] = x;
                         xybox[9] = y;
-                        _drawingContext.GaSubs.gxfill(xybox, 5);
+                        _drawingContext.GradsDrawingInterface.gxfill(xybox, 5);
                     }
                 }
 
@@ -9044,7 +9045,7 @@ internal class GaGx
 //     return;
 //
 //     err:
-//     gaprnt(0, "Memory error in gaimap\n");
+//     _drawingContext.Logger?.LogInformation("Memory error in gaimap\n");
 //     if (imap) free(imap);
 //     if (xvals) free(xvals);
 //     if (yvals) free(yvals);
@@ -9055,17 +9056,17 @@ internal class GaGx
     void gafram()
     {
         var pcm = _drawingContext.CommonData;
-        _drawingContext.GaSubs.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
         if (pcm.frame == 0) return;
         if (pcm.frame == 2 && pcm.mproj > 2) return;
         if (pcm.mproj > 4) return;
-        _drawingContext.GaSubs.gxwide(pcm.annthk);
-        _drawingContext.GaSubs.gxstyl(1);
-        _drawingContext.GaSubs.gxplot(pcm.xsiz1, pcm.ysiz1, 3);
-        _drawingContext.GaSubs.gxplot(pcm.xsiz2, pcm.ysiz1, 2);
-        _drawingContext.GaSubs.gxplot(pcm.xsiz2, pcm.ysiz2, 2);
-        _drawingContext.GaSubs.gxplot(pcm.xsiz1, pcm.ysiz2, 2);
-        _drawingContext.GaSubs.gxplot(pcm.xsiz1, pcm.ysiz1, 2);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
+        _drawingContext.GradsDrawingInterface.gxstyl(1);
+        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, pcm.ysiz1, 3);
+        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz2, pcm.ysiz1, 2);
+        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz2, pcm.ysiz2, 2);
+        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, pcm.ysiz2, 2);
+        _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, pcm.ysiz1, 2);
     }
 
     void gaaxpl(int idim, int jdim)
@@ -9295,12 +9296,9 @@ internal class GaGx
         {
             sys_time();
             dtgstr = $"{timeobj.year:0000}-{timeobj.month:00}-{timeobj.date:00}-{timeobj.hour:00}:{timeobj.minute:00}";
-            _drawingContext.GaSubs.gxchpl(dtgstr, dtgstr.Length, pcm.pxsize - 1.7, 0.05, 0.1, 0.09, 0.0);
+            _drawingContext.GradsDrawingInterface.gxchpl(dtgstr, dtgstr.Length, pcm.pxsize - 1.7, 0.05, 0.1, 0.09, 0.0);
         }
     }
 
-    public static void gaprnt(int i, string data)
-    {
-        Console.WriteLine(data);
-    }
+    
 }

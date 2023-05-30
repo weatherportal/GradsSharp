@@ -116,7 +116,7 @@ internal class GxChpl
                 yoff = yoff * Math.Cos(angle);
 
                 /* plot the character */
-                wact = _drawingContext.GaSubs.gxdrawch(chrs[idx], fn, x - xoff, y + yoff, w, h, angle);
+                wact = _drawingContext.GradsDrawingInterface.gxdrawch(chrs[idx], fn, x - xoff, y + yoff, w, h, angle);
                 if (wact < -900.0 && fn < 6)
                 {
                     /* draw with Hershey font */
@@ -199,8 +199,8 @@ internal class GxChpl
     
                 rx = xc + d * Math.Cos(ang);
                 ry = yc + d * Math.Sin(ang);
-                if (ipen == 3) _drawingContext.GaSubs.gxmove(rx, ry);
-                else _drawingContext.GaSubs.gxdraw(rx, ry);
+                if (ipen == 3) _drawingContext.GradsDrawingInterface.gxmove(rx, ry);
+                else _drawingContext.GradsDrawingInterface.gxdraw(rx, ry);
                 ipen = 2;
             }
     
@@ -277,7 +277,7 @@ internal class GxChpl
                 /* First see if the rendering back end wants to plot this, or punt.
                    If it wants to punt, we get a -999 back, so we use Hershey instead  */
 
-                wact = _drawingContext.GaSubs.gxqchl(chrs[idx], fn, w);
+                wact = _drawingContext.GradsDrawingInterface.gxqchl(chrs[idx], fn, w);
                 if (wact < -900.0)
                 {
                     //TODO: Hershey font

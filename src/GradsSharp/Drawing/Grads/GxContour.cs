@@ -1,4 +1,6 @@
-﻿using GradsSharp.Models.Internal;
+﻿using GradsSharp.Data.Grads;
+using GradsSharp.Models.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -8,7 +10,7 @@ internal class GxContour
 
     private const int LABMAX = 200;
 
-    static List<gxclbuf> clbufanch = null; /* Anchor for contour line buffering for masking */
+    static List<gxclbuf>? clbufanch = null; /* Anchor for contour line buffering for masking */
     private static string pout;
 
     static double[] gxlabx = new double[LABMAX];
@@ -202,7 +204,7 @@ internal class GxContour
         return;
 
         merr:
-        GaGx.gaprnt(0, "Error in line contouring: Memory allocation for Label Buffering");
+        _drawingContext.Logger?.LogInformation("Error in line contouring: Memory allocation for Label Buffering");
     }
 
     void gxcflw(int i, int j, int iside, int dr)
@@ -443,7 +445,7 @@ internal class GxContour
         {
             nump = xyend - xystrt;
             nump = (nump + 2) / 2;
-            var result = _drawingContext.GaSubs.gxcord(fwk.Skip(xystrt).ToArray(), nump, 3);
+            var result = _drawingContext.GradsDrawingInterface.gxcord(fwk.Skip(xystrt).ToArray(), nump, 3);
             for (int k = 0; k < result.Length; k++)
             {
                 fwk[xystrt + k] = result[k];
@@ -471,9 +473,9 @@ internal class GxContour
             /* Copy the line points and line info */
 
             for (i = 0; i < nump * 2; i++) pclbuf.lxy[i] = fwk[xystrt + i];
-            pclbuf.color = GaSubs.lcolor;
-            pclbuf.style = GaSubs.lstyle;
-            pclbuf.width = GaSubs.lwide;
+            pclbuf.color = GradsDrawingInterface.lcolor;
+            pclbuf.style = GradsDrawingInterface.lstyle;
+            pclbuf.width = GradsDrawingInterface.lwide;
             pclbuf.sfit = pcntr.spline;
             pclbuf.val = pcntr.val;
 
@@ -524,7 +526,7 @@ internal class GxContour
                     {
                         if (gxqclab(fwk[xy], fwk[xy + 1], pcntr.labsiz) == 0)
                         {
-                            if (pcntr.shpflg == 0) gxpclab(fwk[xy], fwk[xy + 1], 0.0, GaSubs.lcolor, pcntr);
+                            if (pcntr.shpflg == 0) gxpclab(fwk[xy], fwk[xy + 1], 0.0, GradsDrawingInterface.lcolor, pcntr);
                             dacum = 0.0;
                         }
                     }
@@ -565,7 +567,7 @@ internal class GxContour
                     {
                         if (gxqclab(fwk[xy], fwk[xy + 1], pcntr.labsiz) == 0)
                         {
-                            if (pcntr.shpflg == 0) gxpclab(fwk[xyend], fwk[xyend + 1], 0.0, GaSubs.lcolor, pcntr);
+                            if (pcntr.shpflg == 0) gxpclab(fwk[xyend], fwk[xyend + 1], 0.0, GradsDrawingInterface.lcolor, pcntr);
                         }
                     }
                 }
@@ -579,11 +581,11 @@ internal class GxContour
 
         if (pcntr.spline == 0)
         {
-            if (pcntr.mask == 1) _drawingContext.GaSubs.gxplot(fwk[xystrt], fwk[xystrt + 1], 3);
-            else _drawingContext.GaSubs.gxplot(fwk[xystrt], fwk[xystrt + 1], 3);
+            if (pcntr.mask == 1) _drawingContext.GradsDrawingInterface.gxplot(fwk[xystrt], fwk[xystrt + 1], 3);
+            else _drawingContext.GradsDrawingInterface.gxplot(fwk[xystrt], fwk[xystrt + 1], 3);
             for (xy = xystrt + 2; xy < xyend - 1; xy += 2)
             {
-                _drawingContext.GaSubs.gxplot(fwk[xy], fwk[xy + 1], 2);
+                _drawingContext.GradsDrawingInterface.gxplot(fwk[xy], fwk[xy + 1], 2);
                 if (!frombuf)
                 {
                     dacum += GaUtil.hypot(fwk[xy] - fwk[xy - 2], fwk[xy + 1] - fwk[xy - 1]);
@@ -596,7 +598,7 @@ internal class GxContour
                             gxlaby[gxlabn] = (fwk[xy + 1]);
                             gxlabs[gxlabn] = 0.0;
                             gxlabv[gxlabn] = clabel;
-                            gxlabc[gxlabn] = GaSubs.lcolor;
+                            gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
                             gxlabn++;
                         }
 
@@ -605,7 +607,7 @@ internal class GxContour
                 }
             }
 
-            _drawingContext.GaSubs.gxplot(fwk[xyend], fwk[xyend + 1], 2);
+            _drawingContext.GradsDrawingInterface.gxplot(fwk[xyend], fwk[xyend + 1], 2);
             if (!frombuf)
             {
                 dacum += GaUtil.hypot(fwk[xyend] - fwk[xyend - 2], fwk[xyend + 1] - fwk[xyend - 1]);
@@ -620,7 +622,7 @@ internal class GxContour
                             gxlaby[gxlabn] = (fwk[xyend + 1]);
                             gxlabs[gxlabn] = 0.0;
                             gxlabv[gxlabn] = clabel;
-                            gxlabc[gxlabn] = GaSubs.lcolor;
+                            gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
                             gxlabn++;
                         }
                     }
@@ -700,7 +702,7 @@ internal class GxContour
         xt1 *= kurv; /* Curviness factor           */
         yt1 *= kurv;
 
-        _drawingContext.GaSubs.gxplot(fwk[x1], fwk[y1], 3); /* Start output with pen up   */
+        _drawingContext.GradsDrawingInterface.gxplot(fwk[x1], fwk[y1], 3); /* Start output with pen up   */
 
 /* Loop through the various points in the line                       */
 
@@ -734,7 +736,7 @@ internal class GxContour
                         gxlaby[gxlabn] = (fwk[y2]);
                         gxlabs[gxlabn] = 0.0;
                         gxlabv[gxlabn] = clabel;
-                        gxlabc[gxlabn] = GaSubs.lcolor;
+                        gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
                         gxlabn++;
                         labflg = 1;
                     }
@@ -794,7 +796,7 @@ internal class GxContour
                 t3 = t2 * t; /* Get square and cube        */
                 x = ax * t3 + bx * t2 + sx1 * t + fwk[x1]; /* Get x value on curve       */
                 y = ay * t3 + by * t2 + sy1 * t + fwk[y1]; /* Get y value on curve       */
-                _drawingContext.GaSubs.gxplot(x, y, 2); /* Output the point           */
+                _drawingContext.GradsDrawingInterface.gxplot(x, y, 2); /* Output the point           */
             }
 
             d0 = d1;
@@ -811,7 +813,7 @@ internal class GxContour
             y3 += 2;
         }
 
-        _drawingContext.GaSubs.gxplot(fwk[xyend], fwk[xyend + 1], 2); /* Last point                 */
+        _drawingContext.GradsDrawingInterface.gxplot(fwk[xyend], fwk[xyend + 1], 2); /* Last point                 */
 
         if (!frombuf && pcntr.ltype == 2 && labflg == 0 && gxlabn < LABMAX && Math.Abs(mslope) < 2.0)
         {
@@ -821,7 +823,7 @@ internal class GxContour
                 gxlaby[gxlabn] = ylb;
                 gxlabs[gxlabn] = mslope;
                 gxlabv[gxlabn] = clabel;
-                gxlabc[gxlabn] = GaSubs.lcolor;
+                gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
                 gxlabn++;
             }
         }
@@ -847,11 +849,11 @@ internal class GxContour
             return;
         }
 
-        colr = GaSubs.lcolor;
+        colr = GradsDrawingInterface.lcolor;
         for (i = 0; i < gxlabn; i++)
         {
             lablen = gxlabv[i].Length;
-            bcol = GxDb.gxdbkq();
+            bcol = _drawingContext.GradsDatabase.gxdbkq();
             if (bcol < 2)
                 bcol = 0; /* If bcol is neither black nor white, leave it alone. Otherwise, set to 0 for 'background' */
             h = csize * 1.2; /* set label height */
@@ -862,15 +864,15 @@ internal class GxContour
                 /* contour label is not rotated */
                 x = gxlabx[i] - (w / 2.0); /* adjust reference point */
                 y = gxlaby[i] - (h / 2.0);
-                _drawingContext.GaSubs.gxcolr(bcol);
+                _drawingContext.GradsDrawingInterface.gxcolr(bcol);
                 buff = h * 0.2; /* add a buffer above and below the string, already padded in X */
-                _drawingContext.GaSubs.gxrecf(x, x + w, y - buff, y + h + buff); /* draw the background rectangle,  */
+                _drawingContext.GradsDrawingInterface.gxrecf(x, x + w, y - buff, y + h + buff); /* draw the background rectangle,  */
                 if (colflg > -1) fcol = colflg;
                 else fcol = gxlabc[i];
                 if (fcol == bcol)
-                    _drawingContext.GaSubs.gxcolr(1); /* if label color is same as background, use foreground */
-                else _drawingContext.GaSubs.gxcolr(fcol);
-                _drawingContext.GaSubs.gxchpl(gxlabv[i], lablen, x, y, h, csize, 0.0); /* draw the label */
+                    _drawingContext.GradsDrawingInterface.gxcolr(1); /* if label color is same as background, use foreground */
+                else _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+                _drawingContext.GradsDrawingInterface.gxchpl(gxlabv[i], lablen, x, y, h, csize, 0.0); /* draw the label */
             }
             else
             {
@@ -895,19 +897,19 @@ internal class GxContour
                 xy[7] = gxlaby[i] + yd2 - yd1;
                 xy[8] = xy[0];
                 xy[9] = xy[1];
-                _drawingContext.GaSubs.gxcolr(bcol);
-                _drawingContext.GaSubs.gxfill(xy, 5);
+                _drawingContext.GradsDrawingInterface.gxcolr(bcol);
+                _drawingContext.GradsDrawingInterface.gxfill(xy, 5);
                 if (colflg > -1) fcol = colflg;
                 else fcol = gxlabc[i];
                 if (fcol == bcol)
-                    _drawingContext.GaSubs.gxcolr(1); /* if label color is same as background, use foreground */
-                else _drawingContext.GaSubs.gxcolr(fcol);
-                _drawingContext.GaSubs.gxchpl(gxlabv[i], lablen, x, y, h, csize,
+                    _drawingContext.GradsDrawingInterface.gxcolr(1); /* if label color is same as background, use foreground */
+                else _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+                _drawingContext.GradsDrawingInterface.gxchpl(gxlabv[i], lablen, x, y, h, csize,
                     gxlabs[i] * 180 / Math.PI); /* draw the label */
             }
         }
 
-        _drawingContext.GaSubs.gxcolr(colr);
+        _drawingContext.GradsDrawingInterface.gxcolr(colr);
         gxlabn = 0;
     }
 
@@ -933,21 +935,24 @@ internal class GxContour
            release storage, return.  fwk should be guaranteed big enough for the
            largest line we have, and shouldn't have been release via gxcrel at
            this point. */
-
-        foreach (gxclbuf pclbuf in clbufanch)
+        if (clbufanch != null)
         {
-            if (pclbuf.lxy != null)
+            foreach (gxclbuf pclbuf in clbufanch)
             {
-                xystrt = 2;
-                xyend = xystrt + 2 * (pclbuf.len - 1);
-                for (i = 0; i < 2 * pclbuf.len; i++) fwk[xystrt + i] = pclbuf.lxy[i];
-                _drawingContext.GaSubs.gxcolr(pclbuf.color);
-                _drawingContext.GaSubs.gxstyl(pclbuf.style);
-                _drawingContext.GaSubs.gxwide(pclbuf.width);
-                lcntr.spline = pclbuf.sfit;
-                rc = gxcspl(true, lcntr);
+                if (pclbuf.lxy != null)
+                {
+                    xystrt = 2;
+                    xyend = xystrt + 2 * (pclbuf.len - 1);
+                    for (i = 0; i < 2 * pclbuf.len; i++) fwk[xystrt + i] = pclbuf.lxy[i];
+                    _drawingContext.GradsDrawingInterface.gxcolr(pclbuf.color);
+                    _drawingContext.GradsDrawingInterface.gxstyl(pclbuf.style);
+                    _drawingContext.GradsDrawingInterface.gxwide(pclbuf.width);
+                    lcntr.spline = pclbuf.sfit;
+                    rc = gxcspl(true, lcntr);
+                }
             }
         }
+        
 
         clbufanch = null;
         return;
@@ -1184,7 +1189,7 @@ internal class GxContour
 
         csize = pcntr.labsiz;
         lablen = clabel.Length;
-        bcol = GxDb.gxdbkq();
+        bcol = _drawingContext.GradsDatabase.gxdbkq();
         if (bcol < 2)
             bcol = 0; /* If bcol is neither black nor white, leave it alone. Otherwise, set to 0 for 'background' */
         h = csize * 1.2; /* set label height */
@@ -1193,38 +1198,38 @@ internal class GxContour
         buff = h * 0.05; /* set a small buffer around the label */
         x = xpos - (w / 2.0); /* adjust reference point */
         y = ypos - (h / 2.0);
-        scol = GaSubs.lcolor;
+        scol = GradsDrawingInterface.lcolor;
         if (pcntr.labcol > -1) fcol = pcntr.labcol;
         else fcol = ccol;
-        _drawingContext.GaSubs.gxcolr(fcol);
-        swid = GaSubs.lwide;
+        _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+        swid = GradsDrawingInterface.lwide;
         /* if contour label thickness is set to -999, then we draw a fat version of the label
            in the background color and then overlay a thin version of the label in desired color.
            This will only work with hershey fonts, Math.Since the boldness of cairo fonts is not
            controlled by the thickness setting for contour labels. */
-        if (pcntr.labwid > -1) _drawingContext.GaSubs.gxwide(pcntr.labwid);
+        if (pcntr.labwid > -1) _drawingContext.GradsDrawingInterface.gxwide(pcntr.labwid);
         if (pcntr.labwid == -999)
         {
             /* invoke settings for fat background label */
-            _drawingContext.GaSubs.gxcolr(12);
-            _drawingContext.GaSubs.gxcolr(bcol);
+            _drawingContext.GradsDrawingInterface.gxcolr(12);
+            _drawingContext.GradsDrawingInterface.gxcolr(bcol);
         }
 
         /* draw the label */
-        _drawingContext.GaSubs.gxchpl(clabel, lablen, x, y, h, csize, 0.0);
+        _drawingContext.GradsDrawingInterface.gxchpl(clabel, lablen, x, y, h, csize, 0.0);
         if (pcntr.labwid == -999)
         {
             /* overlay a thin label in foreground color */
-            _drawingContext.GaSubs.gxcolr(1);
-            _drawingContext.GaSubs.gxcolr(fcol);
-            _drawingContext.GaSubs.gxchpl(clabel, lablen, x, y, h, csize, 0.0);
+            _drawingContext.GradsDrawingInterface.gxcolr(1);
+            _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+            _drawingContext.GradsDrawingInterface.gxchpl(clabel, lablen, x, y, h, csize, 0.0);
         }
 
         /* update the mask where this label is positioned */
-        _drawingContext.GaSubs.gxmaskrec(x - buff, x + w + buff, y - buff, y + h + buff);
+        _drawingContext.GradsDrawingInterface.gxmaskrec(x - buff, x + w + buff, y - buff, y + h + buff);
 
-        _drawingContext.GaSubs.gxcolr(scol);
-        _drawingContext.GaSubs.gxwide(swid);
+        _drawingContext.GradsDrawingInterface.gxcolr(scol);
+        _drawingContext.GradsDrawingInterface.gxwide(swid);
     }
 
 /* query if the contour label will overlay another, if uMath.Sing masking */
@@ -1241,7 +1246,7 @@ internal class GxContour
         y = ypos - (h / 2.0);
         buff = h * 0.2; /* set a buffer around the label */
         /* area to check is a bit (0.02) smaller than the actual mask */
-        rc = _drawingContext.GaSubs.gxmaskrq(x - buff + 0.02, x + w + buff - 0.02, y - buff + 0.02,
+        rc = _drawingContext.GradsDrawingInterface.gxmaskrq(x - buff + 0.02, x + w + buff - 0.02, y - buff + 0.02,
             y + h + buff - 0.02);
         return (rc);
     }

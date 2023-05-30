@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Drawing.Grads;
+﻿using Microsoft.Extensions.Logging;
+
+namespace GradsSharp.Drawing.Grads;
 
 internal class GxShad
 {
@@ -285,13 +287,13 @@ internal class GxShad
                 int xypntc = 2;
                 for (j = 0; j < xycnt; j++)
                 {
-                    GaSubs.gxconv(xypnt[2 + (j * 2)], xypnt[2+ (j * 2 + 1)], out x, out y, 3);
+                    GradsDrawingInterface.gxconv(xypnt[2 + (j * 2)], xypnt[2+ (j * 2 + 1)], out x, out y, 3);
                     xypnt[2 + (j * 2)] = x;
                     xypnt[2 + (j * 2 + 1)] = y;
                 }
 
-                _drawingContext.GaSubs.gxcolr(color);
-                _drawingContext.GaSubs.gxfill(xypnt, xycnt);
+                _drawingContext.GradsDrawingInterface.gxcolr(color);
+                _drawingContext.GradsDrawingInterface.gxfill(xypnt, xycnt);
                 
             }
 
@@ -348,7 +350,7 @@ internal class GxShad
         if (iside == 8) goto ru;
         if (iside == 9) goto ur;
         if (iside == 10) goto uu;
-        GaGx.gaprnt(0,"Logic error 40 in gxshad");
+        _drawingContext.Logger?.LogInformation("Logic error 40 in gxshad");
         return (1);
 
         /* Calculate entry point in the current grid box, then move to the
@@ -358,8 +360,8 @@ internal class GxShad
 
         if (i < imn || i > (imx - 1) || j < jmn || j > jmx)
         {
-            GaGx.gaprnt(0,"logic error 12 in gxshad");
-            GaGx.gaprnt(0,$"  side1, {i} {j} ");
+            _drawingContext.Logger?.LogInformation("logic error 12 in gxshad");
+            _drawingContext.Logger?.LogInformation($"  side1, {i} {j} ");
             return (1);
         }
 
@@ -380,7 +382,7 @@ internal class GxShad
             /* Entered an undef box?    */
             if (flgh[f1cnt] == 9)
             {
-                GaGx.gaprnt(0, $"Logic error 4 in gxshad: {i} {j}");
+                _drawingContext.Logger?.LogInformation($"Logic error 4 in gxshad: {i} {j}");
                 return (1);
             }
 
@@ -452,15 +454,15 @@ internal class GxShad
             goto side2; /* Exiting 4, go enter 2  */
         }
 
-        GaGx.gaprnt(0, $"Logic error 8 in gxshad\n");
+        _drawingContext.Logger?.LogInformation($"Logic error 8 in gxshad\n");
         return (1);
 
         side2: /* Enter side 2           */
 
         if (i < (imn - 1) || i > (imx - 1) || j < jmn || j > (jmx - 1))
         {
-            GaGx.gaprnt(0, $"logic error 12 in gxshad\n");
-            GaGx.gaprnt(0, $"  side2, {i} {j}");
+            _drawingContext.Logger?.LogInformation($"logic error 12 in gxshad\n");
+            _drawingContext.Logger?.LogInformation($"  side2, {i} {j}");
             return (1);
         }
 
@@ -477,8 +479,8 @@ internal class GxShad
             /* Entered an undef box?    */
             if (flgv[f2cnt] == 9)
             {
-                GaGx.gaprnt(0, $"Logic error 4 in gxshad: {i} {j}");
-                GaGx.gaprnt(0, $"Side 2, entered {iside}");
+                _drawingContext.Logger?.LogInformation($"Logic error 4 in gxshad: {i} {j}");
+                _drawingContext.Logger?.LogInformation($"Side 2, entered {iside}");
                 return (1);
             }
 
@@ -554,15 +556,15 @@ internal class GxShad
             goto side3; /* Exiting 1, go enter 3  */
         }
 
-        GaGx.gaprnt(0, $"Logic error 8 in gxshad");
+        _drawingContext.Logger?.LogInformation($"Logic error 8 in gxshad");
         return (1);
 
         side3: /* Enter side 3             */
 
         if (i < imn || i > (imx - 1) || j < (jmn - 1) || j > (jmx - 1))
         {
-            GaGx.gaprnt(0, $"logic error 12 in gxshad");
-            GaGx.gaprnt(0, $"  side3, {i} {j}");
+            _drawingContext.Logger?.LogInformation($"logic error 12 in gxshad");
+            _drawingContext.Logger?.LogInformation($"  side3, {i} {j}");
             return (1);
         }
 
@@ -579,8 +581,8 @@ internal class GxShad
             /* Entered an undef box?    */
             if (flgh[f3cnt] == 9)
             {
-                GaGx.gaprnt(0, $"Logic error 4 in gxshad: {i} {j}");
-                GaGx.gaprnt(0, $"Side 3, entered {iside}");
+                _drawingContext.Logger?.LogInformation($"Logic error 4 in gxshad: {i} {j}");
+                _drawingContext.Logger?.LogInformation($"Side 3, entered {iside}");
                 return (1);
             }
 
@@ -656,16 +658,16 @@ internal class GxShad
             goto side4; /* Exiting 2, go enter 4  */
         }
 
-        GaGx.gaprnt(0, $"Logic error 8 in gxshad");
+        _drawingContext.Logger?.LogInformation($"Logic error 8 in gxshad");
         return (1);
 
         side4: /* Enter side 4           */
 
         if (i < 1 || i > imax || j < 1 || j > (jmax - 1))
         {
-            GaGx.gaprnt(0, $"logic error 12 in gxshad");
-            GaGx.gaprnt(0, $"  side4, {i} {j}");
-            GaGx.gaprnt(0, $" imax, jmax = {imax} {jmax}");
+            _drawingContext.Logger?.LogInformation($"logic error 12 in gxshad");
+            _drawingContext.Logger?.LogInformation($"  side4, {i} {j}");
+            _drawingContext.Logger?.LogInformation($" imax, jmax = {imax} {jmax}");
             return (1);
         }
 
@@ -682,8 +684,8 @@ internal class GxShad
             /* Entered an undef box?    */
             if (flgv[f4cnt] == 9)
             {
-                GaGx.gaprnt(0, $"Logic error 4 in gxshad: {i} {j}");
-                GaGx.gaprnt(0, $"Side 4, entered {iside}");
+                _drawingContext.Logger?.LogInformation($"Logic error 4 in gxshad: {i} {j}");
+                _drawingContext.Logger?.LogInformation($"Side 4, entered {iside}");
                 return (1);
             }
 
@@ -755,7 +757,7 @@ internal class GxShad
             goto side1; /* Exiting 3, go enter 1  */
         }
 
-        GaGx.gaprnt(0, $"Logic error 8 in gxshad");
+        _drawingContext.Logger?.LogInformation($"Logic error 8 in gxshad");
         return (1);
 
         /* At an undefined boundry and last moved towards the left.  */
@@ -766,7 +768,7 @@ internal class GxShad
         if (bflag && i == isave && j == jsave) goto done;
         if (j < (jmn + 1) || j > jmx - 1)
         {
-            GaGx.gaprnt(0, $"Logic error 16 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 16 in gxshad");
             return (1);
         }
 
@@ -776,7 +778,7 @@ internal class GxShad
         {
             if ((flgv[fucnt] > 5 && flgv[fdcnt] > 5) || (flgv[fucnt] < 5 && flgv[fdcnt] < 5))
             {
-                GaGx.gaprnt(0, $"Logic error 20 in gxshad");
+                _drawingContext.Logger?.LogInformation($"Logic error 20 in gxshad");
                 return (1);
             }
 
@@ -791,7 +793,7 @@ internal class GxShad
         if (flgv[fdcnt] == 7 || flgv[fdcnt] == 8) cnt++;
         if (cnt == 2 || cnt == 0)
         {
-            GaGx.gaprnt(0, $"Logic error 24 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 24 in gxshad");
             return (1);
         }
 
@@ -869,7 +871,7 @@ internal class GxShad
             goto uup;
         }
 
-        GaGx.gaprnt(0, $"Logic error 28 in gxshad");
+        _drawingContext.Logger?.LogInformation($"Logic error 28 in gxshad");
         return (1);
 
         /* At an undefined boundry and last moved towards the right. */
@@ -883,7 +885,7 @@ internal class GxShad
         bndflg = 1;
         if (j < (jmn + 1) || j > jmx - 1)
         {
-            GaGx.gaprnt(0, $"Logic error 16 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 16 in gxshad");
             return (1);
         }
 
@@ -893,7 +895,7 @@ internal class GxShad
         {
             if ((flgv[fucnt] > 5 && flgv[fdcnt] > 5) || (flgv[fucnt] < 5 && flgv[fdcnt] < 5))
             {
-                GaGx.gaprnt(0, $"Logic error 20 in gxshad");
+                _drawingContext.Logger?.LogInformation($"Logic error 20 in gxshad");
                 return (1);
             }
 
@@ -908,7 +910,7 @@ internal class GxShad
         if (flgv[fucnt] == 7 || flgv[fucnt] == 8) cnt++;
         if (cnt == 2 || cnt == 0)
         {
-            GaGx.gaprnt(0, $"Logic error 24 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 24 in gxshad");
             return (1);
         }
 
@@ -987,7 +989,7 @@ internal class GxShad
             goto uup;
         }
 
-        GaGx.gaprnt(0, $"Logic error 28 in gxshad");
+        _drawingContext.Logger?.LogInformation($"Logic error 28 in gxshad");
         return (1);
 
         /* At an undefined boundry and last moved towards the top.   */
@@ -1001,7 +1003,7 @@ internal class GxShad
         bndflg = 1;
         if (i < (imn + 1) || i > imx - 1)
         {
-            GaGx.gaprnt(0, $"Logic error 16 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 16 in gxshad");
             return (1);
         }
 
@@ -1011,7 +1013,7 @@ internal class GxShad
         {
             if ((flgh[frcnt] > 5 && flgh[flcnt] > 5) || (flgh[frcnt] < 5 && flgh[flcnt] < 5))
             {
-                GaGx.gaprnt(0, $"Logic error 20 in gxshad");
+                _drawingContext.Logger?.LogInformation($"Logic error 20 in gxshad");
                 return (1);
             }
 
@@ -1026,7 +1028,7 @@ internal class GxShad
         if (flgh[flcnt] == 7 || flgh[flcnt] == 8) cnt++;
         if (cnt == 2 || cnt == 0)
         {
-            GaGx.gaprnt(0, $"Logic error 24 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 24 in gxshad");
             return (1);
         }
 
@@ -1105,7 +1107,7 @@ internal class GxShad
             goto uleft;
         }
 
-        GaGx.gaprnt(0, $"Logic error 28 in gxshad");
+        _drawingContext.Logger?.LogInformation($"Logic error 28 in gxshad");
         return (1);
 
         /* At an undefined boundry and last moved towards the bottom.  */
@@ -1116,7 +1118,7 @@ internal class GxShad
         if (bflag && i == isave && j == jsave) goto done;
         if (i < (imn + 1) || i > imx - 1)
         {
-            GaGx.gaprnt(0, $"Logic error 16 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 16 in gxshad");
             return (1);
         }
 
@@ -1126,7 +1128,7 @@ internal class GxShad
         {
             if ((flgh[frcnt] > 5 && flgh[flcnt] > 5) || (flgh[frcnt] < 5 && flgh[flcnt] < 5))
             {
-                GaGx.gaprnt(0, $"Logic error 20 in gxshad");
+                _drawingContext.Logger?.LogInformation($"Logic error 20 in gxshad");
                 return (1);
             }
 
@@ -1141,7 +1143,7 @@ internal class GxShad
         if (flgh[flcnt] == 7 || flgh[flcnt] == 8) cnt++;
         if (cnt == 2 || cnt == 0)
         {
-            GaGx.gaprnt(0, $"Logic error 24 in gxshad");
+            _drawingContext.Logger?.LogInformation($"Logic error 24 in gxshad");
             return (1);
         }
 
@@ -1219,7 +1221,7 @@ internal class GxShad
             goto uleft;
         }
 
-        GaGx.gaprnt(0, $"Logic error 28 in gxshad");
+        _drawingContext.Logger?.LogInformation($"Logic error 28 in gxshad");
         return (1);
 
         /* Follow grid boundry until we hit a missing data area, or until
@@ -1405,13 +1407,13 @@ internal class GxShad
         {
             for (k = 0; k < xycnt; k++)
             {
-                GaSubs.gxconv(xybuf[(k * 2)], xybuf[(k * 2 + 1)], out x, out y, 3);
+                GradsDrawingInterface.gxconv(xybuf[(k * 2)], xybuf[(k * 2 + 1)], out x, out y, 3);
                 xybuf[(k * 2)] = x;
                 xybuf[(k * 2 + 1)] = y;
             }
 
-            _drawingContext.GaSubs.gxcolr(color);
-            _drawingContext.GaSubs.gxfill(xybuf, xycnt);
+            _drawingContext.GradsDrawingInterface.gxcolr(color);
+            _drawingContext.GradsDrawingInterface.gxfill(xybuf, xycnt);
         }
         else
         {
@@ -1432,7 +1434,7 @@ internal class GxShad
             stkcnt++;
             if (stkcnt >= XYBMAX)
             {
-                GaGx.gaprnt(0, $"Buffer stack limit exceeded in gxshad");
+                _drawingContext.Logger?.LogInformation($"Buffer stack limit exceeded in gxshad");
                 return (1);
             }
         }
@@ -1468,7 +1470,7 @@ internal class GxShad
 
         if (i < 2 || i > imax - 1 || j < 2 || j > jmax - 1)
         {
-            GaGx.gaprnt(0, $"Logic error 32 in gxshad\n");
+            _drawingContext.Logger?.LogInformation($"Logic error 32 in gxshad\n");
             return (9);
         }
 
@@ -1480,7 +1482,7 @@ internal class GxShad
 
         if (gru[p1cnt] == 0 && gru[p3cnt] == 0 && gru[p2cnt] != 0 && gru[p4cnt] != 0) return (1);
         if (gru[p1cnt] != 0 && gru[p3cnt] != 0 && gru[p2cnt] == 0 && gru[p4cnt] == 0) return (2);
-        GaGx.gaprnt(0, $"Logic error 36 in gxshad\n");
+        _drawingContext.Logger?.LogInformation($"Logic error 36 in gxshad\n");
         return (9);
     }
 
@@ -1568,30 +1570,30 @@ internal class GxShad
             {
                 if (i < imax)
                 {
-                    if (flgh[f1cnt] == 1) _drawingContext.GaSubs.gxcolr(1);
-                    else if (flgh[f1cnt] == 7) _drawingContext.GaSubs.gxcolr(3);
-                    else if (flgh[f1cnt] == 8) _drawingContext.GaSubs.gxcolr(8);
-                    else if (flgh[f1cnt] == 9) _drawingContext.GaSubs.gxcolr(4);
-                    else if (flgh[f1cnt] == 0) _drawingContext.GaSubs.gxcolr(15);
-                    else _drawingContext.GaSubs.gxcolr(2);
-                    GaSubs.gxconv((double)i, (double)j, out x, out y, 3);
-                    _drawingContext.GaSubs.gxplot(x, y, 3);
-                    GaSubs.gxconv((double)(i + 1), (double)j, out x, out y, 3);
-                    _drawingContext.GaSubs.gxplot(x, y, 2);
+                    if (flgh[f1cnt] == 1) _drawingContext.GradsDrawingInterface.gxcolr(1);
+                    else if (flgh[f1cnt] == 7) _drawingContext.GradsDrawingInterface.gxcolr(3);
+                    else if (flgh[f1cnt] == 8) _drawingContext.GradsDrawingInterface.gxcolr(8);
+                    else if (flgh[f1cnt] == 9) _drawingContext.GradsDrawingInterface.gxcolr(4);
+                    else if (flgh[f1cnt] == 0) _drawingContext.GradsDrawingInterface.gxcolr(15);
+                    else _drawingContext.GradsDrawingInterface.gxcolr(2);
+                    GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
+                    GradsDrawingInterface.gxconv((double)(i + 1), (double)j, out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(x, y, 2);
                 }
 
                 if (j < jmax)
                 {
-                    if (flgv[f4cnt] == 1) _drawingContext.GaSubs.gxcolr(1);
-                    else if (flgv[f4cnt] == 7) _drawingContext.GaSubs.gxcolr(3);
-                    else if (flgv[f4cnt] == 8) _drawingContext.GaSubs.gxcolr(8);
-                    else if (flgv[f4cnt] == 9) _drawingContext.GaSubs.gxcolr(4);
-                    else if (flgv[f4cnt] == 0) _drawingContext.GaSubs.gxcolr(15);
-                    else _drawingContext.GaSubs.gxcolr(2);
-                    GaSubs.gxconv((double)i, (double)j, out x, out y, 3);
-                    _drawingContext.GaSubs.gxplot(x, y, 3);
-                    GaSubs.gxconv((double)i, (double)(j + 1), out x, out y, 3);
-                    _drawingContext.GaSubs.gxplot(x, y, 2);
+                    if (flgv[f4cnt] == 1) _drawingContext.GradsDrawingInterface.gxcolr(1);
+                    else if (flgv[f4cnt] == 7) _drawingContext.GradsDrawingInterface.gxcolr(3);
+                    else if (flgv[f4cnt] == 8) _drawingContext.GradsDrawingInterface.gxcolr(8);
+                    else if (flgv[f4cnt] == 9) _drawingContext.GradsDrawingInterface.gxcolr(4);
+                    else if (flgv[f4cnt] == 0) _drawingContext.GradsDrawingInterface.gxcolr(15);
+                    else _drawingContext.GradsDrawingInterface.gxcolr(2);
+                    GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
+                    GradsDrawingInterface.gxconv((double)i, (double)(j + 1), out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxplot(x, y, 2);
                 }
 
                 f1cnt++;
@@ -1599,6 +1601,6 @@ internal class GxShad
             }
         }
 
-        _drawingContext.GaSubs.gxfrme(0);
+        _drawingContext.GradsDrawingInterface.gxfrme(0);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Models.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -80,7 +81,7 @@ internal class GaExpr
                         cont = false;
                         err = true;
                         i = 1 + pos;
-                        GaGx.gaprnt(0, "Syntax Error:  Invalid numeric value");
+                        _drawingContext.Logger?.LogInformation("Syntax Error:  Invalid numeric value");
                     }
                     else
                     {
@@ -135,7 +136,7 @@ internal class GaExpr
                 }
                 else
                 {
-                    GaGx.gaprnt(0, "Syntax Error:  Expected operand or '('");
+                    _drawingContext.Logger?.LogInformation("Syntax Error:  Expected operand or '('");
                     cont = false;
                     err = true;
                 }
@@ -231,7 +232,7 @@ internal class GaExpr
                 }
                 else
                 {
-                    GaGx.gaprnt(0, "Syntax Error:  Expected operator or ')'\n");
+                    _drawingContext.Logger?.LogInformation("Syntax Error:  Expected operator or ')'\n");
                     cont = false;
                     err = true;
                 }
@@ -264,13 +265,13 @@ internal class GaExpr
                     }
                     else
                     {
-                        GaGx.gaprnt(0, "GAEXPR Logic Error Number 29\n");
+                        _drawingContext.Logger?.LogInformation("GAEXPR Logic Error Number 29\n");
                         err = true;
                     }
                 }
                 else
                 {
-                    GaGx.gaprnt(0, "Syntax Error:  Unmatched Parens\n");
+                    _drawingContext.Logger?.LogInformation("Syntax Error:  Unmatched Parens\n");
                     err = true;
                 }
             }
@@ -281,7 +282,7 @@ internal class GaExpr
             if (pass == 1)
             {
                 i = 1 + pos;
-                GaGx.gaprnt(0, $"  Error ocurred at column {i}");
+                _drawingContext.Logger?.LogInformation($"  Error ocurred at column {i}");
             }
 
 /*  release any memory still hung off the stack  */
@@ -365,7 +366,7 @@ internal class GaExpr
                         /* Better be an operand       */
                         cont = false; /* If not then an error       */
                         err = true;
-                        GaGx.gaprnt(0, "Internal logic check 12");
+                        _drawingContext.Logger?.LogInformation("Internal logic check 12");
                     }
                     else
                     {
@@ -394,7 +395,7 @@ internal class GaExpr
                 else
                 {
                     /* Prior item invalid         */
-                    GaGx.gaprnt(0, "Internal logic check 14 \n");
+                    _drawingContext.Logger?.LogInformation("Internal logic check 14 \n");
                     cont = false;
                     err = true;
                 }
@@ -469,8 +470,8 @@ internal class GaExpr
         }
         else
         {
-            GaGx.gaprnt(0, "Operation Error: Incompatable Data Types\n");
-            GaGx.gaprnt(0, "  One operand was stn data, other was grid\n");
+            _drawingContext.Logger?.LogInformation("Operation Error: Incompatable Data Types\n");
+            _drawingContext.Logger?.LogInformation("  One operand was stn data, other was grid\n");
             return (1);
         }
 
@@ -735,7 +736,7 @@ internal class GaExpr
                 }
                 else
                 {
-                    GaGx.gaprnt(0, "Internal logic check 17: invalid oper value\n");
+                    _drawingContext.Logger?.LogInformation("Internal logic check 17: invalid oper value\n");
                     return (null);
                 }
             }
@@ -767,15 +768,15 @@ internal class GaExpr
         return (pgr2);
 
         err1:
-        GaGx.gaprnt(0, "Operation error:  Incompatable grids \n");
-        GaGx.gaprnt(1, "   Varying dimensions are different\n");
-        GaGx.gaprnt(2, $"  1st grid dims = {pgr1.idim} {pgr2.idim}   2nd = {pgr1.jdim} {pgr2.jdim}");
+        _drawingContext.Logger?.LogInformation("Operation error:  Incompatable grids \n");
+        _drawingContext.Logger?.LogInformation("   Varying dimensions are different\n");
+        _drawingContext.Logger?.LogInformation($"  1st grid dims = {pgr1.idim} {pgr2.idim}   2nd = {pgr1.jdim} {pgr2.jdim}");
         return (null);
 
         err2:
-        GaGx.gaprnt(0, "Operation error:  Incompatable grids \n");
-        GaGx.gaprnt(2, $"  Dimension = {i}");
-        GaGx.gaprnt(2,
+        _drawingContext.Logger?.LogInformation("Operation error:  Incompatable grids \n");
+        _drawingContext.Logger?.LogInformation($"  Dimension = {i}");
+        _drawingContext.Logger?.LogInformation(
             $"  1st grid range = {pgr1.dimmin[i]} {pgr1.dimmax[i]}   2nd = {pgr2.dimmin[i]} {pgr2.dimmax[i]}");
         return (null);
     }
@@ -807,8 +808,8 @@ internal class GaExpr
         //          stn2.idim == 3 && stn2.jdim == -1)
         //     dimtyp = 3;                                 /* T is varying */
         // else {
-        //     gaprnt(0, "Invalid dimension environment for station data");
-        //     gaprnt(0, " operation\n");
+        //     _drawingContext.Logger?.LogInformation("Invalid dimension environment for station data");
+        //     _drawingContext.Logger?.LogInformation(" operation\n");
         //     return (null);
         // }
         //
@@ -871,7 +872,7 @@ internal class GaExpr
         //                 if (rpt2.val < 0.0) rpt1.umask = 0;
         //             }
         //         } else {
-        //             gaprnt(0, "Internal logic check 57: invalid oper value\n");
+        //             _drawingContext.Logger?.LogInformation("Internal logic check 57: invalid oper value\n");
         //             return (null);
         //         }
         //         flag = 1;
@@ -935,7 +936,7 @@ internal class GaExpr
         //     } else if (op == 13) {
         //         if (rpt.val < 0.0) rpt.umask = 0;
         //     } else {
-        //         gaprnt(0, "Internal logic check 57: invalid oper value\n");
+        //         _drawingContext.Logger?.LogInformation("Internal logic check 57: invalid oper value\n");
         //         return (null);
         //     }
         // }
@@ -1033,7 +1034,7 @@ internal class GaExpr
             pos = GaUtil.intprs(ch, ipos, out fnum);
             if (pos == null || fnum < 1)
             {
-                GaGx.gaprnt(0, "Syntax error: Bad file number for variable {name} \n");
+                _drawingContext.Logger?.LogInformation("Syntax error: Bad file number for variable {name} \n");
                 return (null);
             }
 
@@ -1077,8 +1078,8 @@ internal class GaExpr
                 }
                 catch (Exception ex)
                 {
-                    GaGx.gaprnt(0, "Data Request Error:  File number out of range");
-                    GaGx.gaprnt(0, $"  Variable = {sVName}");
+                    _drawingContext.Logger?.LogInformation("Data Request Error:  File number out of range");
+                    _drawingContext.Logger?.LogInformation($"  Variable = {sVName}");
                 }
             }
 
@@ -1111,10 +1112,10 @@ internal class GaExpr
                 if (pfi.type == 2 || pfi.type == 3)
                 {
                     // snprintf(pout, 1255, "Data Request Error:  Predefined variable %s\n", sVName);
-                    // gaprnt(0, pout);
-                    // gaprnt(0, "   is only defined for grid type files\n");
+                    // _drawingContext.Logger?.LogInformation(pout);
+                    // _drawingContext.Logger?.LogInformation("   is only defined for grid type files\n");
                     // snprintf(pout, 1255, "   File %i is a station file\n", fnum);
-                    // gaprnt(0, pout);
+                    // _drawingContext.Logger?.LogInformation(pout);
                     return (null);
                 }
             }
@@ -1128,8 +1129,8 @@ internal class GaExpr
                 {
                     if (dotflg > 0)
                     {
-                        GaGx.gaprnt(0, "Data Request Error:  Invalid variable name ");
-                        GaGx.gaprnt(0, $"  Variable {sVName} not found in file {fnum}\n");
+                        _drawingContext.Logger?.LogInformation("Data Request Error:  Invalid variable name ");
+                        _drawingContext.Logger?.LogInformation($"  Variable {sVName} not found in file {fnum}\n");
                         return (null);
                     }
                     else
@@ -1186,9 +1187,9 @@ internal class GaExpr
                 dmax[i] = Math.Ceiling(dmax[i] - 0.0001);
                 if (dmax[i] <= dmin[i])
                 {
-                    GaGx.gaprnt(0, "Data Request Error: Invalid grid coordinates");
-                    GaGx.gaprnt(0, $"  Varying dimension {i} decreases: {dmin[i]} to {dmax[i]}");
-                    GaGx.gaprnt(0, $"  Error ocurred getting variable '{sVName}'");
+                    _drawingContext.Logger?.LogInformation("Data Request Error: Invalid grid coordinates");
+                    _drawingContext.Logger?.LogInformation($"  Varying dimension {i} decreases: {dmin[i]} to {dmax[i]}");
+                    _drawingContext.Logger?.LogInformation($"  Error ocurred getting variable '{sVName}'");
                     return (null);
                 }
             }
@@ -1204,24 +1205,24 @@ internal class GaExpr
                 pos = GaUtil.dimprs(ch, ipos, pst, pfi, out dim, out d1, 1, out rc);
                 if (pos == null)
                 {
-                    GaGx.gaprnt(0, $"  Variable name = {sVName}");
+                    _drawingContext.Logger?.LogInformation($"  Variable name = {sVName}");
                     return (null);
                 }
 
                 if (id[dim]>0)
                 {
-                    GaGx.gaprnt(0, "Syntax Error: Invalid dimension expression\n");
-                    GaGx.gaprnt(0, "  Same dimension specified multiple times ");
-                    GaGx.gaprnt(0, $"for variable = {sVName}\n");
+                    _drawingContext.Logger?.LogInformation("Syntax Error: Invalid dimension expression\n");
+                    _drawingContext.Logger?.LogInformation("  Same dimension specified multiple times ");
+                    _drawingContext.Logger?.LogInformation($"for variable = {sVName}\n");
                     return (null);
                 }
 
                 id[dim] = 1;
                 if (dim == pst.idim || dim == pst.jdim)
                 {
-                    GaGx.gaprnt(0, "Data Request Error: Invalid dimension expression\n");
-                    GaGx.gaprnt(0, "  Attempt to set or modify varying dimension\n");
-                    GaGx.gaprnt(0, $"  Variable = {sVName}, Dimension = {dim} \n");
+                    _drawingContext.Logger?.LogInformation("Data Request Error: Invalid dimension expression\n");
+                    _drawingContext.Logger?.LogInformation("  Attempt to set or modify varying dimension\n");
+                    _drawingContext.Logger?.LogInformation($"  Variable = {sVName}, Dimension = {dim} \n");
                     return (null);
                 }
 
@@ -1232,8 +1233,8 @@ internal class GaExpr
                 {
                     if (defined == 1)
                     {
-                        GaGx.gaprnt(0, "Error: The \"offt\" dimension expression is ");
-                        GaGx.gaprnt(0, "       not supported for defined variables. ");
+                        _drawingContext.Logger?.LogInformation("Error: The \"offt\" dimension expression is ");
+                        _drawingContext.Logger?.LogInformation("       not supported for defined variables. ");
                         return (null);
                     }
                     else toff = 1;
@@ -1287,10 +1288,10 @@ internal class GaExpr
 
             if ((GaUtil.dequal(dmin[i], d1, 1e-8) != 0 || GaUtil.dequal(dmax[i], d2, 1e-8) != 0) && dotest == 1)
             {
-                GaGx.gaprnt(0, "Data Request Error: Invalid grid coordinates");
-                GaGx.gaprnt(0, "  World coordinates convert to non-integer");
-                GaGx.gaprnt(0, "  grid coordinates");
-                GaGx.gaprnt(0, $"    Variable = {sVName}  Dimension = {i} ");
+                _drawingContext.Logger?.LogInformation("Data Request Error: Invalid grid coordinates");
+                _drawingContext.Logger?.LogInformation("  World coordinates convert to non-integer");
+                _drawingContext.Logger?.LogInformation("  grid coordinates");
+                _drawingContext.Logger?.LogInformation($"    Variable = {sVName}  Dimension = {i} ");
                 return (null);
             }
         }
@@ -1377,13 +1378,13 @@ internal class GaExpr
         rc = _drawingContext.GaIO.gaggrd(pgr);
         if (rc > 0)
         {
-            GaGx.gaprnt(0, $"Data Request Error:  Error for variable '{sVName}'\n");
+            _drawingContext.Logger?.LogInformation($"Data Request Error:  Error for variable '{sVName}'\n");
             return (null);
         }
 
         if (rc < 0)
         {
-            GaGx.gaprnt(2, $"  Warning issued for variable = {sVName}");
+            _drawingContext.Logger?.LogInformation($"  Warning issued for variable = {sVName}");
         }
 
         /* Special test for auto-interpolated data, when the
@@ -1414,7 +1415,7 @@ internal class GaExpr
                 rc = _drawingContext.GaIO.gaggrd(pgr2);
                 if (rc > 0)
                 {
-                    GaGx.gaprnt(0, $"Data Request Error:  Error for variable '{sVName}'\n");
+                    _drawingContext.Logger?.LogInformation($"Data Request Error:  Error for variable '{sVName}'\n");
                     return (null);
                 }
 
@@ -1605,7 +1606,8 @@ internal class GaExpr
 
         if (siz1 != siz2)
         {
-            GaGx.gaprnt(0, "Error in gagchk: axis sizes are not the same");
+            //TODO logging
+            //_drawingContext.Logger?.LogInformation("Error in gagchk: axis sizes are not the same");
             return (1);
         }
 
@@ -1634,7 +1636,7 @@ internal class GaExpr
             if (dtim1.mn != dtim2.mn) rc = 1;
             if (rc > 0)
             {
-                GaGx.gaprnt(0, "Error in gagchk: time axis endpoint values are not equivalent\n");
+                GradsEngine.Logger?.LogInformation("Error in gagchk: time axis endpoint values are not equivalent\n");
                 return (1);
             }
 
@@ -1652,13 +1654,13 @@ internal class GaExpr
         if (Math.Abs((conv1(vals1, gmax1)) - (conv2(vals2, gmax2))) > fuzz) rc = 1;
         if (rc > 0)
         {
-            GaGx.gaprnt(0, "Error in gagchk: axis endpoint values are not equivalent\n");
+            GradsEngine.Logger?.LogInformation("Error in gagchk: axis endpoint values are not equivalent\n");
             return (1);
         }
 
         if (i1 != i2)
         {
-            GaGx.gaprnt(0, "Error in gagchk: one axis is linear and the other is non-linear\n");
+            GradsEngine.Logger?.LogInformation("Error in gagchk: one axis is linear and the other is non-linear\n");
             return (1);
         }
 
@@ -1673,7 +1675,7 @@ internal class GaExpr
                     (conv1(vals1, gmin1 + (double)i)) - (conv2(vals2, gmin2 + (double)i))) >
                 fuzz)
             {
-                GaGx.gaprnt(0, "Error in gagchk: axis values are not all the same\n");
+                GradsEngine.Logger?.LogInformation("Error in gagchk: axis values are not all the same\n");
                 return (1);
             }
         }
@@ -1744,13 +1746,13 @@ internal class GaExpr
     //
     //                 if (i == 0)
     //                 {
-    //                     gaprnt(0, "Dimension Expression Error: No stid provided\n");
+    //                     _drawingContext.Logger?.LogInformation("Dimension Expression Error: No stid provided\n");
     //                     pos = null;
     //                 }
     //
     //                 if (i > 8)
     //                 {
-    //                     gaprnt(0, "Dimension Expression Error: stid too long\n");
+    //                     _drawingContext.Logger?.LogInformation("Dimension Expression Error: stid too long\n");
     //                     pos = null;
     //                 }
     //
@@ -1764,26 +1766,26 @@ internal class GaExpr
     //             if (pos == null)
     //             {
     //                 snprintf(pout, 1255, "  Variable name = %s\n", vnam);
-    //                 gaprnt(0, pout);
+    //                 _drawingContext.Logger?.LogInformation(pout);
     //                 return (null);
     //             }
     //
     //             if (dim < 6 && id[dim] > 1)
     //             {
-    //                 gaprnt(0, "Syntax Error: Invalid dimension expression\n");
-    //                 gaprnt(0, "  Same dimension specified more than twice ");
+    //                 _drawingContext.Logger?.LogInformation("Syntax Error: Invalid dimension expression\n");
+    //                 _drawingContext.Logger?.LogInformation("  Same dimension specified more than twice ");
     //                 snprintf(pout, 1255, "for variable = %s\n", vnam);
-    //                 gaprnt(0, pout);
+    //                 _drawingContext.Logger?.LogInformation(pout);
     //                 return (null);
     //             }
     //
     //             if (dim == pst.idim || dim == pst.jdim ||
     //                 (dim > 3 && (pst.idim == 0 || pst.idim == 1 || pst.jdim == 1)))
     //             {
-    //                 gaprnt(0, "Data Request Error: Invalid dimension expression\n");
-    //                 gaprnt(0, "  Attempt to set or modify varying dimension\n");
+    //                 _drawingContext.Logger?.LogInformation("Data Request Error: Invalid dimension expression\n");
+    //                 _drawingContext.Logger?.LogInformation("  Attempt to set or modify varying dimension\n");
     //                 snprintf(pout, 1255, "  Variable = %s, Dimension = %i \n", vnam, dim);
-    //                 gaprnt(0, pout);
+    //                 _drawingContext.Logger?.LogInformation(pout);
     //                 return (null);
     //             }
     //
@@ -1815,11 +1817,11 @@ internal class GaExpr
     //     {
     //         if ((i != 2 && dmin[i] > dmax[i]) || (i == 2 && dmax[i] > dmin[i]))
     //         {
-    //             gaprnt(0, "Data Request Error: Invalid grid coordinates\n");
+    //             _drawingContext.Logger?.LogInformation("Data Request Error: Invalid grid coordinates\n");
     //             snprintf(pout, 1255, "  Varying dimension %i decreases: %g to %g \n", i, dmin[i], dmax[i]);
-    //             gaprnt(0, pout);
+    //             _drawingContext.Logger?.LogInformation(pout);
     //             snprintf(pout, 1255, "  Error ocurred getting variable '%s'\n", vnam);
-    //             gaprnt(0, pout);
+    //             _drawingContext.Logger?.LogInformation(pout);
     //             return (null);
     //         }
     //     }
@@ -1831,7 +1833,7 @@ internal class GaExpr
     //     stn = (gastn*)galloc(sz, "stn");
     //     if (stn == null)
     //     {
-    //         gaprnt(0, "Memory Allocation Error:  Station Request Block \n");
+    //         _drawingContext.Logger?.LogInformation("Memory Allocation Error:  Station Request Block \n");
     //         return (null);
     //     }
     //
@@ -1865,7 +1867,7 @@ internal class GaExpr
     //     if (stn.tvals == null)
     //     {
     //         gree(stn, "f170");
-    //         gaprnt(0, "Memory Allocation Error:  Station Request Block \n");
+    //         _drawingContext.Logger?.LogInformation("Memory Allocation Error:  Station Request Block \n");
     //         return (null);
     //     }
     //
@@ -1876,7 +1878,7 @@ internal class GaExpr
     //     if (rc > 0)
     //     {
     //         snprintf(pout, 1255, "Data Request Error:  Variable is '%s'\n", vnam);
-    //         gaprnt(0, pout);
+    //         _drawingContext.Logger?.LogInformation(pout);
     //         gree(stn, "f171");
     //         return (null);
     //     }

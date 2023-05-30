@@ -2,15 +2,19 @@
 using GradsSharp.Data.Grib.GFS;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using NGrib;
-using NGrib.Grib1;
 using NGrib.Grib2.Templates.GridDefinitions;
 using NGrib.Grib2.Templates.ProductDefinitions;
 
 namespace GradsSharp.Drawing.Grads;
 
-internal class GaUser
+/*
+ * Old GaUser class with new methods for setting all kinds of options
+ */
+
+internal class GradsCommandInterface : IGradsCommandInterface
 {
     private DrawingContext _drawingContext;
     private GradsCommon pcm;
@@ -27,7 +31,7 @@ internal class GaUser
     private int tcolor = -1;
     private double border = -1.0;
 
-    public GaUser(DrawingContext drawingContext)
+    public GradsCommandInterface(DrawingContext drawingContext)
     {
         _drawingContext = drawingContext;
         pcm = drawingContext.CommonData;
@@ -42,7 +46,7 @@ internal class GaUser
     {
         pcm.xsiz = pcm.pxsize;
         pcm.ysiz = pcm.pysize;
-        _drawingContext.GaSubs.gxvpag(pcm.xsiz, pcm.ysiz, 0.0, pcm.xsiz, 0.0, pcm.ysiz);
+        _drawingContext.GradsDrawingInterface.gxvpag(pcm.xsiz, pcm.ysiz, 0.0, pcm.xsiz, 0.0, pcm.ysiz);
         /* reset gacmn and call gacln */
         pcm.InitData();
         gacln(1);
@@ -100,9 +104,9 @@ internal class GaUser
         }
 
         _drawingContext.GxChpl.gxchdf(0);
-        _drawingContext.GaSubs.gxcolr(1);
-        _drawingContext.GxDb.gxdbsettransclr(-1);
-        _drawingContext.GaSubs.gxfrme(1);
+        _drawingContext.GradsDrawingInterface.gxcolr(1);
+        _drawingContext.GradsDatabase.gxdbsettransclr(-1);
+        _drawingContext.GradsDrawingInterface.gxfrme(1);
     }
 
     public void close()
@@ -136,18 +140,18 @@ internal class GaUser
         int iAc = (int)action;
         if (action == ClearAction.NoReset)
         {
-            _drawingContext.GaSubs.gxfrme(1);
+            _drawingContext.GradsDrawingInterface.gxfrme(1);
         }
         else if (action == ClearAction.Events)
         {
         }
         else if (action == ClearAction.Graphics)
         {
-            _drawingContext.GaSubs.gxfrme(7);
+            _drawingContext.GradsDrawingInterface.gxfrme(7);
         }
         else if (action == ClearAction.Mask)
         {
-            _drawingContext.GaSubs.gxmaskclear();
+            _drawingContext.GradsDrawingInterface.gxmaskclear();
         }
 
         if (action == ClearAction.NoReset)
@@ -204,7 +208,7 @@ internal class GaUser
         {
             if (horizontalSize > 0 || verticalSize > 0)
             {
-                GaGx.gaprnt(1,
+                _drawingContext.Logger?.LogInformation(
                     $"Warning: Image size specifications are incompatible with the {format} format and will be ignored");
                 xin = -999;
                 yin = -999;
@@ -215,7 +219,7 @@ internal class GaUser
         {
             if (bgImage != "" || fgImage != "")
             {
-                GaGx.gaprnt(1,
+                _drawingContext.Logger?.LogInformation(
                     "Warning: Background/Foreground images are incompatible with the %s format and will be ignored");
                 bgImage = "";
                 fgImage = "";
@@ -229,19 +233,19 @@ internal class GaUser
         }
 
         int retcod = 0;
-        int rc = _drawingContext.GaSubs.DrawingEngine.gxprint(path, xin, yin, bwin, fmtflg, bgImage, fgImage, tcolor,
+        int rc = _drawingContext.GradsDrawingInterface.DrawingEngine.gxprint(path, xin, yin, bwin, fmtflg, bgImage, fgImage, tcolor,
             border);
-        if (rc == 1) GaGx.gaprnt(0, "GXPRINT error: something went wrong during rendering of the output file\n");
-        if (rc == 2) GaGx.gaprnt(0, "GXPRINT error: output error\n");
-        if (rc == 3) GaGx.gaprnt(0, "GXPRINT error: background image open error\n");
-        if (rc == 4) GaGx.gaprnt(0, "GXPRINT error: foreground image open error\n");
-        if (rc == 5) GaGx.gaprnt(0, "GXPRINT error: background image must be .png\n");
-        if (rc == 6) GaGx.gaprnt(0, "GXPRINT error: foreground image must be .png\n");
-        if (rc == 7) GaGx.gaprnt(0, "GXPRINT error: failed to import background image\n");
-        if (rc == 8) GaGx.gaprnt(0, "GXPRINT error: failed to import foreground image\n");
-        if (rc == 9) GaGx.gaprnt(0, "GXPRINT error: unsupported output format\n");
-        if (rc == 10) GaGx.gaprnt(0, "GXPRINT error: background image must be the same size as output\n");
-        if (rc == 11) GaGx.gaprnt(0, "GXPRINT error: foreground image must be the same size as output\n");
+        if (rc == 1) _drawingContext.Logger?.LogInformation("GXPRINT error: something went wrong during rendering of the output file\n");
+        if (rc == 2) _drawingContext.Logger?.LogInformation("GXPRINT error: output error\n");
+        if (rc == 3) _drawingContext.Logger?.LogInformation("GXPRINT error: background image open error\n");
+        if (rc == 4) _drawingContext.Logger?.LogInformation("GXPRINT error: foreground image open error\n");
+        if (rc == 5) _drawingContext.Logger?.LogInformation("GXPRINT error: background image must be .png\n");
+        if (rc == 6) _drawingContext.Logger?.LogInformation("GXPRINT error: foreground image must be .png\n");
+        if (rc == 7) _drawingContext.Logger?.LogInformation("GXPRINT error: failed to import background image\n");
+        if (rc == 8) _drawingContext.Logger?.LogInformation("GXPRINT error: failed to import foreground image\n");
+        if (rc == 9) _drawingContext.Logger?.LogInformation("GXPRINT error: unsupported output format\n");
+        if (rc == 10) _drawingContext.Logger?.LogInformation("GXPRINT error: background image must be the same size as output\n");
+        if (rc == 11) _drawingContext.Logger?.LogInformation("GXPRINT error: foreground image must be the same size as output\n");
         if (rc > 0) retcod = 1;
         else
         {
@@ -263,7 +267,7 @@ internal class GaUser
 
     public void swap()
     {
-        if (pcm.dbflg > 0) _drawingContext.GaSubs.gxfrme(2);
+        if (pcm.dbflg > 0) _drawingContext.GradsDrawingInterface.gxfrme(2);
         gacln(1);
     }
 
@@ -279,7 +283,7 @@ internal class GaUser
         pcm.undef = -9.99e8; /* default undef value */
     }
 
-    void gacln(int flg)
+    public void gacln(int flg)
     {
         gaattr attr, nextattr;
         int i;
@@ -446,14 +450,14 @@ internal class GaUser
         {
             pcm.xsiz = pcm.pxsize;
             pcm.ysiz = pcm.pysize;
-            _drawingContext.GaSubs.gxvpag(pcm.xsiz, pcm.ysiz, 0.0, pcm.xsiz, 0.0, pcm.ysiz);
+            _drawingContext.GradsDrawingInterface.gxvpag(pcm.xsiz, pcm.ysiz, 0.0, pcm.xsiz, 0.0, pcm.ysiz);
             gacln(1);
             return;
         }
 
         if (xlo < 0.0 || ylo < 0.0 || xhi > pcm.pxsize || yhi > pcm.pysize)
         {
-            GaGx.gaprnt(0, "SET Error: vpage values beyond real page limits");
+            _drawingContext.Logger?.LogInformation("SET Error: vpage values beyond real page limits");
             throw new Exception("vpage values beyond real page limits");
         }
 
@@ -469,8 +473,8 @@ internal class GaUser
             pcm.ysiz = pcm.pxsize * (yhi - ylo) / (xhi - xlo);
         }
 
-        _drawingContext.GaSubs.gxvpag(pcm.xsiz, pcm.ysiz, xlo, xhi, ylo, yhi);
-        GaGx.gaprnt(2, $"Virtual page size = {pcm.xsiz} {pcm.ysiz}");
+        _drawingContext.GradsDrawingInterface.gxvpag(pcm.xsiz, pcm.ysiz, xlo, xhi, ylo, yhi);
+        _drawingContext.Logger?.LogInformation($"Virtual page size = {pcm.xsiz} {pcm.ysiz}");
         gacln(1);
     }
 
@@ -478,7 +482,7 @@ internal class GaUser
     {
         if (colorNr < 16 || colorNr > 2048)
         {
-            GaGx.gaprnt(0, "SET RGB Error:  Color number must be between 16 and 2048 \n");
+            _drawingContext.Logger?.LogInformation("SET RGB Error:  Color number must be between 16 and 2048 \n");
             throw new Exception("SET RGB Error:  Color number must be between 16 and 2048");
         }
 
@@ -486,17 +490,17 @@ internal class GaUser
             green < 0 || green > 255 ||
             blue < 0 || blue > 255)
         {
-            GaGx.gaprnt(0, "SET RGB Error:  RGB values must be between 0 and 255 \n");
+            _drawingContext.Logger?.LogInformation("SET RGB Error:  RGB values must be between 0 and 255 \n");
             throw new Exception("SET RGB Error:  RGB values must be between 0 and 255");
         }
 
         if (alpha < -255 || alpha > 255)
         {
-            GaGx.gaprnt(0, "SET RGB Error:  Alpha value must be between -255 and 255 \n");
+            _drawingContext.Logger?.LogInformation("SET RGB Error:  Alpha value must be between -255 and 255 \n");
             throw new Exception("SET RGB Error:  Alpha value must be between -255 and 255");
         }
 
-        _drawingContext.GaSubs.gxacol(colorNr, red, green, blue, alpha);
+        _drawingContext.GradsDrawingInterface.gxacol(colorNr, red, green, blue, alpha);
     }
 
     public void SetPArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0)
@@ -509,7 +513,7 @@ internal class GaUser
         {
             if (xlo < 0.0 || ylo < 0.0 || xhi > pcm.xsiz || yhi > pcm.ysiz)
             {
-                GaGx.gaprnt(0, "SET Error: parea values beyond page limits");
+                _drawingContext.Logger?.LogInformation("SET Error: parea values beyond page limits");
                 throw new Exception("SET Error: parea values beyond page limits");
             }
 
@@ -527,12 +531,12 @@ internal class GaUser
     {
         if (val <= 0)
         {
-            GaGx.gaprnt(0, "SET Error: cint must be greater than 0.0\n");
+            _drawingContext.Logger?.LogInformation("SET Error: cint must be greater than 0.0\n");
         }
         else
         {
             pcm.cint = val;
-            GaGx.gaprnt(2, $"cint = {pcm.cint}");
+            _drawingContext.Logger?.LogInformation($"cint = {pcm.cint}");
         }
     }
 
@@ -542,7 +546,7 @@ internal class GaUser
         if (onOff == OnOffSetting.Off)
         {
             pcm.mpflg = 0;
-            GaGx.gaprnt(2, "mpvals have been turned off");
+            _drawingContext.Logger?.LogInformation("mpvals have been turned off");
         }
         else
         {
@@ -551,7 +555,7 @@ internal class GaUser
             pcm.mpvals[2] = latmin;
             pcm.mpvals[3] = latmax;
             pcm.mpflg = 1;
-            GaGx.gaprnt(2, "mpvals have been set");
+            _drawingContext.Logger?.LogInformation("mpvals have been set");
         }
     }
 
@@ -565,13 +569,13 @@ internal class GaUser
         pcm.cflag = levels.Length;
         pcm.clevs = levels;
 
-        GaGx.gaprnt(2, $"Number of clevs = {pcm.cflag}");
+        _drawingContext.Logger?.LogInformation($"Number of clevs = {pcm.cflag}");
         for (int i = 1; i < pcm.cflag; i++)
         {
             if (pcm.clevs[i] <= pcm.clevs[i - 1])
             {
-                GaGx.gaprnt(1, "Warning: Contour levels are not strictly increasing");
-                GaGx.gaprnt(1, "         This may lead to errors or undesired results");
+                _drawingContext.Logger?.LogInformation("Warning: Contour levels are not strictly increasing");
+                _drawingContext.Logger?.LogInformation("         This may lead to errors or undesired results");
                 break;
             }
         }
@@ -587,29 +591,29 @@ internal class GaUser
         pcm.ccflg = cols.Length;
         pcm.ccols = cols;
 
-        GaGx.gaprnt(2, $"Number of ccols = {pcm.ccflg}");
+        _drawingContext.Logger?.LogInformation($"Number of ccols = {pcm.ccflg}");
         if (pcm.cflag == 0)
         {
-            GaGx.gaprnt(2, "ccols won't take effect unless clevs are set.");
+            _drawingContext.Logger?.LogInformation("ccols won't take effect unless clevs are set.");
         }
     }
 
     public void SetCMin(double cmin)
     {
         pcm.cmin = cmin;
-        GaGx.gaprnt(2, $"cmin = {cmin}");
+        _drawingContext.Logger?.LogInformation($"cmin = {cmin}");
     }
 
     public void SetCMax(double cmax)
     {
         pcm.cmax = cmax;
-        GaGx.gaprnt(2, $"cmax = {cmax}");
+        _drawingContext.Logger?.LogInformation($"cmax = {cmax}");
     }
 
     public void SetCMark(double cmark)
     {
         pcm.cmax = cmark;
-        GaGx.gaprnt(2, $"cmark = {cmark}");
+        _drawingContext.Logger?.LogInformation($"cmark = {cmark}");
     }
 
     public void SetMProjection(Projection projection)
@@ -917,25 +921,25 @@ internal class GaUser
     public void SetCThick(int cthck)
     {
         pcm.cthick = cthck;
-        GaGx.gaprnt(2, $"cthick = {pcm.cthick}");
+        _drawingContext.Logger?.LogInformation($"cthick = {pcm.cthick}");
     }
 
     public void SetCStyle(LineStyle style)
     {
         pcm.cstyle = (int)style;
-        GaGx.gaprnt(2, $"cstyle = {pcm.cstyle}");
+        _drawingContext.Logger?.LogInformation($"cstyle = {pcm.cstyle}");
     }
 
     public void SetCColor(int color)
     {
         pcm.ccolor = color;
-        GaGx.gaprnt(2, $"ccolor = {pcm.ccolor}");
+        _drawingContext.Logger?.LogInformation($"ccolor = {pcm.ccolor}");
     }
 
     public void SetCSmooth(SmoothOption option)
     {
         pcm.csmth = (int)option;
-        GaGx.gaprnt(2, $"csmth = {pcm.csmth}");
+        _drawingContext.Logger?.LogInformation($"csmth = {pcm.csmth}");
     }
 
     private void SetDimensionData(int dim, double min, double max = Double.MaxValue)
@@ -1127,9 +1131,9 @@ internal class GaUser
                 dmax[i] = Math.Ceiling(dmax[i] - 0.0001);
                 if (dmax[i] <= dmin[i])
                 {
-                    GaGx.gaprnt(0, "Data Request Error: Invalid grid coordinates");
-                    GaGx.gaprnt(0, $"  Varying dimension {i} decreases: {dmin[i]} to {dmax[i]}");
-                    //GaGx.gaprnt(0, $"  Error ocurred getting variable '{sVName}'");
+                    _drawingContext.Logger?.LogInformation("Data Request Error: Invalid grid coordinates");
+                    _drawingContext.Logger?.LogInformation($"  Varying dimension {i} decreases: {dmin[i]} to {dmax[i]}");
+                    //_drawingContext.Logger?.LogInformation($"  Error ocurred getting variable '{sVName}'");
                     return;
                 }
             }
@@ -1330,17 +1334,20 @@ internal class GaUser
 
         if (curr != null)
         {
-            GaGx.gaprnt(2, "Name already DEFINEd:  ");
-            GaGx.gaprnt(2, name);
-            GaGx.gaprnt(2, ".   Will be deleted and replaced.\n");
+            _drawingContext.Logger?.LogInformation("Name already DEFINEd:  ");
+            _drawingContext.Logger?.LogInformation(name);
+            _drawingContext.Logger?.LogInformation(".   Will be deleted and replaced.\n");
             pcm.pdf1.Remove(curr);
         }
 
         pcm.pdf1.Add(pdf);
         pdf.abbrv = name;
         
+        goto retrn;
+        
+        
         etrn:
-        GaGx.gaprnt(0, "Memory allocation error for Define\n");
+        _drawingContext.Logger?.LogInformation("Memory allocation error for Define\n");
 
         retrn:
 
@@ -1400,8 +1407,8 @@ internal class GaUser
         pfi = pcm.pfid;
         if (pfi.type == 2 || pfi.type == 3)
         {
-            GaGx.gaprnt(0, "DEFINE error: Define not yet valid for station data\n");
-            GaGx.gaprnt(0, "              Default file is a station data file\n");
+            _drawingContext.Logger?.LogInformation("DEFINE error: Define not yet valid for station data\n");
+            _drawingContext.Logger?.LogInformation("              Default file is a station data file\n");
             goto retrn;
         }
 
@@ -1475,14 +1482,14 @@ internal class GaUser
         if (rc == 0) rc = _drawingContext.CommonData.sig;
         if (rc > 0)
         {
-            GaGx.gaprnt(0, "DEFINE error:  Invalid expression. ");
+            _drawingContext.Logger?.LogInformation("DEFINE error:  Invalid expression. ");
             goto retrn;
         }
 
         if (pst.type != 1)
         {
-            GaGx.gaprnt(0, "DEFINE Error:  Define does not yet support station data");
-            GaGx.gaprnt(0, "    Expression results in station data object");
+            _drawingContext.Logger?.LogInformation("DEFINE Error:  Define does not yet support station data");
+            _drawingContext.Logger?.LogInformation("    Expression results in station data object");
             goto retrn;
         }
 
@@ -1694,7 +1701,7 @@ internal class GaUser
                             if (rc == 0) rc = _drawingContext.CommonData.sig;
                             if (rc > 0)
                             {
-                                GaGx.gaprnt(0, "DEFINE error:  Invalid expression. \n");
+                                _drawingContext.Logger?.LogInformation("DEFINE error:  Invalid expression. \n");
                                 goto retrn;
                             }
 
@@ -1703,7 +1710,7 @@ internal class GaUser
                                 GaExpr.gagchk(pgr, pgr1, pgr1.idim) > 0 ||
                                 GaExpr.gagchk(pgr, pgr1, pgr1.jdim) > 0)
                             {
-                                GaGx.gaprnt(0, "Define Error: Internal Logic Check 4\n");
+                                _drawingContext.Logger?.LogInformation("Define Error: Internal Logic Check 4\n");
                                 goto retrn;
                             }
 
@@ -1746,7 +1753,7 @@ internal class GaUser
 
         // siz = siz * sizeof(double);
         // snprintf(pout, 1255, "Define memory allocation size = %ld bytes\n", siz);
-        // GaGx.gaprnt(2, pout);
+        // _drawingContext.Logger?.LogInformation(pout);
 
         /* Now we will chain our new object to the chain of define blocks
          hung off the common area */
@@ -1756,9 +1763,9 @@ internal class GaUser
 
         if (curr != null)
         {
-            GaGx.gaprnt(2, "Name already DEFINEd:  ");
-            GaGx.gaprnt(2, name);
-            GaGx.gaprnt(2, ".   Will be deleted and replaced.\n");
+            _drawingContext.Logger?.LogInformation("Name already DEFINEd:  ");
+            _drawingContext.Logger?.LogInformation(name);
+            _drawingContext.Logger?.LogInformation(".   Will be deleted and replaced.\n");
             pcm.pdf1.Remove(curr);
         }
 
@@ -1775,7 +1782,7 @@ internal class GaUser
         return (0);
 
         etrn:
-        GaGx.gaprnt(0, "Memory allocation error for Define\n");
+        _drawingContext.Logger?.LogInformation("Memory allocation error for Define\n");
 
         retrn:
 
@@ -1805,7 +1812,7 @@ internal class GaUser
 
     private void ReadGrib2File(string dataFile)
     {
-        GaGx.gaprnt(0, $"Loading datafile {dataFile}");
+        _drawingContext.Logger?.LogInformation($"Loading datafile {dataFile}");
 
         GradsFile gf = new GradsFile();
         gf.name = dataFile;
@@ -1978,7 +1985,7 @@ internal class GaUser
         rcode = 1;
         if (String.IsNullOrEmpty(variable))
         {
-            GaGx.gaprnt(0, "Display command error:  No expression provided");
+            _drawingContext.Logger?.LogInformation("Display command error:  No expression provided");
             return (1);
         }
 
@@ -2060,8 +2067,8 @@ internal class GaUser
             ldim = pcm.loopdim;
             if (pfi.type > 1 && ldim < 3)
             {
-                GaGx.gaprnt(0, "Display command error:  Invalid looping environment");
-                GaGx.gaprnt(0, "  Cannot loop on stn data through X, Y, or Z");
+                _drawingContext.Logger?.LogInformation("Display command error:  Invalid looping environment");
+                _drawingContext.Logger?.LogInformation("  Cannot loop on stn data through X, Y, or Z");
                 return (1);
             }
 
@@ -2087,7 +2094,7 @@ internal class GaUser
 
             vals = pfi.grvals[ldim];
             if (ldim != 3) conv = pfi.gr2ab[ldim];
-            _drawingContext.GaSubs.gxfrme(2);
+            _drawingContext.GradsDrawingInterface.gxfrme(2);
             pcm.pass = 0;
             labsv = pcm.clab;
             for (l = l1; l <= l2; l++)
@@ -2124,9 +2131,9 @@ internal class GaUser
                 yl = 0.02;
                 s1 = 0.13;
                 s2 = 0.11;
-                _drawingContext.GaSubs.gxwide(1);
-                _drawingContext.GaSubs.gxchpl(lab, llen, xl, yl, s1, s2, 0.0);
-                _drawingContext.GaSubs.gxfrme(2);
+                _drawingContext.GradsDrawingInterface.gxwide(1);
+                _drawingContext.GradsDrawingInterface.gxchpl(lab, llen, xl, yl, s1, s2, 0.0);
+                _drawingContext.GradsDrawingInterface.gxfrme(2);
                 gagrel();
                 pcm.aflag = -1;
                 pcm.aflag2 = -1;
@@ -2193,10 +2200,10 @@ internal class GaUser
         return (0);
 
         err:
-        GaGx.gaprnt(0, "DISPLAY error:  Invalid expression \n");
-        GaGx.gaprnt(0, "  Expression = ");
-        GaGx.gaprnt(0, cmds[i]);
-        GaGx.gaprnt(0, "\n");
+        _drawingContext.Logger?.LogInformation("DISPLAY error:  Invalid expression \n");
+        _drawingContext.Logger?.LogInformation("  Expression = ");
+        _drawingContext.Logger?.LogInformation(cmds[i]);
+        _drawingContext.Logger?.LogInformation("\n");
         pcm.numgrd = i;
         pcm.relnum = i;
         gagrel();
@@ -2262,8 +2269,8 @@ internal class GaUser
             /* X is varying */
             if (pcm.dmin[0] > pcm.dmax[0])
             {
-                GaGx.gaprnt(0, "Operation error:  Invalid dimension environment\n");
-                GaGx.gaprnt(0, $"  Min longitude > max longitude: {pcm.dmin[0]} {pcm.dmax[0]} \n");
+                _drawingContext.Logger?.LogInformation("Operation error:  Invalid dimension environment\n");
+                _drawingContext.Logger?.LogInformation($"  Min longitude > max longitude: {pcm.dmin[0]} {pcm.dmax[0]} \n");
                 goto err;
             }
 
@@ -2279,8 +2286,8 @@ internal class GaUser
             /* Y is varying */
             if (pcm.dmin[1] > pcm.dmax[1])
             {
-                GaGx.gaprnt(0, "Operation error:  Invalid dimension environment\n");
-                GaGx.gaprnt(0, $"  Min longitude > max longitude: {pcm.dmin[1]} {pcm.dmax[1]} \n");
+                _drawingContext.Logger?.LogInformation("Operation error:  Invalid dimension environment\n");
+                _drawingContext.Logger?.LogInformation($"  Min longitude > max longitude: {pcm.dmin[1]} {pcm.dmax[1]} \n");
                 goto err;
             }
 
@@ -2335,15 +2342,15 @@ internal class GaUser
 
         if (lflg > 0 && (vcnt == ll))
         {
-            GaGx.gaprnt(0, "Operation error:  Invalid dimension environment\n");
-            GaGx.gaprnt(0, "  Looping dimension does not vary\n");
+            _drawingContext.Logger?.LogInformation("Operation error:  Invalid dimension environment\n");
+            _drawingContext.Logger?.LogInformation("  Looping dimension does not vary\n");
             goto err;
         }
 
         if (ll > 2)
         {
-            GaGx.gaprnt(0, "Operation error:  Invalid dimension environment\n");
-            GaGx.gaprnt(0, "  Too many varying dimensions \n");
+            _drawingContext.Logger?.LogInformation("Operation error:  Invalid dimension environment\n");
+            _drawingContext.Logger?.LogInformation("  Too many varying dimensions \n");
             goto err;
         }
 
@@ -2364,8 +2371,8 @@ internal class GaUser
     public int DrawString(double x, double y, string text)
     {
         
-        _drawingContext.GaSubs.gxwide(pcm.strthk);
-        _drawingContext.GaSubs.gxcolr(pcm.strcol);
+        _drawingContext.GradsDrawingInterface.gxwide(pcm.strthk);
+        _drawingContext.GradsDrawingInterface.gxcolr(pcm.strcol);
 
         double swide = 0.2;
         _drawingContext.GxChpl.gxchln(text, text.Length, pcm.strhsz, out swide);
@@ -2377,11 +2384,11 @@ internal class GaUser
         x = x - justy[pcm.strjst] * shite * Math.Cos(ang + 1.5708);
         y = y - justy[pcm.strjst] * shite * Math.Sin(ang + 1.5708);
 
-        _drawingContext.GaSubs.gxchpl(text, text.Length, x, y, pcm.strvsz, pcm.strhsz, pcm.strrot);
+        _drawingContext.GradsDrawingInterface.gxchpl(text, text.Length, x, y, pcm.strvsz, pcm.strhsz, pcm.strrot);
         return (0);
 
         errst:
-        GaGx.gaprnt(0, "DRAW error: Syntax is DRAW STRING x y string\n");
+        _drawingContext.Logger?.LogInformation("DRAW error: Syntax is DRAW STRING x y string\n");
         return (1);
         
     }
@@ -2400,5 +2407,15 @@ internal class GaUser
             _drawingContext.CommonData.mapthk = thickness.Value;
         }
     }
-   
+
+    public void SetDataAction(Action<IDataAdapter> dataAction)
+    {
+        _drawingContext.CommonData.DataAction = dataAction;
+    }
+
+    public void SetPaperSize(double xsize, double ysize)
+    {
+        _drawingContext.CommonData.xsiz = xsize;
+        _drawingContext.CommonData.ysiz = ysize;
+    }
 }
