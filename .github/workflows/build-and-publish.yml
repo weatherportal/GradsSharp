@@ -33,7 +33,7 @@ jobs:
         git config user.name "Bart Devriendt"
         git config user.email "bart.devriendt@gmail.com"
         git add .
-        git commit -m "Update project version to ${{ steps.update.outputs.newVersion }}"
+        git commit -m "[ci skip] Update project version to ${{ steps.update.outputs.newVersion }}"
         git push
     - name: Restore dependencies
       run: dotnet restore
