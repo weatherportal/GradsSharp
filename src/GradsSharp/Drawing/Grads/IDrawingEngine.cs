@@ -1,11 +1,18 @@
 ﻿namespace GradsSharp.Drawing.Grads;
 
+/// <summary>
+/// This interface can be used to implement a new drawing engine for Grads.  See all methods for more information on the different functions
+/// </summary>
 public interface IDrawingEngine
 {
     
     void gxpcfg();
     bool gxpckfont();
-    void gxpbgn(double xsz, double ysz);
+    /// <summary>
+    /// Initialize the drawing 
+    /// </summary>
+    /// <param name="xsz"></param>
+    /// <param name="ysz"></param>
     void gxpinit(double xsz, double ysz);
     void gxpend();
     int gxprint(string fnout, int xin, int yin, int bwin, int fmtflg,
