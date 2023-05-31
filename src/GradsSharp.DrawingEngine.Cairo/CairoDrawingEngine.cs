@@ -70,11 +70,11 @@ public class CairoDrawingEngine : IDrawingEngine
         return true;
     }
 
-    public void gxpbgn(double xsz, double ysz)
-    {
-        xsize = xsz;
-        ysize = ysz;
-    }
+    // public void gxpbgn(double xsz, double ysz)
+    // {
+    //     xsize = xsz;
+    //     ysize = ysz;
+    // }
 
     public void gxpinit(double xsz, double ysz)
     {

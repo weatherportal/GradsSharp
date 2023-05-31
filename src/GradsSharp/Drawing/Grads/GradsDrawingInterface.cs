@@ -66,7 +66,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         // }
 
         DrawingEngine.gxpinit(xmx, ymx);
-        DrawingEngine.gxpbgn(xmx, ymx);
+        //DrawingEngine.gxpbgn(xmx, ymx);
 
         rxsize = xmx; /* Set local variables with real page size  */
         rysize = ymx;
