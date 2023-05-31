@@ -5,6 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace GradsSharp;
 
+/// <summary>
+/// This class is the basis to start working with the library.  It gives you an interface to send commands to the
+/// drawing backend.  It requires registration of a <see cref="IDrawingEngine">IDrawingEngine</see> to be able to output the drawings to an outputtype
+/// of choice
+/// </summary>
 public class GradsEngine
 {
     private DrawingContext _drawingContext;
@@ -21,6 +26,10 @@ public class GradsEngine
         _staticLogger = logger;
     }
 
+    /// <summary>
+    /// Register a drawing engine to output the drawing instructions to
+    /// </summary>
+    /// <param name="engine">Instance of the drawing engine</param>
     public void RegisterDrawingEngine(IDrawingEngine engine)
     {
         _drawingContext.GradsDrawingInterface.DrawingEngine = engine;
