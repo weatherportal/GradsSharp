@@ -19,14 +19,14 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+          dotnet-version: 7.0.x
     - name: Bump build version
       id: bump
       uses: vers-one/dotnet-project-version-updater@v1.3
       
       with:
-        file: "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
-        version: bump-build
+          file: "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
+          version: bump-build
     
     - run: |
         git config user.name "Bart Devriendt"
