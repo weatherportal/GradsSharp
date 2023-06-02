@@ -104,7 +104,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
 
         _drawingContext.GxChpl.gxchdf(0);
-        _drawingContext.GradsDrawingInterface.gxcolr(1);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
         _drawingContext.GradsDatabase.gxdbsettransclr(-1);
         _drawingContext.GradsDrawingInterface.gxfrme(1);
     }
@@ -2372,7 +2372,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
     {
         
         _drawingContext.GradsDrawingInterface.gxwide(pcm.strthk);
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.strcol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.strcol);
 
         double swide = 0.2;
         _drawingContext.GxChpl.gxchln(text, text.Length, pcm.strhsz, out swide);

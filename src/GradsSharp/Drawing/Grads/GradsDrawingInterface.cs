@@ -90,7 +90,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         gxvpag(xmx, ymx, 0.0, xmx, 0.0, ymx); /* Virtual page scaling    */
         mask = null;
         maskflg = -999; /* Don't allocate mask until first use */
-        gxcolr(1);
+        SetDrawingColor(1);
         return 0;
     }
 
@@ -198,9 +198,9 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         {
             /* If background is not black/white, draw a full page rectangle and populate the metabuffer */
             savcol = lcolor;
-            gxcolr(bcol);
-            gxrecf(0.0, rxsize, 0.0, rysize);
-            gxcolr(savcol);
+            SetDrawingColor(bcol);
+            DrawFilledRectangle(0.0, rxsize, 0.0, rysize);
+            SetDrawingColor(savcol);
         }
     }
 
@@ -213,8 +213,9 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 			  14 - d.purple 15 - gray
    Other colors may be available but are defined by the device driver */
 
-    public void gxcolr(int clr)
+    public void SetDrawingColor(int clr)
     {
+        // old method name: gxcolr
         /* Set color     */
         if (clr < 0) clr = 0;
         if (clr >= Gx.COLORMAX) clr = Gx.COLORMAX - 1;
@@ -252,8 +253,9 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
    coarsely, where any move or draw point that is outside the
    clip region is not plotted.                          */
 
-    public void gxmove(double x, double y)
+    public void MoveToPoint(double x, double y)
     {
+        // old method name:  gxmove
         /* Move to x,y   */
         mflag = 0;
         oldx = x;
@@ -272,8 +274,9 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 
 /* Draw to x, y with clipping */
 
-    public void gxdraw(double x, double y)
+    public void DrawLineToPoint(double x, double y)
     {
+        // old method name: gxdraw
         /* Draw to x,y   */
         double xnew, ynew;
         int pos = 0;
@@ -338,7 +341,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         {
             ydif = Math.Abs(oldy - y);
             xdif = Math.Abs(oldx - x);
-            if (ydif < 0.03 && xdif < 0.03) gxdraw(x, y);
+            if (ydif < 0.03 && xdif < 0.03) DrawLineToPoint(x, y);
             else
             {
                 if (xdif > ydif)
@@ -354,10 +357,10 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
                     {
                         xx = xx + incr;
                         yy = yy + incr * slope;
-                        gxdraw(xx, yy);
+                        DrawLineToPoint(xx, yy);
                     }
 
-                    gxdraw(x, y);
+                    DrawLineToPoint(x, y);
                 }
                 else
                 {
@@ -372,16 +375,16 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
                     {
                         xx = xx + incr * slope;
                         yy = yy + incr;
-                        gxdraw(xx, yy);
+                        DrawLineToPoint(xx, yy);
                     }
 
-                    gxdraw(x, y);
+                    DrawLineToPoint(x, y);
                 }
             }
         }
         else
         {
-            gxdraw(x, y);
+            DrawLineToPoint(x, y);
         }
     }
 
@@ -454,8 +457,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 
         if (lstyle < 2)
         {
-            if (ipen == 2) gxdraw(x, y);
-            else gxmove(x, y);
+            if (ipen == 2) DrawLineToPoint(x, y);
+            else MoveToPoint(x, y);
             xsave = x;
             ysave = y;
             return;
@@ -468,7 +471,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
             jpen = 2;
             xsave = x;
             ysave = y;
-            gxmove(x, y);
+            MoveToPoint(x, y);
             return;
         }
 
@@ -478,8 +481,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         {
             x1 = xsave + (x - xsave) * (slen / alen);
             y1 = ysave + (y - ysave) * (slen / alen);
-            if (jpen == 2) gxdraw(x1, y1);
-            else gxmove(x1, y1);
+            if (jpen == 2) DrawLineToPoint(x1, y1);
+            else MoveToPoint(x1, y1);
             dpnt += 1;
             if (dpnt > dnum) dpnt = 0;
             slen = slen + dash[dpnt];
@@ -490,8 +493,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         slen = slen - alen;
         xsave = x;
         ysave = y;
-        if (jpen == 2) gxdraw(x, y);
-        else gxmove(x, y);
+        if (jpen == 2) DrawLineToPoint(x, y);
+        else MoveToPoint(x, y);
         if (slen < 0.001)
         {
             dpnt += 1;
@@ -755,8 +758,9 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 
 /* Plot a color filled rectangle.  */
 
-    public void gxrecf(double xlo, double xhi, double ylo, double yhi)
+    public void DrawFilledRectangle(double xlo, double xhi, double ylo, double yhi)
     {
+        // old method name: gxrecf
         double x;
 
         if (xlo > xhi)
@@ -831,10 +835,10 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         if (mtype == 1)
         {
             /* cross hair */
-            gxmove(x, y - siz2);
-            gxdraw(x, y + siz2);
-            gxmove(x - siz2, y);
-            gxdraw(x + siz2, y);
+            MoveToPoint(x, y - siz2);
+            DrawLineToPoint(x, y + siz2);
+            MoveToPoint(x - siz2, y);
+            DrawLineToPoint(x + siz2, y);
             return;
         }
 
@@ -859,8 +863,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
             if (mtype == 2)
             {
                 /* Open circle */
-                gxmove(xy[0], xy[1]);
-                for (i = 1; i < cnt; i++) gxdraw(xy[i * 2], xy[i * 2 + 1]);
+                MoveToPoint(xy[0], xy[1]);
+                for (i = 1; i < cnt; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
             }
             else if (mtype == 3)
             {
@@ -870,11 +874,11 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
             else if (mtype == 10)
             {
                 /* Scattered fill */
-                gxmove(xy[6], xy[7]);
-                for (i = 4; i < 14; i++) gxdraw(xy[i * 2], xy[i * 2 + 1]);
-                gxmove(xy[30], xy[31]);
-                for (i = 16; i < 25; i++) gxdraw(xy[i * 2], xy[i * 2 + 1]);
-                gxdraw(xy[0], xy[1]);
+                MoveToPoint(xy[6], xy[7]);
+                for (i = 4; i < 14; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
+                MoveToPoint(xy[30], xy[31]);
+                for (i = 16; i < 25; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
+                DrawLineToPoint(xy[0], xy[1]);
                 for (i = 8; i < 14; i++) xy[i] = xy[i + 18];
                 xy[14] = xy[2];
                 xy[15] = xy[3];
@@ -891,10 +895,10 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
                 xy[25] = y + siz2 * Math.Sin(248.0 * Math.PI / 180.0);
                 xy[32] = x + siz2 * Math.Cos(292.0 * Math.PI / 180.0);
                 xy[33] = y + siz2 * Math.Sin(292.0 * Math.PI / 180.0);
-                gxmove(xy[0], xy[1]);
-                for (i = 1; i < 5; i++) gxdraw(xy[i * 2], xy[i * 2 + 1]);
-                gxmove(xy[24], xy[25]);
-                for (i = 13; i < 17; i++) gxdraw(xy[i * 2], xy[i * 2 + 1]);
+                MoveToPoint(xy[0], xy[1]);
+                for (i = 1; i < 5; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
+                MoveToPoint(xy[24], xy[25]);
+                for (i = 13; i < 17; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
                 xy[26] = xy[8];
                 xy[27] = xy[9];
                 gxfill(xy.Skip(8).ToArray(), 10);
@@ -921,8 +925,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
             xy[9] = xy[1];
             if (mtype == 4)
             {
-                gxmove(xy[0], xy[1]);
-                for (i = 1; i < 5; i++) gxdraw(xy[i * 2], xy[i * 2 + 1]);
+                MoveToPoint(xy[0], xy[1]);
+                for (i = 1; i < 5; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
             }
             else
             {
@@ -935,21 +939,21 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         if (mtype == 6)
         {
             /* ex marks the spot */
-            gxmove(x - siz2 * 0.71, y - siz2 * 0.71);
-            gxdraw(x + siz2 * 0.71, y + siz2 * 0.71);
-            gxmove(x - siz2 * 0.71, y + siz2 * 0.71);
-            gxdraw(x + siz2 * 0.71, y - siz2 * 0.71);
+            MoveToPoint(x - siz2 * 0.71, y - siz2 * 0.71);
+            DrawLineToPoint(x + siz2 * 0.71, y + siz2 * 0.71);
+            MoveToPoint(x - siz2 * 0.71, y + siz2 * 0.71);
+            DrawLineToPoint(x + siz2 * 0.71, y - siz2 * 0.71);
             return;
         }
 
         if (mtype == 7 || mtype == 12)
         {
             /* Open or closed diamond */
-            gxmove(x - siz2 * 0.75, y);
-            gxdraw(x, y + siz2 * 1.1);
-            gxdraw(x + siz2 * 0.75, y);
-            gxdraw(x, y - siz2 * 1.1);
-            gxdraw(x - siz2 * 0.75, y);
+            MoveToPoint(x - siz2 * 0.75, y);
+            DrawLineToPoint(x, y + siz2 * 1.1);
+            DrawLineToPoint(x + siz2 * 0.75, y);
+            DrawLineToPoint(x, y - siz2 * 1.1);
+            DrawLineToPoint(x - siz2 * 0.75, y);
             if (mtype == 12)
             {
                 xy[0] = x - siz2 * 0.75;
@@ -981,8 +985,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
             xy[7] = y + siz2;
             if (mtype == 8)
             {
-                gxmove(xy[0], xy[1]);
-                for (i = 1; i < 4; i++) gxdraw(xy[i * 2], xy[i * 2 + 1]);
+                MoveToPoint(xy[0], xy[1]);
+                for (i = 1; i < 4; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
             }
             else
             {

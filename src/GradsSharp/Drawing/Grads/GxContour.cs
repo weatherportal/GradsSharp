@@ -864,14 +864,14 @@ internal class GxContour
                 /* contour label is not rotated */
                 x = gxlabx[i] - (w / 2.0); /* adjust reference point */
                 y = gxlaby[i] - (h / 2.0);
-                _drawingContext.GradsDrawingInterface.gxcolr(bcol);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(bcol);
                 buff = h * 0.2; /* add a buffer above and below the string, already padded in X */
-                _drawingContext.GradsDrawingInterface.gxrecf(x, x + w, y - buff, y + h + buff); /* draw the background rectangle,  */
+                _drawingContext.GradsDrawingInterface.DrawFilledRectangle(x, x + w, y - buff, y + h + buff); /* draw the background rectangle,  */
                 if (colflg > -1) fcol = colflg;
                 else fcol = gxlabc[i];
                 if (fcol == bcol)
-                    _drawingContext.GradsDrawingInterface.gxcolr(1); /* if label color is same as background, use foreground */
-                else _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(1); /* if label color is same as background, use foreground */
+                else _drawingContext.GradsDrawingInterface.SetDrawingColor(fcol);
                 _drawingContext.GradsDrawingInterface.gxchpl(gxlabv[i], lablen, x, y, h, csize, 0.0); /* draw the label */
             }
             else
@@ -897,19 +897,19 @@ internal class GxContour
                 xy[7] = gxlaby[i] + yd2 - yd1;
                 xy[8] = xy[0];
                 xy[9] = xy[1];
-                _drawingContext.GradsDrawingInterface.gxcolr(bcol);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(bcol);
                 _drawingContext.GradsDrawingInterface.gxfill(xy, 5);
                 if (colflg > -1) fcol = colflg;
                 else fcol = gxlabc[i];
                 if (fcol == bcol)
-                    _drawingContext.GradsDrawingInterface.gxcolr(1); /* if label color is same as background, use foreground */
-                else _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(1); /* if label color is same as background, use foreground */
+                else _drawingContext.GradsDrawingInterface.SetDrawingColor(fcol);
                 _drawingContext.GradsDrawingInterface.gxchpl(gxlabv[i], lablen, x, y, h, csize,
                     gxlabs[i] * 180 / Math.PI); /* draw the label */
             }
         }
 
-        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(colr);
         gxlabn = 0;
     }
 
@@ -944,7 +944,7 @@ internal class GxContour
                     xystrt = 2;
                     xyend = xystrt + 2 * (pclbuf.len - 1);
                     for (i = 0; i < 2 * pclbuf.len; i++) fwk[xystrt + i] = pclbuf.lxy[i];
-                    _drawingContext.GradsDrawingInterface.gxcolr(pclbuf.color);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(pclbuf.color);
                     _drawingContext.GradsDrawingInterface.gxstyl(pclbuf.style);
                     _drawingContext.GradsDrawingInterface.gxwide(pclbuf.width);
                     lcntr.spline = pclbuf.sfit;
@@ -1201,7 +1201,7 @@ internal class GxContour
         scol = GradsDrawingInterface.lcolor;
         if (pcntr.labcol > -1) fcol = pcntr.labcol;
         else fcol = ccol;
-        _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(fcol);
         swid = GradsDrawingInterface.lwide;
         /* if contour label thickness is set to -999, then we draw a fat version of the label
            in the background color and then overlay a thin version of the label in desired color.
@@ -1211,8 +1211,8 @@ internal class GxContour
         if (pcntr.labwid == -999)
         {
             /* invoke settings for fat background label */
-            _drawingContext.GradsDrawingInterface.gxcolr(12);
-            _drawingContext.GradsDrawingInterface.gxcolr(bcol);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(12);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(bcol);
         }
 
         /* draw the label */
@@ -1220,15 +1220,15 @@ internal class GxContour
         if (pcntr.labwid == -999)
         {
             /* overlay a thin label in foreground color */
-            _drawingContext.GradsDrawingInterface.gxcolr(1);
-            _drawingContext.GradsDrawingInterface.gxcolr(fcol);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(fcol);
             _drawingContext.GradsDrawingInterface.gxchpl(clabel, lablen, x, y, h, csize, 0.0);
         }
 
         /* update the mask where this label is positioned */
         _drawingContext.GradsDrawingInterface.gxmaskrec(x - buff, x + w + buff, y - buff, y + h + buff);
 
-        _drawingContext.GradsDrawingInterface.gxcolr(scol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(scol);
         _drawingContext.GradsDrawingInterface.gxwide(swid);
     }
 

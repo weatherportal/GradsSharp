@@ -4071,7 +4071,7 @@ internal class GaGx
 
         if (pcm.ccolor >= 0) lcol = pcm.ccolor;
         else lcol = 1;
-        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(lcol);
         _drawingContext.GradsDrawingInterface.gxstyl(pcm.cstyle);
         _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
         _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
@@ -4091,7 +4091,7 @@ internal class GaGx
 
         _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
         _drawingContext.GradsDrawingInterface.gxwide(4);
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgru.idim, pgru.jdim);
@@ -4185,7 +4185,7 @@ internal class GaGx
 
         if (pcm.ccolor >= 0) lcol = pcm.ccolor;
         else lcol = 1;
-        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(lcol);
         _drawingContext.GradsDrawingInterface.gxstyl(1);
         _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
         _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
@@ -4270,11 +4270,11 @@ internal class GaGx
                     if (hflg == 3) hemflg = true;
                     if (flag)
                     {
-                        if (cmask[cntcm] == 0) _drawingContext.GradsDrawingInterface.gxcolr(15);
+                        if (cmask[cntcm] == 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(15);
                         else
                         {
                             lcol = gashdc(c[cntc]);
-                            if (lcol > -1) _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+                            if (lcol > -1) _drawingContext.GradsDrawingInterface.SetDrawingColor(lcol);
                         }
                     }
 
@@ -4318,7 +4318,7 @@ internal class GaGx
 
         if (pcm.arlflg && vscal > 0.0 && !brbflg)
         {
-            _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
             _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk - 2);
             gaarrw(pcm.xsiz2 - 2.0, pcm.ysiz1 - 0.5, 0.0, pcm.arrsiz, pcm.ahdsiz);
             pout = String.Format("{0:g}", vscal);
@@ -4328,7 +4328,7 @@ internal class GaGx
         }
 
         _drawingContext.GradsDrawingInterface.gxwide(4);
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgru.idim, pgru.jdim);
@@ -4516,14 +4516,14 @@ internal class GaGx
                     if (cmask[cmcnt] == 0)
                     {
                         /* if color grid has missing data, use color 15 */
-                        _drawingContext.GradsDrawingInterface.gxcolr(15);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(15);
                     }
                     else
                     {
                         lcol = gashdc(c[ccnt]);
                         if (lcol > -1)
                         {
-                            _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+                            _drawingContext.GradsDrawingInterface.SetDrawingColor(lcol);
                         }
                         else
                         {
@@ -4534,8 +4534,8 @@ internal class GaGx
                 else
                 {
                     /* if no color grid is given, draw it the old way */
-                    if (pcm.ccolor < 0) _drawingContext.GradsDrawingInterface.gxcolr(1);
-                    else _drawingContext.GradsDrawingInterface.gxcolr(pcm.ccolor);
+                    if (pcm.ccolor < 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
+                    else _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.ccolor);
                 }
 
                 if (drawthismark)
@@ -4667,7 +4667,7 @@ internal class GaGx
         jdiv = 1.0;
         if (pcm.ccolor >= 0) lcol = pcm.ccolor;
         else lcol = 1;
-        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(lcol);
         _drawingContext.GradsDrawingInterface.gxstyl(1);
         _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
 
@@ -4675,7 +4675,7 @@ internal class GaGx
 
         if (pcm.gridln != -1)
         {
-            if (pcm.gridln > -1) _drawingContext.GradsDrawingInterface.gxcolr(pcm.gridln);
+            if (pcm.gridln > -1) _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.gridln);
             for (i = 1; i <= pgr.isiz; i++)
             {
                 for (j = 1; j <= pgr.jsiz; j++)
@@ -4718,12 +4718,12 @@ internal class GaGx
                     if (flag && mmask[mmcnt] != 0 && m[mcnt] <= 0.0)
                     {
                         _drawingContext.GradsDrawingInterface.gxwide(1);
-                        _drawingContext.GradsDrawingInterface.gxcolr(15);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(15);
                     }
                     else
                     {
                         _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
-                        _drawingContext.GradsDrawingInterface.gxcolr(lcol);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(lcol);
                     }
 
                     GradsDrawingInterface.gxconv((double)i, (double)j, out xlo, out ylo, 3);
@@ -4746,7 +4746,7 @@ internal class GaGx
         }
 
         _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         _drawingContext.GradsDrawingInterface.gxwide(4);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
@@ -6431,7 +6431,7 @@ internal class GaGx
 
                         xybuf[xy] = xybuf[0];
                         xybuf[xy + 1] = xybuf[1];
-                        _drawingContext.GradsDrawingInterface.gxcolr(scol);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(scol);
                         _drawingContext.GradsDrawingInterface.gxfill(xybuf, (1 + i - isav) * 2 + 1);
                     }
 
@@ -6466,7 +6466,7 @@ internal class GaGx
 
                 xybuf[xy] = xybuf[0];
                 xybuf[xy + 1] = xybuf[1];
-                _drawingContext.GradsDrawingInterface.gxcolr(scol);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(scol);
                 _drawingContext.GradsDrawingInterface.gxfill(xybuf, (2 + pgr.isiz - isav) * 2 + 1);
             }
         }
@@ -6478,7 +6478,7 @@ internal class GaGx
 
         if (pgr.idim == 0 && pgr.jdim == 1) gawmap(false);
         _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         _drawingContext.GradsDrawingInterface.gxwide(4);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
@@ -6565,7 +6565,7 @@ internal class GaGx
         if (pgr.umin == 0)
         {
             _drawingContext.Logger?.LogInformation("Cannot contour grid - all undefined values \n");
-            _drawingContext.GradsDrawingInterface.gxcolr(1);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
             if (pcm.dwrnflg) _drawingContext.GradsDrawingInterface.gxchpl("Entire Grid Undefined", 21, 3.0, 4.5, 0.3, 0.25, 0.0);
             return 1;
         }
@@ -6620,7 +6620,7 @@ internal class GaGx
         }
 
         /* set contour color */
-        if (pcm.ccolor >= 0) _drawingContext.GradsDrawingInterface.gxcolr(pcm.ccolor);
+        if (pcm.ccolor >= 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.ccolor);
         if (pcm.ccolor < 0 && pcm.rainmn == 0.0 && pcm.rainmx == 0.0 && pcm.cflag == 0)
         {
             pcm.rainmn = cmin;
@@ -6813,12 +6813,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.rbcols[ii]);
                                 cntrcol = pcm.rbcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[irb - ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.rbcols[irb - ii]);
                                 cntrcol = pcm.rbcols[irb - ii];
                             }
                         }
@@ -6826,12 +6826,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(rcols[ii]);
                                 cntrcol = rcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[12 - ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(rcols[12 - ii]);
                                 cntrcol = rcols[12 - ii];
                             }
                         }
@@ -6842,7 +6842,7 @@ internal class GaGx
                         /* overlays */
                         ii = i;
                         if (ii >= pcm.ccflg) ii = pcm.ccflg - 1;
-                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.ccols[ii]);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.ccols[ii]);
                         cntrcol = pcm.ccols[ii];
                     }
 
@@ -6916,12 +6916,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.rbcols[ii]);
                                 cntrcol = pcm.rbcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(pcm.rbcols[irb - ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.rbcols[irb - ii]);
                                 cntrcol = pcm.rbcols[irb - ii];
                             }
                         }
@@ -6929,12 +6929,12 @@ internal class GaGx
                         {
                             if (pcm.ccolor == -1)
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(rcols[ii]);
                                 cntrcol = rcols[ii];
                             }
                             else
                             {
-                                _drawingContext.GradsDrawingInterface.gxcolr(rcols[12 - ii]);
+                                _drawingContext.GradsDrawingInterface.SetDrawingColor(rcols[12 - ii]);
                                 cntrcol = rcols[12 - ii];
                             }
                         }
@@ -7029,7 +7029,7 @@ internal class GaGx
                 }
                 else
                 {
-                    if (pcm.clcol > -1) _drawingContext.GradsDrawingInterface.gxcolr(pcm.clcol);
+                    if (pcm.clcol > -1) _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.clcol);
                     if (pcm.clthck > -1) _drawingContext.GradsDrawingInterface.gxwide(pcm.clthck);
                     _drawingContext.GxContour.gxclab(pcm.clsiz, pcm.clab > 0, pcm.clcol);
                 }
@@ -7045,7 +7045,7 @@ internal class GaGx
         }
 
         _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         _drawingContext.GradsDrawingInterface.gxwide(4);
         if (shpflg == 0)
         {
@@ -7134,7 +7134,7 @@ internal class GaGx
             if (pcm.xlpos != 0.0)
             {
                 /* X axis is offset from frame */
-                _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
                 _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
                 _drawingContext.GradsDrawingInterface.gxstyl(1);
                 _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, pos, 3);
@@ -7151,7 +7151,7 @@ internal class GaGx
             if (pcm.ylpos != 0.0)
             {
                 /* Y axis is offset from frame */
-                _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
                 _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
                 _drawingContext.GradsDrawingInterface.gxstyl(1);
                 _drawingContext.GradsDrawingInterface.gxplot(pos, pcm.ysiz1, 3);
@@ -7316,7 +7316,7 @@ internal class GaGx
         }
 
         /* draw labels, tic marks, and grid lines */
-        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(colr);
         _drawingContext.GradsDrawingInterface.gxwide(thck);
         _drawingContext.GradsDrawingInterface.gxstyl(1);
         if (dim != 3)
@@ -7387,10 +7387,10 @@ internal class GaGx
                     {
                         _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                         _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
-                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.grcolr);
                         _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz1, 3);
                         _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz2, 2);
-                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(colr);
                         _drawingContext.GradsDrawingInterface.gxwide(thck);
                         _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
@@ -7430,11 +7430,11 @@ internal class GaGx
                     {
                         _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                         _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
-                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.grcolr);
                         _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, y, 3);
                         _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz2, y, 2);
                         _drawingContext.GradsDrawingInterface.gxwide(thck);
-                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(colr);
                         _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
 
@@ -7469,11 +7469,11 @@ internal class GaGx
                     {
                         _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                         _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
-                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.grcolr);
                         _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz1, 3);
                         _drawingContext.GradsDrawingInterface.gxplot(x, pcm.ysiz2, 2);
                         _drawingContext.GradsDrawingInterface.gxwide(thck);
-                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(colr);
                         _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
 
@@ -7547,11 +7547,11 @@ internal class GaGx
                     {
                         _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                         _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
-                        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.grcolr);
                         _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz1, y, 3);
                         _drawingContext.GradsDrawingInterface.gxplot(pcm.xsiz2, y, 2);
                         _drawingContext.GradsDrawingInterface.gxwide(thck);
-                        _drawingContext.GradsDrawingInterface.gxcolr(colr);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(colr);
                         _drawingContext.GradsDrawingInterface.gxstyl(1);
                     }
 
@@ -8452,14 +8452,14 @@ internal class GaGx
                 {
                     /* these form the frame, so use annotation color and thickness */
                     _drawingContext.GradsDrawingInterface.gxstyl(1);
-                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
                     _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
                 }
                 else
                 {
                     /* these are grid lines */
                     _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
-                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.grcolr);
                     _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                 }
 
@@ -8479,14 +8479,14 @@ internal class GaGx
                 {
                     /* these form the frame, so use annotation color and thickness */
                     _drawingContext.GradsDrawingInterface.gxstyl(1);
-                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
                     _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
                 }
                 else
                 {
                     /* these are grid lines */
                     _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
-                    _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.grcolr);
                     _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
                 }
 
@@ -8566,7 +8566,7 @@ internal class GaGx
         }
 
         _drawingContext.GradsDrawingInterface.gxstyl(pcm.grstyl);
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.grcolr);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.grcolr);
         _drawingContext.GradsDrawingInterface.gxwide(pcm.grthck);
         _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
         for (v = lnstrt; v < lnend + lnincr * 0.5; v += lnincr)
@@ -8595,7 +8595,7 @@ internal class GaGx
 
         if (pcm.frame == 2)
         {
-            _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
             _drawingContext.GradsDrawingInterface.gxwide(pcm.annthk);
             _drawingContext.GradsDrawingInterface.gxstyl(1);
             /* for orthographic projections */
@@ -8663,9 +8663,9 @@ internal class GaGx
                 else if (type == 19 || type == 20) icol = 2;
                 else if (type == 31 || type == 32) icol = 0;
                 else icol = scol[part];
-                _drawingContext.GradsDrawingInterface.gxcolr(wxcols[icol]);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(wxcols[icol]);
             }
-            else _drawingContext.GradsDrawingInterface.gxcolr(colr);
+            else _drawingContext.GradsDrawingInterface.SetDrawingColor(colr);
 
             x = xpos + sxpos[i + ioff] * scale;
             y = ypos + sypos[i + ioff] * scale;
@@ -8848,7 +8848,7 @@ internal class GaGx
                     {
                         if (v[cntv] > vs[k] && v[cntv] <= vs[k + 1])
                         {
-                            _drawingContext.GradsDrawingInterface.gxcolr(clrs[k]);
+                            _drawingContext.GradsDrawingInterface.SetDrawingColor(clrs[k]);
                             GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
                             xybox[0] = x;
                             xybox[1] = y;
@@ -8872,7 +8872,7 @@ internal class GaGx
 
                     if (flag)
                     {
-                        _drawingContext.GradsDrawingInterface.gxcolr(clrs[lvs - 1]);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(clrs[lvs - 1]);
                         GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) - 0.5, out x, out y, 3);
                         xybox[0] = x;
                         xybox[1] = y;
@@ -9056,7 +9056,7 @@ internal class GaGx
     void gafram()
     {
         var pcm = _drawingContext.CommonData;
-        _drawingContext.GradsDrawingInterface.gxcolr(pcm.anncol);
+        _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         if (pcm.frame == 0) return;
         if (pcm.frame == 2 && pcm.mproj > 2) return;
         if (pcm.mproj > 4) return;

@@ -199,8 +199,8 @@ internal class GxChpl
     
                 rx = xc + d * Math.Cos(ang);
                 ry = yc + d * Math.Sin(ang);
-                if (ipen == 3) _drawingContext.GradsDrawingInterface.gxmove(rx, ry);
-                else _drawingContext.GradsDrawingInterface.gxdraw(rx, ry);
+                if (ipen == 3) _drawingContext.GradsDrawingInterface.MoveToPoint(rx, ry);
+                else _drawingContext.GradsDrawingInterface.DrawLineToPoint(rx, ry);
                 ipen = 2;
             }
     

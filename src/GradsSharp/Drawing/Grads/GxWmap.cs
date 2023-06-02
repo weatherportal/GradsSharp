@@ -181,13 +181,13 @@ internal class GxWmap
             if (mopt.mcol[type] == -9) continue;
             if (mopt.mcol[type] == -1)
             {
-                _drawingContext.GradsDrawingInterface.gxcolr(mopt.dcol);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(mopt.dcol);
                 _drawingContext.GradsDrawingInterface.gxstyl(mopt.dstl);
                 _drawingContext.GradsDrawingInterface.gxwide(mopt.dthk);
             }
             else
             {
-                _drawingContext.GradsDrawingInterface.gxcolr(mopt.mcol[type]);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(mopt.mcol[type]);
                 _drawingContext.GradsDrawingInterface.gxstyl(mopt.mstl[type]);
                 _drawingContext.GradsDrawingInterface.gxwide(mopt.mthk[type]);
             }

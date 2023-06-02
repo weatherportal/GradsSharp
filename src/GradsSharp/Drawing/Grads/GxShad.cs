@@ -292,7 +292,7 @@ internal class GxShad
                     xypnt[2 + (j * 2 + 1)] = y;
                 }
 
-                _drawingContext.GradsDrawingInterface.gxcolr(color);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(color);
                 _drawingContext.GradsDrawingInterface.gxfill(xypnt, xycnt);
                 
             }
@@ -1412,7 +1412,7 @@ internal class GxShad
                 xybuf[(k * 2 + 1)] = y;
             }
 
-            _drawingContext.GradsDrawingInterface.gxcolr(color);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(color);
             _drawingContext.GradsDrawingInterface.gxfill(xybuf, xycnt);
         }
         else
@@ -1570,12 +1570,12 @@ internal class GxShad
             {
                 if (i < imax)
                 {
-                    if (flgh[f1cnt] == 1) _drawingContext.GradsDrawingInterface.gxcolr(1);
-                    else if (flgh[f1cnt] == 7) _drawingContext.GradsDrawingInterface.gxcolr(3);
-                    else if (flgh[f1cnt] == 8) _drawingContext.GradsDrawingInterface.gxcolr(8);
-                    else if (flgh[f1cnt] == 9) _drawingContext.GradsDrawingInterface.gxcolr(4);
-                    else if (flgh[f1cnt] == 0) _drawingContext.GradsDrawingInterface.gxcolr(15);
-                    else _drawingContext.GradsDrawingInterface.gxcolr(2);
+                    if (flgh[f1cnt] == 1) _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
+                    else if (flgh[f1cnt] == 7) _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
+                    else if (flgh[f1cnt] == 8) _drawingContext.GradsDrawingInterface.SetDrawingColor(8);
+                    else if (flgh[f1cnt] == 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(4);
+                    else if (flgh[f1cnt] == 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(15);
+                    else _drawingContext.GradsDrawingInterface.SetDrawingColor(2);
                     GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
                     _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
                     GradsDrawingInterface.gxconv((double)(i + 1), (double)j, out x, out y, 3);
@@ -1584,12 +1584,12 @@ internal class GxShad
 
                 if (j < jmax)
                 {
-                    if (flgv[f4cnt] == 1) _drawingContext.GradsDrawingInterface.gxcolr(1);
-                    else if (flgv[f4cnt] == 7) _drawingContext.GradsDrawingInterface.gxcolr(3);
-                    else if (flgv[f4cnt] == 8) _drawingContext.GradsDrawingInterface.gxcolr(8);
-                    else if (flgv[f4cnt] == 9) _drawingContext.GradsDrawingInterface.gxcolr(4);
-                    else if (flgv[f4cnt] == 0) _drawingContext.GradsDrawingInterface.gxcolr(15);
-                    else _drawingContext.GradsDrawingInterface.gxcolr(2);
+                    if (flgv[f4cnt] == 1) _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
+                    else if (flgv[f4cnt] == 7) _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
+                    else if (flgv[f4cnt] == 8) _drawingContext.GradsDrawingInterface.SetDrawingColor(8);
+                    else if (flgv[f4cnt] == 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(4);
+                    else if (flgv[f4cnt] == 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(15);
+                    else _drawingContext.GradsDrawingInterface.SetDrawingColor(2);
                     GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
                     _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
                     GradsDrawingInterface.gxconv((double)i, (double)(j + 1), out x, out y, 3);

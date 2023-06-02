@@ -95,7 +95,7 @@ internal class GxShad2
                 else clev2 = clev1 + Math.Abs(vs[k] - vs[k - 1]);
             }
 
-            _drawingContext.GradsDrawingInterface.gxcolr(clrs[k]);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(clrs[k]);
             blev = clev1;
             alev = clev2;
             if (bug > 0) _drawingContext.Logger?.LogInformation($"clevs {clev1} {clev2}");
@@ -133,7 +133,7 @@ internal class GxShad2
                 else clev2 = clev1 + Math.Abs(vs[k] - vs[k - 1]);
             }
 
-            _drawingContext.GradsDrawingInterface.gxcolr(clrs[k]);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(clrs[k]);
 
             /*  Loop through all the grid boxes.  Skip box if any missing values */
 
@@ -1692,14 +1692,14 @@ internal class GxShad2
         if (bug > 0)
         {
             n = GradsDrawingInterface.lcolor;
-            _drawingContext.GradsDrawingInterface.gxcolr(0);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(0);
             _drawingContext.GradsDrawingInterface.gxplot(xxyy[0], xxyy[1], 3);
             for (ii = 1; ii < k; ii++)
             {
                 _drawingContext.GradsDrawingInterface.gxplot(xxyy[ii * 2], xxyy[ii * 2 + 1], 2);
             }
 
-            _drawingContext.GradsDrawingInterface.gxcolr(n);
+            _drawingContext.GradsDrawingInterface.SetDrawingColor(n);
         }
 
         return (0);
@@ -2013,19 +2013,19 @@ internal class GxShad2
             {
                 offset = jg * isize + ig;
 
-                if (pflg[offset]>0) _drawingContext.GradsDrawingInterface.gxcolr(1);
-                else _drawingContext.GradsDrawingInterface.gxcolr(2);
+                if (pflg[offset]>0) _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
+                else _drawingContext.GradsDrawingInterface.SetDrawingColor(2);
                 GradsDrawingInterface.gxconv((double)ig + 1.0, (double)jg + 1.0, out xxx, out yyy, 3);
                 _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 if (s1flg[offset]>0)
                 {
-                    _drawingContext.GradsDrawingInterface.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /*       if (*(s1flg+offset)>7) gxcolr(12);
                              if (*(s1flg+offset)>10 && *(s1flg+offset)<20) gxcolr(6); */
-                    if (s1flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
+                    if (s1flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
                     if (s1flg[offset] == 88)
                     {
-                        _drawingContext.GradsDrawingInterface.gxcolr(6);
+                        _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
                         mk = 1;
                         sz = 0.06;
                     }
@@ -2036,32 +2036,32 @@ internal class GxShad2
 
                 if (s2flg[offset]>0)
                 {
-                    _drawingContext.GradsDrawingInterface.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /* if (*(s2flg+offset)>7) gxcolr(12);
                     if (*(s2flg+offset)>10 && *(s2flg+offset)<20) gxcolr(6); */
-                    if (s2flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
+                    if (s2flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
                     GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.9, out xxx, out yyy, 3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
                 if (s3flg[offset]>0)
                 {
-                    _drawingContext.GradsDrawingInterface.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /* if (*(s3flg+offset)>7) gxcolr(12);
                     if (*(s3flg+offset)>90) gxcolr(7);
                     if (*(s3flg+offset)>10 && *(s3flg+offset)<20) gxcolr(6); */
-                    if (s3flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
+                    if (s3flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
                     GradsDrawingInterface.gxconv((double)ig + 1.9, (double)jg + 1.5, out xxx, out yyy, 3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
                 if (s4flg[offset]>0)
                 {
-                    _drawingContext.GradsDrawingInterface.gxcolr(3);
+                    _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /* if (*(s4flg+offset)>7) gxcolr(12);
                     if (*(s4flg+offset)>90) gxcolr(7);
                     if (*(s4flg+offset)>10 && *(s4flg+offset)<20) gxcolr(6); */
-                    if (s4flg[offset] > 9) _drawingContext.GradsDrawingInterface.gxcolr(6);
+                    if (s4flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
                     GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.1, out xxx, out yyy, 3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }

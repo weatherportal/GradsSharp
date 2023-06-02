@@ -148,7 +148,7 @@ internal class GxStrm
                             icol = gxshdc(shdlvs, shdcls, shdcnt, cv);
                         }
 
-                        if (icol != scol && icol > -1) _drawingContext.GradsDrawingInterface.gxcolr(icol);
+                        if (icol != scol && icol > -1) _drawingContext.GradsDrawingInterface.SetDrawingColor(icol);
                         scol = icol;
                     }
 
@@ -270,7 +270,7 @@ internal class GxStrm
                             icol = gxshdc(shdlvs, shdcls, shdcnt, cv);
                         }
 
-                        if (icol != scol && icol > -1) _drawingContext.GradsDrawingInterface.gxcolr(icol);
+                        if (icol != scol && icol > -1) _drawingContext.GradsDrawingInterface.SetDrawingColor(icol);
                         scol = icol;
                     }
 
