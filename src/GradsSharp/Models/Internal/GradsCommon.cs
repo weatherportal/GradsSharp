@@ -15,6 +15,7 @@ internal class GradsCommon
     public Func<double[], double, double> yab2gr { get; set; }
 
     public Action<IDataAdapter>? DataAction { get; set; }
+    
 
     public double[] xgrval;
     public double[] ygrval;

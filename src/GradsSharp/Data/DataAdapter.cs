@@ -44,4 +44,14 @@ internal class DataAdapter : IDataAdapter
     {
         _drawingContext.GradsCommandInterface.Define(name, data);
     }
+
+    public double GetLevMin()
+    {
+        return _drawingContext.CommonData.dmin[2];
+    }
+
+    public double GetLevMax()
+    {
+        return _drawingContext.CommonData.dmax[2];
+    }
 }
