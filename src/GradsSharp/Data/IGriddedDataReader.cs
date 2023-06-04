@@ -4,7 +4,8 @@ using GradsSharp.Models.Internal;
 
 namespace GradsSharp.Data;
 
-internal interface IGriddedDataReader
+public interface IGriddedDataReader
 {
-    public double[] ReadData(GradsCommon pcmn, GradsFile file, VariableDefinition definition);
+    InputFile OpenFile(string fileName);
+    void ReadData(IGradsGrid grid, VariableDefinition definition);
 }

@@ -1,4 +1,5 @@
-﻿using GradsSharp.Models;
+﻿using GradsSharp.Data;
+using GradsSharp.Models;
 
 namespace GradsSharp;
 
@@ -62,8 +63,8 @@ public interface IGradsCommandInterface
     void SetStreamDensity(int density);
     
     void Define(string varName, string formula);
-    void Define(string varName, double[] data);
-    void Open(string dataFile, DataFormat format);
+    void Define(string varName, IGradsGrid data);
+    void Open(string dataFile, IGriddedDataReader dataReader);
     int Display(string variable);
     int DrawString(double x, double y, string text);
     void SetMapOptions(int color, LineStyle? style , int? thickness);
@@ -73,5 +74,9 @@ public interface IGradsCommandInterface
     void SetPaperSize(double xsize, double ysize);
 
     DimensionInfo QueryDimensionInfo();
+
+    IGradsGrid GetVariable(VariableDefinition definition, int file = 1);
+
+    IGradsGrid? GetMultiLevelData(VariableDefinition definition, double startLevel, double endLevel, MultiLevelFunction function); 
 
 }

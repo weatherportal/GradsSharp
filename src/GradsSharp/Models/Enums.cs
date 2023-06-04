@@ -3,6 +3,25 @@
 namespace GradsSharp.Models;
 
 
+
+public enum InputFileDimensionType
+{
+    Linear,
+    Levels
+}
+
+/* Type of file:  1 = grid
+                  2 = simple station
+                  3 = mapped station
+                  4 = defined grid       */
+public enum FileType
+{
+    Gridded = 1,
+    SimpleStation =2,
+    MappedStation = 3,
+    DefinedGrid = 4
+}
+
 public enum MultiLevelFunction
 {
     Average = 1,
@@ -277,11 +296,6 @@ public enum Axis
     X,
     Y
 }
-public enum DataFormat
-{
-    GFS_GRIB2
-}
-
 public enum FixedSurfaceType
 {
     [Description("Ground or water surface")] GroundOrWaterSurface = 1,
