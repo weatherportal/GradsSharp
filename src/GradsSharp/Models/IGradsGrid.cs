@@ -3,7 +3,7 @@ namespace GradsSharp.Models;
 /// <summary>
 /// Contains data and meta information about gridded data
 /// </summary>
-public interface IGradsGrid
+public interface IGradsGrid : ICloneable
 {
     double[] GridData { get; set; } /* Grid data                 */
     double Undef { get; set; } /* Undefined value for this grid.       */
@@ -17,5 +17,6 @@ public interface IGradsGrid
     
     public double[] WorldDimensionMinimum { get; }
     public double[] WorldDimensionMaximum { get; }
-    
+
+    public IGradsGrid CloneGrid();
 }

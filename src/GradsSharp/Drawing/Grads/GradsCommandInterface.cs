@@ -11,6 +11,8 @@ namespace GradsSharp.Drawing.Grads;
 
 internal class GradsCommandInterface : IGradsCommandInterface
 {
+    private const double FUZZ_SCALE = 1e-5;
+    
     private DrawingContext _drawingContext;
     private GradsCommon pcm;
 
@@ -1053,7 +1055,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         gadef(varName, formula, 0);
     }
 
-    public void Define(string varName, double[] data)
+    public void Define(string varName, IGradsGrid data)
     {
         
         GradsGrid pgr, pgr1;
@@ -1173,53 +1175,10 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pfiv.sbuf = null;
         pfiv.ubuf = null;
 
-        pgr1 = new GradsGrid();
-        pgr1.IDimension = pst.idim;
-        pgr1.JDimension = pst.jdim;
-        pgr1.GridData = data;
+        pgr1 = data as GradsGrid;
         
-        pgr1.jgrab = pfi.gr2ab[pst.jdim];
-        pgr1.iabgr = pfi.ab2gr[pst.idim];
-        pgr1.jabgr = pfi.ab2gr[pst.jdim];
-        pgr1.jvals = pfi.grvals[pst.jdim];
-        pgr1.jlinr = pfi.linear[pst.jdim];
-        pgr1.igrab = pfi.gr2ab[pst.idim];
-        pgr1.ivals = pfi.grvals[pst.idim];
-        pgr1.ilinr = pfi.linear[pst.idim];
-        pgr1.iavals = pfi.abvals[pst.idim];
-        pgr1.javals = pfi.abvals[pst.jdim];
         
                 
-        for (i = 0; i < 5; i++)
-        {
-            if (dmin[i] < 0.0)
-            {
-                pgr1.DimensionMinimum[i] = (int)(dmin[i] - 0.1);
-            }
-            else
-            {
-                pgr1.DimensionMinimum[i] = (int)(dmin[i] + 0.1);
-            }
-
-            if (dmax[i] < 0.0)
-            {
-                pgr1.DimensionMaximum[i] = (int)(dmax[i] - 0.1);
-            }
-            else
-            {
-                pgr1.DimensionMaximum[i] = (int)(dmax[i] + 0.1);
-            }
-        }
-        
-        pgr1.ISize = pgr1.DimensionMaximum[pst.idim] - pgr1.DimensionMinimum[pst.idim] + 1;
-        pgr1.JSize = pgr1.DimensionMaximum[pst.jdim] - pgr1.DimensionMinimum[pst.jdim] + 1;
-
-        pgr1.UndefinedMask = new byte[pgr1.ISize * pgr1.JSize];
-        for (int j = 0; j < pgr1.ISize * pgr1.JSize; j++)
-        {
-            pgr1.UndefinedMask[j] = 1;
-        }
-        
         /* Fill in the pfi block */
         //pgr1 = pst.result.pgr;
         pfiv.type = 4;
@@ -2103,11 +2062,6 @@ internal class GradsCommandInterface : IGradsCommandInterface
             return (1);
         }
 
-        if (pcm.DataAction != null)
-        {
-            pcm.DataAction(new DataAdapter(_drawingContext));
-        }
-
         //garemb(cmd);
 
         pst = getpst(pcm);
@@ -2605,21 +2559,581 @@ internal class GradsCommandInterface : IGradsCommandInterface
             dimInfo.YMin = v1;
             dimInfo.YMax = v2;
         }
-
+        
+        
+        if (pcm.dmin[2] == pcm.dmax[2])
+        {
+            dimInfo.DimensionTypeZ = DimensionType.Fixed;
+            dimInfo.ZMin = dimInfo.ZMax = pcm.dmin[2];
+            dimInfo.Level = pcm.dmin[2];
+        }
+        else
+        {
+            dimInfo.Level = pcm.dmin[1];
+            dimInfo.Level = pcm.dmax[1];
+            dimInfo.ZMin = v1;
+            dimInfo.ZMax = v2;
+        }
 
         return dimInfo;
     }
 
-    public IGradsGrid GetVariable(VariableDefinition definition)
+    public IGradsGrid GetVariable(VariableDefinition definition, int file = 1)
     {
-        GradsGrid grid = new GradsGrid();
-        _drawingContext.GaIO.gaggrd(grid);
+        if (_drawingContext.CommonData.fnum == 0)
+        {
+            throw new Exception("No files open yet");
+        }
 
-        return grid;
+        _drawingContext.CommonData.dfnum = file;
+        _drawingContext.CommonData.pfid = _drawingContext.CommonData.pfi1[file - 1];
+        
+        var pst = getpst(_drawingContext.CommonData);
+
+
+        var expression = definition.GetVarName();
+        if (definition.HeightType == FixedSurfaceType.IsobaricSurface)
+        {
+            expression += $"(lev={definition.HeightValue:0})";
+        }
+        
+        _drawingContext.GaExpr.gaexpr(expression, pst);
+
+        if (pst.result.pgr == null)
+        {
+            throw new Exception("Error retrieving variable");
+        }
+        
+        return pst.result.pgr;
     }
 
-    public IGradsGrid GetMultiLevelData(VariableDefinition definition)
+    public IGradsGrid? GetMultiLevelData(VariableDefinition definition, double startLevel, double endLevel,
+        MultiLevelFunction function)
     {
-        throw new NotImplementedException();
+        int sel = (int)function;
+        Func<double[], double, double>? conv;
+        double d2r = Math.PI / 180.0;
+        double gr1 = startLevel;
+        double gr2 = endLevel;
+        
+
+        GradsFile? pfi = _drawingContext.CommonData.pfid;
+        int dim = 2; // always Z dimension
+        conv = pfi.ab2gr[dim];
+        var cvals = pfi.abvals[dim];
+        gr1 = conv(cvals, gr1);
+        gr2 = conv(cvals, gr2);
+
+        if (gr2 < gr1)
+        {
+            throw new Exception(
+                "Error:  2nd dimension expression is invalid (end grid point is less than start grid point");
+        }
+        
+        bool bndflg = false;
+        int incr = 1;
+
+
+        double d1 = Math.Ceiling(gr1 - 0.001); /* Ave limits are integers    */
+        double d2 = Math.Floor(gr2 + 0.001);
+        double wlo = 0, whi = 0;
+        if (bndflg)
+        {
+            d1 = Math.Floor(gr1 + 0.5);
+            d2 = Math.Ceiling(gr2 - 0.5);
+            if (dim != 3)
+            {
+                conv = pfi.gr2ab[dim];
+                wlo = conv(pfi.grvals[dim], gr1);
+                whi = conv(pfi.grvals[dim], gr2);
+            }
+        }
+
+        double wt1 = 1.0;
+        double abs = 0, alo, ahi, alen;
+        double[] dmin = new double[5], dmax = new double[5];
+
+        if (dim == 3)
+        {
+            // gr2t (pfi.grvals[3],d1,&(pst.tmin));
+            // pst.tmax = pst.tmin;
+            // if (bndflg) {
+            //     rd1 = d1;
+            //     if (gr1 < rd1+0.5) wt1 = (rd1+0.5)-gr1;
+            //     if (gr2 > rd1-0.5) wt1 = gr2 + 0.5 - rd1;
+            //     if (wt1<0.0) wt1=0.0;
+            // }
+        }
+        /*-----  lon,lat,lev,ens */
+        else
+        {
+            conv = pfi.gr2ab[dim];
+            abs = conv(pfi.grvals[dim], d1);
+            alo = conv(pfi.grvals[dim], d1 - 0.5);
+            ahi = conv(pfi.grvals[dim], d1 + 0.5);
+            alen = Math.Abs(ahi - alo);
+            dmin[dim] = abs;
+            dmax[dim] = abs;
+            if (bndflg)
+            {
+                if (whi < wlo)
+                {
+                    if (alo > wlo) alo = wlo;
+                    if (ahi > wlo) ahi = wlo;
+                    if (alo < whi) alo = whi;
+                    if (ahi < whi) ahi = whi;
+                }
+                else
+                {
+                    if (alo < wlo) alo = wlo;
+                    if (ahi < wlo) ahi = wlo;
+                    if (alo > whi) alo = whi;
+                    if (ahi > whi) ahi = whi;
+                }
+            }
+
+            /*-----  lat scaling */
+            if (dim == 1)
+            {
+                // if (alo >  90.0) alo =  90.0;
+                // if (ahi >  90.0) ahi =  90.0;
+                // if (alo < -90.0) alo = -90.0;
+                // if (ahi < -90.0) ahi = -90.0;
+                // if (sel==1) {                                                   /* ave */
+                //     wt1 = Math.Abs(sin(ahi*d2r)-sin(alo*d2r));
+                // } else if (sel==2) {                                            /* mean */
+                //     wt1 = Math.Abs(ahi-alo);
+                // } else if (sel==3) {                                            /* sum */
+                //     if (alen > FUZZ_SCALE) {
+                //         wt1=Math.Abs(ahi-alo)/alen;
+                //     } else {
+                //         wt1=0.0;
+                //     }
+                // } else if (sel==4) {                                            /* sumg */
+                //     wt1=1.0;
+                // }
+            }
+            /* -----   lon,lev,ens scaling */
+            else
+            {
+                if (sel <= 2)
+                {
+                    /* ave, mean */
+                    wt1 = ahi - alo;
+                }
+                else if (sel == 3)
+                {
+                    /* sum */
+                    if (alen > FUZZ_SCALE)
+                    {
+                        wt1 = Math.Abs(ahi - alo) / alen;
+                    }
+                    else
+                    {
+                        wt1 = 0.0;
+                    }
+                }
+                else if (sel == 4)
+                {
+                    /* sumg */
+                    wt1 = 1.0;
+                }
+            }
+        }
+
+        SetLev(abs);
+
+        IGradsGrid pgr1 = GetVariable(new VariableDefinition()
+        {
+            HeightType = FixedSurfaceType.IsobaricSurface,
+            VariableType = definition.VariableType,
+            HeightValue = abs
+        });
+
+        double d = d1 + incr;
+        if (d > d2)
+        {
+            return pgr1;
+        }
+
+        double wt = 1.0;
+
+        conv = pfi.gr2ab[dim];
+        abs = conv(pfi.grvals[dim], d);
+        alo = conv(pfi.grvals[dim], d - 0.5);
+        ahi = conv(pfi.grvals[dim], d + 0.5);
+        alen = Math.Abs(ahi - alo);
+        dmin[dim] = abs;
+        dmax[dim] = abs;
+        if (bndflg)
+        {
+            if (whi < wlo)
+            {
+                if (alo > wlo) alo = wlo;
+                if (ahi > wlo) ahi = wlo;
+                if (alo < whi) alo = whi;
+                if (ahi < whi) ahi = whi;
+            }
+            else
+            {
+                if (alo < wlo) alo = wlo;
+                if (ahi < wlo) ahi = wlo;
+                if (alo > whi) alo = whi;
+                if (ahi > whi) ahi = whi;
+            }
+        }
+
+        /* ---- lat scaling 2222222222222*/
+        if (dim == 1)
+        {
+            if (alo > 90.0) alo = 90.0;
+            if (ahi > 90.0) ahi = 90.0;
+            if (alo < -90.0) alo = -90.0;
+            if (ahi < -90.0) ahi = -90.0;
+            if (sel == 1)
+            {
+                /* ave */
+                wt = Math.Abs(Math.Sin(ahi * d2r) - Math.Sin(alo * d2r));
+            }
+            else if (sel == 2)
+            {
+                /* mean */
+                wt = Math.Abs(ahi - alo);
+            }
+            else if (sel == 3)
+            {
+                /* sum */
+                if (alen > FUZZ_SCALE)
+                {
+                    wt = Math.Abs(ahi - alo) / alen;
+                }
+                else
+                {
+                    wt = 0.0;
+                }
+            }
+            else if (sel == 4)
+            {
+                /* sumg */
+                wt = 1.0;
+            }
+        }
+        /* ---- lon,lev,ens  scaling 2222222222222*/
+        else
+        {
+            if (sel <= 2)
+            {
+                /* ave, mean */
+                wt = ahi - alo;
+            }
+            else if (sel == 3)
+            {
+                /* sum */
+                if (alen > FUZZ_SCALE)
+                {
+                    wt = Math.Abs(ahi - alo) / alen;
+                }
+                else
+                {
+                    wt = 0.0;
+                }
+            }
+            else if (sel == 4)
+            {
+                /* sumg */
+                wt = 1.0;
+            }
+        }
+        
+        SetLev(abs);
+
+        IGradsGrid pgr2 = GetVariable(new VariableDefinition()
+        {
+            HeightType = FixedSurfaceType.IsobaricSurface,
+            VariableType = definition.VariableType,
+            HeightValue = abs
+        });
+
+        int siz = pgr1.GridData.Length;
+        int sum = 0;
+        int cnt = 0;
+        int sumu = 0;
+        int cntu = 0;
+        int umask1 = 0;
+        int umas2 = 0;
+
+        for (int i = 0; i < siz; i++)
+        {
+            if (sel >= 5 && sel <= 8)
+            {
+                if (pgr1.UndefinedMask[sumu] == 0 || pgr2.UndefinedMask[cntu] == 0)
+                {
+                    if (pgr2.UndefinedMask[cntu] != 0)
+                    {
+                        pgr1.GridData[sum] = pgr2.GridData[cnt];
+                        pgr1.UndefinedMask[sumu] = 1;
+                        pgr2.GridData[cnt] = d;
+                    }
+                    else if (pgr1.UndefinedMask[sumu] != 0)
+                    {
+                        pgr2.GridData[cnt] = d1;
+                        pgr2.UndefinedMask[cntu] = 1;
+                    }
+                }
+                else
+                {
+                    if (sel == 5 || sel == 7)
+                    {
+                        if (pgr2.GridData[cnt] < pgr1.GridData[sum])
+                        {
+                            pgr1.GridData[sum] = pgr2.GridData[cnt];
+                            pgr2.GridData[cnt] = d;
+                        }
+                        else pgr2.GridData[cnt] = d1;
+                    }
+
+                    if (sel == 6 || sel == 8)
+                    {
+                        if (pgr2.GridData[cnt] > pgr1.GridData[sum])
+                        {
+                            pgr1.GridData[sum] = pgr2.GridData[cnt];
+                            pgr2.GridData[cnt] = d;
+                        }
+                        else
+                            pgr2.GridData[cnt] = d1;
+                    }
+                }
+            }
+            else
+            {
+                if (pgr1.UndefinedMask[sumu] == 0)
+                {
+                    if (pgr2.UndefinedMask[cntu] == 0)
+                    {
+                        pgr2.GridData[cnt] = 0.0;
+                        pgr2.UndefinedMask[cntu] = 1;
+                    }
+                    else
+                    {
+                        if (sel <= 3)
+                        {
+                            /* ave, mean sum */
+                            pgr1.GridData[sum] = pgr2.GridData[cnt] * wt;
+                            pgr1.UndefinedMask[sumu] = 1;
+                            pgr2.GridData[cnt] = wt;
+                        }
+                        else if (sel == 4)
+                        {
+                            /* sumg */
+                            pgr1.GridData[sum] = pgr2.GridData[cnt];
+                            pgr1.UndefinedMask[sumu] = 1;
+                        }
+                    }
+                }
+                else if (pgr2.UndefinedMask[cntu] == 0 && (sel <= 3))
+                {
+                    /* ave, mean sum */
+                    pgr2.GridData[cnt] = wt1;
+                    pgr2.UndefinedMask[cntu] = 1;
+                    pgr1.GridData[sum] = pgr1.GridData[sum] * wt1;
+                }
+                else
+                {
+                    if (sel <= 3)
+                    {
+                        pgr1.GridData[sum] = pgr1.GridData[sum] * wt1 + pgr2.GridData[cnt] * wt; /* ave, mean sum */
+                    }
+                    else if (sel == 4)
+                    {
+                        pgr1.GridData[sum] = pgr1.GridData[sum] + pgr2.GridData[cnt];
+                    }
+
+                    pgr2.GridData[cnt] = wt1 + wt;
+                    pgr2.UndefinedMask[cntu] = 1;
+                }
+            }
+
+            cnt++;
+            sum++;
+            cntu++;
+            sumu++;
+        }
+        
+        d += incr;
+    int rc = 0;
+    for (d = d; d <= d2 && rc==0; d += incr) {
+        /* Get weight for this grid */
+        wt = 1.0;
+
+        /*---- time 3333333*/
+        if (dim == 3) {
+            // gr2t(pfi.grvals[3], d, &(pst.tmin));
+            // pst.tmax = pst.tmin;
+            // if (bndflg) {
+            //     rd1 = d;
+            //     if (gr1 < rd1 + 0.5) wt = (rd1 + 0.5) - gr1;
+            //     if (gr2 > rd1 - 0.5) wt = gr2 + 0.5 - rd1;
+            //     if (wt < 0.0) wt = 0.0;
+            // }
+        }
+            /*---- lat,lon,lev,ens 3333333*/
+        else {
+            conv = pfi.gr2ab[dim];
+            abs = conv(pfi.grvals[dim], d);
+            alo = conv(pfi.grvals[dim], d - 0.5);
+            ahi = conv(pfi.grvals[dim], d + 0.5);
+            alen = Math.Abs(ahi - alo);
+            dmin[dim] = abs;
+            dmax[dim] = abs;
+            if (bndflg) {
+                if (whi < wlo) {
+                    if (alo > wlo) alo = wlo;
+                    if (ahi > wlo) ahi = wlo;
+                    if (alo < whi) alo = whi;
+                    if (ahi < whi) ahi = whi;
+                } else {
+                    if (alo < wlo) alo = wlo;
+                    if (ahi < wlo) ahi = wlo;
+                    if (alo > whi) alo = whi;
+                    if (ahi > whi) ahi = whi;
+                }
+            }
+            /*---- lat 3333333*/
+            if (dim == 1) {
+                if (alo > 90.0) alo = 90.0;
+                if (ahi > 90.0) ahi = 90.0;
+                if (alo < -90.0) alo = -90.0;
+                if (ahi < -90.0) ahi = -90.0;
+                if (sel == 1) {                                                  /* ave */
+                    wt = Math.Abs(Math.Sin(ahi * d2r) - Math.Sin(alo * d2r));
+                } else if (sel == 2) {                                          /* mean */
+                    wt = Math.Abs(ahi - alo);
+                } else if (sel == 3) {                                          /* sum */
+                    if (alen > FUZZ_SCALE) {
+                        wt = Math.Abs(ahi - alo) / alen;
+                    } else {
+                        wt = 0.0;
+                    }
+                } else if (sel == 4) {                                          /* sumg */
+                    wt = 1.0;
+                }
+            }
+                /*---- lon,lev,ens 3333333*/
+            else {
+                if (sel <= 2) {                        /* ave, mean */
+                    wt = ahi - alo;
+                } else if (sel == 3) {                 /* sum */
+                    if (alen > FUZZ_SCALE) {
+                        wt = Math.Abs(ahi - alo) / alen;
+                    } else {
+                        wt = 0.0;
+                    }
+                } else if (sel == 4) {                 /* sumg */
+                    wt = 1.0;
+                }
+            }
+        }
+
+        SetLev(abs);
+        IGradsGrid pgr = GetVariable(new VariableDefinition()
+        {
+            HeightType = FixedSurfaceType.IsobaricSurface,
+            VariableType = definition.VariableType,
+            HeightValue = abs
+        });
+        int val = 0;
+        cnt = 0;
+        sum = 0;
+        int valu = 0;
+        cntu = 0;
+        sumu = 0;
+        
+        for (int i = 0; i < siz; i++) {
+            if (sel >= 5 && sel <= 8) {
+                if (pgr1.UndefinedMask[sumu] == 0 || 1 == 0) {
+                    if (1 != 0) {
+                        pgr1.GridData[sum] = pgr.GridData[val];
+                        pgr2.GridData[cnt] = d;
+                        pgr1.UndefinedMask[sumu] = 1;
+                        pgr2.UndefinedMask[cntu] = 1;
+                    }
+                } else {
+                    if ((sel == 5 || sel == 7) && pgr.GridData[val] < pgr1.GridData[sum]) {
+                        pgr1.GridData[sum] = pgr.GridData[val];
+                        pgr2.GridData[cnt] = d;
+                    }
+                    if ((sel == 6 || sel == 8) && pgr.GridData[val] > pgr1.GridData[sum]) {
+                        pgr1.GridData[sum] = pgr.GridData[val];
+                        pgr2.GridData[cnt] = d;
+                    }
+                }
+            } else {
+                if (1 != 0) {
+                    /* weight for ave,mean,sum  for sumg just accum */
+                    if (sel <= 3) {
+                        pgr.GridData[val] = pgr.GridData[val] * wt;
+                    }
+                    if (pgr1.UndefinedMask[sumu] == 0) {
+                        pgr1.GridData[sum] = pgr.GridData[val];
+                        pgr1.UndefinedMask[sumu] = 1;
+                        pgr2.GridData[cnt] += wt;
+                    } else {
+                        pgr1.GridData[sum] += pgr.GridData[val];
+                        pgr2.GridData[cnt] += wt;
+                    }
+                }
+            }
+            sum++;
+            cnt++;
+            val++;
+            sumu++;
+            cntu++;
+            valu++;
+        }
+        
     }
+    
+
+    if (rc==1) {
+        
+        
+    } else {
+        cnt = 0;         /* Normalize if needed */
+        sum = 0;
+        cntu = 0;
+        sumu = 0;
+        if (sel == 1 || sel == 2 || sel == 7 || sel == 8) {
+            for (int i = 0; i < siz; i++) {
+                if (pgr1.UndefinedMask[sumu] != 0) {
+                    if (sel < 3 && pgr2.GridData[cnt] == 0.0)
+                    {
+                        return null;
+                    }
+                    if (sel > 6 && pgr2.UndefinedMask[cntu] == 0) {
+                        return null;
+                    }
+                    if (sel == 1 || sel == 2) {
+                        pgr1.GridData[sum] = pgr1.GridData[sum] / pgr2.GridData[cnt];
+                    } else {
+                        pgr1.GridData[sum] = pgr2.GridData[cnt];
+                    }
+                }
+                sum++;
+                cnt++;
+                sumu++;
+                cntu++;
+            }
+        }
+    }
+
+    return pgr1;
+
+    
+    // err3:
+    // snprintf(pout, 1255, "Error from %s: Invalid time increment argument\n", fnam);
+    // gaprnt(0, pout);
+    // return (1);
+    }
+        
+    
 }

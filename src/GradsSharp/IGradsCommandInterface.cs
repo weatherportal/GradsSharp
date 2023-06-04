@@ -63,7 +63,7 @@ public interface IGradsCommandInterface
     void SetStreamDensity(int density);
     
     void Define(string varName, string formula);
-    void Define(string varName, double[] data);
+    void Define(string varName, IGradsGrid data);
     void Open(string dataFile, IGriddedDataReader dataReader);
     int Display(string variable);
     int DrawString(double x, double y, string text);
@@ -75,8 +75,8 @@ public interface IGradsCommandInterface
 
     DimensionInfo QueryDimensionInfo();
 
-    IGradsGrid GetVariable(VariableDefinition definition);
+    IGradsGrid GetVariable(VariableDefinition definition, int file = 1);
 
-    IGradsGrid GetMultiLevelData(VariableDefinition definition); 
+    IGradsGrid? GetMultiLevelData(VariableDefinition definition, double startLevel, double endLevel, MultiLevelFunction function); 
 
 }
