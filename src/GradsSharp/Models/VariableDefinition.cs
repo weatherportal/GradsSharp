@@ -68,6 +68,9 @@ public class VariableDefinition
             DataVariable.MomentFluxU => "mfu",
             DataVariable.MomentFluxV => "mfv",
             DataVariable.Albedo => "alb",
+            DataVariable.CategoricalSnow => "catsn",
+            DataVariable.LiftedIndexSurface => "lftxsft",
+            DataVariable.LiftedIndex4Layer => "lftidx4l",
             _ => throw new ArgumentOutOfRangeException($"{VariableType}")
         };
 

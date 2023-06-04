@@ -216,7 +216,7 @@ internal class GaIO
 
         /* Handle case where X varies. */
         dflag = 0;
-        if (id == 0)
+        if (id == 0) // idim == 0
         {
             // if (jd < 0) jd = 1;
             //

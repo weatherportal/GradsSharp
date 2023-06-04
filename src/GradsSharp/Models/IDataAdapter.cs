@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Models;
+﻿using Microsoft.VisualBasic;
+
+namespace GradsSharp.Models;
 
 public interface IDataAdapter
 {
@@ -8,4 +10,6 @@ public interface IDataAdapter
 
     double GetLevMin();
     double GetLevMax();
+
+    double[] GetMultiLevelData(VariableDefinition definition, double startlevel, double endLevel, MultiLevelFunction function); 
 }

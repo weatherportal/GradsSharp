@@ -8,6 +8,7 @@
 
 class gxmbuf
 {
+    public gxmbuf? fpmbuf; /* forward pointer */
     public float[] buff; /* Buffer area */
     public int len; /* Length of Buffer area */
     public int used; /* Amount of buffer used */
@@ -18,9 +19,9 @@ internal class GxMeta
     private DrawingContext _drawingContext;
     private const int BWORKSZ = 250000;
 
-    private static List<gxmbuf>? mbufanch = new List<gxmbuf>();
+    private static gxmbuf? mbufanch;
     private static gxmbuf? mbuflast;
-    private static List<gxmbuf>? mbufanch2 = new List<gxmbuf>();
+    private static gxmbuf? mbufanch2;
     private static gxmbuf? mbuflast2;
     private static int dbmode;
     static int mbuferror = 0; /* Indicate an error state; suspends buffering */
@@ -367,7 +368,7 @@ internal class GxMeta
 
     public void gxhdrw(int dbflg, int pflg)
     {
-        gxmbuf pmbuf;
+        gxmbuf? pmbuf;
         float[] buff;
         int iii;
         double r, s, x, y, w, h, ang;
@@ -384,31 +385,30 @@ internal class GxMeta
 
         var psubs = _drawingContext.GradsDrawingInterface.DrawingEngine;
 
-        List<gxmbuf>.Enumerator pmbufe;
-
-        if (dbflg == 1) pmbufe = mbufanch2.GetEnumerator();
-        else pmbufe = mbufanch.GetEnumerator();
+        
+        if (dbflg == 1) pmbuf = mbufanch2;
+        else pmbuf = mbufanch;
 
         fflag = 0;
         
-        while (pmbufe.MoveNext())
+        while (pmbuf != null)
         {
-            pmbuf = pmbufe.Current;
             ppp = 0;
             while (ppp < pmbuf.used)
             {
                 /* Get message type */
 
                 ch = ppp;
-                cmd = (int)(mbuflast.buff[ch]);
+                cmd = (int)(pmbuf.buff[ch]);
                 if (cmd != 99)
                 {
                     Console.WriteLine("Metafile buffer is corrupted");
                     Console.WriteLine("Unable to complete redraw and/or print operation");
+                    
                     return;
                 }
 
-                cmd = (int)(mbuflast.buff[ch + 1]);
+                cmd = (int)(pmbuf.buff[ch + 1]);
                 ppp+=2;
 
 
@@ -627,6 +627,7 @@ internal class GxMeta
             }
 
             if (pmbuf == mbuflast) break;
+            pmbuf = pmbuf.fpmbuf;
         }
 
         /* tell hardware and printing layer we are finished */
@@ -644,8 +645,7 @@ internal class GxMeta
         if (mbufanch == null)
         {
             pmbuf = new gxmbuf();
-            mbufanch = new List<gxmbuf>();
-            mbufanch.Add(pmbuf);
+            mbufanch = pmbuf;
             mbuflast = pmbuf; /* ... and also as the last one */
             pmbuf.buff = new float[BWORKSZ]; /* allocate a buffer */
             pmbuf.len = BWORKSZ; /* set the buffer length */
@@ -653,21 +653,22 @@ internal class GxMeta
         }
         else
         {
-            int idx = mbufanch.IndexOf(mbuflast); 
-            if (idx == mbufanch.Count - 1)
+             
+            if (mbuflast.fpmbuf == null)
             {
                 /* no more buffers in the chain */
                 pmbuf = new gxmbuf();
-                mbufanch.Add(pmbuf);
+                mbuflast.fpmbuf = pmbuf;
                 mbuflast = pmbuf; /* reset mbuflast to the newest buffer structure in the chain */
                 pmbuf.buff = new float[BWORKSZ];
                 pmbuf.len = BWORKSZ; /* set the buffer length */
                 pmbuf.used = 0; /* initialize the buffer as unused */
+                pmbuf.fpmbuf = null;
             }
             else
             {
                 /* we'll just re-use what's already been chained up */
-                pmbuf = mbufanch[idx + 1]; /* get the next buffer in the chain */
+                pmbuf = mbuflast.fpmbuf; /* get the next buffer in the chain */
                 pmbuf.used = 0; /* reset this buffer to unused */
                 mbuflast = pmbuf; /* set mbuflast to point to this buffer */
             }
@@ -686,14 +687,16 @@ internal class GxMeta
         int i;
 
         i = flag;
-        int idx = 0;
+        var pmbuf = mbufanch;
 
-        foreach (gxmbuf pmbuf in mbufanch)
+        while (pmbuf != null)
         {
             if (i == 0)
             {
                 pmbuf.buff = new float[BWORKSZ];
             }
+
+            pmbuf = pmbuf.fpmbuf;
         }
         
         if (flag == 0)
@@ -702,10 +705,10 @@ internal class GxMeta
         }
         else
         {
-            if (mbufanch.Count > 0) mbufanch.First().used = 0;
+            if (mbufanch != null) mbufanch.used = 0;
         }
 
-        mbuflast = mbufanch.FirstOrDefault();
+        mbuflast = mbufanch;
     }
 
     void gxmbuferr()

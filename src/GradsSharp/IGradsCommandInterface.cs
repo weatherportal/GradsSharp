@@ -7,7 +7,7 @@ public interface IGradsCommandInterface
     void stack();
     void reset(bool doReinit = false);
     void close();
-    void clear(ClearAction action);
+    void clear(ClearAction? action);
 
     void printim(string path, OutputFormat format = OutputFormat.Undefined, string backgroundImage = "",
         string foregroundImage = "",
@@ -59,6 +59,8 @@ public interface IGradsCommandInterface
     void SetZ(double zMin, double zMax);
     void SetT(double tMin);
     void SetE(double eMin);
+    void SetStreamDensity(int density);
+    
     void Define(string varName, string formula);
     void Define(string varName, double[] data);
     void Open(string dataFile, DataFormat format);
@@ -69,6 +71,7 @@ public interface IGradsCommandInterface
     void SetDataAction(Action<IDataAdapter> dataAction);
 
     void SetPaperSize(double xsize, double ysize);
-    
-    
+
+    DimensionInfo QueryDimensionInfo();
+
 }

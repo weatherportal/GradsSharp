@@ -6676,7 +6676,7 @@ internal class GaGx
             }
 
             /* We may have created new contour levels.  Adjust cmin and cmax appropriately */
-            if (pcm.cflag > 0)
+            if (pcm.cflag == 0)
             {
                 rmin = 9.99e8;
                 rmax = -9.99e8;
@@ -8056,7 +8056,8 @@ internal class GaGx
 
         p2 = g2;
         p2u = g2u;
-
+        cntp2 = 0;
+        cntp2u = 0;
         for (jj = 0; jj < rows - 1; jj++)
         {
             for (ii = 0; ii < c; ii++, cntp2++, cntp2u++)

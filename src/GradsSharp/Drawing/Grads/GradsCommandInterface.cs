@@ -135,41 +135,68 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void clear(ClearAction action)
+    public void clear(ClearAction? action)
     {
-        int iAc = (int)action;
-        if (action == ClearAction.NoReset)
+        int iAc = 0;
+        
+        
+        
+        if (action != null)
         {
-            _drawingContext.GradsDrawingInterface.gxfrme(1);
-        }
-        else if (action == ClearAction.Events)
-        {
-        }
-        else if (action == ClearAction.Graphics)
-        {
-            _drawingContext.GradsDrawingInterface.gxfrme(7);
-        }
-        else if (action == ClearAction.Mask)
-        {
-            _drawingContext.GradsDrawingInterface.gxmaskclear();
-        }
+            iAc = 99;
+            iAc = action switch
+            {
+                ClearAction.NoReset => 1,
+                ClearAction.Events => 2,
+                ClearAction.Graphics => 3,
+                ClearAction.HBuff => 4,
+                ClearAction.Rband => 6,
+                ClearAction.SdfWrite => 8,
+                ClearAction.Mask => 9,
+                ClearAction.Shp => 10
+            };
 
-        if (action == ClearAction.NoReset)
-        {
-            gacln(0);
-        }
-        else if (iAc < 5)
-        {
-            gacln(1);
-            pcm.dbflg = 0;
-        }
-        else if (action == ClearAction.SdfWrite)
-        {
-            gacln(2);
-        }
-        else if (action == ClearAction.Shp)
-        {
-            gacln(3);
+            if(iAc < 2)
+                _drawingContext.GradsDrawingInterface.gxfrme(1);
+            else if(iAc == 2)
+            {
+                _drawingContext.GradsDrawingInterface.gxfrme(8);
+            }
+            else if (iAc == 3)
+            {
+                _drawingContext.GradsDrawingInterface.gxfrme(7);
+            }
+            else if (iAc == 4)
+            {
+                _drawingContext.GradsDrawingInterface.gxfrme(0);
+            }
+            else if (iAc > 4 && iAc < 8)
+            {
+                // no op
+            }
+            else if (iAc == 9)
+            {
+                _drawingContext.GradsDrawingInterface.gxmaskclear();
+            }
+           
+
+            if (action == ClearAction.NoReset)
+            {
+                gacln(0);
+            }
+            else if (iAc < 5)
+            {
+                gacln(1);
+                pcm.dbflg = 0;
+            }
+            else if (action == ClearAction.SdfWrite)
+            {
+                gacln(2);
+            }
+            else if (action == ClearAction.Shp)
+            {
+                gacln(3);
+            }
         }
     }
 
@@ -1018,6 +1045,11 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.CommonData.vdim[4] = 0;
         _drawingContext.CommonData.dmax[4] = 1;
         _drawingContext.CommonData.dmin[4] = 1;
+    }
+
+    public void SetStreamDensity(int density)
+    {
+        _drawingContext.CommonData.strmden = density;
     }
 
 
@@ -1932,28 +1964,24 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
         foreach (var ds in datasets)
         {
-            if (ds.Parameter != null)
+            var ps = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
+            FixedSurfaceType sfcType = (FixedSurfaceType)ps.FirstFixedSurfaceType;
+            var heightValue = ps.FirstFixedSurfaceValue;
+
+
+            gavar gv = new gavar();
+
+            gv.variableDefinition = new VariableDefinition
             {
-                string name = ds.Parameter.Value.Name;
-                var ps = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
-                FixedSurfaceType sfcType = (FixedSurfaceType)ps.FirstFixedSurfaceType;
-                var heightValue = ps.FirstFixedSurfaceValue;
-
-
-                gavar gv = new gavar();
-
-                gv.variableDefinition = new VariableDefinition
-                {
-                    HeightType = sfcType,
-                    HeightValue = heightValue ?? Double.MinValue,
-                    VariableName = gv.abbrv,
-                    VariableType = _drawingContext.CommonData.VariableMapping.GetGrib2VarType((int)ds.Message.IndicatorSection.Discipline, 
-                        ds.ProductDefinitionSection.ProductDefinition.ParameterCategory,
-                        ds.ProductDefinitionSection.ProductDefinition.ParameterNumber)
-                };
-                gv.abbrv = gv.variableDefinition.GetVarName();
-                gf.pvar1.Add(gv);
-            }
+                HeightType = sfcType,
+                HeightValue = heightValue ?? Double.MinValue,
+                VariableName = gv.abbrv,
+                VariableType = _drawingContext.CommonData.VariableMapping.GetGrib2VarType((int)ds.Message.IndicatorSection.Discipline, 
+                    ds.ProductDefinitionSection.ProductDefinition.ParameterCategory,
+                    ds.ProductDefinitionSection.ProductDefinition.ParameterNumber)
+            };
+            gv.abbrv = gv.variableDefinition.GetVarName();
+            gf.pvar1.Add(gv);
         }
 
         gf.vnum = gf.pvar1.Count;
@@ -2191,7 +2219,8 @@ internal class GradsCommandInterface : IGradsCommandInterface
             if (rc == 0) rc = _drawingContext.CommonData.sig;
             if (rc > 0) goto err;
             pcm.type[i] = pst.type;
-            pcm.result[i] = pst.result;
+            pcm.result[i] = new gadata();
+            pcm.result[i].pgr = pst.result.pgr;
         }
 
         pcm.numgrd = cmds.Length;
@@ -2417,5 +2446,81 @@ internal class GradsCommandInterface : IGradsCommandInterface
     {
         _drawingContext.CommonData.xsiz = xsize;
         _drawingContext.CommonData.ysiz = ysize;
+    }
+
+    public DimensionInfo? QueryDimensionInfo()
+    {
+        var pcm = _drawingContext.CommonData;
+        if (pcm.pfi1 == null)
+        {
+            Console.WriteLine("No files open yet");
+            return null;
+        }
+
+        var pfi = pcm.pfid!;
+        
+        var dimInfo = new DimensionInfo();
+        dimInfo.DefaultFileNumber = _drawingContext.CommonData.dfnum;
+
+        double v1, v2;
+        
+        // longitude
+        
+        if (pfi.type == 2)
+        {
+            v1 = pcm.dmin[0];
+            v2 = pcm.dmax[0];
+        }
+        else
+        {
+            var conv = pfi.ab2gr[0];
+            v1 = conv(pfi.abvals[0], pcm.dmin[0]);
+            v2 = conv(pfi.abvals[0], pcm.dmax[0]);
+        }
+
+        if (pcm.dmin[0] == pcm.dmax[0])
+        {
+            dimInfo.DimensionTypeX = DimensionType.Fixed;
+            dimInfo.LonMin = dimInfo.LonMax = pcm.dmin[0];
+            dimInfo.XMin = dimInfo.XMax = v1;
+        }
+        else
+        {
+            dimInfo.LonMin = pcm.dmin[0];
+            dimInfo.LonMax = pcm.dmax[0];
+            dimInfo.XMin = v1;
+            dimInfo.XMax = v2;
+        }
+        
+        // latitude
+        
+        if (pfi.type == 2)
+        {
+            v1 = pcm.dmin[1];
+            v2 = pcm.dmax[1];
+        }
+        else
+        {
+            var conv = pfi.ab2gr[1];
+            v1 = conv(pfi.abvals[1], pcm.dmin[1]);
+            v2 = conv(pfi.abvals[1], pcm.dmax[1]);
+        }
+
+        if (pcm.dmin[1] == pcm.dmax[1])
+        {
+            dimInfo.DimensionTypeY = DimensionType.Fixed;
+            dimInfo.LatMin = dimInfo.LatMax = pcm.dmin[1];
+            dimInfo.YMin = dimInfo.YMax = v1;
+        }
+        else
+        {
+            dimInfo.LatMin = pcm.dmin[1];
+            dimInfo.LatMax = pcm.dmax[1];
+            dimInfo.YMin = v1;
+            dimInfo.YMax = v2;
+        }
+
+
+        return dimInfo;
     }
 }

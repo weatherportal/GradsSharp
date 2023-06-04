@@ -10,7 +10,14 @@ internal class GfsGribDataReader : IGriddedDataReader
     public double[] ReadData(GradsCommon pcmn, GradsFile file, VariableDefinition definition)
     {
         GribDataSetInfo info = (GribDataSetInfo)pcmn.VariableMapping.GetVariableInfo(definition.VariableType);
-       
+
+        double[] dmin = pcmn.dmin;
+        double[] dmax = pcmn.dmax;
+        
+        dmin[0] = Math.Floor(dmin[0] + 0.0001);
+        dmax[0] = Math.Ceiling(dmax[0] - 0.0001);
+        dmin[1] = Math.Floor(dmin[1] + 0.0001);
+        dmax[1] = Math.Ceiling(dmax[1] - 0.0001);
         
         Grib2Reader rdr = new Grib2Reader(file.name);
         foreach (var ds in rdr.ReadAllDataSets())
@@ -30,8 +37,8 @@ internal class GfsGribDataReader : IGriddedDataReader
                         var valueEnum = rdr.ReadDataSetValues(ds);
                         foreach (var val in valueEnum)
                         {
-                            if (val.Key.Latitude >= pcmn.dmin[1] && val.Key.Latitude <= pcmn.dmax[1] &&
-                                val.Key.Longitude >= pcmn.dmin[0] && val.Key.Longitude <= pcmn.dmax[0])
+                            if (val.Key.Latitude >= dmin[1] && val.Key.Latitude <= dmax[1] &&
+                                val.Key.Longitude >= dmin[0] && val.Key.Longitude <= dmax[0])
                             {
                                 result.Add((double)(val.Value ?? pcmn.undef));
                             }

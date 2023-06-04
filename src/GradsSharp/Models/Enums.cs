@@ -3,6 +3,22 @@
 namespace GradsSharp.Models;
 
 
+public enum MultiLevelFunction
+{
+    Average = 1,
+    Mean = 2,
+    Sum = 3,
+    SumNonWeighted = 4,
+    Minimum = 5,
+    Maximum = 6
+    
+}
+
+public enum DimensionType{
+    Fixed,
+    Varying
+}
+
 public enum ColorBarDirection
 {
     Auto,

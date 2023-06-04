@@ -135,7 +135,8 @@ new GribDataSetInfo { Discipline = 10, ParameterCategory = 2, ParameterNumber = 
                 return dsi.Key;
         }
 
-        throw new Exception("Variable not found");
+        return DataVariable.NotDefined;
+        //throw new Exception("Variable not found");
     }
 
 
