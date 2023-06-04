@@ -75,4 +75,8 @@ public interface IGradsCommandInterface
 
     DimensionInfo QueryDimensionInfo();
 
+    IGradsGrid GetVariable(VariableDefinition definition);
+
+    IGradsGrid GetMultiLevelData(VariableDefinition definition); 
+
 }

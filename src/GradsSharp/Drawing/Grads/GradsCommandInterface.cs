@@ -2609,4 +2609,17 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
         return dimInfo;
     }
+
+    public IGradsGrid GetVariable(VariableDefinition definition)
+    {
+        GradsGrid grid = new GradsGrid();
+        _drawingContext.GaIO.gaggrd(grid);
+
+        return grid;
+    }
+
+    public IGradsGrid GetMultiLevelData(VariableDefinition definition)
+    {
+        throw new NotImplementedException();
+    }
 }
