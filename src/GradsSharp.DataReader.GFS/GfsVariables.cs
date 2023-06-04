@@ -1,6 +1,8 @@
-﻿using GradsSharp.Models;
+﻿using GradsSharp.Data;
+using GradsSharp.Data.Grib;
+using GradsSharp.Models;
 
-namespace GradsSharp.Data.Grib.GFS;
+namespace GradsSharp.DataReader.GFS;
 
 public class GfsVariables : IVariableMapping
 {

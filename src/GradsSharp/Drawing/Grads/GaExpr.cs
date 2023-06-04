@@ -22,7 +22,7 @@ internal class GaExpr
 
     public int gaexpr(string expression, gastat pst)
     {
-        gagrid pgr;
+        GradsGrid pgr;
         gastn stn;
         smem[] stack;
         int? ptr;
@@ -422,7 +422,7 @@ internal class GaExpr
 
     int gaoper(smem[] stack, int c1, int c2, int c, int op)
     {
-        gagrid pgr = null;
+        GradsGrid pgr = null;
         gastn stn;
 
         /* If both grids, do grid-grid operation */
@@ -453,15 +453,15 @@ internal class GaExpr
 
         if (stack[c1].type == -1) pgr = stack[c1].obj.pgr;
         if (stack[c2].type == -1) pgr = stack[c2].obj.pgr;
-        if (pgr.idim == -1 && pgr.jdim == -1)
+        if (pgr.IDimension == -1 && pgr.JDimension == -1)
         {
             if (stack[c1].type == -2)
             {
-                stn = gascop(stack[c1].obj.stn, pgr.rmin, op, 0);
+                stn = gascop(stack[c1].obj.stn, pgr.MinimumGridValue, op, 0);
             }
             else
             {
-                stn = gascop(stack[c2].obj.stn, pgr.rmin, op, 1);
+                stn = gascop(stack[c2].obj.stn, pgr.MinimumGridValue, op, 1);
             }
 
             if (stn == null) return (1);
@@ -482,12 +482,12 @@ internal class GaExpr
    Varying dimensions must match.  Grids with fewer varying dimensions
    are 'expanded' to match the larger grid as needed.                 */
 
-    gagrid gagrop(gagrid pgr1, gagrid pgr2,
+    GradsGrid gagrop(GradsGrid pgr1, GradsGrid pgr2,
         int op, int rel)
     {
         int val1, val2;
         int dnum1, dnum2;
-        gagrid pgr;
+        GradsGrid pgr;
         int incr, imax, omax;
         int i, i1, i2;
         bool swap;
@@ -498,14 +498,14 @@ internal class GaExpr
         val1 = 0;
         uval1 = 0;
         dnum1 = 0;
-        if (pgr1.idim > -1) dnum1++;
-        if (pgr1.jdim > -1) dnum1++;
+        if (pgr1.IDimension > -1) dnum1++;
+        if (pgr1.JDimension > -1) dnum1++;
 
         val2 = 0;
         uval2 = 0;
         dnum2 = 0;
-        if (pgr2.idim > -1) dnum2++;
-        if (pgr2.jdim > -1) dnum2++;
+        if (pgr2.IDimension > -1) dnum2++;
+        if (pgr2.JDimension > -1) dnum2++;
 
         /* Force operand 1 (pgr1, dnum1, etc.) to have fewer varying dims.  */
         swap = false;
@@ -526,41 +526,41 @@ internal class GaExpr
 
         if (dnum1 == dnum2)
         {
-            if (pgr1.idim != pgr2.idim || pgr1.jdim != pgr2.jdim) goto err1;
-            i = pgr1.idim;
-            if (dnum1 > 0 && gagchk(pgr1, pgr2, pgr1.idim) > 0) goto err2;
-            i = pgr1.jdim;
-            if (dnum1 > 1 && gagchk(pgr1, pgr2, pgr1.jdim) > 0) goto err2;
+            if (pgr1.IDimension != pgr2.IDimension || pgr1.JDimension != pgr2.JDimension) goto err1;
+            i = pgr1.IDimension;
+            if (dnum1 > 0 && gagchk(pgr1, pgr2, pgr1.IDimension) > 0) goto err2;
+            i = pgr1.JDimension;
+            if (dnum1 > 1 && gagchk(pgr1, pgr2, pgr1.JDimension) > 0) goto err2;
             incr = 0;
-            imax = pgr1.isiz * pgr1.jsiz;
+            imax = pgr1.ISize * pgr1.JSize;
 
             /* Case where dnum1=0, dnum2=1 or 2.  */
         }
         else if (dnum1 == 0)
         {
-            incr = pgr2.isiz * pgr2.jsiz;
+            incr = pgr2.ISize * pgr2.JSize;
             imax = 1;
 
             /* Case where dnum1=1, dnum2=2.  */
         }
         else
         {
-            i = pgr1.idim;
-            if (gagchk(pgr1, pgr2, pgr1.idim) > 0) goto err2;
-            if (pgr1.idim == pgr2.idim)
+            i = pgr1.IDimension;
+            if (gagchk(pgr1, pgr2, pgr1.IDimension) > 0) goto err2;
+            if (pgr1.IDimension == pgr2.IDimension)
             {
                 incr = 0;
-                imax = pgr1.isiz;
+                imax = pgr1.ISize;
             }
-            else if (pgr1.idim == pgr2.jdim)
+            else if (pgr1.IDimension == pgr2.JDimension)
             {
-                incr = pgr2.isiz;
-                imax = pgr1.isiz;
+                incr = pgr2.ISize;
+                imax = pgr1.ISize;
             }
             else goto err1;
         }
 
-        omax = pgr2.isiz * pgr2.jsiz;
+        omax = pgr2.ISize * pgr2.JSize;
 
         /* Perform the operation.  Put the result in operand 2 (which is
            always the operand with the greater number of varying
@@ -572,66 +572,66 @@ internal class GaExpr
         i2 = 0;
         for (i = 0; i < omax; i++)
         {
-            if (pgr1.umask[uval1] == 0 || pgr2.umask[uval2] == 0)
+            if (pgr1.UndefinedMask[uval1] == 0 || pgr2.UndefinedMask[uval2] == 0)
             {
-                pgr2.umask[uval2] = 0;
+                pgr2.UndefinedMask[uval2] = 0;
             }
             else
             {
-                if (op == 2) pgr2.grid[val2] = pgr1.grid[val1] + pgr2.grid[val2];
-                else if (op == 0) pgr2.grid[val2] = pgr1.grid[val1] * pgr2.grid[val2];
+                if (op == 2) pgr2.GridData[val2] = pgr1.GridData[val1] + pgr2.GridData[val2];
+                else if (op == 0) pgr2.GridData[val2] = pgr1.GridData[val1] * pgr2.GridData[val2];
                 else if (op == 1)
                 {
                     if (swap)
                     {
-                        if (GaUtil.dequal(pgr1.grid[val1], 0.0, 1e-08) == 0)
+                        if (GaUtil.dequal(pgr1.GridData[val1], 0.0, 1e-08) == 0)
                         {
-                            pgr2.umask[uval2] = 0;
+                            pgr2.UndefinedMask[uval2] = 0;
                         }
                         else
                         {
-                            pgr2.grid[val2] = pgr2.grid[val2] / pgr1.grid[val1];
+                            pgr2.GridData[val2] = pgr2.GridData[val2] / pgr1.GridData[val1];
                         }
                     }
                     else
                     {
-                        if (GaUtil.dequal(pgr2.grid[val2], 0.0, 1e-08) == 0) pgr2.umask[uval2] = 0;
-                        else pgr2.grid[val2] = pgr1.grid[val1] / pgr2.grid[val2];
+                        if (GaUtil.dequal(pgr2.GridData[val2], 0.0, 1e-08) == 0) pgr2.UndefinedMask[uval2] = 0;
+                        else pgr2.GridData[val2] = pgr1.GridData[val1] / pgr2.GridData[val2];
                     }
                 }
                 else if (op == 10)
                 {
                     if (swap)
                     {
-                        if (Double.IsNaN(Math.Pow(pgr2.grid[val2], pgr1.grid[val1]))) pgr2.umask[uval2] = 0;
-                        else pgr2.grid[val2] = Math.Pow(pgr2.grid[val2], pgr1.grid[val1]);
+                        if (Double.IsNaN(Math.Pow(pgr2.GridData[val2], pgr1.GridData[val1]))) pgr2.UndefinedMask[uval2] = 0;
+                        else pgr2.GridData[val2] = Math.Pow(pgr2.GridData[val2], pgr1.GridData[val1]);
                     }
                     else
                     {
-                        if (Double.IsNaN(Math.Pow(pgr1.grid[val1], pgr2.grid[val2]))) pgr2.umask[uval2] = 0;
-                        else pgr2.grid[val2] = Math.Pow(pgr1.grid[val1], pgr2.grid[val2]);
+                        if (Double.IsNaN(Math.Pow(pgr1.GridData[val1], pgr2.GridData[val2]))) pgr2.UndefinedMask[uval2] = 0;
+                        else pgr2.GridData[val2] = Math.Pow(pgr1.GridData[val1], pgr2.GridData[val2]);
                     }
                 }
-                else if (op == 11) pgr2.grid[val2] = GaUtil.hypot(pgr1.grid[val1], pgr2.grid[val2]);
+                else if (op == 11) pgr2.GridData[val2] = GaUtil.hypot(pgr1.GridData[val1], pgr2.GridData[val2]);
                 else if (op == 12)
                 {
-                    if (pgr1.grid[val1] == 0.0 && pgr2.grid[val2] == 0.0) pgr2.grid[val2] = 0.0;
+                    if (pgr1.GridData[val1] == 0.0 && pgr2.GridData[val2] == 0.0) pgr2.GridData[val2] = 0.0;
                     else
                     {
-                        if (swap) pgr2.grid[val2] = Math.Atan2(pgr2.grid[val2], pgr1.grid[val1]);
-                        else pgr2.grid[val2] = Math.Atan2(pgr1.grid[val1], pgr2.grid[val2]);
+                        if (swap) pgr2.GridData[val2] = Math.Atan2(pgr2.GridData[val2], pgr1.GridData[val1]);
+                        else pgr2.GridData[val2] = Math.Atan2(pgr1.GridData[val1], pgr2.GridData[val2]);
                     }
                 }
                 else if (op == 13)
                 {
                     if (swap)
                     {
-                        if (pgr1.grid[val1] < 0.0) pgr2.umask[uval2] = 0;
+                        if (pgr1.GridData[val1] < 0.0) pgr2.UndefinedMask[uval2] = 0;
                     }
                     else
                     {
-                        if (pgr2.grid[val2] < 0.0) pgr2.umask[uval2] = 0;
-                        else pgr2.grid[val2] = pgr1.grid[val1];
+                        if (pgr2.GridData[val2] < 0.0) pgr2.UndefinedMask[uval2] = 0;
+                        else pgr2.GridData[val2] = pgr1.GridData[val1];
                     }
                 }
                 else if (op == 14)
@@ -639,24 +639,24 @@ internal class GaExpr
                     /* for if function.  pairs with op 15 */
                     if (swap)
                     {
-                        if (pgr2.grid[val2] < 0.0) pgr2.grid[val2] = 0.0;
-                        else pgr2.grid[val2] = pgr1.grid[val1];
+                        if (pgr2.GridData[val2] < 0.0) pgr2.GridData[val2] = 0.0;
+                        else pgr2.GridData[val2] = pgr1.GridData[val1];
                     }
                     else
                     {
-                        if (pgr1.grid[val1] < 0.0) pgr2.grid[val2] = 0.0;
+                        if (pgr1.GridData[val1] < 0.0) pgr2.GridData[val2] = 0.0;
                     }
                 }
                 else if (op == 15)
                 {
                     if (swap)
                     {
-                        if (pgr2.grid[val2] < 0.0) pgr2.grid[val2] = pgr1.grid[val1];
-                        else pgr2.grid[val2] = 0.0;
+                        if (pgr2.GridData[val2] < 0.0) pgr2.GridData[val2] = pgr1.GridData[val1];
+                        else pgr2.GridData[val2] = 0.0;
                     }
                     else
                     {
-                        if (!(pgr1.grid[val1] < 0.0)) pgr2.grid[val2] = 0.0;
+                        if (!(pgr1.GridData[val1] < 0.0)) pgr2.GridData[val2] = 0.0;
                     }
                 }
                 else if (op >= 21 && op <= 24)
@@ -665,74 +665,74 @@ internal class GaExpr
                     {
                         if (op == 21)
                         {
-                            if (pgr2.grid[val2] < pgr1.grid[val1]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr2.GridData[val2] < pgr1.GridData[val1]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
 
                         if (op == 22)
                         {
-                            if (pgr2.grid[val2] > pgr1.grid[val1]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr2.GridData[val2] > pgr1.GridData[val1]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
 
                         if (op == 23)
                         {
-                            if (pgr2.grid[val2] <= pgr1.grid[val1]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr2.GridData[val2] <= pgr1.GridData[val1]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
 
                         if (op == 24)
                         {
-                            if (pgr2.grid[val2] >= pgr1.grid[val1]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr2.GridData[val2] >= pgr1.GridData[val1]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
                     }
                     else
                     {
                         if (op == 21)
                         {
-                            if (pgr1.grid[val1] < pgr2.grid[val2]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr1.GridData[val1] < pgr2.GridData[val2]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
 
                         if (op == 22)
                         {
-                            if (pgr1.grid[val1] > pgr2.grid[val2]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr1.GridData[val1] > pgr2.GridData[val2]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
 
                         if (op == 23)
                         {
-                            if (pgr1.grid[val1] <= pgr2.grid[val2]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr1.GridData[val1] <= pgr2.GridData[val2]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
 
                         if (op == 24)
                         {
-                            if (pgr1.grid[val1] >= pgr2.grid[val2]) pgr2.grid[val2] = 1.0;
-                            else pgr2.grid[val2] = -1.0;
+                            if (pgr1.GridData[val1] >= pgr2.GridData[val2]) pgr2.GridData[val2] = 1.0;
+                            else pgr2.GridData[val2] = -1.0;
                         }
                     }
                 }
                 else if (op == 20)
                 {
-                    if (pgr1.grid[val1] == pgr2.grid[val2]) pgr2.grid[val2] = 1.0;
-                    else pgr2.grid[val2] = -1.0;
+                    if (pgr1.GridData[val1] == pgr2.GridData[val2]) pgr2.GridData[val2] = 1.0;
+                    else pgr2.GridData[val2] = -1.0;
                 }
                 else if (op == 25)
                 {
-                    if (pgr1.grid[val1] != pgr2.grid[val2]) pgr2.grid[val2] = 1.0;
-                    else pgr2.grid[val2] = -1.0;
+                    if (pgr1.GridData[val1] != pgr2.GridData[val2]) pgr2.GridData[val2] = 1.0;
+                    else pgr2.GridData[val2] = -1.0;
                 }
                 else if (op == 26)
                 {
-                    if ((pgr1.grid[val1] < 0.0) && (pgr2.grid[val2] < 0.0)) pgr2.grid[val2] = -1.0;
-                    else pgr2.grid[val2] = 1.0;
+                    if ((pgr1.GridData[val1] < 0.0) && (pgr2.GridData[val2] < 0.0)) pgr2.GridData[val2] = -1.0;
+                    else pgr2.GridData[val2] = 1.0;
                 }
                 else if (op == 27)
                 {
-                    if ((pgr1.grid[val1] >= 0.0) && (pgr2.grid[val2] >= 0.0)) pgr2.grid[val2] = 1.0;
-                    else pgr2.grid[val2] = -1.0;
+                    if ((pgr1.GridData[val1] >= 0.0) && (pgr2.GridData[val2] >= 0.0)) pgr2.GridData[val2] = 1.0;
+                    else pgr2.GridData[val2] = -1.0;
                 }
                 else
                 {
@@ -770,14 +770,14 @@ internal class GaExpr
         err1:
         _drawingContext.Logger?.LogInformation("Operation error:  Incompatable grids \n");
         _drawingContext.Logger?.LogInformation("   Varying dimensions are different\n");
-        _drawingContext.Logger?.LogInformation($"  1st grid dims = {pgr1.idim} {pgr2.idim}   2nd = {pgr1.jdim} {pgr2.jdim}");
+        _drawingContext.Logger?.LogInformation($"  1st grid dims = {pgr1.IDimension} {pgr2.IDimension}   2nd = {pgr1.JDimension} {pgr2.JDimension}");
         return (null);
 
         err2:
         _drawingContext.Logger?.LogInformation("Operation error:  Incompatable grids \n");
         _drawingContext.Logger?.LogInformation($"  Dimension = {i}");
         _drawingContext.Logger?.LogInformation(
-            $"  1st grid range = {pgr1.dimmin[i]} {pgr1.dimmax[i]}   2nd = {pgr2.dimmin[i]} {pgr2.dimmax[i]}");
+            $"  1st grid range = {pgr1.DimensionMinimum[i]} {pgr1.DimensionMaximum[i]}   2nd = {pgr2.DimensionMinimum[i]} {pgr2.DimensionMaximum[i]}");
         return (null);
     }
 
@@ -947,34 +947,34 @@ internal class GaExpr
    some point to have three data types (grid, stn, constant) but
    for now it is easier to keep the constant grid concept.     */
 
-    gagrid gagrvl(double val)
+    GradsGrid gagrvl(double val)
     {
-        gagrid pgr;
+        GradsGrid pgr;
         int i;
         long sz;
 
         /* Allocate memory */
-        pgr = new gagrid();
+        pgr = new GradsGrid();
         /* Fill in gagrid variables */
         pgr.pfile = null;
-        pgr.undef = -9.99e8;
+        pgr.Undef = -9.99e8;
         pgr.pvar = null;
-        pgr.idim = -1;
-        pgr.jdim = -1;
+        pgr.IDimension = -1;
+        pgr.JDimension = -1;
         pgr.alocf = 0;
         for (i = 0; i < 5; i++)
         {
-            pgr.dimmin[i] = 0;
-            pgr.dimmax[i] = 0;
+            pgr.DimensionMinimum[i] = 0;
+            pgr.DimensionMaximum[i] = 0;
         }
 
-        pgr.rmin = val;
-        pgr.rmax = val;
-        pgr.grid = new double[] { pgr.rmin };
+        pgr.MinimumGridValue = val;
+        pgr.MaximumGridValue = val;
+        pgr.GridData = new double[] { pgr.MinimumGridValue };
         pgr.umin = 1;
-        pgr.umask = new byte[] { pgr.umin };
-        pgr.isiz = 1;
-        pgr.jsiz = 1;
+        pgr.UndefinedMask = new byte[] { pgr.umin };
+        pgr.ISize = 1;
+        pgr.JSize = 1;
         pgr.exprsn = null;
         return (pgr);
     }
@@ -986,7 +986,7 @@ internal class GaExpr
 
     int? varprs(string ch, int ipos, gastat pst)
     {
-        gagrid? pgr, pgr2 = null;
+        GradsGrid? pgr, pgr2 = null;
         GradsFile? pfi;
         gavar? pvar, pvar2, vfake = new gavar();
 
@@ -1299,7 +1299,7 @@ internal class GaExpr
            set to the first character past it.  We now need to set up
            the grid requestor block and get the grid.  */
 
-        pgr = new gagrid();
+        pgr = new GradsGrid();
 
         pgr.DataReader = pfi.DataReader;
         /* Fill in gagrid variables */
@@ -1308,10 +1308,10 @@ internal class GaExpr
         jdim = pst.jdim;
         pgr.alocf = 0;
         pgr.pfile = pfi;
-        pgr.undef = pfi.undef;
+        pgr.Undef = pfi.undef;
         pgr.pvar = pvar;
-        pgr.idim = idim;
-        pgr.jdim = jdim;
+        pgr.IDimension = idim;
+        pgr.JDimension = jdim;
         pgr.iwrld = 0;
         pgr.jwrld = 0;
         pgr.toff = toff;
@@ -1319,22 +1319,25 @@ internal class GaExpr
         {
             if (dmin[i] < 0.0)
             {
-                pgr.dimmin[i] = (int)(dmin[i] - 0.1);
+                pgr.DimensionMinimum[i] = (int)(dmin[i] - 0.1);
             }
             else
             {
-                pgr.dimmin[i] = (int)(dmin[i] + 0.1);
+                pgr.DimensionMinimum[i] = (int)(dmin[i] + 0.1);
             }
 
             if (dmax[i] < 0.0)
             {
-                pgr.dimmax[i] = (int)(dmax[i] - 0.1);
+                pgr.DimensionMaximum[i] = (int)(dmax[i] - 0.1);
             }
             else
             {
-                pgr.dimmax[i] = (int)(dmax[i] + 0.1);
+                pgr.DimensionMaximum[i] = (int)(dmax[i] + 0.1);
             }
         }
+
+        pgr.WorldDimensionMaximum = pst.dmax;
+        pgr.WorldDimensionMinimum = pst.dmin;
 
         pgr.exprsn = null;
         pgr.ilinr = 1;
@@ -1367,11 +1370,11 @@ internal class GaExpr
             pgr.jlinr = pfi.linear[jdim];
         }
 
-        pgr.grid = null;
+        pgr.GridData = null;
 
         if (pfi != null && pvar != null && pfi.ppflag > 0 && pfi.ppwrot > 0 && pvar.vecpair > 0)
         {
-            pgr2 = (gagrid)pgr.Clone();
+            pgr2 = (GradsGrid)pgr.Clone();
         }
 
         /* Get grid */
@@ -1401,10 +1404,10 @@ internal class GaExpr
             {
                 /* didn't find a match */
                 ru = 0;
-                size = pgr.isiz * pgr.jsiz;
+                size = pgr.ISize * pgr.JSize;
                 for (i = 0; i < size; i++)
                 {
-                    pgr.umask[ru] = 0;
+                    pgr.UndefinedMask[ru] = 0;
                     ru++;
                 }
             }
@@ -1420,8 +1423,8 @@ internal class GaExpr
                 }
 
                 /* r is u component, r2 is v component */
-                ii = pgr.dimmin[0];
-                jj = pgr.dimmin[1];
+                ii = pgr.DimensionMinimum[0];
+                jj = pgr.DimensionMinimum[1];
                 if (pvar2.isu > 0)
                 {
                     r = 0;
@@ -1429,17 +1432,17 @@ internal class GaExpr
                     ru = 0;
                     r2u = 0;
 
-                    for (j = 0; j < pgr.jsiz; j++)
+                    for (j = 0; j < pgr.JSize; j++)
                     {
-                        if (pgr.idim == 0) ii = pgr.dimmin[0];
-                        if (pgr.idim == 1) jj = pgr.dimmin[1];
-                        for (i = 0; i < pgr.isiz; i++)
+                        if (pgr.IDimension == 0) ii = pgr.DimensionMinimum[0];
+                        if (pgr.IDimension == 1) jj = pgr.DimensionMinimum[1];
+                        for (i = 0; i < pgr.ISize; i++)
                         {
-                            if (pgr2.umask[ru] == 0 || pgr.umask[r2u] == 0)
+                            if (pgr2.UndefinedMask[ru] == 0 || pgr.UndefinedMask[r2u] == 0)
                             {
                                 /* u or v is undefined */
-                                pgr2.umask[ru] = 0;
-                                pgr.umask[r2u] = 0;
+                                pgr2.UndefinedMask[ru] = 0;
+                                pgr.UndefinedMask[r2u] = 0;
                             }
                             else
                             {
@@ -1447,8 +1450,8 @@ internal class GaExpr
                                     jj < 1 || jj > pfi.dnum[1])
                                 {
                                     /* outside file's grid dimensions */
-                                    pgr2.umask[ru] = 0;
-                                    pgr.umask[r2u] = 0;
+                                    pgr2.UndefinedMask[ru] = 0;
+                                    pgr.UndefinedMask[r2u] = 0;
                                 }
                                 else
                                 {
@@ -1456,22 +1459,22 @@ internal class GaExpr
                                     wrot = (float)pfi.ppw[(jj - 1) * pfi.dnum[0] + ii - 1];
                                     if (wrot < -900.0)
                                     {
-                                        pgr.umask[ru] = 0;
-                                        pgr2.umask[r2u] = 0;
+                                        pgr.UndefinedMask[ru] = 0;
+                                        pgr2.UndefinedMask[r2u] = 0;
                                     }
                                     else if (wrot != 0.0)
                                     {
                                         if (pvar2.isu > 0)
                                         {
-                                            pgr.grid[r2] = (pgr2.grid[r]) * Math.Sin(wrot) +
-                                                           (pgr.grid[r2]) * Math.Cos(wrot); /* display variable is v */
-                                            pgr2.umask[r2u] = 1;
+                                            pgr.GridData[r2] = (pgr2.GridData[r]) * Math.Sin(wrot) +
+                                                           (pgr.GridData[r2]) * Math.Cos(wrot); /* display variable is v */
+                                            pgr2.UndefinedMask[r2u] = 1;
                                         }
                                         else
                                         {
-                                            pgr2.grid[r] = (pgr2.grid[r]) * Math.Cos(wrot) -
-                                                           (pgr.grid[r2]) * Math.Sin(wrot); /* display variable is u */
-                                            pgr.umask[ru] = 1;
+                                            pgr2.GridData[r] = (pgr2.GridData[r]) * Math.Cos(wrot) -
+                                                           (pgr.GridData[r2]) * Math.Sin(wrot); /* display variable is u */
+                                            pgr.UndefinedMask[ru] = 1;
                                         }
                                     }
                                 }
@@ -1481,11 +1484,11 @@ internal class GaExpr
                             r2++;
                             ru++;
                             r2u++;
-                            if (pgr.idim == 0) ii++;
-                            if (pgr.idim == 1) jj++;
+                            if (pgr.IDimension == 0) ii++;
+                            if (pgr.IDimension == 1) jj++;
                         }
 
-                        if (pgr.jdim == 1) jj++;
+                        if (pgr.JDimension == 1) jj++;
                     }
                 }
                 else
@@ -1494,17 +1497,17 @@ internal class GaExpr
                     r2 = 0;
                     ru = 0;
                     r2u = 0;
-                    for (j = 0; j < pgr.jsiz; j++)
+                    for (j = 0; j < pgr.JSize; j++)
                     {
-                        if (pgr.idim == 0) ii = pgr.dimmin[0];
-                        if (pgr.idim == 1) jj = pgr.dimmin[1];
-                        for (i = 0; i < pgr.isiz; i++)
+                        if (pgr.IDimension == 0) ii = pgr.DimensionMinimum[0];
+                        if (pgr.IDimension == 1) jj = pgr.DimensionMinimum[1];
+                        for (i = 0; i < pgr.ISize; i++)
                         {
-                            if (pgr.umask[ru] == 0 || pgr2.umask[r2u] == 0)
+                            if (pgr.UndefinedMask[ru] == 0 || pgr2.UndefinedMask[r2u] == 0)
                             {
                                 /* u or v is undefined */
-                                pgr.umask[ru] = 0;
-                                pgr2.umask[r2u] = 0;
+                                pgr.UndefinedMask[ru] = 0;
+                                pgr2.UndefinedMask[r2u] = 0;
                             }
                             else
                             {
@@ -1512,8 +1515,8 @@ internal class GaExpr
                                     jj < 1 || jj > pfi.dnum[1])
                                 {
                                     /* outside file's grid dimensions */
-                                    pgr.umask[ru] = 0;
-                                    pgr2.umask[r2u] = 0;
+                                    pgr.UndefinedMask[ru] = 0;
+                                    pgr2.UndefinedMask[r2u] = 0;
                                 }
                                 else
                                 {
@@ -1521,23 +1524,23 @@ internal class GaExpr
                                     wrot = (float)pfi.ppw[(jj - 1) * pfi.dnum[0] + ii - 1];
                                     if (wrot < -900.0)
                                     {
-                                        pgr.umask[ru] = 0;
-                                        pgr2.umask[r2u] = 0;
+                                        pgr.UndefinedMask[ru] = 0;
+                                        pgr2.UndefinedMask[r2u] = 0;
                                     }
                                     else if (wrot != 0.0)
                                     {
                                         if (pvar2.isu > 0)
                                         {
-                                            pgr2.grid[r2] = (pgr.grid[r]) * Math.Sin(wrot) +
-                                                            (pgr2.grid[r2]) *
+                                            pgr2.GridData[r2] = (pgr.GridData[r]) * Math.Sin(wrot) +
+                                                            (pgr2.GridData[r2]) *
                                                             Math.Cos(wrot); /* display variable is v */
-                                            pgr2.umask[r2u] = 1;
+                                            pgr2.UndefinedMask[r2u] = 1;
                                         }
                                         else
                                         {
-                                            pgr.grid[r] = (pgr.grid[r]) * Math.Cos(wrot) -
-                                                          (pgr2.grid[r2]) * Math.Sin(wrot); /* display variable is u */
-                                            pgr.umask[ru] = 1;
+                                            pgr.GridData[r] = (pgr.GridData[r]) * Math.Cos(wrot) -
+                                                          (pgr2.GridData[r2]) * Math.Sin(wrot); /* display variable is u */
+                                            pgr.UndefinedMask[ru] = 1;
                                         }
                                     }
                                 }
@@ -1547,11 +1550,11 @@ internal class GaExpr
                             r2++;
                             ru++;
                             r2u++;
-                            if (pgr.idim == 0) ii++;
-                            if (pgr.idim == 1) jj++;
+                            if (pgr.IDimension == 0) ii++;
+                            if (pgr.IDimension == 1) jj++;
                         }
 
-                        if (pgr.jdim == 1) jj++;
+                        if (pgr.JDimension == 1) jj++;
                     }
                 }
             }
@@ -1562,7 +1565,7 @@ internal class GaExpr
         return (ipos);
     }
 
-    public static int gagchk(gagrid pgr1, gagrid pgr2, int dim)
+    public static int gagchk(GradsGrid pgr1, GradsGrid pgr2, int dim)
     {
         double gmin1, gmax1, gmin2, gmax2, fuz1, fuz2, fuzz;
         Func<double[], double, double> conv1, conv2;
@@ -1572,35 +1575,35 @@ internal class GaExpr
 
         if (dim < 0) return (0);
 
-        if (dim == pgr1.idim)
+        if (dim == pgr1.IDimension)
         {
             conv1 = pgr1.igrab;
             vals1 = pgr1.ivals;
             i1 = pgr1.ilinr;
-            siz1 = pgr1.isiz;
+            siz1 = pgr1.ISize;
         }
-        else if (dim == pgr1.jdim)
+        else if (dim == pgr1.JDimension)
         {
             conv1 = pgr1.jgrab;
             vals1 = pgr1.jvals;
             i1 = pgr1.jlinr;
-            siz1 = pgr1.jsiz;
+            siz1 = pgr1.JSize;
         }
         else return (1);
 
-        if (dim == pgr2.idim)
+        if (dim == pgr2.IDimension)
         {
             conv2 = pgr2.igrab;
             vals2 = pgr2.ivals;
             i2 = pgr2.ilinr;
-            siz2 = pgr2.isiz;
+            siz2 = pgr2.ISize;
         }
-        else if (dim == pgr2.jdim)
+        else if (dim == pgr2.JDimension)
         {
             conv2 = pgr2.jgrab;
             vals2 = pgr2.jvals;
             i2 = pgr2.jlinr;
-            siz2 = pgr2.jsiz;
+            siz2 = pgr2.JSize;
         }
         else return (1);
 
@@ -1611,10 +1614,10 @@ internal class GaExpr
             return (1);
         }
 
-        gmin1 = pgr1.dimmin[dim];
-        gmax1 = pgr1.dimmax[dim];
-        gmin2 = pgr2.dimmin[dim];
-        gmax2 = pgr2.dimmax[dim];
+        gmin1 = pgr1.DimensionMinimum[dim];
+        gmax1 = pgr1.DimensionMaximum[dim];
+        gmin2 = pgr2.DimensionMinimum[dim];
+        gmax2 = pgr2.DimensionMaximum[dim];
 
         if (dim == 3)
         {

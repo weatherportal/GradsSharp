@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradsSharp", "src\GradsShar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradsSharp.DrawingEngine.Cairo", "src\GradsSharp.DrawingEngine.Cairo\GradsSharp.DrawingEngine.Cairo.csproj", "{551CE1FE-72C7-47F4-B961-113833FDD90B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradsSharp.DataReader.GFS", "src\GradsSharp.DataReader.GFS\GradsSharp.DataReader.GFS.csproj", "{877BA9FF-24E9-4B63-89E6-16C0E19229B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{551CE1FE-72C7-47F4-B961-113833FDD90B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{551CE1FE-72C7-47F4-B961-113833FDD90B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{551CE1FE-72C7-47F4-B961-113833FDD90B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{877BA9FF-24E9-4B63-89E6-16C0E19229B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{877BA9FF-24E9-4B63-89E6-16C0E19229B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{877BA9FF-24E9-4B63-89E6-16C0E19229B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{877BA9FF-24E9-4B63-89E6-16C0E19229B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

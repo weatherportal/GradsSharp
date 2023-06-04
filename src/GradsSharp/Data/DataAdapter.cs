@@ -34,8 +34,8 @@ internal class DataAdapter : IDataAdapter
 
         if (_drawingContext.CommonData.pfid != null)
         {
-            return _drawingContext.CommonData.pfid.DataReader.ReadData(_drawingContext.CommonData,
-                _drawingContext.CommonData.pfid, definition);
+            //_drawingContext.CommonData.pfid.DataReader.ReadData(null, definition);
+            
         }
 
         return Array.Empty<double>();

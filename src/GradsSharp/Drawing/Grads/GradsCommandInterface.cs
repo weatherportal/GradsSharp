@@ -1,12 +1,7 @@
 ﻿using GradsSharp.Data;
-using GradsSharp.Data.Grib.GFS;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using NGrib;
-using NGrib.Grib2.Templates.GridDefinitions;
-using NGrib.Grib2.Templates.ProductDefinitions;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -1061,7 +1056,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
     public void Define(string varName, double[] data)
     {
         
-        gagrid pgr, pgr1;
+        GradsGrid pgr, pgr1;
         gastat? pst;
         GradsFile pfi, pfiv, pfic;
         gadefn? pdf, pcurr, psave;
@@ -1178,10 +1173,10 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pfiv.sbuf = null;
         pfiv.ubuf = null;
 
-        pgr1 = new gagrid();
-        pgr1.idim = pst.idim;
-        pgr1.jdim = pst.jdim;
-        pgr1.grid = data;
+        pgr1 = new GradsGrid();
+        pgr1.IDimension = pst.idim;
+        pgr1.JDimension = pst.jdim;
+        pgr1.GridData = data;
         
         pgr1.jgrab = pfi.gr2ab[pst.jdim];
         pgr1.iabgr = pfi.ab2gr[pst.idim];
@@ -1199,30 +1194,30 @@ internal class GradsCommandInterface : IGradsCommandInterface
         {
             if (dmin[i] < 0.0)
             {
-                pgr1.dimmin[i] = (int)(dmin[i] - 0.1);
+                pgr1.DimensionMinimum[i] = (int)(dmin[i] - 0.1);
             }
             else
             {
-                pgr1.dimmin[i] = (int)(dmin[i] + 0.1);
+                pgr1.DimensionMinimum[i] = (int)(dmin[i] + 0.1);
             }
 
             if (dmax[i] < 0.0)
             {
-                pgr1.dimmax[i] = (int)(dmax[i] - 0.1);
+                pgr1.DimensionMaximum[i] = (int)(dmax[i] - 0.1);
             }
             else
             {
-                pgr1.dimmax[i] = (int)(dmax[i] + 0.1);
+                pgr1.DimensionMaximum[i] = (int)(dmax[i] + 0.1);
             }
         }
         
-        pgr1.isiz = pgr1.dimmax[pst.idim] - pgr1.dimmin[pst.idim] + 1;
-        pgr1.jsiz = pgr1.dimmax[pst.jdim] - pgr1.dimmin[pst.jdim] + 1;
+        pgr1.ISize = pgr1.DimensionMaximum[pst.idim] - pgr1.DimensionMinimum[pst.idim] + 1;
+        pgr1.JSize = pgr1.DimensionMaximum[pst.jdim] - pgr1.DimensionMinimum[pst.jdim] + 1;
 
-        pgr1.umask = new byte[pgr1.isiz * pgr1.jsiz];
-        for (int j = 0; j < pgr1.isiz * pgr1.jsiz; j++)
+        pgr1.UndefinedMask = new byte[pgr1.ISize * pgr1.JSize];
+        for (int j = 0; j < pgr1.ISize * pgr1.JSize; j++)
         {
-            pgr1.umask[j] = 1;
+            pgr1.UndefinedMask[j] = 1;
         }
         
         /* Fill in the pfi block */
@@ -1256,38 +1251,38 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pfiv.dimoff[4] = iemin - 1;
         pfiv.ppflag = 0;
 
-        if (pgr1.idim > -1 && pgr1.jdim > -1)
+        if (pgr1.IDimension > -1 && pgr1.JDimension > -1)
         {
             /* I and J are varying */
             pfiv.gr2ab[0] = pgr1.igrab;
             pfiv.ab2gr[0] = pgr1.iabgr;
-            if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
-            if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+            if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.IDimension)) == null) goto etrn;
+            if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.IDimension)) == null) goto etrn;
             pfiv.linear[0] = pgr1.ilinr;
-            pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
-            pfiv.dnum[0] = pgr1.isiz;
+            pfiv.dimoff[0] = pgr1.DimensionMinimum[0] - 1;
+            pfiv.dnum[0] = pgr1.ISize;
 
             pfiv.gr2ab[1] = pgr1.jgrab;
             pfiv.ab2gr[1] = pgr1.jabgr;
-            if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.jvals, pgr1.jlinr, 0, pgr1.jdim)) == null) goto etrn;
-            if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.javals, pgr1.jlinr, 1, pgr1.jdim)) == null) goto etrn;
+            if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.jvals, pgr1.jlinr, 0, pgr1.JDimension)) == null) goto etrn;
+            if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.javals, pgr1.jlinr, 1, pgr1.JDimension)) == null) goto etrn;
             pfiv.linear[1] = pgr1.jlinr;
-            pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
-            pfiv.dnum[1] = pgr1.jsiz;
+            pfiv.dimoff[1] = pgr1.DimensionMinimum[1] - 1;
+            pfiv.dnum[1] = pgr1.JSize;
         }
-        else if (pgr1.idim > -1 && pgr1.jdim == -1)
+        else if (pgr1.IDimension > -1 && pgr1.JDimension == -1)
         {
             /* I is varying, J is fixed */
-            if (pgr1.idim == 0)
+            if (pgr1.IDimension == 0)
             {
                 /* I is X */
                 pfiv.gr2ab[0] = pgr1.igrab;
                 pfiv.ab2gr[0] = pgr1.iabgr;
-                if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
-                if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.IDimension)) == null) goto etrn;
+                if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.IDimension)) == null) goto etrn;
                 pfiv.linear[0] = pgr1.ilinr;
-                pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
-                pfiv.dnum[0] = pgr1.isiz;
+                pfiv.dimoff[0] = pgr1.DimensionMinimum[0] - 1;
+                pfiv.dnum[0] = pgr1.ISize;
 
                 pfiv.gr2ab[1] = pfi.gr2ab[1];
                 pfiv.ab2gr[1] = pfi.ab2gr[1];
@@ -1302,11 +1297,11 @@ internal class GradsCommandInterface : IGradsCommandInterface
                 /* I is Y */
                 pfiv.gr2ab[1] = pgr1.igrab;
                 pfiv.ab2gr[1] = pgr1.iabgr;
-                if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
-                if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.IDimension)) == null) goto etrn;
+                if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.IDimension)) == null) goto etrn;
                 pfiv.linear[1] = pgr1.ilinr;
-                pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
-                pfiv.dnum[1] = pgr1.isiz;
+                pfiv.dimoff[1] = pgr1.DimensionMinimum[1] - 1;
+                pfiv.dnum[1] = pgr1.ISize;
 
                 pfiv.gr2ab[0] = pfi.gr2ab[0];
                 pfiv.ab2gr[0] = pfi.ab2gr[0];
@@ -1341,24 +1336,24 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
         if (izmin == izmax && itmin == itmax && iemin == iemax)
         {
-            if (pgr1.idim < 0)
+            if (pgr1.IDimension < 0)
             {
                 /* grid is a single data value */
                 sz = sizeof(double);
                 pfiv.rbuf = new double[1];
                 sz = sizeof(char);
                 pfiv.ubuf = new byte[1];
-                pfiv.rbuf[0] = pgr1.grid[0];
-                pfiv.ubuf[0] = pgr1.umask[0];
+                pfiv.rbuf[0] = pgr1.GridData[0];
+                pfiv.ubuf[0] = pgr1.UndefinedMask[0];
             }
             else
             {
-                pfiv.rbuf = pgr1.grid;
-                pfiv.ubuf = pgr1.umask;
+                pfiv.rbuf = pgr1.GridData;
+                pfiv.ubuf = pgr1.UndefinedMask;
             }
 
-            pgr1.grid = null;
-            pgr1.umask = null;
+            pgr1.GridData = null;
+            pgr1.UndefinedMask = null;
         }
         
         
@@ -1391,7 +1386,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
     int gadef(string variable, string formula, int impf)
     {
-        gagrid pgr, pgr1;
+        GradsGrid pgr, pgr1;
         gastat? pst;
         GradsFile pfi, pfiv, pfic;
         gadefn? pdf, pcurr, psave;
@@ -1543,7 +1538,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pfiv.type = 4;
         pfiv.climo = 0;
         pfiv.calendar = pfi.calendar;
-        pfiv.undef = pgr1.undef;
+        pfiv.undef = pgr1.Undef;
         pfiv.dnum[2] = 1 + izmax - izmin;
         pfiv.dnum[3] = 1 + itmax - itmin;
         pfiv.dnum[4] = 1 + iemax - iemin;
@@ -1569,38 +1564,38 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pfiv.dimoff[4] = iemin - 1;
         pfiv.ppflag = 0;
 
-        if (pgr1.idim > -1 && pgr1.jdim > -1)
+        if (pgr1.IDimension > -1 && pgr1.JDimension > -1)
         {
             /* I and J are varying */
             pfiv.gr2ab[0] = pgr1.igrab;
             pfiv.ab2gr[0] = pgr1.iabgr;
-            if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
-            if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+            if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.IDimension)) == null) goto etrn;
+            if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.IDimension)) == null) goto etrn;
             pfiv.linear[0] = pgr1.ilinr;
-            pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
-            pfiv.dnum[0] = pgr1.isiz;
+            pfiv.dimoff[0] = pgr1.DimensionMinimum[0] - 1;
+            pfiv.dnum[0] = pgr1.ISize;
 
             pfiv.gr2ab[1] = pgr1.jgrab;
             pfiv.ab2gr[1] = pgr1.jabgr;
-            if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.jvals, pgr1.jlinr, 0, pgr1.jdim)) == null) goto etrn;
-            if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.javals, pgr1.jlinr, 1, pgr1.jdim)) == null) goto etrn;
+            if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.jvals, pgr1.jlinr, 0, pgr1.JDimension)) == null) goto etrn;
+            if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.javals, pgr1.jlinr, 1, pgr1.JDimension)) == null) goto etrn;
             pfiv.linear[1] = pgr1.jlinr;
-            pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
-            pfiv.dnum[1] = pgr1.jsiz;
+            pfiv.dimoff[1] = pgr1.DimensionMinimum[1] - 1;
+            pfiv.dnum[1] = pgr1.JSize;
         }
-        else if (pgr1.idim > -1 && pgr1.jdim == -1)
+        else if (pgr1.IDimension > -1 && pgr1.JDimension == -1)
         {
             /* I is varying, J is fixed */
-            if (pgr1.idim == 0)
+            if (pgr1.IDimension == 0)
             {
                 /* I is X */
                 pfiv.gr2ab[0] = pgr1.igrab;
                 pfiv.ab2gr[0] = pgr1.iabgr;
-                if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
-                if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.grvals[0] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.IDimension)) == null) goto etrn;
+                if ((pfiv.abvals[0] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.IDimension)) == null) goto etrn;
                 pfiv.linear[0] = pgr1.ilinr;
-                pfiv.dimoff[0] = pgr1.dimmin[0] - 1;
-                pfiv.dnum[0] = pgr1.isiz;
+                pfiv.dimoff[0] = pgr1.DimensionMinimum[0] - 1;
+                pfiv.dnum[0] = pgr1.ISize;
 
                 pfiv.gr2ab[1] = pfi.gr2ab[1];
                 pfiv.ab2gr[1] = pfi.ab2gr[1];
@@ -1615,11 +1610,11 @@ internal class GradsCommandInterface : IGradsCommandInterface
                 /* I is Y */
                 pfiv.gr2ab[1] = pgr1.igrab;
                 pfiv.ab2gr[1] = pgr1.iabgr;
-                if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.idim)) == null) goto etrn;
-                if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.idim)) == null) goto etrn;
+                if ((pfiv.grvals[1] = GaUtil.cpscal(pgr1.ivals, pgr1.ilinr, 0, pgr1.IDimension)) == null) goto etrn;
+                if ((pfiv.abvals[1] = GaUtil.cpscal(pgr1.iavals, pgr1.ilinr, 1, pgr1.IDimension)) == null) goto etrn;
                 pfiv.linear[1] = pgr1.ilinr;
-                pfiv.dimoff[1] = pgr1.dimmin[1] - 1;
-                pfiv.dnum[1] = pgr1.isiz;
+                pfiv.dimoff[1] = pgr1.DimensionMinimum[1] - 1;
+                pfiv.dnum[1] = pgr1.ISize;
 
                 pfiv.gr2ab[0] = pfi.gr2ab[0];
                 pfiv.ab2gr[0] = pfi.ab2gr[0];
@@ -1654,33 +1649,33 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
         if (izmin == izmax && itmin == itmax && iemin == iemax)
         {
-            if (pgr1.idim < 0)
+            if (pgr1.IDimension < 0)
             {
                 /* grid is a single data value */
                 sz = sizeof(double);
                 pfiv.rbuf = new double[1];
                 sz = sizeof(char);
                 pfiv.ubuf = new byte[1];
-                pfiv.rbuf[0] = pgr1.grid[0];
-                pfiv.ubuf[0] = pgr1.umask[0];
+                pfiv.rbuf[0] = pgr1.GridData[0];
+                pfiv.ubuf[0] = pgr1.UndefinedMask[0];
             }
             else
             {
-                pfiv.rbuf = pgr1.grid;
-                pfiv.ubuf = pgr1.umask;
+                pfiv.rbuf = pgr1.GridData;
+                pfiv.ubuf = pgr1.UndefinedMask;
             }
 
-            pgr1.grid = null;
-            pgr1.umask = null;
-            siz = pgr1.isiz;
-            siz = siz * pgr1.jsiz;
+            pgr1.GridData = null;
+            pgr1.UndefinedMask = null;
+            siz = pgr1.ISize;
+            siz = siz * pgr1.JSize;
         }
         else
         {
             /* We need to get multiple grids.  Set this up.  */
 
             /* Calculate size and then allocate the storage for the defined object */
-            gsiz = pgr1.isiz * pgr1.jsiz;
+            gsiz = pgr1.ISize * pgr1.JSize;
             siz = (long)gsiz * (long)pfiv.dnum[2] * (long)pfiv.dnum[3] * (long)pfiv.dnum[4];
             pfiv.rbuf = new double[siz];
             sz = siz * sizeof(char);
@@ -1716,10 +1711,10 @@ internal class GradsCommandInterface : IGradsCommandInterface
                             /* copy the grid into defined variable space */
                             for (i = 0; i < gsiz; i++)
                             {
-                                pfiv.rbuf[res] = pgr1.grid[gr];
-                                pfiv.ubuf[resu] = pgr1.umask[gru];
+                                pfiv.rbuf[res] = pgr1.GridData[gr];
+                                pfiv.ubuf[resu] = pgr1.UndefinedMask[gru];
                                 /* make sure defined vars have undef values, use pcm.undef */
-                                if (pgr1.umask[gru] == 0) pfiv.rbuf[res] = pcm.undef;
+                                if (pgr1.UndefinedMask[gru] == 0) pfiv.rbuf[res] = pcm.undef;
                                 res++;
                                 resu++;
                                 gr++;
@@ -1738,9 +1733,9 @@ internal class GradsCommandInterface : IGradsCommandInterface
                             }
 
                             pgr = pst.result.pgr;
-                            if (pgr.idim != pgr1.idim || pgr.jdim != pgr1.jdim ||
-                                GaExpr.gagchk(pgr, pgr1, pgr1.idim) > 0 ||
-                                GaExpr.gagchk(pgr, pgr1, pgr1.jdim) > 0)
+                            if (pgr.IDimension != pgr1.IDimension || pgr.JDimension != pgr1.JDimension ||
+                                GaExpr.gagchk(pgr, pgr1, pgr1.IDimension) > 0 ||
+                                GaExpr.gagchk(pgr, pgr1, pgr1.JDimension) > 0)
                             {
                                 _drawingContext.Logger?.LogInformation("Define Error: Internal Logic Check 4\n");
                                 goto retrn;
@@ -1751,10 +1746,10 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
                             for (i = 0; i < gsiz; i++)
                             {
-                                pfiv.rbuf[res] = pgr.grid[gr];
-                                pfiv.ubuf[resu] = pgr.umask[gru];
+                                pfiv.rbuf[res] = pgr.GridData[gr];
+                                pfiv.ubuf[resu] = pgr.UndefinedMask[gru];
                                 /* make sure defined vars have undef values, use pcm.undef */
-                                if (pgr.umask[gru] == 0) pfiv.rbuf[res] = pcm.undef;
+                                if (pgr.UndefinedMask[gru] == 0) pfiv.rbuf[res] = pcm.undef;
                                 res++;
                                 resu++;
                                 gr++;
@@ -1766,12 +1761,12 @@ internal class GradsCommandInterface : IGradsCommandInterface
                         /* free the result grid  */
                         if (ie == iemin && it == itmin && iz == izmin)
                         {
-                            if (pgr1.idim > -1)
+                            if (pgr1.IDimension > -1)
                             {
                             }
 
-                            pgr1.grid = null;
-                            pgr1.umask = null;
+                            pgr1.GridData = null;
+                            pgr1.UndefinedMask = null;
                             pst.result.pgr = null;
                         }
                         else
@@ -1825,129 +1820,91 @@ internal class GradsCommandInterface : IGradsCommandInterface
         return (1);
     }
 
-    public void Open(string dataFile, DataFormat format)
+    public void Open(string dataFile, IGriddedDataReader dataReader)
     {
-        if (format == DataFormat.GFS_GRIB2)
-        {
-            _drawingContext.CommonData.VariableMapping = new GfsVariables();
-            ReadGrib2File(dataFile);
-        }
-
-
-        if (_drawingContext.CommonData.fnum == 1)
-        {
-            SetT(1);
-            SetE(1);
-            SetZ(1);
-        }
-    }
-
-    private void ReadGrib2File(string dataFile)
-    {
-        _drawingContext.Logger?.LogInformation($"Loading datafile {dataFile}");
+        var inputFile = dataReader.OpenFile(dataFile);
 
         GradsFile gf = new GradsFile();
-        gf.name = dataFile;
+        
+        gf.type = (int)inputFile.FileType;
 
-        Grib2Reader rdr = new Grib2Reader(dataFile);
-        var datasets = rdr.ReadAllDataSets();
-        var dataset = datasets.First();
-
-        ProductDefinition0000 pd;
-
-        List<double> levels = new List<double>();
-
-        foreach (var ds in datasets)
+        if (inputFile.XDimensionType == InputFileDimensionType.Linear)
         {
-            var pdef = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
-            if (pdef.FirstFixedSurfaceType == NGrib.Grib2.CodeTables.FixedSurfaceType.IsobaricSurface)
-            {
-                if (!levels.Contains((pdef.FirstFixedSurfaceValue ?? 0) / 100.0))
-                {
-                    levels.Add((pdef.FirstFixedSurfaceValue ?? 0) / 100.0);
-                }
-            }
-        }
-
-
-        levels = levels.OrderByDescending(x => x).ToList();
-        levels.Insert(0, levels.Count);
-        levels.Add(-999.9);
-        levels.Add(0);
-        levels.Add(0);
-        levels.Add(0);
-        if (dataset.GridDefinitionSection.GridDefinition is LatLonGridDefinition gd)
-        {
-            var lonMin = gd.Lo1;
-            var lonMax = gd.Lo2;
-            if (lonMin > lonMax)
-            {
-                lonMin -= 360;
-            }
-
-
-            gf.type = 1;
-            gf.dnum[0] = (int)gd.Nx;
-            gf.grvals[0] = new double[] { gd.Dx, lonMin - gd.Dx, -999.9 };
-            gf.abvals[0] = new double[] { 1.0 / gd.Dx, -1.0 * ((lonMin - gd.Dx) / gd.Dx), -999.9 };
+            gf.dnum[0] = (int)inputFile.Dx;
+            gf.grvals[0] = new double[] { inputFile.XIncrement.Value, inputFile.XMin.Value - inputFile.XIncrement.Value, -999.9 };
+            gf.abvals[0] = new double[] { 1.0 / inputFile.XIncrement.Value, -1.0 * ((inputFile.XMin.Value - inputFile.XIncrement.Value) / inputFile.XIncrement.Value), -999.9 };
             gf.ab2gr[0] = GaUtil.liconv;
             gf.gr2ab[0] = GaUtil.liconv;
             gf.linear[0] = 1;
+        }
 
-            double v1, v2;
+        double v1, v2;
 
-            v2 = gf.grvals[0][0];
-            v1 = gf.grvals[0][1] + v2;
-            double temp = v1 + ((double)(gf.dnum[0])) * v2;
-            temp = temp - 360.0;
-            if (Math.Abs(temp - v1) < 0.01) gf.wrap = 1;
+        v2 = gf.grvals[0][0];
+        v1 = gf.grvals[0][1] + v2;
+        double temp = v1 + ((double)(gf.dnum[0])) * v2;
+        temp = temp - 360.0;
+        if (Math.Abs(temp - v1) < 0.01) gf.wrap = 1;
 
-            gf.dnum[1] = (int)gd.Ny;
-            gf.grvals[1] = new double[] { gd.Dy, gd.La1 - gd.Dy, -999.9 };
-            gf.abvals[1] = new double[] { 1.0 / gd.Dy, -1.0 * ((gd.La1 - gd.Dy) / gd.Dy), -999.9 };
+        if (inputFile.YDimensionType == InputFileDimensionType.Linear)
+        {
+            gf.dnum[1] = (int)inputFile.Dy;
+            gf.grvals[1] = new double[] { inputFile.YIncrement.Value, inputFile.YMin.Value - inputFile.YIncrement.Value, -999.9 };
+            gf.abvals[1] = new double[] { 1.0 / inputFile.YIncrement.Value, -1.0 * ((inputFile.YMin.Value - inputFile.YIncrement.Value) / inputFile.YIncrement.Value), -999.9 };
             gf.ab2gr[1] = GaUtil.liconv;
             gf.gr2ab[1] = GaUtil.liconv;
             gf.linear[1] = 1;
+        }
 
-
-            gf.dnum[2] = levels.Count;
-            gf.abvals[2] = levels.ToArray();
-            gf.grvals[2] = levels.ToArray();
+        if (inputFile.ZDimensionType == InputFileDimensionType.Levels)
+        {
+            gf.dnum[2] = inputFile.ZLevels.Length;
+            gf.abvals[2] =  inputFile.ZLevels;
+            gf.grvals[2] =  inputFile.ZLevels;
             gf.ab2gr[2] = GaUtil.lev2gr;
             gf.gr2ab[2] = GaUtil.gr2lev;
             gf.linear[2] = 0;
+        }
 
-            var dt = dataset.Message.IdentificationSection.ReferenceTime;
+
+        if (inputFile.TDimensionType == InputFileDimensionType.Linear)
+        {
+            var dt = inputFile.ReferenceTime;
             var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0, 0 };
-            gf.dnum[3] = 1; //TODO this can be multiple timesteps too
+            gf.dnum[3] = inputFile.Dt;
             gf.grvals[3] = vals;
             gf.abvals[3] = vals;
             gf.linear[3] = 1;
+        }
 
+        if (inputFile.EDimensionType == InputFileDimensionType.Linear)
+        {
             gf.dnum[4] = 1;
-            v1 = 1;
-            v2 = 1;
-            vals = new double[] { v2, v2 - v1, -999.9 };
+            v1 = inputFile.EMin.Value;
+            v2 = inputFile.EIncrement.Value;
+            double[] vals = new double[] { v2, v2 - v1, -999.9 };
             gf.grvals[4] = vals;
             vals = new double[] { -1.0 * ((v1 - v2) / v2), 1.0 / v2, -999.9 };
             gf.abvals[4] = vals;
             gf.linear[4] = 1;
             gf.ab2gr[4] = GaUtil.liconv;
             gf.gr2ab[4] = GaUtil.liconv;
-
-            gf.gsiz = gf.dnum[0] * gf.dnum[1];
-            if (gf.ppflag > 0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
-            /* add the XY header/trailer to gsiz */
-            // if (pfi.xyhdr) {
-            //     if (pvar.dfrm == 1) {
-            //         pfi.xyhdr = pfi.xyhdr * 4 / 1;
-            //     } else if (pvar.dfrm == 2 || pvar.dfrm == -2) {
-            //         pfi.xyhdr = pfi.xyhdr * 4 / 2;
-            //     }
-            //     pfi.gsiz = pfi.gsiz + pfi.xyhdr;
-            // }
         }
+        
 
+        gf.gsiz = gf.dnum[0] * gf.dnum[1];
+        if (gf.ppflag > 0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
+        gf.DataReader = dataReader;
+
+
+        foreach (var inputVar in inputFile.Variables)
+        {
+            gavar gv = new gavar();
+            gv.abbrv = inputVar.Abbreviation;
+            gv.variableDefinition = inputVar.Definition;
+            gf.pvar1.Add(gv);
+        }
+        
         if (_drawingContext.CommonData.pfi1 == null)
         {
             _drawingContext.CommonData.pfi1 = new List<GradsFile>();
@@ -1960,34 +1917,163 @@ internal class GradsCommandInterface : IGradsCommandInterface
             _drawingContext.CommonData.pfid = gf;
             _drawingContext.CommonData.dfnum = 1;
         }
-
-
-        foreach (var ds in datasets)
+        
+        if (_drawingContext.CommonData.fnum == 1)
         {
-            var ps = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
-            FixedSurfaceType sfcType = (FixedSurfaceType)ps.FirstFixedSurfaceType;
-            var heightValue = ps.FirstFixedSurfaceValue;
-
-
-            gavar gv = new gavar();
-
-            gv.variableDefinition = new VariableDefinition
-            {
-                HeightType = sfcType,
-                HeightValue = heightValue ?? Double.MinValue,
-                VariableName = gv.abbrv,
-                VariableType = _drawingContext.CommonData.VariableMapping.GetGrib2VarType((int)ds.Message.IndicatorSection.Discipline, 
-                    ds.ProductDefinitionSection.ProductDefinition.ParameterCategory,
-                    ds.ProductDefinitionSection.ProductDefinition.ParameterNumber)
-            };
-            gv.abbrv = gv.variableDefinition.GetVarName();
-            gf.pvar1.Add(gv);
+            SetT(1);
+            SetE(1);
+            SetZ(1);
         }
-
-        gf.vnum = gf.pvar1.Count;
-
-        gf.DataReader = new GfsGribDataReader();
+        
+        
     }
+
+    // private void ReadGrib2File(string dataFile)
+    // {
+    //     _drawingContext.Logger?.LogInformation($"Loading datafile {dataFile}");
+    //
+    //     GradsFile gf = new GradsFile();
+    //     gf.name = dataFile;
+    //
+    //     Grib2Reader rdr = new Grib2Reader(dataFile);
+    //     var datasets = rdr.ReadAllDataSets();
+    //     var dataset = datasets.First();
+    //
+    //     ProductDefinition0000 pd;
+    //
+    //     List<double> levels = new List<double>();
+    //
+    //     foreach (var ds in datasets)
+    //     {
+    //         var pdef = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
+    //         if (pdef.FirstFixedSurfaceType == NGrib.Grib2.CodeTables.FixedSurfaceType.IsobaricSurface)
+    //         {
+    //             if (!levels.Contains((pdef.FirstFixedSurfaceValue ?? 0) / 100.0))
+    //             {
+    //                 levels.Add((pdef.FirstFixedSurfaceValue ?? 0) / 100.0);
+    //             }
+    //         }
+    //     }
+    //
+    //
+    //     levels = levels.OrderByDescending(x => x).ToList();
+    //     levels.Insert(0, levels.Count);
+    //     levels.Add(-999.9);
+    //     levels.Add(0);
+    //     levels.Add(0);
+    //     levels.Add(0);
+    //     if (dataset.GridDefinitionSection.GridDefinition is LatLonGridDefinition gd)
+    //     {
+    //         var lonMin = gd.Lo1;
+    //         var lonMax = gd.Lo2;
+    //         if (lonMin > lonMax)
+    //         {
+    //             lonMin -= 360;
+    //         }
+    //
+    //
+    //         gf.type = 1;
+    //         gf.dnum[0] = (int)gd.Nx;
+    //         gf.grvals[0] = new double[] { gd.Dx, lonMin - gd.Dx, -999.9 };
+    //         gf.abvals[0] = new double[] { 1.0 / gd.Dx, -1.0 * ((lonMin - gd.Dx) / gd.Dx), -999.9 };
+    //         gf.ab2gr[0] = GaUtil.liconv;
+    //         gf.gr2ab[0] = GaUtil.liconv;
+    //         gf.linear[0] = 1;
+    //
+    //         double v1, v2;
+    //
+    //         v2 = gf.grvals[0][0];
+    //         v1 = gf.grvals[0][1] + v2;
+    //         double temp = v1 + ((double)(gf.dnum[0])) * v2;
+    //         temp = temp - 360.0;
+    //         if (Math.Abs(temp - v1) < 0.01) gf.wrap = 1;
+    //
+    //         gf.dnum[1] = (int)gd.Ny;
+    //         gf.grvals[1] = new double[] { gd.Dy, gd.La1 - gd.Dy, -999.9 };
+    //         gf.abvals[1] = new double[] { 1.0 / gd.Dy, -1.0 * ((gd.La1 - gd.Dy) / gd.Dy), -999.9 };
+    //         gf.ab2gr[1] = GaUtil.liconv;
+    //         gf.gr2ab[1] = GaUtil.liconv;
+    //         gf.linear[1] = 1;
+    //
+    //
+    //         gf.dnum[2] = levels.Count;
+    //         gf.abvals[2] = levels.ToArray();
+    //         gf.grvals[2] = levels.ToArray();
+    //         gf.ab2gr[2] = GaUtil.lev2gr;
+    //         gf.gr2ab[2] = GaUtil.gr2lev;
+    //         gf.linear[2] = 0;
+    //
+    //         var dt = dataset.Message.IdentificationSection.ReferenceTime;
+    //         var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0, 0 };
+    //         gf.dnum[3] = 1; //TODO this can be multiple timesteps too
+    //         gf.grvals[3] = vals;
+    //         gf.abvals[3] = vals;
+    //         gf.linear[3] = 1;
+    //
+    //         gf.dnum[4] = 1;
+    //         v1 = 1;
+    //         v2 = 1;
+    //         vals = new double[] { v2, v2 - v1, -999.9 };
+    //         gf.grvals[4] = vals;
+    //         vals = new double[] { -1.0 * ((v1 - v2) / v2), 1.0 / v2, -999.9 };
+    //         gf.abvals[4] = vals;
+    //         gf.linear[4] = 1;
+    //         gf.ab2gr[4] = GaUtil.liconv;
+    //         gf.gr2ab[4] = GaUtil.liconv;
+    //
+    //         gf.gsiz = gf.dnum[0] * gf.dnum[1];
+    //         if (gf.ppflag > 0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
+    //         /* add the XY header/trailer to gsiz */
+    //         // if (pfi.xyhdr) {
+    //         //     if (pvar.dfrm == 1) {
+    //         //         pfi.xyhdr = pfi.xyhdr * 4 / 1;
+    //         //     } else if (pvar.dfrm == 2 || pvar.dfrm == -2) {
+    //         //         pfi.xyhdr = pfi.xyhdr * 4 / 2;
+    //         //     }
+    //         //     pfi.gsiz = pfi.gsiz + pfi.xyhdr;
+    //         // }
+    //     }
+    //
+    //     if (_drawingContext.CommonData.pfi1 == null)
+    //     {
+    //         _drawingContext.CommonData.pfi1 = new List<GradsFile>();
+    //     }
+    //
+    //     _drawingContext.CommonData.pfi1.Add(gf);
+    //     _drawingContext.CommonData.fnum = _drawingContext.CommonData.pfi1.Count;
+    //     if (_drawingContext.CommonData.fnum == 1)
+    //     {
+    //         _drawingContext.CommonData.pfid = gf;
+    //         _drawingContext.CommonData.dfnum = 1;
+    //     }
+    //
+    //
+    //     foreach (var ds in datasets)
+    //     {
+    //         var ps = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
+    //         FixedSurfaceType sfcType = (FixedSurfaceType)ps.FirstFixedSurfaceType;
+    //         var heightValue = ps.FirstFixedSurfaceValue;
+    //
+    //
+    //         gavar gv = new gavar();
+    //
+    //         gv.variableDefinition = new VariableDefinition
+    //         {
+    //             HeightType = sfcType,
+    //             HeightValue = heightValue ?? Double.MinValue,
+    //             VariableName = gv.abbrv,
+    //             VariableType = _drawingContext.CommonData.VariableMapping.GetGrib2VarType((int)ds.Message.IndicatorSection.Discipline, 
+    //                 ds.ProductDefinitionSection.ProductDefinition.ParameterCategory,
+    //                 ds.ProductDefinitionSection.ProductDefinition.ParameterNumber)
+    //         };
+    //         gv.abbrv = gv.variableDefinition.GetVarName();
+    //         gf.pvar1.Add(gv);
+    //     }
+    //
+    //     gf.vnum = gf.pvar1.Count;
+    //
+    //     gf.DataReader = new GfsGribDataReader();
+    // }
 
 
 

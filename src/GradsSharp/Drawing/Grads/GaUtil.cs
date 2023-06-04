@@ -332,18 +332,18 @@ internal class GaUtil
     /* Get minimum and maximum grid value.  Set rmin and rmax in the
    grid descriptor.                                                  */
 
-    public static void gamnmx(gagrid pgr)
+    public static void gamnmx(GradsGrid pgr)
     {
         double[] r;
         int i, size, cnt;
         byte[] rmask;
 
-        size = pgr.isiz * pgr.jsiz;
+        size = pgr.ISize * pgr.JSize;
         if (size == 1) return;
-        pgr.rmin = 9.99E35;
-        pgr.rmax = -9.99E35;
-        r = pgr.grid;
-        rmask = pgr.umask;
+        pgr.MinimumGridValue = 9.99E35;
+        pgr.MaximumGridValue = -9.99E35;
+        r = pgr.GridData;
+        rmask = pgr.UndefinedMask;
         cnt = 0;
         int cntrmask = 0;
         int cntr = 0;
@@ -353,22 +353,22 @@ internal class GaUtil
             if (rmask[cntrmask] == 1)
             {
                 cnt++;
-                if (pgr.rmin > r[cntr])
+                if (pgr.MinimumGridValue > r[cntr])
                 {
-                    pgr.rmin = r[cntr];
+                    pgr.MinimumGridValue = r[cntr];
                 }
 
-                if (pgr.rmax < r[cntr]) pgr.rmax = r[cntr];
+                if (pgr.MaximumGridValue < r[cntr]) pgr.MaximumGridValue = r[cntr];
             }
 
             cntr++;
             cntrmask++;
         }
 
-        if (cnt == 0 || pgr.rmin == 9.99e35 || pgr.rmax == -9.99e35)
+        if (cnt == 0 || pgr.MinimumGridValue == 9.99e35 || pgr.MaximumGridValue == -9.99e35)
         {
-            pgr.rmin = pgr.undef;
-            pgr.rmax = pgr.undef;
+            pgr.MinimumGridValue = pgr.Undef;
+            pgr.MaximumGridValue = pgr.Undef;
             pgr.umin = pgr.umax = 0;
         }
         else

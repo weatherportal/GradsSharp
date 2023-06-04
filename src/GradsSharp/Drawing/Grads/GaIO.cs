@@ -7,7 +7,7 @@ namespace GradsSharp.Drawing.Grads;
 internal class GaIO
 {
     static bool cflag = false; /* cache flag */
-    static gagrid pgr;
+    static GradsGrid pgr;
     static gavar pvr;
     static GradsFile pfi;
     static int timerr;
@@ -27,7 +27,7 @@ internal class GaIO
         _drawingContext = drawingContext;
     }
 
-    public int gaggrd(gagrid pgrid)
+    public int gaggrd(GradsGrid pgrid)
     {
         double[] gr;
         byte[] gru;
@@ -79,9 +79,9 @@ internal class GaIO
         }
 
         /* Check dimensions we were given */
-        if (pgr.idim < -1 || pgr.idim > 4 ||
-            pgr.jdim < -1 || pgr.jdim > 4 ||
-            (pgr.idim == -1 && pgr.jdim != -1))
+        if (pgr.IDimension < -1 || pgr.IDimension > 4 ||
+            pgr.JDimension < -1 || pgr.JDimension > 4 ||
+            (pgr.IDimension == -1 && pgr.JDimension != -1))
         {
             _drawingContext.Logger?.LogInformation("Internal logic check 16:  {pgr.idim} {pgr.jdim}");
             return (16);
@@ -89,28 +89,28 @@ internal class GaIO
         
 
         /* Calc sizes and get storage for the grid */
-        id = pgr.idim;
-        jd = pgr.jdim;
-        if (id > -1) pgr.isiz = pgr.dimmax[id] - pgr.dimmin[id] + 1;
-        else pgr.isiz = 1;
-        if (jd > -1) pgr.jsiz = pgr.dimmax[jd] - pgr.dimmin[jd] + 1;
-        else pgr.jsiz = 1;
-        size = pgr.isiz * pgr.jsiz;
+        id = pgr.IDimension;
+        jd = pgr.JDimension;
+        if (id > -1) pgr.ISize = pgr.DimensionMaximum[id] - pgr.DimensionMinimum[id] + 1;
+        else pgr.ISize = 1;
+        if (jd > -1) pgr.JSize = pgr.DimensionMaximum[jd] - pgr.DimensionMinimum[jd] + 1;
+        else pgr.JSize = 1;
+        size = pgr.ISize * pgr.JSize;
         if (size > 1)
         {
             /* this is for the grid */
             gr = new double[size];
-            pgr.grid = gr;
+            pgr.GridData = gr;
             /* this is for the undef mask */
             gru = new byte[size];
-            pgr.umask = gru;
+            pgr.UndefinedMask = gru;
         }
         else
         {
-            pgr.grid = new double[] { pgr.rmin };
-            gr = pgr.grid;
-            pgr.umask = new byte[] { pgr.umin };
-            gru = pgr.umask;
+            pgr.GridData = new double[] { pgr.MinimumGridValue };
+            gr = pgr.GridData;
+            pgr.UndefinedMask = new byte[] { pgr.umin };
+            gru = pgr.UndefinedMask;
         }
 
         /* Handle predefined variable */
@@ -123,7 +123,7 @@ internal class GaIO
         /* set minimum and maximum grid indices */
         for (i = 0; i < 5; i++)
         {
-            d[i] = pgr.dimmin[i];
+            d[i] = pgr.DimensionMinimum[i];
             dx[i] = pfi.dnum[i];
         }
 
@@ -136,16 +136,16 @@ internal class GaIO
             d[2] = 1;
         }
 
-        incr = pgr.isiz;
+        incr = pgr.ISize;
 
         /* If X does not vary, make sure the X coordinate is normalized.    */
         if (id != 0 && pfi.wrap > 0)
         {
-            x = pgr.dimmin[0];
+            x = pgr.DimensionMinimum[0];
             while (x < 1) x = x + dx[0];
             while (x > dx[0]) x = x - dx[0];
-            pgr.dimmin[0] = x;
-            pgr.dimmax[0] = x;
+            pgr.DimensionMinimum[0] = x;
+            pgr.DimensionMaximum[0] = x;
             d[0] = x;
         }
 
@@ -239,23 +239,24 @@ internal class GaIO
             //     }
             //
             //     row += incr;
-            if (pgrid.pvar.variableDefinition.HeightType == FixedSurfaceType.IsobaricSurface)
-            {
-                pgrid.pvar.variableDefinition.HeightValue = GaUtil.gr2lev(_drawingContext.CommonData.pfid.abvals[2], pgr.dimmin[2]) * 100;
-            }
-            gr = pgr.DataReader.ReadData(_drawingContext.CommonData, pgrid.pfile, pgrid.pvar.variableDefinition);
-            for (int t = 0; t < gru.Length; t++)
-            {
-
-                gru[t] = 1;
-            }
-
-            dflag = 1;
-
-            if (dflag == 0) goto nodatmsg;
+            // if (pgrid.pvar.variableDefinition.HeightType == FixedSurfaceType.IsobaricSurface)
+            // {
+            //     pgrid.pvar.variableDefinition.HeightValue = GaUtil.gr2lev(_drawingContext.CommonData.pfid.abvals[2], pgr.DimensionMinimum[2]) * 100;
+            // }
             
-            pgr.grid = gr;
-            pgr.umask = gru;
+            pgr.DataReader.ReadData(pgr, pgrid.pvar.variableDefinition);
+            // for (int t = 0; t < gru.Length; t++)
+            // {
+            //
+            //     gru[t] = 1;
+            // }
+            //
+            // dflag = 1;
+            //
+            // if (dflag == 0) goto nodatmsg;
+            
+            // pgr.GridData = gr;
+            // pgr.UndefinedMask = gru;
             
             return (0);
         }
@@ -273,23 +274,23 @@ internal class GaIO
 
         int grpos = 0;
 
-        for (d[jd] = pgr.dimmin[jd]; d[jd] <= pgr.dimmax[jd]; d[jd]++)
+        for (d[jd] = pgr.DimensionMinimum[jd]; d[jd] <= pgr.DimensionMaximum[jd]; d[jd]++)
         {
             if (d[jd] < 1 || d[jd] > dx[jd])
             {
                 for (i = 0; i < incr; i++, grpos++)
                 {
-                    gr[grpos] = pgr.undef;
+                    gr[grpos] = pgr.Undef;
                     gru[grpos] = 0;
                 }
             }
             else
             {
-                for (d[id] = pgr.dimmin[id]; d[id] <= pgr.dimmax[id]; d[id]++)
+                for (d[id] = pgr.DimensionMinimum[id]; d[id] <= pgr.DimensionMaximum[id]; d[id]++)
                 {
                     if (d[id] < 1 || d[id] > dx[id])
                     {
-                        gr[grpos] = pgr.undef;
+                        gr[grpos] = pgr.Undef;
                         gru[grpos] = 0;
                     }
                     else
@@ -321,7 +322,7 @@ internal class GaIO
         int grpos2 = 0;
         for (i = 0; i < size; i++, grpos2++)
         {
-            gr[grpos2] = pgr.undef;
+            gr[grpos2] = pgr.Undef;
             gru[grpos2] = 0;
         }
 
@@ -330,7 +331,7 @@ internal class GaIO
         nodat:
         for (i = 0; i < size; i++)
         {
-            gr[i] = pgr.undef;
+            gr[i] = pgr.Undef;
             gru[i] = 0;
         }
 
@@ -376,9 +377,9 @@ internal class GaIO
 
         /* If the needed data is within the bounds of the file dimensions
          then read the data directly.                                     */
-        if (pgr.dimmin[0] >= 1 && pgr.dimmax[0] <= pfi.dnum[0])
+        if (pgr.DimensionMinimum[0] >= 1 && pgr.DimensionMaximum[0] <= pfi.dnum[0])
         {
-            rc = garrow(pgr.dimmin[0], y, z, t, e, (pgr.dimmax[0] - pgr.dimmin[0] + 1), ref gr, ref gru, pgr.toff);
+            rc = garrow(pgr.DimensionMinimum[0], y, z, t, e, (pgr.DimensionMaximum[0] - pgr.DimensionMinimum[0] + 1), ref gr, ref gru, pgr.toff);
             if (rc != 0) return (1);
             return (0);
         }
@@ -388,24 +389,24 @@ internal class GaIO
          fill in with missing data where appropriate.                   */
         if (pfi.wrap == 0)
         {
-            if (pgr.dimmin[0] >= 1 && pgr.dimmax[0] <= pfi.dnum[0])
+            if (pgr.DimensionMinimum[0] >= 1 && pgr.DimensionMaximum[0] <= pfi.dnum[0])
             {
-                rc = garrow(pgr.dimmin[0], y, z, t, e, (pgr.dimmax[0] - pgr.dimmin[0] + 1), ref gr, ref gru, pgr.toff);
+                rc = garrow(pgr.DimensionMinimum[0], y, z, t, e, (pgr.DimensionMaximum[0] - pgr.DimensionMinimum[0] + 1), ref gr, ref gru, pgr.toff);
                 if (rc != 0) return (1);
                 return (0);
             }
 
-            for (i = 0; i < pgr.isiz; i++)
+            for (i = 0; i < pgr.ISize; i++)
             {
-                gr[i] = pgr.undef;
+                gr[i] = pgr.Undef;
                 gru[i] = 0;
             }
 
-            if (pgr.dimmin[0] < 1 && pgr.dimmax[0] < 1) return (-1);
-            if (pgr.dimmin[0] > pfi.dnum[0] &&
-                pgr.dimmax[0] > pfi.dnum[0])
+            if (pgr.DimensionMinimum[0] < 1 && pgr.DimensionMaximum[0] < 1) return (-1);
+            if (pgr.DimensionMinimum[0] > pfi.dnum[0] &&
+                pgr.DimensionMaximum[0] > pfi.dnum[0])
                 return (-1);
-            i = 1 - pgr.dimmin[0];
+            i = 1 - pgr.DimensionMinimum[0];
             if (i > 0)
             {
                 // gr += i;
@@ -413,8 +414,8 @@ internal class GaIO
             }
 
             i = 1;
-            if (pgr.dimmin[0] > 1) i = pgr.dimmin[0];
-            j = pgr.dimmax[0];
+            if (pgr.DimensionMinimum[0] > 1) i = pgr.DimensionMinimum[0];
+            j = pgr.DimensionMaximum[0];
             if (j > pfi.dnum[0]) j = pfi.dnum[0];
             j = 1 + (j - i);
             rc = garrow(i, y, z, t, e, j, ref gr, ref gru, pgr.toff);
@@ -426,7 +427,7 @@ internal class GaIO
          copy the values as needed into locations in the requested row.    */
         rc = garrow(1, y, z, t, e, pfi.dnum[0], ref pfi.rbuf, ref pfi.ubuf, pgr.toff);
         if (rc != 0) return (1);
-        for (x = pgr.dimmin[0]; x <= pgr.dimmax[0]; x++)
+        for (x = pgr.DimensionMinimum[0]; x <= pgr.DimensionMaximum[0]; x++)
         {
             i = x;
             while (i < 1) i = i + pfi.dnum[0];
@@ -619,15 +620,15 @@ internal class GaIO
          variable, it must be a fixed dimension in the output
          grid.  */
 
-        id = pgr.idim;
-        jd = pgr.jdim;
+        id = pgr.IDimension;
+        jd = pgr.JDimension;
         if (jd > -1)
         {
             if (pfi.dnum[jd] == 1)
             {
                 jd = -1;
-                pgr.jdim = -1;
-                pgr.jsiz = -1;
+                pgr.JDimension = -1;
+                pgr.JSize = -1;
             }
         }
 
@@ -636,16 +637,16 @@ internal class GaIO
             if (pfi.dnum[id] == 1)
             {
                 id = jd;
-                pgr.idim = pgr.jdim;
-                pgr.isiz = pgr.jsiz;
+                pgr.IDimension = pgr.JDimension;
+                pgr.ISize = pgr.JSize;
                 pgr.igrab = pgr.jgrab;
                 pgr.iabgr = pgr.jabgr;
                 pgr.ivals = pgr.jvals;
                 pgr.iavals = pgr.javals;
                 pgr.ilinr = pgr.jlinr;
                 jd = -1;
-                pgr.jdim = -1;
-                pgr.jsiz = 1;
+                pgr.JDimension = -1;
+                pgr.JSize = 1;
             }
         }
 
@@ -658,38 +659,38 @@ internal class GaIO
 
         /* Set up dimension ranges */
 
-        for (i = 0; i < 5; i++) d[i] = pgr.dimmin[i] - pfi.dimoff[i] - 1;
+        for (i = 0; i < 5; i++) d[i] = pgr.DimensionMinimum[i] - pfi.dimoff[i] - 1;
         for (i = 0; i < 5; i++)
             if (pfi.dnum[i] == 1)
                 d[i] = 0;
         if (id > -1)
         {
             d1min = d[id];
-            d1max = pgr.dimmax[id] - pfi.dimoff[id] - 1;
+            d1max = pgr.DimensionMaximum[id] - pfi.dimoff[id] - 1;
         }
 
         if (jd > -1)
         {
             d2min = d[jd];
-            d2max = pgr.dimmax[jd] - pfi.dimoff[jd] - 1;
+            d2max = pgr.DimensionMaximum[jd] - pfi.dimoff[jd] - 1;
         }
 
         /* Get storage for output grid */
 
-        pgr.isiz = 1;
-        pgr.jsiz = 1;
-        if (id > -1) pgr.isiz = 1 + d1max - d1min;
-        if (jd > -1) pgr.jsiz = 1 + d2max - d2min;
-        siz = pgr.isiz * pgr.jsiz;
+        pgr.ISize = 1;
+        pgr.JSize = 1;
+        if (id > -1) pgr.ISize = 1 + d1max - d1min;
+        if (jd > -1) pgr.JSize = 1 + d2max - d2min;
+        siz = pgr.ISize * pgr.JSize;
         if (siz > 1)
         {
-            pgr.grid = new double[siz];
-            pgr.umask = new byte[siz];
+            pgr.GridData = new double[siz];
+            pgr.UndefinedMask = new byte[siz];
         }
         else
         {
-            pgr.grid = new double[] {pgr.rmin};
-            pgr.umask = new byte[] {pgr.umin};
+            pgr.GridData = new double[] {pgr.MinimumGridValue};
+            pgr.UndefinedMask = new byte[] {pgr.umin};
         }
 
         /* Normalize time coordinate if not varying */
@@ -709,8 +710,8 @@ internal class GaIO
         {
             for (i = 0; i < siz; i++)
             {
-                pgr.grid[i] = pfi.undef;
-                pgr.umask[i] = 0;
+                pgr.GridData[i] = pfi.undef;
+                pgr.UndefinedMask[i] = 0;
             }
 
             return (0);
@@ -722,15 +723,15 @@ internal class GaIO
         {
             pos = (long)d[0] + (long)d[1] * (long)ys + (long)d[2] * (long)zs + (long)d[3] * (long)ts +
                   (long)d[4] * (long)es;
-            pgr.rmin = pfi.rbuf[pos];
+            pgr.MinimumGridValue = pfi.rbuf[pos];
             pgr.umin = pfi.ubuf[pos];
             return (0);
         }
 
         int vpos = 0;
         
-        v = pgr.grid;
-        vmask = pgr.umask;
+        v = pgr.GridData;
+        vmask = pgr.UndefinedMask;
 
         if (jd == -1)
         {
@@ -794,24 +795,24 @@ internal class GaIO
         byte[] gru;
         double[] vals;
 
-        id = pgr.idim;
-        jd = pgr.jdim;
-        for (i = 0; i < 5; i++) d[i] = pgr.dimmin[i];
+        id = pgr.IDimension;
+        jd = pgr.JDimension;
+        for (i = 0; i < 5; i++) d[i] = pgr.DimensionMinimum[i];
 
         dim = (int)pvr.offset;
         conv = pfi.gr2ab[dim];
         vals = pfi.grvals[dim];
 
-        gr = pgr.grid;
-        gru = pgr.umask;
+        gr = pgr.GridData;
+        gru = pgr.UndefinedMask;
 
         int pos = 0;
 
         if (id > -1 && jd > -1)
         {
-            for (d[jd] = pgr.dimmin[jd]; d[jd] <= pgr.dimmax[jd]; d[jd]++)
+            for (d[jd] = pgr.DimensionMinimum[jd]; d[jd] <= pgr.DimensionMaximum[jd]; d[jd]++)
             {
-                for (d[id] = pgr.dimmin[id]; d[id] <= pgr.dimmax[id]; d[id]++)
+                for (d[id] = pgr.DimensionMinimum[id]; d[id] <= pgr.DimensionMaximum[id]; d[id]++)
                 {
                     t = (double)(d[dim]);
                     gr[pos] = conv(vals, t);
@@ -822,7 +823,7 @@ internal class GaIO
         }
         else if (id > -1)
         {
-            for (d[id] = pgr.dimmin[id]; d[id] <= pgr.dimmax[id]; d[id]++)
+            for (d[id] = pgr.DimensionMinimum[id]; d[id] <= pgr.DimensionMaximum[id]; d[id]++)
             {
                 t = (double)(d[dim]);
                 gr[pos] = conv(vals, t);

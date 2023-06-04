@@ -195,7 +195,7 @@ internal class GaGx
     public void gaplot()
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgr;
+        GradsGrid pgr;
         //struct gastn *stn;
         int proj;
 
@@ -215,7 +215,7 @@ internal class GaGx
             if (pcm.type[0] == 1)
             {
                 pgr = pcm.result[0].pgr;
-                if (pgr.idim == -1)
+                if (pgr.IDimension == -1)
                 {
                     /* 0-D */
                     if (pcm.gout2a == 7) gafwrt();
@@ -237,13 +237,13 @@ internal class GaGx
                     else
                     {
                         if (pgr.umin == 1)
-                            pout = String.Format("Result value = {0:g} ", pgr.rmin);
+                            pout = String.Format("Result value = {0:g} ", pgr.MinimumGridValue);
                         else
                             pout = String.Format("Result value = {0:g} ", pcm.undef);
                         _drawingContext.Logger?.LogInformation(pout);
                     }
                 }
-                else if (pgr.jdim == -1)
+                else if (pgr.JDimension == -1)
                 {
                     /* 1-D */
                     if (pcm.gout2a == 7) gafwrt();
@@ -555,7 +555,7 @@ internal class GaGx
     void gadprnt()
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgr;
+        GradsGrid pgr;
         // struct gastn *stn;
         // struct garpt *rpt;
         // struct gagrid *pgr;
@@ -567,11 +567,11 @@ internal class GaGx
         {
             /* Data type grid */
             pgr = pcm.result[0].pgr;
-            siz = pgr.isiz * pgr.jsiz;
+            siz = pgr.ISize * pgr.JSize;
             pout = String.Format("Printing Grid -- {0} Values -- Undef = {1}", siz, pcm.undef);
             _drawingContext.Logger?.LogInformation(pout);
-            gr = pgr.grid;
-            gru = pgr.umask;
+            gr = pgr.GridData;
+            gru = pgr.UndefinedMask;
             lnum = 0;
             int cntgr = 0;
             int cntgru = 0;
@@ -677,7 +677,7 @@ internal class GaGx
     void gastts()
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgr;
+        GradsGrid pgr;
         dt dtim;
         Func<double[], double, double> conv;
         double[] gr;
@@ -692,19 +692,19 @@ internal class GaGx
         {
             pgr = pcm.result[0].pgr;
             _drawingContext.Logger?.LogInformation("Data Type = grid\n");
-            pout = $"Dimensions {pgr.idim} {pgr.jdim}";
+            pout = $"Dimensions {pgr.IDimension} {pgr.JDimension}";
             _drawingContext.Logger?.LogInformation(pout);
-            if (pgr.idim > -1)
+            if (pgr.IDimension > -1)
             {
-                pout = $"I Dimension = {pgr.dimmin[pgr.idim]} to {pgr.dimmax[pgr.idim]}";
+                pout = $"I Dimension = {pgr.DimensionMinimum[pgr.IDimension]} to {pgr.DimensionMaximum[pgr.IDimension]}";
                 _drawingContext.Logger?.LogInformation(pout);
                 /* Linear scaling info */
-                if (pgr.idim > -1 && pgr.ilinr == 1)
+                if (pgr.IDimension > -1 && pgr.ilinr == 1)
                 {
                     _drawingContext.Logger?.LogInformation(" Linear");
-                    if (pgr.idim == 3)
+                    if (pgr.IDimension == 3)
                     {
-                        GaUtil.gr2t(pgr.ivals, pgr.dimmin[3], out dtim);
+                        GaUtil.gr2t(pgr.ivals, pgr.DimensionMinimum[3], out dtim);
                         if (dtim.mn == 0)
                             GaUtil.gat2ch(dtim, 4, out lab, 20);
                         else
@@ -723,17 +723,17 @@ internal class GaGx
                     else
                     {
                         conv = pgr.igrab;
-                        pout = $"{conv(pgr.ivals, pgr.dimmin[pgr.idim])} {pgr.ivals[0]}";
+                        pout = $"{conv(pgr.ivals, pgr.DimensionMinimum[pgr.IDimension])} {pgr.ivals[0]}";
                         _drawingContext.Logger?.LogInformation(pout);
                     }
                 }
 
                 /* Levels scaling info */
-                if (pgr.idim > -1 && pgr.ilinr != 1)
+                if (pgr.IDimension > -1 && pgr.ilinr != 1)
                 {
                     _drawingContext.Logger?.LogInformation(" Levels");
                     conv = pgr.igrab;
-                    for (i = pgr.dimmin[pgr.idim]; i <= pgr.dimmax[pgr.idim]; i++)
+                    for (i = pgr.DimensionMinimum[pgr.IDimension]; i <= pgr.DimensionMaximum[pgr.IDimension]; i++)
                     {
                         pout = $"{conv(pgr.ivals, i)}";
                         _drawingContext.Logger?.LogInformation(pout);
@@ -747,17 +747,17 @@ internal class GaGx
                 _drawingContext.Logger?.LogInformation("I Dimension = -999 to -999\n");
             }
 
-            if (pgr.jdim > -1)
+            if (pgr.JDimension > -1)
             {
-                String.Format("J Dimension = {0} to {1}", pgr.dimmin[pgr.jdim], pgr.dimmax[pgr.jdim]);
+                String.Format("J Dimension = {0} to {1}", pgr.DimensionMinimum[pgr.JDimension], pgr.DimensionMaximum[pgr.JDimension]);
                 _drawingContext.Logger?.LogInformation(pout);
                 /* Linear scaling info */
-                if (pgr.jdim > -1 && pgr.jlinr == 1)
+                if (pgr.JDimension > -1 && pgr.jlinr == 1)
                 {
                     _drawingContext.Logger?.LogInformation(" Linear");
-                    if (pgr.jdim == 3)
+                    if (pgr.JDimension == 3)
                     {
-                        GaUtil.gr2t(pgr.jvals, pgr.dimmin[3], out dtim);
+                        GaUtil.gr2t(pgr.jvals, pgr.DimensionMinimum[3], out dtim);
                         if (dtim.mn == 0)
                             GaUtil.gat2ch(dtim, 4, out lab, 20);
                         else
@@ -776,17 +776,17 @@ internal class GaGx
                     else
                     {
                         conv = pgr.jgrab;
-                        pout = $"{conv(pgr.jvals, pgr.dimmin[pgr.jdim])} {pgr.jvals[0]}";
+                        pout = $"{conv(pgr.jvals, pgr.DimensionMinimum[pgr.JDimension])} {pgr.jvals[0]}";
                         _drawingContext.Logger?.LogInformation(pout);
                     }
                 }
 
                 /* Levels scaling info */
-                if (pgr.jdim > -1 && pgr.jlinr != 1)
+                if (pgr.JDimension > -1 && pgr.jlinr != 1)
                 {
                     _drawingContext.Logger?.LogInformation(" Levels");
                     conv = pgr.jgrab;
-                    for (i = pgr.dimmin[pgr.jdim]; i <= pgr.dimmax[pgr.jdim]; i++)
+                    for (i = pgr.DimensionMinimum[pgr.JDimension]; i <= pgr.DimensionMaximum[pgr.JDimension]; i++)
                     {
                         pout = $"{conv(pgr.jvals, i)}";
                         _drawingContext.Logger?.LogInformation(pout);
@@ -800,8 +800,8 @@ internal class GaGx
                 _drawingContext.Logger?.LogInformation("J Dimension = -999 to -999\n");
             }
 
-            siz = pgr.isiz * pgr.jsiz;
-            pout = $"Sizes = {pgr.isiz} {pgr.jsiz} {siz}";
+            siz = pgr.ISize * pgr.JSize;
+            pout = $"Sizes = {pgr.ISize} {pgr.JSize} {siz}";
             _drawingContext.Logger?.LogInformation(pout);
             pout = $"Undef value = {pcm.undef}";
             _drawingContext.Logger?.LogInformation(pout);
@@ -809,8 +809,8 @@ internal class GaGx
             gcnt = 0;
             sum = 0;
             sumsqr = 0;
-            gr = pgr.grid;
-            grumask = pgr.umask;
+            gr = pgr.GridData;
+            grumask = pgr.UndefinedMask;
             for (i = 0; i < siz; i++)
             {
                 if (grumask[i] == 0) ucnt++;
@@ -825,24 +825,24 @@ internal class GaGx
 
             pout = $"Undef count = {ucnt}  Valid count = {gcnt}";
             _drawingContext.Logger?.LogInformation(pout);
-            if (pgr.idim > -1)
+            if (pgr.IDimension > -1)
             {
                 GaUtil.gamnmx(pgr);
-                pout = $"Min, Max = {pgr.rmin} {pgr.rmax}";
+                pout = $"Min, Max = {pgr.MinimumGridValue} {pgr.MaximumGridValue}";
                 _drawingContext.Logger?.LogInformation(pout);
                 cint = 0.0;
-                gacsel(pgr.rmin, pgr.rmax, ref cint, out cmin, out cmax);
+                gacsel(pgr.MinimumGridValue, pgr.MaximumGridValue, ref cint, out cmin, out cmax);
 
-                if (pgr.jdim == -1)
+                if (pgr.JDimension == -1)
                 {
                     cmin = cmin - cint * 2.0;
                     cmax = cmax + cint * 2.0;
                 }
 
-                if (GaUtil.dequal(cint, 0.0, 1e-12) == 0 || GaUtil.dequal(cint, pgr.undef, 1e-12) == 0)
+                if (GaUtil.dequal(cint, 0.0, 1e-12) == 0 || GaUtil.dequal(cint, pgr.Undef, 1e-12) == 0)
                 {
-                    cmin = pgr.rmin - 5.0;
-                    cmax = pgr.rmax + 5.0;
+                    cmin = pgr.MinimumGridValue - 5.0;
+                    cmax = pgr.MaximumGridValue + 5.0;
                     cint = 1.0;
                 }
 
@@ -885,7 +885,7 @@ internal class GaGx
             }
             else
             {
-                pout = $"Min, Max = {pgr.rmin} {pgr.rmin}";
+                pout = $"Min, Max = {pgr.MinimumGridValue} {pgr.MinimumGridValue}";
                 _drawingContext.Logger?.LogInformation(pout);
             }
         }
@@ -2518,7 +2518,7 @@ internal class GaGx
 
 /*  Routine to set up scaling for a 1-D plot.  */
 
-    void gas1d(double cmin, double cmax, int dim, bool rotflg, gagrid pgr, gastn stn)
+    void gas1d(double cmin, double cmax, int dim, bool rotflg, GradsGrid pgr, gastn stn)
     {
         // var pcm = _drawingContext.CommonData;
         // double x1, x2, y1, y2, xt1, xt2, yt1, yt2, d2r;
@@ -2980,7 +2980,7 @@ internal class GaGx
 
 /* Set up grid level scaling for a 2-D plot */
 
-    void gas2d(gagrid pgr, bool imap)
+    void gas2d(GradsGrid pgr, bool imap)
     {
         var pcm = _drawingContext.CommonData;
         double x1, x2, y1, y2, xt1, xt2, yt1, yt2, d2r;
@@ -2993,8 +2993,8 @@ internal class GaGx
         /* Set up linear level scaling (level 1) and map level scaling
          (level 2).  If no map drawn, just do linear level scaling.  */
 
-        idim = pgr.idim;
-        jdim = pgr.jdim;
+        idim = pgr.IDimension;
+        jdim = pgr.JDimension;
         pcm.xdim = idim;
         pcm.ydim = jdim;
         pcm.xgrval = pgr.ivals;
@@ -3035,7 +3035,7 @@ internal class GaGx
             else if (idim == 5)
             {
                 x1 = 1;
-                x2 = pgr.isiz; /* COLL */
+                x2 = pgr.ISize; /* COLL */
             }
             else
             {
@@ -3138,7 +3138,7 @@ internal class GaGx
         /* Now set up level 2 grid scaling done through gaconv */
 
         if (idim == 5) ioffset = 0; /* COLL */
-        else ioffset = pgr.dimmin[idim] - 1;
+        else ioffset = pgr.DimensionMinimum[idim] - 1;
         if (idim == 3) iconv = null;
         else
         {
@@ -3147,7 +3147,7 @@ internal class GaGx
         }
 
         if (jdim == 5) joffset = 1; /* COLL */
-        else joffset = pgr.dimmin[jdim] - 1;
+        else joffset = pgr.DimensionMinimum[jdim] - 1;
         if (jdim == 3) jconv = null;
         else
         {
@@ -3161,7 +3161,7 @@ internal class GaGx
         {
             /* COLL -- predefine axis */
             pcm.rmin = 1;
-            pcm.rmax = (double)(pgr.isiz);
+            pcm.rmax = (double)(pgr.ISize);
             pcm.axmin = 1.0;
             pcm.axmax = pcm.rmax;
             pcm.axflg = 1;
@@ -3996,7 +3996,7 @@ internal class GaGx
     void gastrm()
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgru, pgrv, pgrc = null;
+        GradsGrid pgru, pgrv, pgrc = null;
         double[] u, v, c = Array.Empty<double>();
         bool flag;
         int lcol;
@@ -4010,8 +4010,8 @@ internal class GaGx
 
         pgru = pcm.result[0].pgr;
         pgrv = pcm.result[1].pgr;
-        if (pgru.idim != pgrv.idim || pgru.jdim != pgrv.jdim ||
-            GaExpr.gagchk(pgru, pgrv, pgru.idim) > 1 || GaExpr.gagchk(pgru, pgrv, pgru.jdim) > 1)
+        if (pgru.IDimension != pgrv.IDimension || pgru.JDimension != pgrv.JDimension ||
+            GaExpr.gagchk(pgru, pgrv, pgru.IDimension) > 1 || GaExpr.gagchk(pgru, pgrv, pgru.JDimension) > 1)
         {
             _drawingContext.Logger?.LogInformation("Error plotting streamlines:  Invalid grids\n");
             _drawingContext.Logger?.LogInformation("   Vector component grids have difference scaling\n");
@@ -4023,8 +4023,8 @@ internal class GaGx
         {
             flag = true;
             pgrc = pcm.result[2].pgr;
-            if (pgrc.idim != pgru.idim || pgrc.jdim != pgru.jdim ||
-                GaExpr.gagchk(pgrc, pgru, pgru.idim) > 1 || GaExpr.gagchk(pgrc, pgru, pgru.jdim) > 1)
+            if (pgrc.IDimension != pgru.IDimension || pgrc.JDimension != pgru.JDimension ||
+                GaExpr.gagchk(pgrc, pgru, pgru.IDimension) > 1 || GaExpr.gagchk(pgrc, pgru, pgru.JDimension) > 1)
             {
                 flag = false;
                 _drawingContext.Logger?.LogInformation("Error plotting streamlines:  Invalid color grid");
@@ -4032,8 +4032,8 @@ internal class GaGx
             }
         }
 
-        if ((pcm.rotate && (pgru.idim != 2 || pgru.jdim != 3)) ||
-            (!pcm.rotate && pgru.idim == 2 && pgru.jdim == 3))
+        if ((pcm.rotate && (pgru.IDimension != 2 || pgru.JDimension != 3)) ||
+            (!pcm.rotate && pgru.IDimension == 2 && pgru.JDimension == 3))
         {
             pgru = gaflip(pgru);
             pgrv = gaflip(pgrv);
@@ -4056,17 +4056,17 @@ internal class GaGx
                 _drawingContext.Logger?.LogInformation("Connot color vectors -- Color grid all undefined\n");
                 flag = false;
             }
-            else gaselc(pgrc.rmin, pgrc.rmax);
+            else gaselc(pgrc.MinimumGridValue, pgrc.MaximumGridValue);
         }
 
-        u = pgru.grid;
-        v = pgrv.grid;
-        umask = pgru.umask;
-        vmask = pgrv.umask;
+        u = pgru.GridData;
+        v = pgrv.GridData;
+        umask = pgru.UndefinedMask;
+        vmask = pgrv.UndefinedMask;
         if (flag)
         {
-            c = pgrc.grid;
-            cmask = pgrc.umask;
+            c = pgrc.GridData;
+            cmask = pgrc.UndefinedMask;
         }
 
         if (pcm.ccolor >= 0) lcol = pcm.ccolor;
@@ -4078,13 +4078,13 @@ internal class GaGx
 
         if (flag)
         {
-            _drawingContext.GxStrm.gxstrm(u, v, c, pgru.isiz, pgru.jsiz, umask, vmask, cmask, flag,
+            _drawingContext.GxStrm.gxstrm(u, v, c, pgru.ISize, pgru.JSize, umask, vmask, cmask, flag,
                 pcm.shdlvs, pcm.shdcls, pcm.shdcnt, pcm.strmden,
                 pcm.strmarrd, pcm.strmarrsz, pcm.strmarrt);
         }
         else
         {
-            _drawingContext.GxStrm.gxstrm(u, v, null, pgru.isiz, pgru.jsiz, umask, vmask, Array.Empty<byte>(), flag,
+            _drawingContext.GxStrm.gxstrm(u, v, null, pgru.ISize, pgru.JSize, umask, vmask, Array.Empty<byte>(), flag,
                 pcm.shdlvs, pcm.shdcls, pcm.shdcnt, pcm.strmden,
                 pcm.strmarrd, pcm.strmarrsz, pcm.strmarrt);
         }
@@ -4094,7 +4094,7 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
-        gaaxpl(pgru.idim, pgru.jdim);
+        gaaxpl(pgru.IDimension, pgru.JDimension);
         gagsav(9);
     }
 
@@ -4103,7 +4103,7 @@ internal class GaGx
     void gavect(bool brbflg)
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgru, pgrv, pgrc = null;
+        GradsGrid pgru, pgrv, pgrc = null;
         double[] u, v, c = Array.Empty<double>();
         double x, y, lon, lat, umax, vmax;
         double vscal, adj, dir;
@@ -4120,8 +4120,8 @@ internal class GaGx
 
         pgru = pcm.result[0].pgr;
         pgrv = pcm.result[1].pgr;
-        if (pgru.idim != pgrv.idim || pgru.jdim != pgrv.jdim ||
-            GaExpr.gagchk(pgru, pgrv, pgru.idim) > 1 || GaExpr.gagchk(pgru, pgrv, pgru.jdim) > 1)
+        if (pgru.IDimension != pgrv.IDimension || pgru.JDimension != pgrv.JDimension ||
+            GaExpr.gagchk(pgru, pgrv, pgru.IDimension) > 1 || GaExpr.gagchk(pgru, pgrv, pgru.JDimension) > 1)
         {
             _drawingContext.Logger?.LogInformation("Error plotting vector/barb field:  Invalid grids\n");
             _drawingContext.Logger?.LogInformation("   Vector component grids have difference scaling\n");
@@ -4133,8 +4133,8 @@ internal class GaGx
         {
             flag = true;
             pgrc = pcm.result[2].pgr;
-            if (pgrc.idim != pgru.idim || pgrc.jdim != pgru.jdim ||
-                GaExpr.gagchk(pgrc, pgru, pgru.idim) > 1 || GaExpr.gagchk(pgrc, pgru, pgru.jdim) > 1)
+            if (pgrc.IDimension != pgru.IDimension || pgrc.JDimension != pgru.JDimension ||
+                GaExpr.gagchk(pgrc, pgru, pgru.IDimension) > 1 || GaExpr.gagchk(pgrc, pgru, pgru.JDimension) > 1)
             {
                 flag = false;
                 _drawingContext.Logger?.LogInformation("Error plotting vector/barb field:  Invalid color grid");
@@ -4142,8 +4142,8 @@ internal class GaGx
             }
         }
 
-        if ((pcm.rotate && (pgru.idim != 2 || pgru.jdim != 3)) ||
-            (!pcm.rotate && pgru.idim == 2 && pgru.jdim == 3))
+        if ((pcm.rotate && (pgru.IDimension != 2 || pgru.JDimension != 3)) ||
+            (!pcm.rotate && pgru.IDimension == 2 && pgru.JDimension == 3))
         {
             pgru = gaflip(pgru);
             pgrv = gaflip(pgrv);
@@ -4166,7 +4166,7 @@ internal class GaGx
                 _drawingContext.Logger?.LogInformation("Cannot color vectors/barbs -- Color grid all undefined\n");
                 flag = false;
             }
-            else gaselc(pgrc.rmin, pgrc.rmax);
+            else gaselc(pgrc.MinimumGridValue, pgrc.MaximumGridValue);
         }
 
         GaUtil.gamnmx(pgru);
@@ -4191,10 +4191,10 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
         if (!pcm.arrflg)
         {
-            umax = pgru.rmax;
-            if (umax < Math.Abs(pgru.rmin)) umax = Math.Abs(pgru.rmin);
-            vmax = pgrv.rmax;
-            if (vmax < Math.Abs(pgrv.rmin)) vmax = Math.Abs(pgrv.rmin);
+            umax = pgru.MaximumGridValue;
+            if (umax < Math.Abs(pgru.MinimumGridValue)) umax = Math.Abs(pgru.MinimumGridValue);
+            vmax = pgrv.MaximumGridValue;
+            if (vmax < Math.Abs(pgrv.MinimumGridValue)) vmax = Math.Abs(pgrv.MinimumGridValue);
             vscal = GaUtil.hypot(umax, vmax);
             if (vscal > 0.0)
             {
@@ -4214,14 +4214,14 @@ internal class GaGx
 
         pcm.arrflg = true;
 
-        u = pgru.grid;
-        v = pgrv.grid;
-        umask = pgru.umask;
-        vmask = pgrv.umask;
+        u = pgru.GridData;
+        v = pgrv.GridData;
+        umask = pgru.UndefinedMask;
+        vmask = pgrv.UndefinedMask;
         if (flag)
         {
-            c = pgrc.grid;
-            cmask = pgrc.umask;
+            c = pgrc.GridData;
+            cmask = pgrc.UndefinedMask;
         }
 
         /* hflg=0 idim is lat
@@ -4240,8 +4240,8 @@ internal class GaGx
         else if (pcm.hemflg == 1) hflg = 3;
         else
         {
-            if (pgru.idim == 1) hflg = 0;
-            else if (pgru.jdim == 1) hflg = 1;
+            if (pgru.IDimension == 1) hflg = 0;
+            else if (pgru.JDimension == 1) hflg = 1;
             else
             {
                 if (pcm.dmin[1] < 0.0) hflg = 3;
@@ -4249,9 +4249,9 @@ internal class GaGx
             }
         }
 
-        for (j = 1; j <= pgru.jsiz; j++)
+        for (j = 1; j <= pgru.JSize; j++)
         {
-            for (i = 1; i <= pgru.isiz; i++)
+            for (i = 1; i <= pgru.ISize; i++)
             {
                 if (umask[cntum] != 0 && vmask[cntvm] != 0)
                 {
@@ -4331,7 +4331,7 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
-        gaaxpl(pgru.idim, pgru.jdim);
+        gaaxpl(pgru.IDimension, pgru.JDimension);
         if (brbflg) gagsav(15);
         else gagsav(3);
     }
@@ -4344,7 +4344,7 @@ internal class GaGx
     void gascat()
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgr1, pgr2, pgrc = null;
+        GradsGrid pgr1, pgr2, pgrc = null;
         double[] r1, r2, c = Array.Empty<double>();
         double x, y;
         double cmin1, cmax1, cmin2, cmax2, cint1 = 0, cint2 = 0;
@@ -4366,9 +4366,9 @@ internal class GaGx
 
         pgr1 = pcm.result[0].pgr;
         pgr2 = pcm.result[1].pgr;
-        if (pgr1.idim != pgr2.idim || pgr1.jdim != pgr2.jdim ||
-            GaExpr.gagchk(pgr1, pgr2, pgr1.idim) > 1 ||
-            (pgr1.jdim > -1 && GaExpr.gagchk(pgr1, pgr2, pgr1.jdim) > 1))
+        if (pgr1.IDimension != pgr2.IDimension || pgr1.JDimension != pgr2.JDimension ||
+            GaExpr.gagchk(pgr1, pgr2, pgr1.IDimension) > 1 ||
+            (pgr1.JDimension > -1 && GaExpr.gagchk(pgr1, pgr2, pgr1.JDimension) > 1))
         {
             _drawingContext.Logger?.LogInformation("Error plotting scatter plot:  Invalid grids\n");
             _drawingContext.Logger?.LogInformation("   The two grids have difference scaling\n");
@@ -4380,8 +4380,8 @@ internal class GaGx
         {
             flag = true;
             pgrc = pcm.result[2].pgr;
-            if (pgrc.idim != pgr1.idim || pgrc.jdim != pgr2.jdim ||
-                GaExpr.gagchk(pgrc, pgr1, pgr1.idim) > 1 || GaExpr.gagchk(pgrc, pgr2, pgr2.jdim) > 1)
+            if (pgrc.IDimension != pgr1.IDimension || pgrc.JDimension != pgr2.JDimension ||
+                GaExpr.gagchk(pgrc, pgr1, pgr1.IDimension) > 1 || GaExpr.gagchk(pgrc, pgr2, pgr2.JDimension) > 1)
             {
                 flag = false;
                 _drawingContext.Logger?.LogInformation("Error plotting scatter plot:  Invalid color grid");
@@ -4434,7 +4434,7 @@ internal class GaGx
                 _drawingContext.Logger?.LogInformation("Cannot colorize scatterplot -- Color grid all undefined\n");
                 flag = false;
             }
-            else gaselc(pgrc.rmin, pgrc.rmax);
+            else gaselc(pgrc.MinimumGridValue, pgrc.MaximumGridValue);
         }
 
         if (pcm.aflag != 0)
@@ -4445,10 +4445,10 @@ internal class GaGx
         else
         {
             //cint1 = 0.0;
-            gacsel(pgr1.rmin, pgr1.rmax, ref cint1, out cmin1, out cmax1);
+            gacsel(pgr1.MinimumGridValue, pgr1.MaximumGridValue, ref cint1, out cmin1, out cmax1);
             if (cint1 == 0.0)
             {
-                cmin1 = pgr1.rmin - 5.0;
+                cmin1 = pgr1.MinimumGridValue - 5.0;
                 cmax1 = cmin1 + 10.0;
                 cint1 = 2.0;
             }
@@ -4466,10 +4466,10 @@ internal class GaGx
         }
         else
         {
-            gacsel(pgr2.rmin, pgr2.rmax, ref cint2, out cmin2, out cmax2);
+            gacsel(pgr2.MinimumGridValue, pgr2.MaximumGridValue, ref cint2, out cmin2, out cmax2);
             if (cint2 == 0.0)
             {
-                cmin2 = pgr2.rmin - 5.0;
+                cmin2 = pgr2.MinimumGridValue - 5.0;
                 cmax2 = cmin2 + 10.0;
                 cint2 = 2.0;
             }
@@ -4487,15 +4487,15 @@ internal class GaGx
         pass = pcm.gpass[3];
         if (pass > 5) pass = 5;
         _drawingContext.GradsDrawingInterface.gxwide(pcm.cthick);
-        siz = pgr1.isiz * pgr1.jsiz;
-        r1 = pgr1.grid;
-        r2 = pgr2.grid;
-        r1mask = pgr1.umask;
-        r2mask = pgr2.umask;
+        siz = pgr1.ISize * pgr1.JSize;
+        r1 = pgr1.GridData;
+        r2 = pgr2.GridData;
+        r1mask = pgr1.UndefinedMask;
+        r2mask = pgr2.UndefinedMask;
         if (flag)
         {
-            c = pgrc.grid;
-            cmask = pgrc.umask;
+            c = pgrc.GridData;
+            cmask = pgrc.UndefinedMask;
         }
 
         int r1cnt = 0;
@@ -4627,7 +4627,7 @@ internal class GaGx
     void gaplvl()
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgr, pgrm = null;
+        GradsGrid pgr, pgrm = null;
         double xlo, ylo, xhi, yhi, cwid;
         double[] r, m = Array.Empty<double>();
         int i, j, len, lcol;
@@ -4641,8 +4641,8 @@ internal class GaGx
         {
             flag = true;
             pgrm = pcm.result[1].pgr;
-            if (pgrm.idim != pgr.idim || pgrm.jdim != pgr.jdim ||
-                GaExpr.gagchk(pgrm, pgr, pgr.idim) > 1 || GaExpr.gagchk(pgrm, pgr, pgr.jdim) > 1)
+            if (pgrm.IDimension != pgr.IDimension || pgrm.JDimension != pgr.JDimension ||
+                GaExpr.gagchk(pgrm, pgr, pgr.IDimension) > 1 || GaExpr.gagchk(pgrm, pgr, pgr.JDimension) > 1)
             {
                 flag = false;
                 _drawingContext.Logger?.LogInformation("Error plotting grid values:  Invalid Mask grid");
@@ -4650,8 +4650,8 @@ internal class GaGx
             }
         }
 
-        if ((pcm.rotate && (pgr.idim != 2 || pgr.jdim != 3)) ||
-            (!pcm.rotate && pgr.idim == 2 && pgr.jdim == 3))
+        if ((pcm.rotate && (pgr.IDimension != 2 || pgr.JDimension != 3)) ||
+            (!pcm.rotate && pgr.IDimension == 2 && pgr.JDimension == 3))
         {
             pgr = gaflip(pgr);
             if (flag) pgrm = gaflip(pgrm);
@@ -4676,9 +4676,9 @@ internal class GaGx
         if (pcm.gridln != -1)
         {
             if (pcm.gridln > -1) _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.gridln);
-            for (i = 1; i <= pgr.isiz; i++)
+            for (i = 1; i <= pgr.ISize; i++)
             {
-                for (j = 1; j <= pgr.jsiz; j++)
+                for (j = 1; j <= pgr.JSize; j++)
                 {
                     GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) - 0.5, out xlo, out ylo, 3);
                     GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out xhi, out yhi, 3);
@@ -4687,9 +4687,9 @@ internal class GaGx
                 }
             }
 
-            for (j = 1; j <= pgr.jsiz; j++)
+            for (j = 1; j <= pgr.JSize; j++)
             {
-                for (i = 1; i <= pgr.isiz; i++)
+                for (i = 1; i <= pgr.ISize; i++)
                 {
                     GradsDrawingInterface.gxconv((double)(i) - 0.5, (double)(j) + 0.5, out xlo, out ylo, 3);
                     GradsDrawingInterface.gxconv((double)(i) + 0.5, (double)(j) + 0.5, out xhi, out yhi, 3);
@@ -4699,19 +4699,19 @@ internal class GaGx
             }
         }
 
-        r = pgr.grid;
-        rmask = pgr.umask;
+        r = pgr.GridData;
+        rmask = pgr.UndefinedMask;
         if (flag)
         {
-            m = pgrm.grid;
-            mmask = pgrm.umask;
+            m = pgrm.GridData;
+            mmask = pgrm.UndefinedMask;
         }
 
         int rcnt = 0, mcnt = 0, rmcnt = 0, mmcnt = 0;
 
-        for (j = 1; j <= pgr.jsiz; j++)
+        for (j = 1; j <= pgr.JSize; j++)
         {
-            for (i = 1; i <= pgr.isiz; i++)
+            for (i = 1; i <= pgr.ISize; i++)
             {
                 if (rmask[rmcnt] != 0)
                 {
@@ -4750,7 +4750,7 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.gxwide(4);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
-        gaaxpl(pgr.idim, pgr.jdim);
+        gaaxpl(pgr.IDimension, pgr.JDimension);
         gagsav(4);
     }
 
@@ -5908,7 +5908,7 @@ internal class GaGx
     }
 
 /* This routine gets the georeferencing information for the four corners of the grid */
-    void getcorners(gagrid pgr, double[] tiepoints)
+    void getcorners(GradsGrid pgr, double[] tiepoints)
     {
         /* For GeoTIFF, the raster space is treated as PixelIsArea.
     
@@ -5929,17 +5929,17 @@ internal class GaGx
 
         /* geotiff raster value (0,0) gets upper left corner lat,lon
          this is the max j index, since in GrADS j goes south.north  */
-        ij2ll(0, 0, pgr.dimmin[0] - 0.5, pgr.dimmax[1] + 0.5, tiepoints, 0);
+        ij2ll(0, 0, pgr.DimensionMinimum[0] - 0.5, pgr.DimensionMaximum[1] + 0.5, tiepoints, 0);
 
         /* geotiff raster value (0,jsize) gets lower left corner lat,lon
          this is the min j index, since in GrADS j goes south.north */
-        ij2ll(0, (double)pgr.jsiz, pgr.dimmin[0] - 0.5, pgr.dimmin[1] - 0.5, tiepoints, 6);
+        ij2ll(0, (double)pgr.JSize, pgr.DimensionMinimum[0] - 0.5, pgr.DimensionMinimum[1] - 0.5, tiepoints, 6);
 
         /* geotiff raster value (isize,0) gets upper right corner lat,lon */
-        ij2ll((double)pgr.isiz, 0, pgr.dimmax[0] + 0.5, pgr.dimmax[1] + 0.5, tiepoints, 12);
+        ij2ll((double)pgr.ISize, 0, pgr.DimensionMaximum[0] + 0.5, pgr.DimensionMaximum[1] + 0.5, tiepoints, 12);
 
         /* geotiff raster value (isize,jsize) gets lower right corner lat,lon */
-        ij2ll((double)pgr.isiz, (double)pgr.jsiz, pgr.dimmax[0] + 0.5, pgr.dimmin[1] - 0.5, tiepoints, 18);
+        ij2ll((double)pgr.ISize, (double)pgr.JSize, pgr.DimensionMaximum[0] + 0.5, pgr.DimensionMinimum[1] - 0.5, tiepoints, 18);
     }
 
 /* given a grid i,j, calculate the corresponding lat/lon, populate the tiepoints array */
@@ -6357,7 +6357,7 @@ internal class GaGx
     void gafgrd()
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgr;
+        GradsGrid pgr;
         int i, j, k, iv, col, scol, isav, ii, siz;
         double[] xybuf, r;
         byte[] rmask;
@@ -6366,8 +6366,8 @@ internal class GaGx
 
         pgr = pcm.result[0].pgr;
 
-        if ((pcm.rotate && (pgr.idim != 2 || pgr.jdim != 3)) ||
-            (!pcm.rotate && pgr.idim == 2 && pgr.jdim == 3))
+        if ((pcm.rotate && (pgr.IDimension != 2 || pgr.JDimension != 3)) ||
+            (!pcm.rotate && pgr.IDimension == 2 && pgr.JDimension == 3))
             pgr = gaflip(pgr);
 
         gas2d(pgr, false); /* Set up scaling */
@@ -6377,7 +6377,7 @@ internal class GaGx
 
         /* Allocate point buffer */
 
-        siz = (pgr.isiz + 2) * 4;
+        siz = (pgr.ISize + 2) * 4;
         sz = sizeof(double) * siz;
         xybuf = new double[sz];
 
@@ -6386,15 +6386,15 @@ internal class GaGx
 
         /* Fill grid "boxes" */
 
-        r = pgr.grid;
-        rmask = pgr.umask;
+        r = pgr.GridData;
+        rmask = pgr.UndefinedMask;
         int rcnt = 0, rmcnt = 0;
-        for (j = 1; j <= pgr.jsiz; j++)
+        for (j = 1; j <= pgr.JSize; j++)
         {
             col = -1;
             scol = -1;
             isav = 1;
-            for (i = 1; i <= pgr.isiz; i++)
+            for (i = 1; i <= pgr.ISize; i++)
             {
                 col = -1;
                 if (rmask[rmcnt] != 0)
@@ -6446,7 +6446,7 @@ internal class GaGx
             if (scol > -1)
             {
                 xy = 0;
-                for (ii = isav; ii <= pgr.isiz + 1; ii++)
+                for (ii = isav; ii <= pgr.ISize + 1; ii++)
                 {
                     double cx, cy;
                     GradsDrawingInterface.gxconv((double)(ii) - 0.5, (double)(j) + 0.5, out cx, out cy, 3);
@@ -6455,7 +6455,7 @@ internal class GaGx
                     xy += 2;
                 }
 
-                for (ii = pgr.isiz + 1; ii >= isav; ii--)
+                for (ii = pgr.ISize + 1; ii >= isav; ii--)
                 {
                     double cx, cy;
                     GradsDrawingInterface.gxconv((double)(ii) - 0.5, (double)(j) - 0.5, out cx, out cy, 3);
@@ -6467,7 +6467,7 @@ internal class GaGx
                 xybuf[xy] = xybuf[0];
                 xybuf[xy + 1] = xybuf[1];
                 _drawingContext.GradsDrawingInterface.SetDrawingColor(scol);
-                _drawingContext.GradsDrawingInterface.gxfill(xybuf, (2 + pgr.isiz - isav) * 2 + 1);
+                _drawingContext.GradsDrawingInterface.gxfill(xybuf, (2 + pgr.ISize - isav) * 2 + 1);
             }
         }
 
@@ -6476,13 +6476,13 @@ internal class GaGx
             _drawingContext.Logger?.LogInformation("Logic Error 16 in gafgrd.  Please report error.\n");
         }
 
-        if (pgr.idim == 0 && pgr.jdim == 1) gawmap(false);
+        if (pgr.IDimension == 0 && pgr.JDimension == 1) gawmap(false);
         _drawingContext.GradsDrawingInterface.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
         _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         _drawingContext.GradsDrawingInterface.gxwide(4);
         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
-        gaaxpl(pgr.idim, pgr.jdim);
+        gaaxpl(pgr.IDimension, pgr.JDimension);
         gafram();
         gagsav(5);
     }
@@ -6522,11 +6522,11 @@ internal class GaGx
         long sz;
         bool smooth;
 
-        gagrid pgr = pcm.result[0].pgr;
+        GradsGrid pgr = pcm.result[0].pgr;
 
         /* If gxout imap, check for validity.  Must by x/y plot and all must be linear. */
         if (filflg == 3 &&
-            (pcm.mproj < 1 || pcm.mproj > 2 || pgr.idim != 0 || pgr.jdim != 1))
+            (pcm.mproj < 1 || pcm.mproj > 2 || pgr.IDimension != 0 || pgr.JDimension != 1))
         {
             _drawingContext.Logger?.LogInformation("Invalid dimension and/or scaling environment for gxout imap\n");
             _drawingContext.Logger?.LogInformation("   Mproj latlon or scaled required; x/y varying plot required\n");
@@ -6550,8 +6550,8 @@ internal class GaGx
         /* flip axes for Z-T plots (skip this for shapefile output )*/
         if (shpflg == 0)
         {
-            if ((pcm.rotate && (pgr.idim != 2 || pgr.jdim != 3)) ||
-                (!pcm.rotate && pgr.idim == 2 && pgr.jdim == 3))
+            if ((pcm.rotate && (pgr.IDimension != 2 || pgr.JDimension != 3)) ||
+                (!pcm.rotate && pgr.IDimension == 2 && pgr.JDimension == 3))
                 pgr = gaflip(pgr);
 
             _drawingContext.GradsDrawingInterface.gxstyl(1);
@@ -6573,7 +6573,7 @@ internal class GaGx
         /* Determine contour interval */
         if (pcm.cflag == 0)
         {
-            gacsel(pgr.rmin, pgr.rmax, ref pcm.cint, out cmin, out cmax);
+            gacsel(pgr.MinimumGridValue, pgr.MaximumGridValue, ref pcm.cint, out cmin, out cmax);
             cint = pcm.cint;
             if (cint == 0.0)
             {
@@ -6582,7 +6582,7 @@ internal class GaGx
                 {
                     /* use fgrid and red to display the grid, print message to user */
                     isav = pcm.gout2a;
-                    pcm.fgvals[0] = (int)pgr.rmin;
+                    pcm.fgvals[0] = (int)pgr.MinimumGridValue;
                     if (pcm.ccolor > 0)
                         pcm.fgcols[0] = pcm.ccolor;
                     else
@@ -6615,7 +6615,7 @@ internal class GaGx
                 _drawingContext.Logger?.LogInformation("Too many contour levels -- adjusting cint\n");
                 while ((pmax - pmin) / cint > 100.0) cint *= 10.0;
                 pcm.cint = cint;
-                gacsel(pgr.rmin, pgr.rmax, ref cint, out cmin, out cmax);
+                gacsel(pgr.MinimumGridValue, pgr.MaximumGridValue, ref cint, out cmin, out cmax);
             }
         }
 
@@ -6631,19 +6631,19 @@ internal class GaGx
         idiv = 1.0;
         jdiv = 1.0;
         smooth = false;
-        rmin = pgr.rmin;
-        rmax = pgr.rmax;
-        if (pcm.csmth>0 && (pgr.isiz < 51 || pgr.jsiz < 51))
+        rmin = pgr.MinimumGridValue;
+        rmax = pgr.MaximumGridValue;
+        if (pcm.csmth>0 && (pgr.ISize < 51 || pgr.JSize < 51))
         {
             smooth = true;
-            iexp = 100 / pgr.isiz;
-            jexp = 100 / pgr.jsiz;
+            iexp = 100 / pgr.ISize;
+            jexp = 100 / pgr.JSize;
             if (iexp > 5) iexp = 4;
             if (jexp > 5) jexp = 4;
             if (iexp < 1) iexp = 1;
             if (jexp < 1) jexp = 1;
-            isz = ((pgr.isiz - 1) * iexp) + 1;
-            jsz = ((pgr.jsiz - 1) * jexp) + 1;
+            isz = ((pgr.ISize - 1) * iexp) + 1;
+            jsz = ((pgr.JSize - 1) * jexp) + 1;
             sz = isz * jsz;
             rrr = new double[sz];
 
@@ -6654,11 +6654,11 @@ internal class GaGx
             jdiv = (double)jexp;
             if (pcm.csmth > 0)
             {
-                gagexp(pgr.grid, pgr.isiz, pgr.jsiz, rrr, iexp, jexp, pgr.umask, rrrmask);
+                gagexp(pgr.GridData, pgr.ISize, pgr.JSize, rrr, iexp, jexp, pgr.UndefinedMask, rrrmask);
             }
             else
             {
-                gaglin(pgr.grid, pgr.isiz, pgr.jsiz, rrr, iexp, jexp, pgr.umask, rrrmask);
+                gaglin(pgr.GridData, pgr.ISize, pgr.JSize, rrr, iexp, jexp, pgr.UndefinedMask, rrrmask);
             }
 
             /* When clevs are set, gxshad2 needs to know the new rmax */
@@ -6734,7 +6734,7 @@ internal class GaGx
         rrb = irb + 1;
         if (filflg > 0)
         {
-            gaselc(pgr.rmin, pgr.rmax);
+            gaselc(pgr.MinimumGridValue, pgr.MaximumGridValue);
             if (smooth)
             {
                 if (filflg == 1)
@@ -6763,12 +6763,12 @@ internal class GaGx
             {
                 if (filflg == 1)
                 {
-                    _drawingContext.GxShad.gxshad(pgr.grid, pgr.isiz, pgr.jsiz, pcm.shdlvs, pcm.shdcls, pcm.shdcnt,
-                        pgr.umask);
+                    _drawingContext.GxShad.gxshad(pgr.GridData, pgr.ISize, pgr.JSize, pcm.shdlvs, pcm.shdcls, pcm.shdcnt,
+                        pgr.UndefinedMask);
                 }
                 else if (filflg == 2)
                 {
-                    gagfil(pgr.grid, pgr.isiz, pgr.jsiz, pcm.shdlvs, pcm.shdcls, pcm.shdcnt, pgr.umask);
+                    gagfil(pgr.GridData, pgr.ISize, pgr.JSize, pcm.shdlvs, pcm.shdcls, pcm.shdcnt, pgr.UndefinedMask);
                 }
                 else if (filflg == 3)
                 {
@@ -6777,17 +6777,17 @@ internal class GaGx
                 }
                 else if (filflg == 4)
                 {
-                    _drawingContext.GxShad2.gxshad2(pgr.grid, pgr.isiz, pgr.jsiz, pcm.shdlvs, pgr.rmax, pcm.shdcls,
-                        pcm.shdcnt, pgr.umask);
+                    _drawingContext.GxShad2.gxshad2(pgr.GridData, pgr.ISize, pgr.JSize, pcm.shdlvs, pgr.MaximumGridValue, pcm.shdcls,
+                        pcm.shdcnt, pgr.UndefinedMask);
                 }
                 else if (filflg == 5)
                 {
-                    _drawingContext.GxShad2.gxshad2b(pgr.grid, pgr.isiz, pgr.jsiz, pcm.shdlvs, pgr.rmax, pcm.shdcls,
-                        pcm.shdcnt, pgr.umask);
+                    _drawingContext.GxShad2.gxshad2b(pgr.GridData, pgr.ISize, pgr.JSize, pcm.shdlvs, pgr.MaximumGridValue, pcm.shdcls,
+                        pcm.shdcnt, pgr.UndefinedMask);
                 }
             }
 
-            if (pgr.idim == 0 && pgr.jdim == 1 && shpflg == 0) gawmap(false);
+            if (pgr.IDimension == 0 && pgr.JDimension == 1 && shpflg == 0) gawmap(false);
         }
         else
         {
@@ -6882,8 +6882,8 @@ internal class GaGx
                     }
                     else
                     {
-                        _drawingContext.GxContour.gxclev(pgr.grid, pgr.isiz, pgr.jsiz, 1, pgr.isiz, 1,
-                            pgr.jsiz, rr, pgr.umask, scntr);
+                        _drawingContext.GxContour.gxclev(pgr.GridData, pgr.ISize, pgr.JSize, 1, pgr.ISize, 1,
+                            pgr.JSize, rr, pgr.UndefinedMask, scntr);
                     }
 
                     pcm.cntrcols[cntrcnt] = cntrcol;
@@ -7009,8 +7009,8 @@ internal class GaGx
                     }
                     else
                     {
-                        _drawingContext.GxContour.gxclev(pgr.grid, pgr.isiz, pgr.jsiz, 1, pgr.isiz, 1,
-                            pgr.jsiz, rr, pgr.umask, scntr);
+                        _drawingContext.GxContour.gxclev(pgr.GridData, pgr.ISize, pgr.JSize, 1, pgr.ISize, 1,
+                            pgr.JSize, rr, pgr.UndefinedMask, scntr);
                     }
 
                     pcm.cntrcols[cntrcnt] = cntrcol;
@@ -7052,7 +7052,7 @@ internal class GaGx
             if (pcm.pass == 0 && pcm.grdsflg)
                 _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
             if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
-            gaaxpl(pgr.idim, pgr.jdim);
+            gaaxpl(pgr.IDimension, pgr.JDimension);
             gafram();
         }
 
@@ -8097,45 +8097,45 @@ internal class GaGx
 
 /* Rotate a grid.  Return rotated grid. */
 
-    gagrid gaflip(gagrid pgr)
+    GradsGrid gaflip(GradsGrid pgr)
     {
         var pcm = _drawingContext.CommonData;
-        gagrid pgr2;
+        GradsGrid pgr2;
         int gr1, gr2;
         int gru1, gru2;
         int i, j, size;
         long sz;
 
-        pgr2 = new gagrid();
+        pgr2 = new GradsGrid();
 
-        pgr2 = (gagrid)pgr.Clone();
-        pgr2.grid = new double[pgr.grid.Length];
+        pgr2 = (GradsGrid)pgr.Clone();
+        pgr2.GridData = new double[pgr.GridData.Length];
 
-        pgr2.umask = new byte[pgr.umask.Length];
+        pgr2.UndefinedMask = new byte[pgr.UndefinedMask.Length];
 
         gr1 = 0;
         gru1 = 0;
-        for (j = 0; j < pgr.jsiz; j++)
+        for (j = 0; j < pgr.JSize; j++)
         {
             gr2 = j;
             gru2 = j;
-            for (i = 0; i < pgr.isiz; i++)
+            for (i = 0; i < pgr.ISize; i++)
             {
-                pgr2.grid[gr2] = pgr.grid[gr1];
-                pgr2.umask[gru2] = pgr.umask[gru1];
+                pgr2.GridData[gr2] = pgr.GridData[gr1];
+                pgr2.UndefinedMask[gru2] = pgr.UndefinedMask[gru1];
                 gr1++;
                 gru1++;
-                gr2 += pgr.jsiz;
-                gru2 += pgr.jsiz;
+                gr2 += pgr.JSize;
+                gru2 += pgr.JSize;
             }
         }
 
-        pgr2.idim = pgr.jdim;
-        pgr2.jdim = pgr.idim;
+        pgr2.IDimension = pgr.JDimension;
+        pgr2.JDimension = pgr.IDimension;
         pgr2.iwrld = pgr.jwrld;
         pgr2.jwrld = pgr.iwrld;
-        pgr2.isiz = pgr.jsiz;
-        pgr2.jsiz = pgr.isiz;
+        pgr2.ISize = pgr.JSize;
+        pgr2.JSize = pgr.ISize;
         pgr2.igrab = pgr.jgrab;
         pgr2.jgrab = pgr.igrab;
         pgr2.ivals = pgr.jvals;
