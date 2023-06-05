@@ -44,6 +44,7 @@ jobs:
       run: |
         dotnet pack src/GradsSharp/GradsSharp.csproj --no-build --verbosity normal -c Release -o artifacts/
         dotnet pack src/GradsSharp.DrawingEngine.Cairo/GradsSharp.DrawingEngine.Cairo.csproj --no-build --verbosity normal -c Release -o artifacts/        
+        dotnet pack src/GradsSharp.DataReader.GFS/GradsSharp.DataReader.GFS.csproj --no-build --verbosity normal -c Release -o artifacts/        
     - name: Push to NuGet
       if: ${{ success() && !github.base_ref }}
       run: dotnet nuget push artifacts/**.nupkg -s https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}        
