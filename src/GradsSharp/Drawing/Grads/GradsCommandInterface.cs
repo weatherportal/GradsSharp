@@ -2590,11 +2590,18 @@ internal class GradsCommandInterface : IGradsCommandInterface
         
         var pst = getpst(_drawingContext.CommonData);
 
-
+        
+        
+        
         var expression = definition.GetVarName();
         if (definition.HeightType == FixedSurfaceType.IsobaricSurface)
         {
             expression += $"(lev={definition.HeightValue:0})";
+        }
+
+        if (!String.IsNullOrEmpty(definition.VariableName))
+        {
+            expression = definition.VariableName;
         }
         
         _drawingContext.GaExpr.gaexpr(expression, pst);

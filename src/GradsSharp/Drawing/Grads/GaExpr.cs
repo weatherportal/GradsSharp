@@ -482,7 +482,7 @@ internal class GaExpr
    Varying dimensions must match.  Grids with fewer varying dimensions
    are 'expanded' to match the larger grid as needed.                 */
 
-    GradsGrid gagrop(GradsGrid pgr1, GradsGrid pgr2,
+    public static GradsGrid gagrop(GradsGrid pgr1, GradsGrid pgr2,
         int op, int rel)
     {
         int val1, val2;
@@ -736,7 +736,7 @@ internal class GaExpr
                 }
                 else
                 {
-                    _drawingContext.Logger?.LogInformation("Internal logic check 17: invalid oper value\n");
+                    GradsEngine.Logger?.LogInformation("Internal logic check 17: invalid oper value\n");
                     return (null);
                 }
             }
@@ -768,15 +768,15 @@ internal class GaExpr
         return (pgr2);
 
         err1:
-        _drawingContext.Logger?.LogInformation("Operation error:  Incompatable grids \n");
-        _drawingContext.Logger?.LogInformation("   Varying dimensions are different\n");
-        _drawingContext.Logger?.LogInformation($"  1st grid dims = {pgr1.IDimension} {pgr2.IDimension}   2nd = {pgr1.JDimension} {pgr2.JDimension}");
+        GradsEngine.Logger?.LogInformation("Operation error:  Incompatable grids \n");
+        GradsEngine.Logger?.LogInformation("   Varying dimensions are different\n");
+        GradsEngine.Logger?.LogInformation($"  1st grid dims = {pgr1.IDimension} {pgr2.IDimension}   2nd = {pgr1.JDimension} {pgr2.JDimension}");
         return (null);
 
         err2:
-        _drawingContext.Logger?.LogInformation("Operation error:  Incompatable grids \n");
-        _drawingContext.Logger?.LogInformation($"  Dimension = {i}");
-        _drawingContext.Logger?.LogInformation(
+        GradsEngine.Logger?.LogInformation("Operation error:  Incompatable grids \n");
+        GradsEngine.Logger?.LogInformation($"  Dimension = {i}");
+        GradsEngine.Logger?.LogInformation(
             $"  1st grid range = {pgr1.DimensionMinimum[i]} {pgr1.DimensionMaximum[i]}   2nd = {pgr2.DimensionMinimum[i]} {pgr2.DimensionMaximum[i]}");
         return (null);
     }

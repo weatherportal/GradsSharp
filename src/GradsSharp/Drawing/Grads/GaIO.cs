@@ -243,6 +243,24 @@ internal class GaIO
             // {
             //     pgrid.pvar.variableDefinition.HeightValue = GaUtil.gr2lev(_drawingContext.CommonData.pfid.abvals[2], pgr.DimensionMinimum[2]) * 100;
             // }
+
+            // convert our grid coordinates back to absolute coordinates in X & Y direction for correct fetching of data
+            pgr.WorldDimensionMinimum[0] =
+                _drawingContext.CommonData.pfid.gr2ab[0](_drawingContext.CommonData.pfid.grvals[0],
+                    pgr.DimensionMinimum[0]);
+            
+            pgr.WorldDimensionMinimum[1] =
+                _drawingContext.CommonData.pfid.gr2ab[1](_drawingContext.CommonData.pfid.grvals[1],
+                    pgr.DimensionMinimum[1]);
+            
+            
+            pgr.WorldDimensionMaximum[0] =
+                _drawingContext.CommonData.pfid.gr2ab[0](_drawingContext.CommonData.pfid.grvals[0],
+                    pgr.DimensionMaximum[0]);
+            
+            pgr.WorldDimensionMaximum[1] =
+                _drawingContext.CommonData.pfid.gr2ab[1](_drawingContext.CommonData.pfid.grvals[1],
+                    pgr.DimensionMaximum[1]);
             
             pgr.DataReader.ReadData(pgr, pgrid.pvar.variableDefinition);
             // for (int t = 0; t < gru.Length; t++)

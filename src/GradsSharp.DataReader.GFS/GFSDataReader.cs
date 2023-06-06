@@ -119,10 +119,10 @@ public class GFSDataReader : IGriddedDataReader
         double[] dmin = grid.WorldDimensionMinimum;
         double[] dmax = grid.WorldDimensionMaximum;
         
-        dmin[0] = Math.Floor(dmin[0] + 0.0001);
-        dmax[0] = Math.Ceiling(dmax[0] - 0.0001);
-        dmin[1] = Math.Floor(dmin[1] + 0.0001);
-        dmax[1] = Math.Ceiling(dmax[1] - 0.0001);
+        // dmin[0] = Math.Floor(dmin[0] + 0.0001);
+        // dmax[0] = Math.Ceiling(dmax[0] - 0.0001);
+        // dmin[1] = Math.Floor(dmin[1] + 0.0001);
+        // dmax[1] = Math.Ceiling(dmax[1] - 0.0001);
 
         double heightValue = dmin[2];
 
