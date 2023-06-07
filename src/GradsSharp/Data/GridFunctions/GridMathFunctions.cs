@@ -51,6 +51,14 @@ public static class GridMathFunctions
         return UpdateAllElementsInArray(grid, d => d / value);
     }
     
+    public static IGradsGrid Exp(this IGradsGrid grid)
+    {
+        return UpdateAllElementsInArray(grid, d => Math.Exp(d));
+    }
+    public static IGradsGrid Pow(this IGradsGrid grid, double value)
+    {
+        return UpdateAllElementsInArray(grid, d => Math.Pow(d, value));
+    }
     public static IGradsGrid Multiply(this IGradsGrid grid1, IGradsGrid grid2)
     {
         return TwoGridOperation(grid1, grid2, (a, b) => a * b);

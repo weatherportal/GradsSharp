@@ -20,8 +20,8 @@ public class VariableDefinition
             DataVariable.CAPE => "cape",
             DataVariable.CIN => "cin",
             DataVariable.SRH => "srh",
-            DataVariable.UWind => "u",
-            DataVariable.VWind => "v",
+            DataVariable.UWind => "uwind",
+            DataVariable.VWind => "vwind",
             DataVariable.GeopotentialHeight => "hgt",
             DataVariable.Pressure => "pres",
             DataVariable.PressureMSL => "presmsl",
@@ -30,7 +30,7 @@ public class VariableDefinition
             DataVariable.RainMixingRatio => "rainmix",
             DataVariable.SnowMixingRatio => "snowmix",
             DataVariable.Visibility => "vis",
-            DataVariable.WindGust => "gust",
+            DataVariable.WindGust => "wgust",
             DataVariable.VerticalVorticityGeometric => "vertvortg",
             DataVariable.VerticalVorticityPressure => "vertvortp",
             DataVariable.AbsoluteVorticity => "absvort",
@@ -78,6 +78,7 @@ public class VariableDefinition
         {
             result += HeightValue + "m";
         }
+        
         else if (HeightType == FixedSurfaceType.IsobaricSurface)
         {
             result += "prs";
