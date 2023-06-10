@@ -29,12 +29,7 @@ jobs:
             "**/*.csproj", "**/*.nuspec", "**/AssemblyInfo.cs"
           version: bump-build
     
-    - run: |
-        git config user.name "Bart Devriendt"
-        git config user.email "bart.devriendt@gmail.com"
-        git add .
-        git commit -m "[ci skip] Update project version to ${{ steps.update.outputs.newVersion }}"
-        git push
+    
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -48,4 +43,9 @@ jobs:
     - name: Push to NuGet
       if: ${{ success() && !github.base_ref }}
       run: dotnet nuget push artifacts/**.nupkg -s https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}        
-
+    - run: |
+        git config user.name "Bart Devriendt"
+        git config user.email "bart.devriendt@gmail.com"
+        git add .
+        git commit -m "[ci skip] Update project version to ${{ steps.update.outputs.newVersion }}"
+        git push
