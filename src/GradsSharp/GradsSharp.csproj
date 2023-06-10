@@ -4,7 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>0.0.13</Version>
+        <Version>0.0.14</Version>
         <Title>GradsSharp</Title>
         <Authors>Chase2be</Authors>
         <Description>Opengrads port to a C# library.</Description>
@@ -12,8 +12,8 @@
         <PackageProjectUrl>https://github.com/weatherportal/GradsSharp</PackageProjectUrl>
         <RepositoryUrl>https://github.com/weatherportal/GradsSharp</RepositoryUrl>
         <RepositoryType>Github</RepositoryType>
-        <AssemblyVersion>0.0.13.0</AssemblyVersion>
-        <FileVersion>0.0.13.0</FileVersion>
+        <AssemblyVersion>0.0.14.0</AssemblyVersion>
+        <FileVersion>0.0.14.0</FileVersion>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
