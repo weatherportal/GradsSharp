@@ -22,4 +22,12 @@
       <PackageReference Include="CairoSharp" Version="3.24.24.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="lib\cairo.dll" />
+      <Content Include="lib\cairo.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Link>%(FileName)%(Extension)</Link>
+      </Content>
+    </ItemGroup>
+
 </Project>

@@ -1,6 +1,4 @@
 ﻿using GradsSharp.Data.Grads;
-using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.Formats;
 
 namespace GradsSharp.Drawing.Grads;
 

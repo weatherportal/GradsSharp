@@ -1,6 +1,5 @@
 ﻿using GradsSharp.Data.Grads;
 using GradsSharp.Drawing.Grads;
-using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
 
@@ -44,8 +43,6 @@ internal class DrawingContext
     public double MinLon { get; set; }
     public double MaxLon { get; set; }
     
-    public List<Color> Colors { get; set; } = new();
-
     public int[] MapColors { get; set; } = new int[256];
     public int[] MapStyles { get; set; } = new int[256];
     public int[] MapLineWidths { get; set; } = new int[256];
@@ -78,22 +75,6 @@ internal class DrawingContext
         GaIO = new GaIO(this);
         GaExpr = new GaExpr(this);
         
-        Colors.Add(Color.FromRgba(0,0,0,255));
-        Colors.Add(Color.FromRgba(255,255,255,255));
-        Colors.Add(Color.FromRgba(250,60,60,255));
-        Colors.Add(Color.FromRgba(0,220,0,255));
-        Colors.Add(Color.FromRgba(30,60,255,255));
-        Colors.Add(Color.FromRgba(0,200,200,255));
-        Colors.Add(Color.FromRgba(240,0,130,255));
-        Colors.Add(Color.FromRgba(230,220,50,255));
-        Colors.Add(Color.FromRgba(240,130,40,255));
-        Colors.Add(Color.FromRgba(160,230,50,255));
-        Colors.Add(Color.FromRgba(0,160,255,255));
-        Colors.Add(Color.FromRgba(230,175,45,255));
-        Colors.Add(Color.FromRgba(0,210,140,255));
-        Colors.Add(Color.FromRgba(130,0,220,255));
-        Colors.Add(Color.FromRgba(170,170,170,255));
-
         for (int j = 0; j < 256; j++)
         {
             MapColors[j] = -9;
@@ -104,14 +85,5 @@ internal class DrawingContext
         MapColors[0] = -1;
         MapColors[1] = -1;
         MapColors[2] = -1;
-    }
-
-    public Color GetColor(int color)
-    {
-        if (color >= Colors.Count)
-        {
-            return Color.FromRgba(150, 150, 150, 255);
-        }
-        return Colors[color - 1];
     }
 }

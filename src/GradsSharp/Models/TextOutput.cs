@@ -1,5 +1,4 @@
 
-using SixLabors.Fonts;
 
 namespace GradsSharp.Models;
 
