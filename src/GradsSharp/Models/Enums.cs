@@ -2,7 +2,12 @@
 
 namespace GradsSharp.Models;
 
-
+public enum ConstMode
+{
+    Undefined,
+    Missing,
+    All
+}
 
 public enum InputFileDimensionType
 {
@@ -121,7 +126,9 @@ public enum DataVariable
     FrictionalVelocity,
     PressureMSLPEta,
     LiftedIndexSurface,
-    LiftedIndex4Layer
+    LiftedIndex4Layer,
+    UStormMotion,
+    VStormMotion
 }
 
 

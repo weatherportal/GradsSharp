@@ -51,6 +51,10 @@ public static class GridMathFunctions
         return UpdateAllElementsInArray(grid, d => d / value);
     }
     
+    public static IGradsGrid Log(this IGradsGrid grid)
+    {
+        return UpdateAllElementsInArray(grid, d => Math.Log(d));
+    }
     public static IGradsGrid Exp(this IGradsGrid grid)
     {
         return UpdateAllElementsInArray(grid, d => Math.Exp(d));

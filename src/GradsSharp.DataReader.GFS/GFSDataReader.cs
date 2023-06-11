@@ -124,16 +124,13 @@ public class GFSDataReader : IGriddedDataReader
         // dmin[1] = Math.Floor(dmin[1] + 0.0001);
         // dmax[1] = Math.Ceiling(dmax[1] - 0.0001);
 
-        double heightValue = dmin[2];
+        double heightValue = Double.IsNaN(definition.HeightValue) ? dmin[2] : definition.HeightValue;
 
         if (definition.HeightType == FixedSurfaceType.IsobaricSurface)
         {
             heightValue *= 100;
         }
-        else
-        {
-            heightValue = definition.HeightValue;
-        }
+        
         Grib2Reader rdr = new Grib2Reader(_inputFile.FileName);
         foreach (var ds in rdr.ReadAllDataSets())
         {
