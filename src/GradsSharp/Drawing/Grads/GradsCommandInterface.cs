@@ -35,6 +35,9 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pcm = drawingContext.CommonData;
     }
 
+    public GradsCommon CommonData => pcm;
+    public DrawingContext DrawingContext => _drawingContext;
+
     public void stack()
     {
         // no op

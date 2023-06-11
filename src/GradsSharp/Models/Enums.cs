@@ -2,6 +2,14 @@
 
 namespace GradsSharp.Models;
 
+public enum InterpolationMode
+{
+    Undefined = -1,
+    PiecewiseLinear = 0,
+    Spline = 1,
+    Polynomnial = 2
+}
+
 public enum ConstMode
 {
     Undefined,

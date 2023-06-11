@@ -7,6 +7,8 @@ public class VariableDefinition
     public FixedSurfaceType HeightType { get; set; } = FixedSurfaceType.Missing;
     public double HeightValue { get; set; } = Double.NaN;
 
+    public int File { get; set; } = 1;
+    
     public string GetVarName()
     {
         var result = VariableType switch
