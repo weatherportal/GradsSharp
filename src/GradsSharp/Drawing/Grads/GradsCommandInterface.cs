@@ -2611,8 +2611,11 @@ internal class GradsCommandInterface : IGradsCommandInterface
         
         var pst = getpst(_drawingContext.CommonData);
 
-        
-        
+        if (definition.VariableName == "lev")
+        {
+            pst.dmax[2] = definition.HeightValue;
+            pst.dmin[2] = definition.HeightValue;
+        }
         
         var expression = definition.GetVarName();
         if (definition.HeightType == FixedSurfaceType.IsobaricSurface)
