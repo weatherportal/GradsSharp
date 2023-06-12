@@ -8,21 +8,21 @@ internal class GxShad
 
     private const int XYBMAX = 5000;
 
-    static int[] flgh, flgv; /* Pointer to flags arrays                 */
-    static List<double[]> xystk = new List<double[]>(XYBMAX); /* Pointers to xy stack buffers            */
-    static int stkcnt; /* Current number of stacked buffers       */
-    static double[] xypnt; /* Pointer into a stack buffer             */
-    static double[] xybuf; /* Pointer to xy coord buffer              */
-    static int xycnt; /* Current count in xy coord buffer        */
-    static int imax, jmax; /* grid size                               */
-    static int imn, imx, jmn, jmx; /* Current grid bounds                     */
-    static double[] gr; /* Pointer to grid                         */
-    static byte[] gru; /* Pointer to grid undef mask              */
-    static int grsize; /* Number of elements in grid              */
-    static int color; /* Current color to use for shading        */
-    static int prvclr; /* Color of one level lower                */
-    static double val; /* Current shading level value             */
-    static int bndflg; /* Current coutour hit a boundry           */
+    private int[] flgh, flgv; /* Pointer to flags arrays                 */
+    private List<double[]> xystk = new List<double[]>(XYBMAX); /* Pointers to xy stack buffers            */
+    private int stkcnt; /* Current number of stacked buffers       */
+    private double[] xypnt; /* Pointer into a stack buffer             */
+    private double[] xybuf; /* Pointer to xy coord buffer              */
+    private int xycnt; /* Current count in xy coord buffer        */
+    private int imax, jmax; /* grid size                               */
+    private int imn, imx, jmn, jmx; /* Current grid bounds                     */
+    private double[] gr; /* Pointer to grid                         */
+    private byte[] gru; /* Pointer to grid undef mask              */
+    private int grsize; /* Number of elements in grid              */
+    private int color; /* Current color to use for shading        */
+    private int prvclr; /* Color of one level lower                */
+    private double val; /* Current shading level value             */
+    private int bndflg; /* Current coutour hit a boundry           */
 
     public GxShad(DrawingContext drawingContext)
     {
@@ -287,7 +287,7 @@ internal class GxShad
                 int xypntc = 2;
                 for (j = 0; j < xycnt; j++)
                 {
-                    GradsDrawingInterface.gxconv(xypnt[2 + (j * 2)], xypnt[2+ (j * 2 + 1)], out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv(xypnt[2 + (j * 2)], xypnt[2+ (j * 2 + 1)], out x, out y, 3);
                     xypnt[2 + (j * 2)] = x;
                     xypnt[2 + (j * 2 + 1)] = y;
                 }
@@ -1407,7 +1407,7 @@ internal class GxShad
         {
             for (k = 0; k < xycnt; k++)
             {
-                GradsDrawingInterface.gxconv(xybuf[(k * 2)], xybuf[(k * 2 + 1)], out x, out y, 3);
+                _drawingContext.GradsDrawingInterface.gxconv(xybuf[(k * 2)], xybuf[(k * 2 + 1)], out x, out y, 3);
                 xybuf[(k * 2)] = x;
                 xybuf[(k * 2 + 1)] = y;
             }
@@ -1576,9 +1576,9 @@ internal class GxShad
                     else if (flgh[f1cnt] == 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(4);
                     else if (flgh[f1cnt] == 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(15);
                     else _drawingContext.GradsDrawingInterface.SetDrawingColor(2);
-                    GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
                     _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
-                    GradsDrawingInterface.gxconv((double)(i + 1), (double)j, out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)(i + 1), (double)j, out x, out y, 3);
                     _drawingContext.GradsDrawingInterface.gxplot(x, y, 2);
                 }
 
@@ -1590,9 +1590,9 @@ internal class GxShad
                     else if (flgv[f4cnt] == 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(4);
                     else if (flgv[f4cnt] == 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(15);
                     else _drawingContext.GradsDrawingInterface.SetDrawingColor(2);
-                    GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)i, (double)j, out x, out y, 3);
                     _drawingContext.GradsDrawingInterface.gxplot(x, y, 3);
-                    GradsDrawingInterface.gxconv((double)i, (double)(j + 1), out x, out y, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)i, (double)(j + 1), out x, out y, 3);
                     _drawingContext.GradsDrawingInterface.gxplot(x, y, 2);
                 }
 

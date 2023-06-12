@@ -14,39 +14,39 @@ internal class GxShad2
 {
     private DrawingContext _drawingContext;
 
-    static int np;
-    static double[] xp = new double[50], yp = new double[50];
-    static int[] tp = new int[50], sp = new int[50];
-    static int typ1, typ2, typ3;
-    static int numpoly, polyside;
+    private int np;
+    private double[] xp = new double[50], yp = new double[50];
+    private int[] tp = new int[50], sp = new int[50];
+    private int typ1, typ2, typ3;
+    private int numpoly, polyside;
 
-    static double[] xpo = new double[50], ypo = new double[50];
-    static int npo;
+    private double[] xpo = new double[50], ypo = new double[50];
+    private int npo;
 
 /* Following variables used for gxshad2  */
 
-    static byte[] pflg, s1flg, s2flg, s3flg, s4flg;
-    static byte[] uu;
-    static int isize, jsize, pnum, gindex;
-    private static double[] rr;
-    static double alev, blev;
+    private byte[] pflg, s1flg, s2flg, s3flg, s4flg;
+    private byte[] uu;
+    private int isize, jsize, pnum, gindex;
+    private double[] rr;
+    private double alev, blev;
 
-    static double[] xxyy; /* Holds one polygon */
-    static int xynum;
+    private double[] xxyy; /* Holds one polygon */
+    private int xynum;
 
 
-    static List<s2pbuf> s2pbufanch; /* Anchor for polygon buffer */
-    static bool nodraw = false; /* If 1, polygons are not drawn */
+    private List<s2pbuf> s2pbufanch; /* Anchor for polygon buffer */
+    private bool nodraw = false; /* If 1, polygons are not drawn */
 
-    static bool bufopt = false; /* Buffer or not, default is not */
+    private bool bufopt = false; /* Buffer or not, default is not */
 
     /* If buffering is enabled, someone needs to call s2frepbuf from somewhere */
-    static int bufcnt; /* Number of polys buff'd */
-    static string pout; /* Build strings for KML here */
+    private int bufcnt; /* Number of polys buff'd */
+    private string pout; /* Build strings for KML here */
 
 /* Debug variable, used by both */
 
-    static int bug;
+    private int bug;
 
     public GxShad2(DrawingContext drawingContext)
     {
@@ -293,7 +293,7 @@ internal class GxShad2
         for (i = 0; i < npo; i++)
         {
             /* Scale from grid to xy */
-            GradsDrawingInterface.gxconv(xpo[i], ypo[i], out pxy[cntpxy], out pxy[cntpxy + 1], 3);
+            _drawingContext.GradsDrawingInterface.gxconv(xpo[i], ypo[i], out pxy[cntpxy], out pxy[cntpxy + 1], 3);
             if (bug > 0) _drawingContext.Logger?.LogInformation($"    {xpo[i]} {ypo[i]} {pxy[cntpxy]} {pxy[cntpxy + 1]}");
             cntpxy += 2;
         }
@@ -1691,7 +1691,7 @@ internal class GxShad2
 
         if (bug > 0)
         {
-            n = GradsDrawingInterface.lcolor;
+            n = _drawingContext.GradsDrawingInterface.CurrentLineColor;
             _drawingContext.GradsDrawingInterface.SetDrawingColor(0);
             _drawingContext.GradsDrawingInterface.gxplot(xxyy[0], xxyy[1], 3);
             for (ii = 1; ii < k; ii++)
@@ -1935,7 +1935,7 @@ internal class GxShad2
             xxyy = xynew;
         }
 
-        GradsDrawingInterface.gxconv(x, y, out xx, out yy, 3);
+        _drawingContext.GradsDrawingInterface.gxconv(x, y, out xx, out yy, 3);
         xxyy[pnum * 2 ] = xx;
         xxyy[pnum * 2 + 1 ]= yy;
 
@@ -2015,7 +2015,7 @@ internal class GxShad2
 
                 if (pflg[offset]>0) _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
                 else _drawingContext.GradsDrawingInterface.SetDrawingColor(2);
-                GradsDrawingInterface.gxconv((double)ig + 1.0, (double)jg + 1.0, out xxx, out yyy, 3);
+                _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.0, (double)jg + 1.0, out xxx, out yyy, 3);
                 _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 if (s1flg[offset]>0)
                 {
@@ -2030,7 +2030,7 @@ internal class GxShad2
                         sz = 0.06;
                     }
 
-                    GradsDrawingInterface.gxconv((double)ig + 1.1, (double)jg + 1.5, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.1, (double)jg + 1.5, out xxx, out yyy, 3);
                     _drawingContext.GradsDrawingInterface.gxmark(mk, xxx, yyy, sz);
                 }
 
@@ -2040,7 +2040,7 @@ internal class GxShad2
                     /* if (*(s2flg+offset)>7) gxcolr(12);
                     if (*(s2flg+offset)>10 && *(s2flg+offset)<20) gxcolr(6); */
                     if (s2flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
-                    GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.9, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.9, out xxx, out yyy, 3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
@@ -2051,7 +2051,7 @@ internal class GxShad2
                     if (*(s3flg+offset)>90) gxcolr(7);
                     if (*(s3flg+offset)>10 && *(s3flg+offset)<20) gxcolr(6); */
                     if (s3flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
-                    GradsDrawingInterface.gxconv((double)ig + 1.9, (double)jg + 1.5, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.9, (double)jg + 1.5, out xxx, out yyy, 3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
@@ -2062,7 +2062,7 @@ internal class GxShad2
                     if (*(s4flg+offset)>90) gxcolr(7);
                     if (*(s4flg+offset)>10 && *(s4flg+offset)<20) gxcolr(6); */
                     if (s4flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
-                    GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.1, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.1, out xxx, out yyy, 3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
             }
@@ -2096,7 +2096,7 @@ internal class GxShad2
 
         for (i = 0; i < pcnt * 2; i++) ppbuf.xy[i] = xxyy[i];
 
-        ppbuf.color = GradsDrawingInterface.lcolor;
+        ppbuf.color = _drawingContext.GradsDrawingInterface.CurrentLineColor;
         ppbuf.index = gindex;
         ppbuf.clev1 = blev;
         ppbuf.clev2 = alev;

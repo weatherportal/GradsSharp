@@ -2,6 +2,7 @@
 using GradsSharp.Data.Grib;
 using GradsSharp.Models;
 using NGrib;
+using NGrib.Grib2;
 using NGrib.Grib2.Templates.GridDefinitions;
 using NGrib.Grib2.Templates.ProductDefinitions;
 
@@ -10,23 +11,23 @@ namespace GradsSharp.DataReader.GFS;
 public class GFSDataReader : IGriddedDataReader
 {
 
-    private InputFile _inputFile;
+    private InputFile? _inputFile;
     private GfsVariables _variableMapping = new GfsVariables();
-    
+    private List<DataSet>? _dataSets = null;
     public InputFile OpenFile(string file)
     {
         var inputFile = new InputFile();
         inputFile.FileName = file;
         
-        Grib2Reader rdr = new Grib2Reader(file);
-        var datasets = rdr.ReadAllDataSets();
-        var dataset = datasets.First();
+        using Grib2Reader rdr = new Grib2Reader(file);
+        _dataSets = rdr.ReadAllDataSets().ToList();
+        var dataset = _dataSets.First();
 
         ProductDefinition0000 pd;
 
         List<double> levels = new List<double>();
 
-        foreach (var ds in datasets)
+        foreach (var ds in _dataSets)
         {
             var pdef = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
             if (pdef.FirstFixedSurfaceType == NGrib.Grib2.CodeTables.FixedSurfaceType.IsobaricSurface)
@@ -84,7 +85,7 @@ public class GFSDataReader : IGriddedDataReader
            
         }
 
-        foreach (var ds in datasets)
+        foreach (var ds in _dataSets)
         {
             var ps = ds.ProductDefinitionSection.ProductDefinition as ProductDefinition0000;
             FixedSurfaceType sfcType = (FixedSurfaceType)ps.FirstFixedSurfaceType;
@@ -108,11 +109,19 @@ public class GFSDataReader : IGriddedDataReader
         
         
         _inputFile = inputFile;
+
         return inputFile;
+    }
+
+    public void CloseFile()
+    {
+        
     }
 
     public void ReadData(IGradsGrid grid, VariableDefinition definition)
     {
+
+        if (_inputFile == null) throw new Exception("No file open yet");
         
         GribDataSetInfo info = (GribDataSetInfo)_variableMapping.GetVariableInfo(definition.VariableType);
 
@@ -131,8 +140,8 @@ public class GFSDataReader : IGriddedDataReader
             heightValue *= 100;
         }
         
-        Grib2Reader rdr = new Grib2Reader(_inputFile.FileName);
-        foreach (var ds in rdr.ReadAllDataSets())
+        using Grib2Reader rdr = new Grib2Reader(_inputFile.FileName);
+        foreach (var ds in _dataSets)
         {
             if (info.Discipline == (int)ds.Message.IndicatorSection.Discipline &&
                 info.ParameterCategory == ds.ProductDefinitionSection.ProductDefinition.ParameterCategory &&

@@ -10,37 +10,37 @@ namespace GradsSharp.Drawing.Grads;
 
 internal class GradsDrawingInterface : IGradsDrawingInterface
 {
-    static Func<double, double, Tuple<double, double>>? fconv;
-    static Func<double, double, Tuple<double, double>>? gconv;
-    static Func<double, double, Tuple<double, double>>? bconv;
+    private Func<double, double, Tuple<double, double>>? fconv;
+    private Func<double, double, Tuple<double, double>>? gconv;
+    private Func<double, double, Tuple<double, double>>? bconv;
 
-    static double xsize, ysize; /* Virtual page size  */
-    static double rxsize, rysize; /* Real page size     */
-    static int lwflg; /* Reduce lw due vpage*/
-    static double clminx, clmaxx, clminy, clmaxy; /* Clipping region    */
-    static bool cflag; /* Clipping flag      */
-    static int mflag; /* mask flag          */
-    static double[] dash = new double[8]; /* Linestyle pattern  */
-    public static int dnum, lstyle; /* Current linestyle  */
-    public static int lcolor; /* Current color      */
-    public static int lwide; /* Current linewidth  */
-    static double oldx, oldy; /* Previous position  */
-    static int bufmod; /* Buffering mode     */
-    static double xsave, ysave, alen, slen; /* Linestyle constants*/
-    static int jpen, dpnt;
+    private double xsize, ysize; /* Virtual page size  */
+    private double rxsize, rysize; /* Real page size     */
+    private int lwflg; /* Reduce lw due vpage*/
+    private double clminx, clmaxx, clminy, clmaxy; /* Clipping region    */
+    private bool cflag; /* Clipping flag      */
+    private int mflag; /* mask flag          */
+    private double[] dash = new double[8]; /* Linestyle pattern  */
+    public int dnum, lstyle; /* Current linestyle  */
+    public int CurrentLineColor { get; set; } /* Current color      */
+    public int CurrentLineWidth { get; set; } /* Current linewidth  */
+    private double oldx, oldy; /* Previous position  */
+    private int bufmod; /* Buffering mode     */
+    private double xsave, ysave, alen, slen; /* Linestyle constants*/
+    private int jpen, dpnt;
 
-    static int intflg; /* Batch/Interactive flag    */
+    private int intflg; /* Batch/Interactive flag    */
 
-    //static void (*fconv)(double, double, double *, double *); /* for proj rnt */
-    //static void (*gconv)(double, double, double *, double *); /* for grid rnt */
-    //static void (*bconv)(double, double, double *, double *); /* for back transform rnt */
-    static int bcol; /* background color */
-    static int savcol; /* for color save/restore */
-    static char[]? mask; /* pointer to mask array */
-    static int maskx; /* Size of a row in the array */
-    static int masksize; /* Size of mask array */
+    //private void (*fconv)(double, double, double *, double *); /* for proj rnt */
+    //private void (*gconv)(double, double, double *, double *); /* for grid rnt */
+    //private void (*bconv)(double, double, double *, double *); /* for back transform rnt */
+    private int bcol; /* background color */
+    private int savcol; /* for color save/restore */
+    private char[]? mask; /* pointer to mask array */
+    private int maskx; /* Size of a row in the array */
+    private int masksize; /* Size of mask array */
 
-    static int maskflg; /* mask flag; -999 no mask yet,
+    private int maskflg; /* mask flag; -999 no mask yet,
                                                 0 no mask used, 1 mask values set, -888 error  */
 
     internal GradsDrawingInterface(DrawingContext drawingContext)
@@ -77,7 +77,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         xsave = 0.0;
         ysave = 0.0;
         lstyle = 0;
-        lwide = 3;
+        CurrentLineWidth = 3;
         oldx = 0.0;
         oldy = 0.0;
         fconv = null; /* No projection set up    */
@@ -197,7 +197,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         if (bcol > 1)
         {
             /* If background is not black/white, draw a full page rectangle and populate the metabuffer */
-            savcol = lcolor;
+            savcol = CurrentLineColor;
             SetDrawingColor(bcol);
             DrawFilledRectangle(0.0, rxsize, 0.0, rysize);
             SetDrawingColor(savcol);
@@ -222,7 +222,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 
         _drawingContext.GxMeta.hout1(-3, clr);
         //if (intflg) dsubs.gxdcol(clr);
-        lcolor = clr;
+        CurrentLineColor = clr;
     }
 
 /* define a new color */
@@ -246,7 +246,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         hwid = wid;
         _drawingContext.GxMeta.hout2i(-4, hwid, wid);
         //if (intflg) dsubs.gxdwid(hwid);
-        lwide = hwid;
+        CurrentLineWidth = hwid;
     }
 
 /* Move to x, y with 'clipping'.  Clipping is implmented
@@ -529,7 +529,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
     }
 
 
-    static double xm, xb, ym, yb;
+    private double xm, xb, ym, yb;
 
     public void gxscal(double xmin, double xmax, double ymin, double ymax,
         double smin, double smax, double tmin, double tmax)
@@ -540,7 +540,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         yb = ymin - (ym * tmin);
     }
 
-    static double vxm, vxb, vym, vyb;
+    private double vxm, vxb, vym, vyb;
 
     /* Specify virtual page scaling.
    Input args are as follows:
@@ -613,7 +613,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
    is provided.  User projection and grid scaling routines are called
    as needed.  */
 
-    public static void gxconv(double s, double t, out double x, out double y, int level)
+    public void gxconv(double s, double t, out double x, out double y, int level)
     {
         Tuple<double, double> tu = new Tuple<double, double>(s, t);
 
@@ -806,14 +806,14 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 
     int gxqwid()
     {
-        return (lwide);
+        return (CurrentLineWidth);
     }
 
 /* query color */
 
     int gxqclr()
     {
-        return (lcolor);
+        return (CurrentLineColor);
     }
 
 /* query style */

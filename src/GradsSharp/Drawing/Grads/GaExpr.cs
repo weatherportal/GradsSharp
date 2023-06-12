@@ -5,7 +5,7 @@ namespace GradsSharp.Drawing.Grads;
 
 internal class GaExpr
 {
-    static int pass = 0;
+    private int pass = 0;
     private const int BLKNUM = 50000;
     private DrawingContext _drawingContext;
 

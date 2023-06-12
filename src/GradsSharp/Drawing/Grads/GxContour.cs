@@ -10,30 +10,30 @@ internal class GxContour
 
     private const int LABMAX = 200;
 
-    static List<gxclbuf>? clbufanch = null; /* Anchor for contour line buffering for masking */
-    private static string pout;
+    private List<gxclbuf>? clbufanch = null; /* Anchor for contour line buffering for masking */
+    private string pout;
 
-    static double[] gxlabx = new double[LABMAX];
-    static double[] gxlaby = new double[LABMAX];
-    static double[] gxlabs = new double[LABMAX];
-    static string[] gxlabv = new string[LABMAX];
-    static int[] gxlabc = new int[LABMAX];
-    static int gxlabn = 0;
-    static double ldmin = 2.5; /* Minimum distance between labels */
+    private double[] gxlabx = new double[LABMAX];
+    private double[] gxlaby = new double[LABMAX];
+    private double[] gxlabs = new double[LABMAX];
+    private string[] gxlabv = new string[LABMAX];
+    private int[] gxlabc = new int[LABMAX];
+    private int gxlabn = 0;
+    private double ldmin = 2.5; /* Minimum distance between labels */
 
 /* Common values for the contouring routines.                        */
 
-    static short[]? lwk; /* Pntr to flag work area     */
-    static int lwksiz = 0; /* Size of flag work area     */
-    static double[]? fwk; /* Pntr to X,Y coord buffer   */
-    static int fwksiz = 0; /* Size of coord buffer       */
-    static int fwkmid; /* fwk midpoint               */
-    static int xystrt, xyend; /* Pntrs into the fwk buffer  */
-    static int iss, iww, jww; /* Grid row lengths           */
-    static double vv; /* Value being contoured      */
-    static double[] rr; /* Start of grid              */
+    private short[]? lwk; /* Pntr to flag work area     */
+    private int lwksiz = 0; /* Size of flag work area     */
+    private double[]? fwk; /* Pntr to X,Y coord buffer   */
+    private int fwksiz = 0; /* Size of coord buffer       */
+    private int fwkmid; /* fwk midpoint               */
+    private int xystrt, xyend; /* Pntrs into the fwk buffer  */
+    private int iss, iww, jww; /* Grid row lengths           */
+    private double vv; /* Value being contoured      */
+    private double[] rr; /* Start of grid              */
 
-    static string clabel; /* Label for current contour  */
+    private string clabel; /* Label for current contour  */
 
     public GxContour(DrawingContext drawingContext)
     {
@@ -473,9 +473,9 @@ internal class GxContour
             /* Copy the line points and line info */
 
             for (i = 0; i < nump * 2; i++) pclbuf.lxy[i] = fwk[xystrt + i];
-            pclbuf.color = GradsDrawingInterface.lcolor;
-            pclbuf.style = GradsDrawingInterface.lstyle;
-            pclbuf.width = GradsDrawingInterface.lwide;
+            pclbuf.color = _drawingContext.GradsDrawingInterface.CurrentLineColor;
+            pclbuf.style = _drawingContext.GradsDrawingInterface.lstyle;
+            pclbuf.width = _drawingContext.GradsDrawingInterface.CurrentLineWidth;
             pclbuf.sfit = pcntr.spline;
             pclbuf.val = pcntr.val;
 
@@ -526,7 +526,7 @@ internal class GxContour
                     {
                         if (gxqclab(fwk[xy], fwk[xy + 1], pcntr.labsiz) == 0)
                         {
-                            if (pcntr.shpflg == 0) gxpclab(fwk[xy], fwk[xy + 1], 0.0, GradsDrawingInterface.lcolor, pcntr);
+                            if (pcntr.shpflg == 0) gxpclab(fwk[xy], fwk[xy + 1], 0.0, _drawingContext.GradsDrawingInterface.CurrentLineColor, pcntr);
                             dacum = 0.0;
                         }
                     }
@@ -567,7 +567,7 @@ internal class GxContour
                     {
                         if (gxqclab(fwk[xy], fwk[xy + 1], pcntr.labsiz) == 0)
                         {
-                            if (pcntr.shpflg == 0) gxpclab(fwk[xyend], fwk[xyend + 1], 0.0, GradsDrawingInterface.lcolor, pcntr);
+                            if (pcntr.shpflg == 0) gxpclab(fwk[xyend], fwk[xyend + 1], 0.0, _drawingContext.GradsDrawingInterface.CurrentLineColor, pcntr);
                         }
                     }
                 }
@@ -598,7 +598,7 @@ internal class GxContour
                             gxlaby[gxlabn] = (fwk[xy + 1]);
                             gxlabs[gxlabn] = 0.0;
                             gxlabv[gxlabn] = clabel;
-                            gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
+                            gxlabc[gxlabn] = _drawingContext.GradsDrawingInterface.CurrentLineColor;
                             gxlabn++;
                         }
 
@@ -622,7 +622,7 @@ internal class GxContour
                             gxlaby[gxlabn] = (fwk[xyend + 1]);
                             gxlabs[gxlabn] = 0.0;
                             gxlabv[gxlabn] = clabel;
-                            gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
+                            gxlabc[gxlabn] = _drawingContext.GradsDrawingInterface.CurrentLineColor;
                             gxlabn++;
                         }
                     }
@@ -736,7 +736,7 @@ internal class GxContour
                         gxlaby[gxlabn] = (fwk[y2]);
                         gxlabs[gxlabn] = 0.0;
                         gxlabv[gxlabn] = clabel;
-                        gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
+                        gxlabc[gxlabn] = _drawingContext.GradsDrawingInterface.CurrentLineColor;
                         gxlabn++;
                         labflg = 1;
                     }
@@ -823,7 +823,7 @@ internal class GxContour
                 gxlaby[gxlabn] = ylb;
                 gxlabs[gxlabn] = mslope;
                 gxlabv[gxlabn] = clabel;
-                gxlabc[gxlabn] = GradsDrawingInterface.lcolor;
+                gxlabc[gxlabn] = _drawingContext.GradsDrawingInterface.CurrentLineColor;
                 gxlabn++;
             }
         }
@@ -849,7 +849,7 @@ internal class GxContour
             return;
         }
 
-        colr = GradsDrawingInterface.lcolor;
+        colr = _drawingContext.GradsDrawingInterface.CurrentLineColor;
         for (i = 0; i < gxlabn; i++)
         {
             lablen = gxlabv[i].Length;
@@ -1198,11 +1198,11 @@ internal class GxContour
         buff = h * 0.05; /* set a small buffer around the label */
         x = xpos - (w / 2.0); /* adjust reference point */
         y = ypos - (h / 2.0);
-        scol = GradsDrawingInterface.lcolor;
+        scol = _drawingContext.GradsDrawingInterface.CurrentLineColor;
         if (pcntr.labcol > -1) fcol = pcntr.labcol;
         else fcol = ccol;
         _drawingContext.GradsDrawingInterface.SetDrawingColor(fcol);
-        swid = GradsDrawingInterface.lwide;
+        swid = _drawingContext.GradsDrawingInterface.CurrentLineWidth;
         /* if contour label thickness is set to -999, then we draw a fat version of the label
            in the background color and then overlay a thin version of the label in desired color.
            This will only work with hershey fonts, Math.Since the boldness of cairo fonts is not

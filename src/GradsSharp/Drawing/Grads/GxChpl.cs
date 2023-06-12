@@ -7,10 +7,10 @@ internal class GxChpl
 {
     private DrawingContext _drawingContext;
 
-    static byte[][] fch = new byte[10][]; /* Pointers to font data once it is read in */
-    static int[][] foff = new int[10][]; /* Pointers to character offsets */
-    static int[][] flen = new int[10][]; /* Pointers to character lengths */
-    static int dfont = 15; /* Default font */
+    private byte[][] fch = new byte[10][]; /* Pointers to font data once it is read in */
+    private int[][] foff = new int[10][]; /* Pointers to character offsets */
+    private int[][] flen = new int[10][]; /* Pointers to character lengths */
+    private int dfont = 15; /* Default font */
 
     public GxChpl(DrawingContext drawingContext)
     {

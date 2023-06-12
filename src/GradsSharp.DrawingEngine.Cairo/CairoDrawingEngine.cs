@@ -9,49 +9,49 @@ public class CairoDrawingEngine : IDrawingEngine
 {
     private const int SX = 800;
 
-    static int lcolor = -999, lwidth; /* Current attributes */
-    static int actualcolor; /* current *actual* color */
-    static int lcolorsave, lwidthsave; /* for save and restore */
-    static int rsav, gsav, bsav, psav; /* Avoid excess color change calls */
-    static int aaflg = 0; /* Anti-Aliasing flag */
-    static int filflg = 0; /* Polygon-Filling flag */
-    static int brdrflg = 0; /* Vector graphic border flag */
-    static double brdrwid = 0.0; /* Vector graphic border size */
-    static int rotate = 0; /* rotate landscape plots for hardcopy output */
-    static int width, height; /* Drawable size */
-    static int Xwidth, Xheight; /* Window size */
-    static int Bwidth, Bheight; /* Batch surface size */
-    static int force = 0; /* force a color change */
-    static double xsize, ysize; /* GrADS page size (inches) */
-    static double xscl, yscl; /* Window Scaling */
+    private int lcolor = -999, lwidth; /* Current attributes */
+    private int actualcolor; /* current *actual* color */
+    private int lcolorsave, lwidthsave; /* for save and restore */
+    private int rsav, gsav, bsav, psav; /* Avoid excess color change calls */
+    private int aaflg = 0; /* Anti-Aliasing flag */
+    private int filflg = 0; /* Polygon-Filling flag */
+    private int brdrflg = 0; /* Vector graphic border flag */
+    private double brdrwid = 0.0; /* Vector graphic border size */
+    private int rotate = 0; /* rotate landscape plots for hardcopy output */
+    private int width, height; /* Drawable size */
+    private int Xwidth, Xheight; /* Window size */
+    private int Bwidth, Bheight; /* Batch surface size */
+    private int force = 0; /* force a color change */
+    private double xsize, ysize; /* GrADS page size (inches) */
+    private double xscl, yscl; /* Window Scaling */
 
-    static double xxx, yyy; /* Old position */
+    private double xxx, yyy; /* Old position */
 
-//static FT_Library library = NULL;             /* for drawing fonts with FreeType with cairo */
-    static string?[] face = new string[100]; /* for saving FreeType font faces */
-    static bool faceinit = false; /* for knowing whether font faces have been initialized */
-    static Surface? surface = null; /* Surface being drawn to */
-    static Context? cr; /* graphics context */
+//private FT_Library library = NULL;             /* for drawing fonts with FreeType with cairo */
+    private string?[] face = new string[100]; /* for saving FreeType font faces */
+    private bool faceinit = false; /* for knowing whether font faces have been initialized */
+    private Surface? surface = null; /* Surface being drawn to */
+    private Context? cr; /* graphics context */
 
-    static int surftype; /* Type of current surface.
+    private int surftype; /* Type of current surface.
                                                1=X, 2=Image, 3=PS/EPS, 4=PDF, 5=SVG */
 
-    static Surface? Xsurface = null, Hsurface = null, Bsurface = null;
+    private Surface? Xsurface = null, Hsurface = null, Bsurface = null;
 
 /* X, Hardcopy, and Batch mode surfaces */
 /* X surface is passed to us by gxX. */
 /* Others are created as needed. */
-    static Context? Xcr, Hcr, Bcr; /* X, Hardcopy, and Batch mode contexts */
-    static Pattern?[] pattern = new Pattern[2048]; /* Save our patterns here */
-    static ImageSurface[] pattsurf = new ImageSurface[2048];
-    static Surface surfmask, surfsave; /* Stuff for masking */
-    static Context? crmask, crsave;
-    static SurfacePattern? patternmask;
-    static int drawing; /* In the middle of line-to's? */
-    static int maskflag; /* Masking going on */
-    static int batch = 0; /* Batch mode */
-    static double clx, cly, clw, clh; /* current clipping coordinates */
-    static double clxsav, clysav, clwsav, clhsav; /* saved clipping coordinates */
+    private Context? Xcr, Hcr, Bcr; /* X, Hardcopy, and Batch mode contexts */
+    private Pattern?[] pattern = new Pattern[2048]; /* Save our patterns here */
+    private ImageSurface[] pattsurf = new ImageSurface[2048];
+    private Surface surfmask, surfsave; /* Stuff for masking */
+    private Context? crmask, crsave;
+    private SurfacePattern? patternmask;
+    private int drawing; /* In the middle of line-to's? */
+    private int maskflag; /* Masking going on */
+    private int batch = 0; /* Batch mode */
+    private double clx, cly, clw, clh; /* current clipping coordinates */
+    private double clxsav, clysav, clwsav, clhsav; /* saved clipping coordinates */
 
     //private DrawingContext GradsEngine;
     private GradsEngine _gradsEngine;

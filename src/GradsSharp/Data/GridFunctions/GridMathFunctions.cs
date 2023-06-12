@@ -168,11 +168,12 @@ public static class GridMathFunctions
     private static IGradsGrid TwoGridOperation(IGradsGrid grid1, IGradsGrid grid2, Func<double, double, double> func)
     {
         IGradsGrid result = grid1.CloneGrid();
-        for (int j = 0; j < result.GridData.Length; j++)
+
+        for (int j = 0; j < grid1.GridData.Length; j++)
         {
             result.GridData[j] = func(grid1.GridData[j], grid2.GridData[j]);
         }
-
+        
         return result;
     }
 

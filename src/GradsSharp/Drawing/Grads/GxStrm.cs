@@ -105,7 +105,7 @@ internal class GxStrm
                 ysav = y;
                 xstrt = x;
                 ystrt = y;
-                GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
                 _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 3);
                 xxsv = xx;
                 yysv = yy;
@@ -172,9 +172,9 @@ internal class GxStrm
                         vv = vv * fact / avv;
                     }
 
-                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
-                    GradsDrawingInterface.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
-                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
                     adj = GaUtil.hypot(xx - xx1, yy - yy1) / GaUtil.hypot(xx - xx2, yy - yy2);
                     if (adj > 1.0) uv = uv / adj;
                     else vv = vv * adj;
@@ -197,7 +197,7 @@ internal class GxStrm
                     if (iacc > 10 && tacum < 0.1) break;
                     if (iacc > 100) break;
                     iisav = ii1;
-                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
                     if (icol > -1)
                     {
                         if (bflg)
@@ -228,7 +228,7 @@ internal class GxStrm
                 bflg = false;
                 x = xsav;
                 y = ysav;
-                GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
                 _drawingContext.GradsDrawingInterface.gxplot(xx, yy, 3);
                 xxsv = xx;
                 yysv = yy;
@@ -294,9 +294,9 @@ internal class GxStrm
                         vv = vv * fact / avv;
                     }
 
-                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
-                    GradsDrawingInterface.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
-                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3); /* account for localized grid distortions */
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.1, y + 1.0, out xx1, out yy1, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.1, out xx2, out yy2, 3);
                     adj = GaUtil.hypot(xx - xx1, yy - yy1) / GaUtil.hypot(xx - xx2, yy - yy2);
                     if (adj > 1.0) uv = uv / adj;
                     else vv = vv * adj;
@@ -314,7 +314,7 @@ internal class GxStrm
                     if (iacc > 10 && tacum < 0.1) break;
                     if (iacc > 100) break;
                     iisav = ii1;
-                    GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv(x + 1.0, y + 1.0, out xx, out yy, 3);
                     if (icol > -1)
                     {
                         if (bflg)

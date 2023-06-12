@@ -16,19 +16,19 @@ internal class GxWmap
 {
     private DrawingContext _drawingContext;
 
-    private static int CACHEMAX = 2000000;
-    private static List<mapcache> manchor = new();
+    private const int CACHEMAX = 2000000;
+    private List<mapcache> manchor = new();
     private mapcache cmc;
     
-    static int imap;
-    static double lomin, lomax, lamin, lamax;
-    static double lonref; /* Reference longitude for adjustment */
-    static int adjtyp = 0; /* Direction adjustment class */
+    private int imap;
+    private double lomin, lomax, lamin, lamax;
+    private double lonref; /* Reference longitude for adjustment */
+    private int adjtyp = 0; /* Direction adjustment class */
 
-    static int mcpos; /* current position in cached file */
-    static int mclen; /* length of the data in current cache */
-    static Stream mfile; /* for file i/o instead of caching */
-    static int cflag; /* indicate if i/o from cache or file */
+    private int mcpos; /* current position in cached file */
+    private int mclen; /* length of the data in current cache */
+    private Stream mfile; /* for file i/o instead of caching */
+    private int cflag; /* indicate if i/o from cache or file */
 
     public GxWmap(DrawingContext drawingContext)
     {
@@ -285,7 +285,7 @@ internal class GxWmap
                         {
                             if (ipen == 2)
                             {
-                                GradsDrawingInterface.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
+                                _drawingContext.GradsDrawingInterface.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
                                 _drawingContext.GradsDrawingInterface.gxplot(xx, yy, ipen);
                             }
 
@@ -295,12 +295,12 @@ internal class GxWmap
                         {
                             if (ipen == 3)
                             {
-                                GradsDrawingInterface.gxconv(lnsav + lnfact, ltsav, out xx, out yy, 2);
+                                _drawingContext.GradsDrawingInterface.gxconv(lnsav + lnfact, ltsav, out xx, out yy, 2);
                                 _drawingContext.GradsDrawingInterface.gxplot(xx, yy, ipen);
                             }
 
                             ipen = 2;
-                            GradsDrawingInterface.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
+                            _drawingContext.GradsDrawingInterface.gxconv(lntmp + lnfact, lttmp, out xx, out yy, 2);
                             _drawingContext.GradsDrawingInterface.gxplot(xx, yy, ipen);
                         }
 
@@ -405,7 +405,7 @@ internal class GxWmap
    aspect to this is to set the level 1 linear scaling such that
    the proper aspect ratio is maintained.   */
 
-    static float londif;
+    private float londif;
 
     public int gxnste(mapprj mpj)
     {
@@ -694,20 +694,20 @@ internal class GxWmap
             if (lat > 89.9)
             {
                 /* back difference if near np */
-                GradsDrawingInterface.gxconv(lon, lat - 0.05, out xx1, out yy1, 2);
-                GradsDrawingInterface.gxconv(lon, lat, out xx2, out yy2, 2);
+                _drawingContext.GradsDrawingInterface.gxconv(lon, lat - 0.05, out xx1, out yy1, 2);
+                _drawingContext.GradsDrawingInterface.gxconv(lon, lat, out xx2, out yy2, 2);
             }
             else if (lat < -89.9)
             {
                 /* forward difference if near sp */
-                GradsDrawingInterface.gxconv(lon, lat, out xx1, out yy1, 2);
-                GradsDrawingInterface.gxconv(lon, lat + 0.05, out xx2, out yy2, 2);
+                _drawingContext.GradsDrawingInterface.gxconv(lon, lat, out xx1, out yy1, 2);
+                _drawingContext.GradsDrawingInterface.gxconv(lon, lat + 0.05, out xx2, out yy2, 2);
             }
             else
             {
                 /* otherwise centered diff */
-                GradsDrawingInterface.gxconv(lon, lat - 0.03, out xx1, out yy1, 2);
-                GradsDrawingInterface.gxconv(lon, lat + 0.03, out xx2, out yy2, 2);
+                _drawingContext.GradsDrawingInterface.gxconv(lon, lat - 0.03, out xx1, out yy1, 2);
+                _drawingContext.GradsDrawingInterface.gxconv(lon, lat + 0.03, out xx2, out yy2, 2);
             }
 
             dir = Math.Atan2(xx1 - xx2, yy2 - yy1);
@@ -722,7 +722,7 @@ internal class GxWmap
 
 /*  Set up Robinson Projection */
 
-    static double fudge;
+    private double fudge;
 
     public int gxrobi(mapprj mpj)
     {
@@ -1153,7 +1153,7 @@ internal class GxWmap
      DKRZ appends: Lambert conformal conic Projection
      15.03.96                       Karin Meier (karin.meier@dkrz.de)
   ------------------------------------------------------------------*/
-    static double hemi, r;
+    private double hemi, r;
 
     public int gxlamc(mapprj mpj)
     {
@@ -1409,7 +1409,7 @@ internal class GxWmap
         newxy = new double[ncnt * 2];
         
         /* Write out the very first point, before interpolation begins (this is for j=0) */
-        GradsDrawingInterface.gxconv(xy[0], xy[1], out xx, out yy, 2);
+        _drawingContext.GradsDrawingInterface.gxconv(xy[0], xy[1], out xx, out yy, 2);
         newxy[0] = xx;
         newxy[1] = yy;
         /* Now interpolate each point, convert to x,y, and put in list */
@@ -1468,7 +1468,7 @@ internal class GxWmap
                     }
                 }
 
-                GradsDrawingInterface.gxconv(lntmp, lttmp, out xx, out yy, 2);
+                _drawingContext.GradsDrawingInterface.gxconv(lntmp, lttmp, out xx, out yy, 2);
                 newxy[j * 2] = xx;
                 newxy[j * 2 + 1] = yy;
                 j++;

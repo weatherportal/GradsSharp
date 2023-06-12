@@ -19,12 +19,12 @@ internal class GxMeta
     private DrawingContext _drawingContext;
     private const int BWORKSZ = 250000;
 
-    private static gxmbuf? mbufanch;
-    private static gxmbuf? mbuflast;
-    private static gxmbuf? mbufanch2;
-    private static gxmbuf? mbuflast2;
-    private static int dbmode;
-    static int mbuferror = 0; /* Indicate an error state; suspends buffering */
+    private gxmbuf? mbufanch;
+    private gxmbuf? mbuflast;
+    private gxmbuf? mbufanch2;
+    private gxmbuf? mbuflast2;
+    private int dbmode;
+    private int mbuferror = 0; /* Indicate an error state; suspends buffering */
 
     public GxMeta(DrawingContext drawingContext)
     {

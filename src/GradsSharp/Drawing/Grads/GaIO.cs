@@ -6,16 +6,16 @@ namespace GradsSharp.Drawing.Grads;
 
 internal class GaIO
 {
-    static bool cflag = false; /* cache flag */
-    static GradsGrid pgr;
-    static gavar pvr;
-    static GradsFile pfi;
-    static int timerr;
-    static int msgflg = 1;
+    private bool cflag = false; /* cache flag */
+    private GradsGrid pgr;
+    private gavar pvr;
+    private GradsFile pfi;
+    private int timerr;
+    private int msgflg = 1;
 
-    static gaindx pindx;
-    static gaindxb pindxb;
-    static gag2indx g2indx;
+    private gaindx pindx;
+    private gaindxb pindxb;
+    private gag2indx g2indx;
 
     private DrawingContext _drawingContext;
     

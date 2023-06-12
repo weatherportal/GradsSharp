@@ -10,24 +10,24 @@ internal class GradsDatabase : IGradsDatabase
 
     static double[] pdcwid = {0.6, 0.8, 1.0, 1.25, 1.5, 1.75, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0};
 
-    static int[] reds = new int[Gx.COLORMAX], greens = new int[Gx.COLORMAX], blues = new int[Gx.COLORMAX], alphas=new int[Gx.COLORMAX];
-    static int[] tilenum = new int[Gx.COLORMAX];
+    private int[] reds = new int[Gx.COLORMAX], greens = new int[Gx.COLORMAX], blues = new int[Gx.COLORMAX], alphas=new int[Gx.COLORMAX];
+    private int[] tilenum = new int[Gx.COLORMAX];
     
-    static int[] ptypes = new int[Gx.COLORMAX], pxsz = new int[Gx.COLORMAX], pysz = new int[Gx.COLORMAX];
-    static int[] pfthick = new int[Gx.COLORMAX],pfcols = new int[Gx.COLORMAX],pbcols = new int[Gx.COLORMAX];
-    static string[] pnames = new string[Gx.COLORMAX];
+    private int[] ptypes = new int[Gx.COLORMAX], pxsz = new int[Gx.COLORMAX], pysz = new int[Gx.COLORMAX];
+    private int[] pfthick = new int[Gx.COLORMAX],pfcols = new int[Gx.COLORMAX],pbcols = new int[Gx.COLORMAX];
+    private string[] pnames = new string[Gx.COLORMAX];
     
     
-    static double[] widths = new double[256];
-    static string[] fontname = new string[100];
-    static string fn_serif = "serif";
-    static string fn_sans = "sans-serif";
-    static bool[] fnbold = new bool[100];
-    static int[] fnitalic = new int[100];
-    static int hershflag;                /* For fn 1 to 6, use Hershey fonts or not */
-    static int dbdevbck;                 /* Device background color */
-    static int dboutbck;                 /* Ouput (image or hardcopy) background color */
-    static int dbtransclr;               /* transparent color number (for hardcopy) */
+    private double[] widths = new double[256];
+    private string[] fontname = new string[100];
+    private string fn_serif = "serif";
+    private string fn_sans = "sans-serif";
+    private bool[] fnbold = new bool[100];
+    private int[] fnitalic = new int[100];
+    private int hershflag;                /* For fn 1 to 6, use Hershey fonts or not */
+    private int dbdevbck;                 /* Device background color */
+    private int dboutbck;                 /* Ouput (image or hardcopy) background color */
+    private int dbtransclr;               /* transparent color number (for hardcopy) */
 
     public int gxdbqhersh () {    
         return (hershflag);

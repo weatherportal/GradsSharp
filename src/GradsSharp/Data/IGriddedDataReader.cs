@@ -7,5 +7,6 @@ namespace GradsSharp.Data;
 public interface IGriddedDataReader
 {
     InputFile OpenFile(string fileName);
+    void CloseFile();
     void ReadData(IGradsGrid grid, VariableDefinition definition);
 }
