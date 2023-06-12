@@ -80,7 +80,8 @@ public class GfsVariables : IVariableMapping
         _mapping[DataVariable.PressureMSLPEta] = new GribDataSetInfo { Discipline = 0, ParameterCategory = 3, ParameterNumber = 192, ParameterName = "MSLP (Eta model reduction)", ParameterUnit = "Pa" };
         _mapping[DataVariable.LiftedIndexSurface] = new GribDataSetInfo { Discipline = 0, ParameterCategory = 7, ParameterNumber = 192, ParameterName = "Surface Lifted Index", ParameterUnit = "K" };
         _mapping[DataVariable.LiftedIndex4Layer] = new GribDataSetInfo { Discipline = 0, ParameterCategory = 7, ParameterNumber = 193, ParameterName = "Best (4 layer) Lifted Index", ParameterUnit = "K" };
-
+        _mapping[DataVariable.UStormMotion] = new GribDataSetInfo { Discipline = 0, ParameterCategory = 2, ParameterNumber = 194, ParameterName = "U Component Storm Motion", ParameterUnit = "m s-1" };
+        _mapping[DataVariable.VStormMotion] = new GribDataSetInfo { Discipline = 0, ParameterCategory = 2, ParameterNumber = 195, ParameterName = "V Component Storm Motion", ParameterUnit = "m s-1" };
         
         /*
          

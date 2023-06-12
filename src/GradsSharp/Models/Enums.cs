@@ -2,7 +2,20 @@
 
 namespace GradsSharp.Models;
 
+public enum InterpolationMode
+{
+    Undefined = -1,
+    PiecewiseLinear = 0,
+    Spline = 1,
+    Polynomnial = 2
+}
 
+public enum ConstMode
+{
+    Undefined,
+    Missing,
+    All
+}
 
 public enum InputFileDimensionType
 {
@@ -121,7 +134,9 @@ public enum DataVariable
     FrictionalVelocity,
     PressureMSLPEta,
     LiftedIndexSurface,
-    LiftedIndex4Layer
+    LiftedIndex4Layer,
+    UStormMotion,
+    VStormMotion
 }
 
 

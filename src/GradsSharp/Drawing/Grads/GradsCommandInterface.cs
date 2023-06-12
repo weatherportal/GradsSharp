@@ -2,6 +2,7 @@
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
+using FileInfo = GradsSharp.Models.FileInfo;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -33,6 +34,9 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext = drawingContext;
         pcm = drawingContext.CommonData;
     }
+
+    public GradsCommon CommonData => pcm;
+    public DrawingContext DrawingContext => _drawingContext;
 
     public void stack()
     {
@@ -1025,6 +1029,8 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
     public void SetZ(double zMin, double zMax)
     {
+        _drawingContext.CommonData.dmin[2] = zMin;
+        _drawingContext.CommonData.dmax[2] = zMax;
     }
 
     public void SetT(double tMin)
@@ -2578,6 +2584,21 @@ internal class GradsCommandInterface : IGradsCommandInterface
         return dimInfo;
     }
 
+    public FileInfo QueryFileInfo()
+    {
+        if (_drawingContext.CommonData.pfid == null)
+        {
+            throw new Exception("No file open yet");
+        }
+        var result = new FileInfo();
+        result.FileName = _drawingContext.CommonData.pfid.name;
+        result.XSize = _drawingContext.CommonData.pfid.dnum[0];
+        result.YSize = _drawingContext.CommonData.pfid.dnum[1];
+        result.NumberOfLevels = _drawingContext.CommonData.pfid.dnum[2];
+
+        return result;
+    }
+
     public IGradsGrid GetVariable(VariableDefinition definition, int file = 1)
     {
         if (_drawingContext.CommonData.fnum == 0)
@@ -2590,8 +2611,11 @@ internal class GradsCommandInterface : IGradsCommandInterface
         
         var pst = getpst(_drawingContext.CommonData);
 
-        
-        
+        if (definition.VariableName == "lev")
+        {
+            pst.dmax[2] = definition.HeightValue;
+            pst.dmin[2] = definition.HeightValue;
+        }
         
         var expression = definition.GetVarName();
         if (definition.HeightType == FixedSurfaceType.IsobaricSurface)

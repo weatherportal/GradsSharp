@@ -6,6 +6,40 @@ namespace GradsSharp.Data.GridFunctions;
 
 public static class GridMaskFunctions
 {
+
+    public static IGradsGrid Const(this IGradsGrid grid, int cnst, ConstMode mode) 
+    {
+        var result = grid.CloneGrid();
+        
+        int cnt = grid.ISize * grid.JSize;
+        int gval = 0;
+        
+        
+        
+        for (int i=0; i<cnt; i++) {
+            if (mode==ConstMode.Undefined) {
+                /* change valid data to a constant, missing data unchanged */
+                if (grid.UndefinedMask[gval]!=0) result.GridData[gval] = cnst;
+            } 
+            else if (mode == ConstMode.Missing) {
+                /* change missing data to a constant, update mask value */
+                if (grid.UndefinedMask[gval]==0) {
+                    result.GridData[gval] = cnst;
+                    result.UndefinedMask[gval] = 1;       
+                }
+            } 
+            else if (mode == ConstMode.All) {
+                /* change valid and missing data to a constaont, update mask values */
+                result.GridData[gval] = cnst;
+                result.UndefinedMask[gval] = 1;
+            }
+
+            gval++;
+        }
+
+        return result;
+    }
+    
     public static IGradsGrid Skip(this IGradsGrid grid, int iskip)
     {
         return Skip(grid, iskip, iskip);

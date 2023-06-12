@@ -3,10 +3,12 @@
 public class VariableDefinition
 {
     public string VariableName { get; set; }
-    public DataVariable VariableType { get; set; }
-    public FixedSurfaceType HeightType { get; set; }
-    public double HeightValue { get; set; }
+    public DataVariable VariableType { get; set; } = DataVariable.NotDefined;
+    public FixedSurfaceType HeightType { get; set; } = FixedSurfaceType.Missing;
+    public double HeightValue { get; set; } = Double.NaN;
 
+    public int File { get; set; } = 1;
+    
     public string GetVarName()
     {
         var result = VariableType switch
@@ -71,6 +73,8 @@ public class VariableDefinition
             DataVariable.CategoricalSnow => "catsn",
             DataVariable.LiftedIndexSurface => "lftxsft",
             DataVariable.LiftedIndex4Layer => "lftidx4l",
+            DataVariable.UStormMotion => "urmstrm",
+            DataVariable.VStormMotion => "vrmstrm",
             _ => throw new ArgumentOutOfRangeException($"{VariableType}")
         };
 
@@ -82,6 +86,10 @@ public class VariableDefinition
         else if (HeightType == FixedSurfaceType.IsobaricSurface)
         {
             result += "prs";
+        }
+        else if (HeightType == FixedSurfaceType.PotentialVorticitySurface)
+        {
+            result += "pvu";
         }
         return result;
     }

@@ -261,6 +261,13 @@ internal class GaIO
             pgr.WorldDimensionMaximum[1] =
                 _drawingContext.CommonData.pfid.gr2ab[1](_drawingContext.CommonData.pfid.grvals[1],
                     pgr.DimensionMaximum[1]);
+
+            var vardef = pgrid.pvar.variableDefinition;
+            if (vardef.HeightType == FixedSurfaceType.IsobaricSurface)
+            {
+                vardef.HeightValue = _drawingContext.CommonData.pfid.gr2ab[2](_drawingContext.CommonData.pfid.grvals[2],
+                    pgr.DimensionMinimum[2]);
+            }
             
             pgr.DataReader.ReadData(pgr, pgrid.pvar.variableDefinition);
             // for (int t = 0; t < gru.Length; t++)
