@@ -41,7 +41,7 @@ public interface IGradsCommandInterface
     void SetYLab(LabelOption option, string format = "");
     void SetAxisLabels(Axis axis, AxisLabelOption option, string? format);
     void SetGridOptions(GridOption option, int style = -1, int color = -1, int thickness = -1);
-    void SetContourLineOptions(int size = -1, int color = -1, int thickness = -1);
+    void SetContourLabelOptions(int color = -1, int thickness = -1, int size = -1);
 
     void SetStringOptions(int color, StringJustification justification = StringJustification.Undefined,
         int thickness = -1, double rotation = -1);

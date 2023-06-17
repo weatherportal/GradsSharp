@@ -881,7 +881,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetContourLineOptions(int size = -1, int color = -1, int thickness = -1)
+    public void SetContourLabelOptions(int color = -1, int thickness = -1, int size = -1)
     {
         if (size > 0)
         {
