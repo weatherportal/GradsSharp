@@ -1845,7 +1845,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         if (inputFile.TDimensionType == InputFileDimensionType.Linear)
         {
             var dt = inputFile.ReferenceTime;
-            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 1, 0, inputFile.TimeStepIntervalMinutes };
+            var vals = new double[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, inputFile.TimeStepIntervalMinutes, 0 };
             gf.dnum[3] = inputFile.Dt;
             gf.grvals[3] = vals;
             gf.abvals[3] = vals;
