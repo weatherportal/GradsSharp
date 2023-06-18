@@ -57,5 +57,7 @@ public class InputFile
     public DateTime ReferenceTime { get; set; }
 
     public List<InputVariable> Variables { get; set; } = new();
+    
+    public int TimeStepIntervalMinutes { get; set; }
 
 }
