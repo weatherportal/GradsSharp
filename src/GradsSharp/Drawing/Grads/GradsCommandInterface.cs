@@ -1055,6 +1055,16 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.CommonData.strmden = density;
     }
 
+    public void SetXFlip(bool flip)
+    {
+        _drawingContext.CommonData.xflip = flip;
+    }
+
+    public void SetYFlip(bool flip)
+    {
+        _drawingContext.CommonData.yflip = flip;
+    }
+
 
     public void Define(string varName, string formula)
     {

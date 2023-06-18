@@ -63,6 +63,9 @@ public interface IGradsCommandInterface
     void SetE(double eMin);
     void SetStreamDensity(int density);
 
+    void SetXFlip(bool flip);
+    void SetYFlip(bool flip);
+
     void Define(string varName, string formula);
     void Define(string varName, IGradsGrid data);
     void Open(string dataFile, IGriddedDataReader dataReader);
