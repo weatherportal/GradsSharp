@@ -75,6 +75,7 @@ public class VariableDefinition
             DataVariable.LiftedIndex4Layer => "lftidx4l",
             DataVariable.UStormMotion => "urmstrm",
             DataVariable.VStormMotion => "vrmstrm",
+            DataVariable.Geopotential => "z",
             _ => throw new ArgumentOutOfRangeException($"{VariableType}")
         };
 

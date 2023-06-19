@@ -90,6 +90,7 @@ public enum DataVariable
     SRH,
     UWind,
     VWind,
+    Geopotential,
     GeopotentialHeight,
     Pressure,
     PressureMSL,
