@@ -268,15 +268,11 @@ internal class GaIO
                 vardef.HeightValue = _drawingContext.CommonData.pfid.gr2ab[2](_drawingContext.CommonData.pfid.grvals[2],
                     pgr.DimensionMinimum[2]);
             }
+
             
-            pgr.WorldDimensionMinimum[3] =
-                _drawingContext.CommonData.pfid.gr2ab[3](_drawingContext.CommonData.pfid.grvals[3],
-                    pgr.DimensionMinimum[3]);
-            
-            pgr.WorldDimensionMaximum[3] =
-                _drawingContext.CommonData.pfid.gr2ab[3](_drawingContext.CommonData.pfid.grvals[3],
-                    pgr.DimensionMaximum[3]);
-            
+            pgr.WorldDimensionMinimum[3] = pgr.DimensionMinimum[3];
+            pgr.WorldDimensionMaximum[3] = pgr.DimensionMaximum[3];
+
             pgr.DataReader.ReadData(pgr, pgrid.pvar.variableDefinition);
             // for (int t = 0; t < gru.Length; t++)
             // {
