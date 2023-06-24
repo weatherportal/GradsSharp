@@ -77,6 +77,7 @@ public class GFSDataReader : IGriddedDataReader
             inputFile.Dt = 1;   // for GFS this is always one
             inputFile.ReferenceTime = dataset.Message.IdentificationSection.ReferenceTime;
             inputFile.TDimensionType = InputFileDimensionType.Linear;
+            inputFile.TimeStepIntervalMinutes = 60;
 
             inputFile.De = 1;
             inputFile.EDimensionType = InputFileDimensionType.Linear;

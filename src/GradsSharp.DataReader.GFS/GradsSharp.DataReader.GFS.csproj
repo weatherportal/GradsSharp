@@ -19,11 +19,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GradsSharp\GradsSharp.csproj" />
+      <PackageReference Include="NGrib" Version="0.8.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="NGrib" Version="0.8.0" />
+      <ProjectReference Include="..\GradsSharp\GradsSharp.csproj" />
     </ItemGroup>
 
 </Project>
