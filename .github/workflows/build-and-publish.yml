@@ -40,7 +40,7 @@ jobs:
         dotnet pack src/GradsSharp.DataReader.GFS/GradsSharp.DataReader.GFS.csproj --no-build --verbosity normal -c Release -o artifacts/        
     - name: Push to NuGet
       if: ${{ success() && !github.base_ref }}
-      run: dotnet nuget push artifacts/**.nupkg -s https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}        
+      run: dotnet nuget push artifacts/**.nupkg -s https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}   --skip-duplicate     
     - run: |
         git config user.name "Bart Devriendt"
         git config user.email "bart.devriendt@gmail.com"
