@@ -6,6 +6,8 @@ public class InputFile
     public FileType FileType { get; set; } = FileType.Gridded;
 
     public PreprojectedType PreprojectedType { get; set; } = PreprojectedType.None;
+    public int PreprojectedISize { get; set; }
+    public int PreprojectedJSize { get; set; }
     
     /// <summary>
     /// Number of points in X-Direction
