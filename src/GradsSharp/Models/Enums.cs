@@ -2,6 +2,24 @@
 
 namespace GradsSharp.Models;
 
+
+public enum PreprojectedType
+{
+    None = 0,
+    NPS = 1,
+    SPS = 2,
+    LCC = 3,
+    LCCR = 4,
+    ETAU = 5,
+    PSE = 6,
+    OPS = 7,
+    BILIN = 8,
+    FILE = 9,
+    GENERAL = 10,
+    ROTLL = 11,
+    ROTLLR = 12
+}
+
 public enum InterpolationMode
 {
     Undefined = -1,

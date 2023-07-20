@@ -94,7 +94,7 @@ internal class GradsFile
     public int ppwrot; /* Pre-projection wind rotation flag */
     public int ppisiz, ppjsiz; /* Actual size of preprojected grid */
 
-    double[] ppvals; /* Projection constants for pre-projected
+    public double[] ppvals; /* Projection constants for pre-projected
                                   grids.  Values depend on projection. */
 
     int[] ppi; /* Pointers to offsets for pre-projected
