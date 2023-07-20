@@ -1871,6 +1871,37 @@ internal class GradsCommandInterface : IGradsCommandInterface
         if (gf.ppflag > 0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
         gf.DataReader = dataReader;
 
+        gf.ppflag = inputFile.PreprojectedType switch
+        {
+            PreprojectedType.NPS => 1,
+            PreprojectedType.SPS => 2,
+            PreprojectedType.LCC => 3,
+            PreprojectedType.LCCR => 3,
+            PreprojectedType.ETAU => 4,
+            PreprojectedType.PSE => 5,
+            PreprojectedType.OPS => 6,
+            PreprojectedType.BILIN => 7,
+            PreprojectedType.FILE => 8,
+            PreprojectedType.GENERAL => 8,
+            PreprojectedType.ROTLL => 9,
+            PreprojectedType.ROTLLR => 9,
+            _ => 0
+        };
+
+        if (inputFile.PreprojectedType == PreprojectedType.NPS ||
+            inputFile.PreprojectedType == PreprojectedType.SPS ||
+            inputFile.PreprojectedType == PreprojectedType.LCCR ||
+            inputFile.PreprojectedType == PreprojectedType.ETAU ||
+            inputFile.PreprojectedType == PreprojectedType.BILIN ||
+            inputFile.PreprojectedType == PreprojectedType.FILE ||
+            inputFile.PreprojectedType == PreprojectedType.GENERAL ||
+            inputFile.PreprojectedType == PreprojectedType.ROTLLR)
+        {
+            gf.ppwrot = 1;
+        }
+
+        if (inputFile.PreProjectionValues != null)
+            gf.ppvals = inputFile.PreProjectionValues;
 
         foreach (var inputVar in inputFile.Variables)
         {

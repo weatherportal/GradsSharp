@@ -5,6 +5,8 @@ public class InputFile
     public string FileName { get; set; }
     public FileType FileType { get; set; } = FileType.Gridded;
 
+    public PreprojectedType PreprojectedType { get; set; } = PreprojectedType.None;
+    
     /// <summary>
     /// Number of points in X-Direction
     /// </summary>
@@ -53,6 +55,8 @@ public class InputFile
     public double[]? ZLevels { get; set; } 
     public double[]? TLevels { get; set; } 
     public double[]? ELevels { get; set; } 
+    
+    public double[]? PreProjectionValues { get; set; }
     
     public DateTime ReferenceTime { get; set; }
 
