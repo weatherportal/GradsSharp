@@ -272,20 +272,11 @@ internal class GaIO
             
             pgr.WorldDimensionMinimum[3] = pgr.DimensionMinimum[3];
             pgr.WorldDimensionMaximum[3] = pgr.DimensionMaximum[3];
+            pgr.DimensionSize[0] = pgr.pfile.dnum[0];
+            pgr.DimensionSize[1] = pgr.pfile.dnum[1];
 
             pgr.DataReader.ReadData(pgr, pgrid.pvar.variableDefinition);
-            // for (int t = 0; t < gru.Length; t++)
-            // {
-            //
-            //     gru[t] = 1;
-            // }
-            //
-            // dflag = 1;
-            //
-            // if (dflag == 0) goto nodatmsg;
-            
-            // pgr.GridData = gr;
-            // pgr.UndefinedMask = gru;
+
             
             return (0);
         }

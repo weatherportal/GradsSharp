@@ -62,6 +62,7 @@ internal class GradsGrid : IGradsGrid
     public double[] WorldDimensionMinimum { get; internal set; } = Array.Empty<double>();
     public double[] WorldDimensionMaximum { get; internal set; } = Array.Empty<double>();
 
+    public int[] DimensionSize { get; internal set; } = new int[5]; 
 
     public gavar pvar; /* Pointer to the classure with info
                                   on this particular variable.  If

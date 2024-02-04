@@ -569,7 +569,7 @@ internal class GaGx
             /* Data type grid */
             pgr = pcm.result[0].pgr;
             siz = pgr.ISize * pgr.JSize;
-            pout = String.Format("Printing Grid -- {0} Values -- Undef = {1}", siz, pcm.undef);
+            pout = String.Format("Printing Grid -- {0} Values -- Undef = {1}\n", siz, pcm.undef);
             _drawingContext.Logger?.LogInformation(pout);
             gr = pgr.GridData;
             gru = pgr.UndefinedMask;
@@ -587,11 +587,11 @@ internal class GaGx
                     }
                     else if (gru[cntgru] == 0)
                     {
-                        pout = String.Format(pcm.prstr, pcm.undef);
+                        pout = String.Format(System.Globalization.CultureInfo.InvariantCulture, pcm.prstr, pcm.undef);
                     }
                     else
                     {
-                        pout = String.Format(pcm.prstr, gr[cntgr]);
+                        pout = String.Format(System.Globalization.CultureInfo.InvariantCulture, pcm.prstr, gr[cntgr]);
                     }
 
                     /* pad with blanks? */
@@ -600,15 +600,15 @@ internal class GaGx
                         pout.PadRight(pcm.prbnum + pout.Length);
                     }
 
-                    _drawingContext.Logger?.LogInformation(pout);
+                    _drawingContext.Logger?.LogInformation(pout + " ");
                 }
                 else
                 {
                     if (gru[cntgru] == 0)
-                        pout = String.Format(pcm.prstr, pcm.undef);
+                        pout = String.Format(System.Globalization.CultureInfo.InvariantCulture, pcm.prstr, pcm.undef);
                     else
-                        pout = String.Format("{0:g}", gr[cntgr]);
-                    _drawingContext.Logger?.LogInformation(pout);
+                        pout = String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:g}", gr[cntgr]);
+                    _drawingContext.Logger?.LogInformation(pout + " ");
                 }
 
                 lnum++;

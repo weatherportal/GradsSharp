@@ -1838,6 +1838,11 @@ internal class GradsCommandInterface : IGradsCommandInterface
             gf.ppjsiz = inputFile.PreprojectedJSize;
             gf.ppvals = inputFile.PreProjectionValues;
         }
+
+        if (inputFile.PreprojectedType != PreprojectedType.None)
+        {
+            
+        }
         
 
         if (inputFile.XDimensionType == InputFileDimensionType.Linear)

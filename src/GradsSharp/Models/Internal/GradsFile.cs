@@ -97,10 +97,10 @@ internal class GradsFile
     public double[] ppvals; /* Projection constants for pre-projected
                                   grids.  Values depend on projection. */
 
-    int[] ppi; /* Pointers to offsets for pre-projected
+    public List<int[]> ppi = new(); /* Pointers to offsets for pre-projected
                                   grid interpolation */
 
-    double[] ppf; /* Pointers to interpolation constants
+    public List<double[]> ppf= new(); /* Pointers to interpolation constants
                                   for pre-projected grids */
 
     public double[] ppw; /* Pointer to wind rotation array */
