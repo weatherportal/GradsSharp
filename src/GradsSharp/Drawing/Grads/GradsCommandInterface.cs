@@ -1839,10 +1839,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             gf.ppvals = inputFile.PreProjectionValues;
         }
 
-        if (inputFile.PreprojectedType != PreprojectedType.None)
-        {
-            
-        }
+
         
 
         if (inputFile.XDimensionType == InputFileDimensionType.Linear)
@@ -1913,7 +1910,10 @@ internal class GradsCommandInterface : IGradsCommandInterface
         if (gf.ppflag > 0) gf.gsiz = gf.ppisiz * gf.ppjsiz;
         gf.DataReader = dataReader;
 
-       
+        if (inputFile.PreprojectedType != PreprojectedType.None)
+        {
+            GaDes.gappcn(gf, 0, 0);
+        }
 
         foreach (var inputVar in inputFile.Variables)
         {

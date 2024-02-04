@@ -277,6 +277,11 @@ internal class GaIO
 
             pgr.DataReader.ReadData(pgr, pgrid.pvar.variableDefinition);
 
+            if (pgr.pfile.ppflag > 0)
+            {
+                ConvertProjectedGrid(pgr);
+                //pgr.GridData = pgr.pfile.pdef.pdef(pgr.GridData, pgr.ISize, pgr.JSize, pgr.pvar);
+            }
             
             return (0);
         }
@@ -375,6 +380,11 @@ internal class GaIO
         return (-1);
     }
 
+
+    private void ConvertProjectedGrid(GradsGrid grid)
+    {
+        
+    }
 
 /* gagrow gets a row of data from the file.  The row of data can
    be 'wrapped' if the x direction of the grid spans the globe.

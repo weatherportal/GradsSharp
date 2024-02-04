@@ -8,16 +8,15 @@ internal class GaDes
     {
         int size, i, j, ii, jj;
         double lat = 0, lon = 0, rii = 0, rjj = 0;
-        double[] dx, dy;
-        double[] dw = Array.Empty<double>();
+        int dx = 0, dy = 0;
+        int dw = 0;
         double dum;
         double pi;
-        int[] ioff;
+        int ioff;
         float?[] fvals;
         int rdw, rc, pnum, wflg;
         int sz;
-
-        dw = null;
+        
         size = pfi.dnum[0] * pfi.dnum[1];
 
         /* Allocate space needed for the ppi and ppf grids */
@@ -246,11 +245,11 @@ internal class GaDes
            of the ij gridpoint, and the delta x and delta y values. */
 
             pi = Math.PI;
-            ioff = pfi.ppi[0];
-            dx = pfi.ppf[0];
-            dy = pfi.ppf[1];
-            if (pfi.ppwrot > 0) dw = pfi.ppw;
-
+            ioff = 0;
+            dx = 0;
+            dy = 0;
+            if (pfi.ppwrot > 0) dw = 0;
+            double dwo = 0;
             /* get i,j values in preprojected grid for each lat/lon point */
             for (j = 0; j < pfi.dnum[1]; j++)
             {
@@ -260,21 +259,26 @@ internal class GaDes
                     lon = pfi.gr2ab[0](pfi.grvals[0], (double)(i + 1));
                     if (pfi.ppflag == 3)
                     {
+                        
                         if (pfi.ppwrot > 0)
                         {
+                            
                             /* PDEF lccr */
-                            ll2lc(pfi.ppvals, lat, lon, ref rii, ref rjj, dw);
+                            ll2lc(pfi.ppvals, lat, lon, ref rii, ref rjj, ref dwo);
+                            pfi.ppw[dw] = dwo;
+                            
                         }
                         else
                         {
                             /* PDEF lcc */
-                            ll2lc(pfi.ppvals, lat, lon, ref rii, ref rjj, ref dum);
+                            ll2lc(pfi.ppvals, lat, lon, ref rii, ref rjj, ref dwo);
                         }
                     }
                     else if (pfi.ppflag == 4)
                     {
                         /* PDEF eta.u */
-                        ll2eg(pfi.ppisiz, pfi.ppjsiz, pfi.ppvals, lon, lat, ref rii, ref rjj, dw);
+                        ll2eg(pfi.ppisiz, pfi.ppjsiz, pfi.ppvals, lon, lat, ref rii, ref rjj, ref dwo);
+                        pfi.ppw[dw] = dwo;
                     }
                     else if (pfi.ppflag == 5)
                     {
@@ -291,12 +295,13 @@ internal class GaDes
                         if (pfi.ppwrot > 0)
                         {
                             /* PDEF rotllr */
-                            ll2rotll(pfi.ppvals, lat, lon, ref rii, ref rjj, dw);
+                            ll2rotll(pfi.ppvals, lat, lon, ref rii, ref rjj, ref dwo);
+                            pfi.ppw[dw] = dwo;
                         }
                         else
                         {
                             /* PDEF rotll */
-                            ll2rotll(pfi.ppvals, lat, lon, ref rii, ref rjj, &dum);
+                            ll2rotll(pfi.ppvals, lat, lon, ref rii, ref rjj, ref dwo);
                         }
                     }
                     else
@@ -305,28 +310,28 @@ internal class GaDes
                         w3fb04(lat, -1.0 * lon, pfi.ppvals[3], -1.0 * pfi.ppvals[2], ref rii, ref rjj);
                         rii = rii + pfi.ppvals[0]; /* Normalize based on pole point */
                         rjj = rjj + pfi.ppvals[1];
-                        *dw = (pfi.ppvals[2] - lon) * pi / 180.0; /* wind rotation amount */
-                        if (pfi.ppflag == 2) *dw = pi - *dw;
+                        pfi.ppw[dw] = (pfi.ppvals[2] - lon) * pi / 180.0; /* wind rotation amount */
+                        if (pfi.ppflag == 2) pfi.ppw[dw] = pi - pfi.ppw[dw];
                     }
 
                     ii = (int)rii;
                     jj = (int)rjj;
-                    *dx = rii - (double)ii;
-                    *dy = rjj - (double)jj;
+                    pfi.ppf[0][dx] = rii - (double)ii;
+                    pfi.ppf[1][dy] = rjj - (double)jj;
                     if (ii < 1 || ii > pfi.ppisiz - 1 ||
                         jj < 1 || jj > pfi.ppjsiz - 1)
                     {
-                        *ioff = -1;
+                        pfi.ppi[0][ioff] = -1;
                     }
                     else
                     {
-                        *ioff = (jj - 1) * pfi.ppisiz + ii - 1;
+                        pfi.ppi[0][ioff] = (jj - 1) * pfi.ppisiz + ii - 1;
                     }
 
                     ioff++;
                     dx++;
                     dy++;
-                    if (pfi.ppwrot) dw++;
+                    if (pfi.ppwrot>0) dw++;
                 }
             }
         }

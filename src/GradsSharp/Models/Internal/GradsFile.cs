@@ -221,8 +221,8 @@ internal class GradsFile
         ppisiz = 0;
         ppjsiz = 0;
         ppvals = new double[] { };
-        ppi = new int[] { };
-        ppf = new double[] { };
+        ppi = new();
+        ppf = new();
         ppw = new double[] { };
         gr2ab = new Func<double[], double, double>[5];
         ab2gr = new Func<double[], double, double>[5];
