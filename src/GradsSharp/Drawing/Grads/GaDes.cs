@@ -789,8 +789,8 @@ internal class GaDes
         lon_ll_corner = vals[4] / 180.0 * pi;
         lat_ll_corner = vals[5] / 180.0 * pi;
 
-        lat_RW = grdlat / 180 * pi;
-        lon_RW = grdlon / 180 * pi;
+        lat_RW = grdlat / 180.0 * pi;
+        lon_RW = grdlon / 180.0 * pi;
 
         // calculate rotated longitude and latitude
         lat_rotated = Math.Asin(

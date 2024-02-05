@@ -383,6 +383,77 @@ internal class GaIO
 
     private void ConvertProjectedGrid(GradsGrid grid)
     {
+        double[] data = grid.GridData;
+        int size = grid.ISize * grid.JSize;
+        double[] result = new double[size];
+        byte[] resultMask = new byte[size];
+        int gr = 0;
+        double[] p = new double[4];
+        byte[] pu = new byte[4];
+        
+        for(int y = grid.DimensionMinimum[1]; y <= grid.DimensionMaximum[1]; y++)
+        {
+            for(int x = grid.DimensionMinimum[0]; x <= grid.DimensionMaximum[0]; x++)
+            {
+                int ig = (y - 1) * grid.pfile.dnum[0] + x - 1;
+                int ioff = grid.pfile.ppi[0][ig];
+                if (ioff < 0)
+                {
+                    result[gr] = grid.Undef;
+                    resultMask[gr] = 0;
+                }
+                else
+                {
+                    double dx = grid.pfile.ppf[0][ig];
+                    double dy = grid.pfile.ppf[1][ig];
+                    //
+                    // ReadData(data, (y - 1) * grid.pfile.ppisiz + x - 1 + ioff, ref p, ref pu, 0, grid.Undef);
+                    // ReadData(data, (y - 1) * grid.pfile.ppisiz + x + ioff, ref p, ref pu, 1, grid.Undef);
+                    // ReadData(data, y * grid.pfile.ppisiz + x + ioff, ref p, ref pu, 2, grid.Undef);
+                    // ReadData(data, y * grid.pfile.ppisiz + x + ioff, ref p, ref pu, 3, grid.Undef);
+                    ReadData(data, ioff, ref p, ref pu, 0, grid.Undef);
+                    ReadData(data, ioff + 1, ref p, ref pu, 1, grid.Undef);
+                    ReadData(data, grid.pfile.ppisiz + ioff, ref p, ref pu, 2, grid.Undef);
+                    ReadData(data, grid.pfile.ppisiz + 1 + ioff, ref p, ref pu, 3, grid.Undef);
+                    
+                    // p[2] = data[(y) * grid.pfile.ppisiz + x - 1 + ioff];
+                    // p[3] = data[(y) * grid.pfile.ppisiz + x + ioff];
+                    // pu[2] = grid.UndefinedMask[(y) * grid.pfile.ppisiz + x - 1 + ioff];
+                    // pu[3] = grid.UndefinedMask[(y) * grid.pfile.ppisiz + x + ioff];
+                    //
+                    if (pu[0] == 0 || pu[1] == 0 || pu[2] == 0 || pu[3] == 0) {
+                        result[gr] = grid.Undef;
+                        resultMask[gr] = 0;
+                    } else {
+                        double g1 = p[0] + (p[1] - p[0]) * dx;
+                        double g2 = p[2] + (p[3] - p[2]) * dx;
+                        
+                        result[gr] = g1 + (g2 - g1) * dy;
+                        resultMask[gr] = 1;
+                        
+                    }
+                }
+
+                gr++;
+            }
+        }
+
+        grid.GridData = result;
+        grid.UndefinedMask = resultMask;
+    }
+    
+    private void ReadData(double[] data, int idx, ref double[] gr, ref byte[] gru, int toff, double undef)
+    {
+        if (idx >= data.Length)
+        {
+            gr[toff] = undef;
+            gru[toff] = 0;
+        }
+        else
+        {
+            gr[toff] = data[idx];
+            gru[toff] = 1;
+        }
         
     }
 
