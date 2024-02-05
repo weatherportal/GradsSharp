@@ -14,12 +14,25 @@ public class GFSDataReader : IGriddedDataReader
     private InputFile? _inputFile;
     private GfsVariables _variableMapping = new GfsVariables();
     private List<DataSet>? _dataSets = null;
+    public InputFile OpenFile(Stream stream, string file)
+    {
+        var inputFile = new InputFile();
+        inputFile.FileName = file;
+        using Grib2Reader rdr = new Grib2Reader(stream);
+        return GetInputFile(rdr, inputFile);
+    }
+
     public InputFile OpenFile(string file)
     {
         var inputFile = new InputFile();
         inputFile.FileName = file;
         
         using Grib2Reader rdr = new Grib2Reader(file);
+        return GetInputFile(rdr, inputFile);
+    }
+
+    private InputFile GetInputFile(Grib2Reader rdr, InputFile inputFile)
+    {
         _dataSets = rdr.ReadAllDataSets().ToList();
         var dataset = _dataSets.First();
 

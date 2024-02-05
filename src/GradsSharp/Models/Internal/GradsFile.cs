@@ -97,10 +97,10 @@ internal class GradsFile
     public double[] ppvals; /* Projection constants for pre-projected
                                   grids.  Values depend on projection. */
 
-    int[] ppi; /* Pointers to offsets for pre-projected
+    public List<int[]> ppi = new(); /* Pointers to offsets for pre-projected
                                   grid interpolation */
 
-    double[] ppf; /* Pointers to interpolation constants
+    public List<double[]> ppf= new(); /* Pointers to interpolation constants
                                   for pre-projected grids */
 
     public double[] ppw; /* Pointer to wind rotation array */
@@ -221,8 +221,8 @@ internal class GradsFile
         ppisiz = 0;
         ppjsiz = 0;
         ppvals = new double[] { };
-        ppi = new int[] { };
-        ppf = new double[] { };
+        ppi = new();
+        ppf = new();
         ppw = new double[] { };
         gr2ab = new Func<double[], double, double>[5];
         ab2gr = new Func<double[], double, double>[5];

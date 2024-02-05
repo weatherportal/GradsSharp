@@ -92,7 +92,7 @@ internal class GradsCommon
     public int strmarrt; /* Streamline arrowhead type */
     public int mdlblnk, mdldig3; /* Station model plot opts */
     public string prstr = "{0:0.00}"; /* Format string for gxout print */
-    public int prlnum; /* Number of values per record */
+    public int prlnum = 8; /* Number of values per record */
     public int prbnum; /* Number of blanks to add between values */
     public int prudef; /* Undef printed as "undef" or value */
     public int[] fgvals = new int[50]; /* Values for grid fill */

@@ -32,7 +32,7 @@ public class GradsEngine
     /// <param name="aspectRatio">Aspect ratio for the output size</param>
     public GradsEngine(ILogger? logger = null, Orientation orientation = Orientation.Landscape, double aspectRatio = -999)
     {
-        _drawingContext = new DrawingContext();
+        _drawingContext = new DrawingContext(logger);
         
         if (orientation == Orientation.Landscape)
         {
