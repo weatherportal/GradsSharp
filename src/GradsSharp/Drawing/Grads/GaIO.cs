@@ -406,21 +406,12 @@ internal class GaIO
                 {
                     double dx = grid.pfile.ppf[0][ig];
                     double dy = grid.pfile.ppf[1][ig];
-                    //
-                    // ReadData(data, (y - 1) * grid.pfile.ppisiz + x - 1 + ioff, ref p, ref pu, 0, grid.Undef);
-                    // ReadData(data, (y - 1) * grid.pfile.ppisiz + x + ioff, ref p, ref pu, 1, grid.Undef);
-                    // ReadData(data, y * grid.pfile.ppisiz + x + ioff, ref p, ref pu, 2, grid.Undef);
-                    // ReadData(data, y * grid.pfile.ppisiz + x + ioff, ref p, ref pu, 3, grid.Undef);
+                    
                     ReadData(data, ioff, ref p, ref pu, 0, grid.Undef);
                     ReadData(data, ioff + 1, ref p, ref pu, 1, grid.Undef);
                     ReadData(data, grid.pfile.ppisiz + ioff, ref p, ref pu, 2, grid.Undef);
                     ReadData(data, grid.pfile.ppisiz + 1 + ioff, ref p, ref pu, 3, grid.Undef);
                     
-                    // p[2] = data[(y) * grid.pfile.ppisiz + x - 1 + ioff];
-                    // p[3] = data[(y) * grid.pfile.ppisiz + x + ioff];
-                    // pu[2] = grid.UndefinedMask[(y) * grid.pfile.ppisiz + x - 1 + ioff];
-                    // pu[3] = grid.UndefinedMask[(y) * grid.pfile.ppisiz + x + ioff];
-                    //
                     if (pu[0] == 0 || pu[1] == 0 || pu[2] == 0 || pu[3] == 0) {
                         result[gr] = grid.Undef;
                         resultMask[gr] = 0;
