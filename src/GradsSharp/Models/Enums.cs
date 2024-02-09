@@ -212,6 +212,13 @@ public enum GridLine
     Color
 }
 
+public enum KmlOutputFlag
+{
+    Image = 1,
+    Contour = 2,
+    Polygon = 3
+}
+
 public enum OnOffSetting
 {
     On,

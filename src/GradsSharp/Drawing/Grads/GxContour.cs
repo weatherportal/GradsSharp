@@ -1,5 +1,6 @@
 ﻿using GradsSharp.Data.Grads;
 using GradsSharp.Models.Internal;
+using GradsSharp.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
@@ -1082,100 +1083,56 @@ internal class GxContour
      release storage and return. 
    Returns -1 on error, otherwise the number of contours written. 
 */
-    int gxclvert()
+    public int gxclvert(FileStream kmlfp)
     {
-        // struct gxclbuf *pclbuf, rr[p2];
-        // double lon, lat, x, y;
-        // int i, j, c, err;
-        // err = 0;
-        // c = 0;
-        // pclbuf = clbufanch;
-        // while (pclbuf) {
-        //     if (pclbuf.lxy) {
-        //         /* write out headers for each contour */
-        //         snprintf(pout, 511, "    <Placemark>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 511, "      <styleUrl>#%d</styleUrl>\n", pclbuf.color);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 2;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 511, "      <name>%g</name>\n", pclbuf.val);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 3;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 511, "      <LineString>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 4;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 511, "        <altitudeMode>clampToGround</altitudeMode>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 5;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 511, "        <tessellate>1</tessellate>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 6;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 511, "        <coordinates>\n          ");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 7;
-        //             goto cleanup;
-        //         }
-        //         /* get x,y values and convert them to lon,lat */
-        //         j = 1;
-        //         for (i = 0; i < pclbuf.len; i++) {
-        //             x = *(pclbuf.lxy + (2 * i));
-        //             y = *(pclbuf.lxy + (2 * i + 1));
-        //             gxxy2w(x, y, &lon, &lat);
-        //             if (lat > 90) lat = 90;
-        //             if (lat < -90) lat = -90;
-        //             snprintf(pout, 511, "%g,%g,0 ", lon, lat);
-        //             if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //                 err = 8;
-        //                 goto cleanup;
-        //             }
-        //             if (j == 6 || i == (pclbuf.len - 1)) {
-        //                 if (j == 6) snprintf(pout, 511, "\n          ");
-        //                 else snprintf(pout, 511, "\n");
-        //                 if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //                     err = 9;
-        //                     goto cleanup;
-        //                 }
-        //                 j = 0;
-        //             }
-        //             j++;
-        //         }
-        //         /* write out footers for each contour */
-        //         snprintf(pout, 511, "        </coordinates>\n      </LineString>\n    </Placemark>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 10;
-        //             goto cleanup;
-        //         }
-        //         c++;
-        //     }
-        //     pclbuf = pclbuf.fpclbuf;
-        // }
-        // cleanup:
-        // /* release the memory in the contour buffer */
-        // pclbuf = clbufanch;
-        // while (pclbuf) {
-        //     p2 = pclbuf.fpclbuf;
-        //     if (pclbuf.lxy) gree(pclbuf.lxy, "c5");
-        //     gree(pclbuf, "c6");
-        //     pclbuf = p2;
-        // }
-        // clbufanch = NULL;
-        // clbuflast = NULL;
-        // if (err) return (-1);
-        // else return (c);
-        return 0;
+        gxclbuf p2;
+        double lon = 0, lat = 0, x, y;
+        int i, j, c, err;
+        err = 0;
+        c = 0;
+        foreach(var pclbuf in clbufanch) 
+        {
+            if (pclbuf.lxy != null) {
+                kmlfp.WriteLine("    <Placemark>");
+                kmlfp.WriteLine($"      <styleUrl>#{pclbuf.color}</styleUrl>");
+                kmlfp.WriteLine($"      <name>{pclbuf.val}</name>");
+                kmlfp.WriteLine("      <LineString>");
+                kmlfp.WriteLine("        <altitudeMode>clampToGround</altitudeMode>");
+                kmlfp.WriteLine("        <tessellate>1</tessellate>");
+                kmlfp.WriteLine("        <coordinates>");
+
+                j = 1;
+                for (i = 0; i < pclbuf.len; i++)
+                {
+                    x = pclbuf.lxy[2 * i];
+                    y = pclbuf.lxy[2 * i + 1];
+                    _drawingContext.GradsDrawingInterface.gxxy2w(x, y, out lat, out lon);
+                    if (lat > 90) lat = 90;
+                    if (lat < -90) lat = -90;
+                    kmlfp.Write($"{lon},{lat},0 ");
+
+                    if (j == 6 || i == (pclbuf.len - 1))
+                    {
+                        if (j == 6) kmlfp.Write("\n          ");
+                        else kmlfp.Write("\n");
+                        j = 0;
+                    }
+                    j++;
+                }
+
+                kmlfp.WriteLine("        </coordinates>");
+                kmlfp.WriteLine("      </LineString>");
+                kmlfp.WriteLine("    </Placemark>");
+                c++;
+            }
+            
+        }
+        cleanup:
+        /* release the memory in the contour buffer */
+        
+        clbufanch = null;
+        if (err>0) return (-1);
+        else return (c);
     }
 
 

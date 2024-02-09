@@ -174,8 +174,9 @@ internal class GradsCommon
 //   int gtifflg;             /* geotiff data type: 1=float 2=double */
 //   char *gtifname;            /* geotiff write file name */
 //   char *tifname;             /* kml image  file name */
-//   char *kmlname;             /* kml text file name */
-//   int kmlflg;              /* kml output: 1==img, 2==contours */
+    public string kmlname = "";             /* kml text file name */
+    
+    public int kmlflg = 0;              /* kml output: 1==img, 2==contours */
 //   char *sdfwname;            /* netcdf/hdf write file name */
 //   int sdfwtype;            /* type of sdf output: 1=classic, 2=nc4 */
 //   int sdfwpad;             /* pad the sdf output with extra dims: 1=4D, 2=5D */

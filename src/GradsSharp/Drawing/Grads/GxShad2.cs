@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
-
+﻿using System.Text;
+using GradsSharp.Utils;
+using Microsoft.Extensions.Logging;
 namespace GradsSharp.Drawing.Grads;
 
 internal class s2pbuf
 {
     public int len; /* Number of polygon points */
     public int color, index; /* Output options for this polygon */
-    public double[] xy; /* Line points, x,y number len */
+    public double[]? xy; /* Line points, x,y number len */
     public double clev1, clev2; /* Fill range values */
 };
 
@@ -35,7 +36,7 @@ internal class GxShad2
     private int xynum;
 
 
-    private List<s2pbuf> s2pbufanch; /* Anchor for polygon buffer */
+    private List<s2pbuf>? s2pbufanch; /* Anchor for polygon buffer */
     private bool nodraw = false; /* If 1, polygons are not drawn */
 
     private bool bufopt = false; /* Buffer or not, default is not */
@@ -107,7 +108,7 @@ internal class GxShad2
 
         if (bug > 0 && bufopt) _drawingContext.Logger?.LogInformation($"---. bufcnt = {bufcnt}");
     }
-/* The grid r is shaded.  Size is by js.  lvs indicates the number of 
+/* The grid r is shaded.  Size is by js.  lvs indicates the number of
    shaded levels.  vs contains the values bounding the shaded regions.
    clrs contains lvs+1 colors for the shaded regions.  u is the
    undefined grid data value.                                        */
@@ -151,7 +152,7 @@ internal class GxShad2
                     if (bug > 0) _drawingContext.Logger?.LogInformation($"{v1},{v2},{v3},{v4}");
 
                     /* Find all the intersect points for this box, and if it
-                       is a col, determine the nature of the col and the 
+                       is a col, determine the nature of the col and the
                        number of polygons to be output */
 
                     s2box(v1, v2, v3, v4, clev1, clev2);
@@ -294,7 +295,8 @@ internal class GxShad2
         {
             /* Scale from grid to xy */
             _drawingContext.GradsDrawingInterface.gxconv(xpo[i], ypo[i], out pxy[cntpxy], out pxy[cntpxy + 1], 3);
-            if (bug > 0) _drawingContext.Logger?.LogInformation($"    {xpo[i]} {ypo[i]} {pxy[cntpxy]} {pxy[cntpxy + 1]}");
+            if (bug > 0)
+                _drawingContext.Logger?.LogInformation($"    {xpo[i]} {ypo[i]} {pxy[cntpxy]} {pxy[cntpxy + 1]}");
             cntpxy += 2;
         }
 
@@ -310,7 +312,7 @@ internal class GxShad2
     }
 
 /* Pre-determine flags for the entire grid
-            s2       
+            s2
          v2 --- v3
           |     |  s3
       s1  |     |
@@ -329,9 +331,9 @@ internal class GxShad2
                          is from an intersect point to a corner)
                =10 -- boundary, no intersect (ie, the polygon
                          edge is along the entire box side, corner to corner)
-         
-       note: a boundary can be along the outside edge, along the edge of missing 
-       data, and along artificial internal boundaries introduced to 
+
+       note: a boundary can be along the outside edge, along the edge of missing
+       data, and along artificial internal boundaries introduced to
        insure polygon closure or to avoid col problems.  */
 
     void s2flags(double[] r, byte[] u, int iis, int jjs, double c1, double c2)
@@ -345,7 +347,7 @@ internal class GxShad2
             for (ig = 0; ig < iis; ig++)
             {
                 pflg[ijg] = 0;
-                if (u[ijg]>0)
+                if (u[ijg] > 0)
                 {
                     if (r[ijg] > c1 && r[ijg] <= c2) pflg[ijg] = 1; /* pflg true if within shade range */
                 }
@@ -380,13 +382,13 @@ internal class GxShad2
                 if (v1 > c1 && v2 <= c1) s1flg[ijg] = 2;
                 if (v1 <= c2 && v2 > c2)
                 {
-                    if (s1flg[ijg]>0) s1flg[ijg] = 5;
+                    if (s1flg[ijg] > 0) s1flg[ijg] = 5;
                     else s1flg[ijg] = 3;
                 }
 
                 if (v1 > c2 && v2 <= c2)
                 {
-                    if (s1flg[ijg]>0) s1flg[ijg] = 6;
+                    if (s1flg[ijg] > 0) s1flg[ijg] = 6;
                     else s1flg[ijg] = 4;
                 }
 
@@ -395,13 +397,13 @@ internal class GxShad2
                 if (v2 > c1 && v3 <= c1) s2flg[ijg] = 2;
                 if (v2 <= c2 && v3 > c2)
                 {
-                    if (s2flg[ijg]>0) s2flg[ijg] = 5;
+                    if (s2flg[ijg] > 0) s2flg[ijg] = 5;
                     else s2flg[ijg] = 3;
                 }
 
                 if (v2 > c2 && v3 <= c2)
                 {
-                    if (s2flg[ijg]>0) s2flg[ijg] = 6;
+                    if (s2flg[ijg] > 0) s2flg[ijg] = 6;
                     else s2flg[ijg] = 4;
                 }
 
@@ -410,13 +412,13 @@ internal class GxShad2
                 if (v3 > c1 && v4 <= c1) s3flg[ijg] = 1;
                 if (v3 <= c2 && v4 > c2)
                 {
-                    if (s3flg[ijg]>0) s3flg[ijg] = 6;
+                    if (s3flg[ijg] > 0) s3flg[ijg] = 6;
                     else s3flg[ijg] = 4;
                 }
 
                 if (v3 > c2 && v4 <= c2)
                 {
-                    if (s3flg[ijg]>0) s3flg[ijg] = 5;
+                    if (s3flg[ijg] > 0) s3flg[ijg] = 5;
                     else s3flg[ijg] = 3;
                 }
 
@@ -425,20 +427,20 @@ internal class GxShad2
                 if (v4 > c1 && v1 <= c1) s4flg[ijg] = 1;
                 if (v4 <= c2 && v1 > c2)
                 {
-                    if (s4flg[ijg]>0) s4flg[ijg] = 6;
+                    if (s4flg[ijg] > 0) s4flg[ijg] = 6;
                     else s4flg[ijg] = 4;
                 }
 
                 if (v4 > c2 && v1 <= c2)
                 {
-                    if (s4flg[ijg]>0) s4flg[ijg] = 5;
+                    if (s4flg[ijg] > 0) s4flg[ijg] = 5;
                     else s4flg[ijg] = 3;
                 }
 
-                /* set side flag to 10 if side is completely in the range and  
+                /* set side flag to 10 if side is completely in the range and
                    the side is a boundary  */
 
-                if (pflg[ijg]>0 && pflg[ijg + iis]>0)
+                if (pflg[ijg] > 0 && pflg[ijg + iis] > 0)
                 {
                     if (ig == 0) s1flg[ijg] = 10;
                     else if (u[ijg - 1] == 0 || u[ijg + iis - 1] == 0) s1flg[ijg] = 10;
@@ -466,8 +468,8 @@ internal class GxShad2
             }
         }
 
-        /* If a side flag indicates an intersect (value of 1 to 6), but the 
-           side flag "next" to it does not, then the intersect is also a 
+        /* If a side flag indicates an intersect (value of 1 to 6), but the
+           side flag "next" to it does not, then the intersect is also a
            boundary.  Indicate this with a +10.  */
 
         for (jg = 0; jg < jjs - 1; jg++)
@@ -599,17 +601,21 @@ internal class GxShad2
         for (jg = 0; jg < jjs - 1; jg++)
         {
             ijg = jg * iis;
-            for (ig = 0; ig < iis -1; ig++)
+            for (ig = 0; ig < iis - 1; ig++)
             {
                 rc = 0;
-                if (s1flg[ijg]>0) rc = s2follow(r,  iis,
-                jjs,c1,c2,1,ig,jg);
-                if (s2flg[ijg]>0) rc = s2follow(r,  iis,
-                jjs,c1,c2,2,ig,jg);
-                if (s3flg[ijg]>0) rc = s2follow(r,  iis,
-                jjs,c1,c2,3,ig,jg);
-                if (s4flg[ijg]>0) rc = s2follow(r,  iis,
-                jjs,c1,c2,4,ig,jg);
+                if (s1flg[ijg] > 0)
+                    rc = s2follow(r, iis,
+                        jjs, c1, c2, 1, ig, jg);
+                if (s2flg[ijg] > 0)
+                    rc = s2follow(r, iis,
+                        jjs, c1, c2, 2, ig, jg);
+                if (s3flg[ijg] > 0)
+                    rc = s2follow(r, iis,
+                        jjs, c1, c2, 3, ig, jg);
+                if (s4flg[ijg] > 0)
+                    rc = s2follow(r, iis,
+                        jjs, c1, c2, 4, ig, jg);
                 if (rc > 0) return;
                 ijg++;
             }
@@ -631,25 +637,25 @@ internal class GxShad2
         jj = jg;
         sflg = 0;
 
-        /* Follow the polygon edge that begins with the indicated box and side.  
-           Keep the interior to the right hand side.  
-           It seems natural here to go to the next intersection point by 
+        /* Follow the polygon edge that begins with the indicated box and side.
+           Keep the interior to the right hand side.
+           It seems natural here to go to the next intersection point by
              using goto's.  A rare case where goto's make sense.
-           The labels with "side" are of the form sidexyz, where x is the side number, 
+           The labels with "side" are of the form sidexyz, where x is the side number,
              y is either i for intersect or b for boundary, and z is 1 if we are intersecting
-             with c1 or 2 for a c2 intersect.  
-           The labels with "corner" indicate we are following a boundary and are 
-             going along sides of boxes from corner to corner.                   
+             with c1 or 2 for a c2 intersect.
+           The labels with "corner" indicate we are following a boundary and are
+             going along sides of boxes from corner to corner.
            Yes, there are 20 cases in all.
            Cols are handled as individual grid boxes, due to their complexity. */
 
 
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
 
         if (side == 1)
         {
             fl = s1flg[ij];
-            if (bug>0) _drawingContext.Logger?.LogInformation($"entering side 1 {ii} {jj} {fl}");
+            if (bug > 0) _drawingContext.Logger?.LogInformation($"entering side 1 {ii} {jj} {fl}");
             if (fl == 5 || fl == 6) goto skip;
             if (fl == 1)
             {
@@ -773,7 +779,7 @@ internal class GxShad2
         f3 = s3flg[ij];
         f4 = s4flg[ij];
         if (f1 < 10 && f1 != s3flg[ij - 1]) goto cerr;
-        if (sflg>0)
+        if (sflg > 0)
         {
             if (f1 == 2)
             {
@@ -796,7 +802,7 @@ internal class GxShad2
             (f2 == 1 || f2 == 5 || f2 == 11 || f2 == 15))
         {
             /* col */
-            if (s2col(c1, ii, jj)>0)
+            if (s2col(c1, ii, jj) > 0)
             {
                 if (f2 == 1 || f2 == 5)
                 {
@@ -841,7 +847,7 @@ internal class GxShad2
 
         side2i1: /* Enter on side 2; c1 intersect */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"side2 c1 {ii} {jj}");
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         p2 = rr[ij + isize];
         p3 = rr[ij + isize + 1];
         s2ppnt((double)(ii + 1) + (c1 - p2) / (p3 - p2), (double)(jj + 2));
@@ -850,7 +856,7 @@ internal class GxShad2
         f3 = s3flg[ij];
         f4 = s4flg[ij];
         if (f2 < 10 && f2 != s4flg[ij + iis]) goto cerr;
-        if (sflg>0)
+        if (sflg > 0)
         {
             if (f2 == 2)
             {
@@ -873,7 +879,7 @@ internal class GxShad2
             (f3 == 2 || f3 == 6 || f3 == 12 || f3 == 16))
         {
             /* col */
-            if (s2col(c1, ii, jj)>0)
+            if (s2col(c1, ii, jj) > 0)
             {
                 if (f1 == 1 || f1 == 5)
                 {
@@ -918,7 +924,7 @@ internal class GxShad2
 
         side3i1: /* Enter on side 3; c1 intersect */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"side3 c1 {ii} {jj}");
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 2), (double)(jj + 1) + (c1 - p4) / (p3 - p4));
@@ -950,7 +956,7 @@ internal class GxShad2
             (f4 == 2 || f4 == 6 || f4 == 12 || f4 == 16))
         {
             /* col */
-            if (s2col(c1, ii, jj)>0)
+            if (s2col(c1, ii, jj) > 0)
             {
                 if (f4 == 2 || f4 == 6)
                 {
@@ -995,7 +1001,7 @@ internal class GxShad2
 
         side4i1: /* Enter on side 4; c1 intersect */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"side4 c1 {ii} {jj}");
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         p1 = rr[ij];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 1) + (c1 - p1) / (p4 - p1), (double)(jj + 1));
@@ -1004,7 +1010,7 @@ internal class GxShad2
         f3 = s3flg[ij];
         f4 = s4flg[ij];
         if (f4 < 10 && f4 != s2flg[ij - iis]) goto cerr;
-        if (sflg>0)
+        if (sflg > 0)
         {
             if (f4 == 1)
             {
@@ -1027,7 +1033,7 @@ internal class GxShad2
             (f1 == 1 || f1 == 5 || f1 == 11 || f1 == 15))
         {
             /* col */
-            if (s2col(c1, ii, jj)>0)
+            if (s2col(c1, ii, jj) > 0)
             {
                 if (f3 == 2 || f3 == 6)
                 {
@@ -1072,7 +1078,7 @@ internal class GxShad2
 
         side1i2: /* Enter on side 1; c2 intersect */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"side1 c2 {ii} {jj}");
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         p1 = rr[ij];
         p2 = rr[ij + isize];
         s2ppnt((double)(ii + 1), (double)(jj + 1) + (c2 - p1) / (p2 - p1));
@@ -1104,7 +1110,7 @@ internal class GxShad2
             (f2 == 4 || f2 == 6 || f2 == 14 || f2 == 16))
         {
             /* col */
-            if (s2col(c2, ii, jj)>0)
+            if (s2col(c2, ii, jj) > 0)
             {
                 if (f2 == 4 || f2 == 6)
                 {
@@ -1149,7 +1155,7 @@ internal class GxShad2
 
         side2i2: /* Enter on side 2; c2 intersect */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"side2 c2 {ii} {jj}");
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         p2 = rr[ij + isize];
         p3 = rr[ij + isize + 1];
         s2ppnt((double)(ii + 1) + (c2 - p2) / (p3 - p2), (double)(jj + 2));
@@ -1181,7 +1187,7 @@ internal class GxShad2
             (f3 == 3 || f3 == 5 || f3 == 13 || f3 == 15))
         {
             /* col */
-            if (s2col(c2, ii, jj)>0)
+            if (s2col(c2, ii, jj) > 0)
             {
                 if (f1 == 4 || f1 == 6)
                 {
@@ -1226,7 +1232,7 @@ internal class GxShad2
 
         side3i2: /* Enter on side 3; c2 intersect */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"side3 c2 {ii} {jj}");
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 2), (double)(jj + 1) + (c2 - p4) / (p3 - p4));
@@ -1258,7 +1264,7 @@ internal class GxShad2
             (f4 == 3 || f4 == 5 || f4 == 13 || f4 == 15))
         {
             /* col */
-            if (s2col(c2, ii, jj)>0)
+            if (s2col(c2, ii, jj) > 0)
             {
                 if (f4 == 3 || f4 == 5)
                 {
@@ -1303,7 +1309,7 @@ internal class GxShad2
 
         side4i2: /* Enter on side 4; c2 intersect */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"side4 c2 {ii} {jj}");
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         p1 = rr[ij];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 1) + (c2 - p1) / (p4 - p1), (double)(jj + 1));
@@ -1335,7 +1341,7 @@ internal class GxShad2
             (f1 == 4 || f1 == 6 || f1 == 14 || f1 == 16))
         {
             /* col */
-            if (s2col(c2, ii, jj)>0)
+            if (s2col(c2, ii, jj) > 0)
             {
                 if (f3 == 3 || f3 == 5)
                 {
@@ -1383,7 +1389,7 @@ internal class GxShad2
         p1 = rr[ij];
         p2 = rr[ij + isize];
         s2ppnt((double)(ii + 1), (double)(jj + 1) + (c1 - p1) / (p2 - p1));
-        if (sflg>0 && ii == ig && jj == jg && side == 1)
+        if (sflg > 0 && ii == ig && jj == jg && side == 1)
         {
             s1flg[ij] = 0;
             goto done;
@@ -1421,7 +1427,7 @@ internal class GxShad2
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 2), (double)(jj + 1) + (c1 - p4) / (p3 - p4));
-        if (sflg>0 && ii == ig && jj == jg && side == 3)
+        if (sflg > 0 && ii == ig && jj == jg && side == 3)
         {
             s3flg[ij] = 0;
             goto done;
@@ -1440,7 +1446,7 @@ internal class GxShad2
         p1 = rr[ij];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 1) + (c1 - p1) / (p4 - p1), (double)(jj + 1));
-        if (sflg>0 && ii == ig && jj == jg && side == 4)
+        if (sflg > 0 && ii == ig && jj == jg && side == 4)
         {
             s4flg[ij] = 0;
             goto done;
@@ -1462,7 +1468,7 @@ internal class GxShad2
         p1 = rr[ij];
         p2 = rr[ij + isize];
         s2ppnt((double)(ii + 1), (double)(jj + 1) + (c2 - p1) / (p2 - p1));
-        if (sflg>0 && ii == ig && jj == jg && side == 1)
+        if (sflg > 0 && ii == ig && jj == jg && side == 1)
         {
             s1flg[ij] = 0;
             goto done;
@@ -1481,7 +1487,7 @@ internal class GxShad2
         p2 = rr[ij + isize];
         p3 = rr[ij + isize + 1];
         s2ppnt((double)(ii + 1) + (c2 - p2) / (p3 - p2), (double)(jj + 2));
-        if (sflg>0 && ii == ig && jj == jg && side == 2)
+        if (sflg > 0 && ii == ig && jj == jg && side == 2)
         {
             s2flg[ij] = 0;
             goto done;
@@ -1500,7 +1506,7 @@ internal class GxShad2
         p3 = rr[ij + isize + 1];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 2), (double)(jj + 1) + (c2 - p4) / (p3 - p4));
-        if (sflg>0 && ii == ig && jj == jg && side == 3)
+        if (sflg > 0 && ii == ig && jj == jg && side == 3)
         {
             s3flg[ij] = 0;
             goto done;
@@ -1519,7 +1525,7 @@ internal class GxShad2
         p1 = rr[ij];
         p4 = rr[ij + 1];
         s2ppnt((double)(ii + 1) + (c2 - p1) / (p4 - p1), (double)(jj + 1));
-        if (sflg>0 && ii == ig && jj == jg && side == 4)
+        if (sflg > 0 && ii == ig && jj == jg && side == 4)
         {
             s4flg[ij] = 0;
             goto done;
@@ -1536,7 +1542,7 @@ internal class GxShad2
         corner1: /* Arriving at corner 1 from the right */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 1 {ii} {jj}");
         s2ppnt((double)(ii + 1), (double)(jj + 1));
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (sflg > 0)
         {
             s4flg[ij] = 0;
@@ -1552,7 +1558,7 @@ internal class GxShad2
         if (s4flg[ij - 1] == 11) goto side4i1;
         if (s4flg[ij - 1] == 14) goto side4i2;
         jj--;
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (s3flg[ij] == 10) goto corner4;
         if (s3flg[ij] == 11) goto side3i1;
         if (s3flg[ij] == 14) goto side3i2;
@@ -1564,7 +1570,7 @@ internal class GxShad2
         corner2: /* Arriving at corner 2 from below */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 2 {ii} {jj}");
         s2ppnt((double)(ii + 1), (double)(jj + 2));
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (sflg > 0)
         {
             s1flg[ij] = 0;
@@ -1576,7 +1582,7 @@ internal class GxShad2
         if (s2flg[ij] == 12) goto side2i1;
         if (s2flg[ij] == 13) goto side2i2;
         jj++;
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (s1flg[ij] == 10) goto corner2;
         if (s1flg[ij] == 12) goto side1i1;
         if (s1flg[ij] == 13) goto side1i2;
@@ -1592,7 +1598,7 @@ internal class GxShad2
         corner3: /* Arriving at corner 3 from the left */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 3 {ii} {jj}");
         s2ppnt((double)(ii + 2), (double)(jj + 2));
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (sflg > 0)
         {
             s2flg[ij] = 0;
@@ -1608,7 +1614,7 @@ internal class GxShad2
         if (s2flg[ij + 1] == 12) goto side2i1;
         if (s2flg[ij + 1] == 13) goto side2i2;
         jj++;
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (s1flg[ij] == 10) goto corner2;
         if (s1flg[ij] == 12) goto side1i1;
         if (s1flg[ij] == 13) goto side1i2;
@@ -1620,7 +1626,7 @@ internal class GxShad2
         corner4: /* Arriving at corner 4 from above */
         if (bug > 0) _drawingContext.Logger?.LogInformation($"corner 4 {ii} {jj}");
         s2ppnt((double)(ii + 2), (double)(jj + 1));
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (sflg > 0)
         {
             s3flg[ij] = 0;
@@ -1632,7 +1638,7 @@ internal class GxShad2
         if (s4flg[ij] == 11) goto side4i1;
         if (s4flg[ij] == 14) goto side4i2;
         jj--;
-        ij = jj * iis +ii;
+        ij = jj * iis + ii;
         if (s3flg[ij] == 10) goto corner4;
         if (s3flg[ij] == 11) goto side3i1;
         if (s3flg[ij] == 14) goto side3i2;
@@ -1728,8 +1734,8 @@ internal class GxShad2
 /* Determine the intersect points in a single grid box for the polygons
    that are in this grid box for the requested shading range.  The intersect
    points are provided in the range of 0 to 1.  Check for a col, and if there
-   is a col, determine if there should be one polygon or two, and if two, 
-   determine what sides each polygon intersects.  
+   is a col, determine if there should be one polygon or two, and if two,
+   determine what sides each polygon intersects.
 
        v4 --- v3
         |     |
@@ -1763,7 +1769,7 @@ internal class GxShad2
         fl4a = 0;
         fl4b = 0;
 
-        /* Determine if a contour intersects a side. 
+        /* Determine if a contour intersects a side.
            flag a = c1 intersects.  flab b = c2 intersects. */
 
         if ((v1 <= c1 && v2 > c1) || (v1 > c1 && v2 <= c1)) fl1a = 1;
@@ -1930,14 +1936,14 @@ internal class GxShad2
             xynum = xynum * 2;
             if (bug > 0) _drawingContext.Logger?.LogInformation($"Poly buff memory for {xynum} points");
             xynew = new double[xynum * 2];
-            
+
             for (i = 0; i < pnum * 2; i++) xynew[i] = xxyy[i];
             xxyy = xynew;
         }
 
         _drawingContext.GradsDrawingInterface.gxconv(x, y, out xx, out yy, 3);
-        xxyy[pnum * 2 ] = xx;
-        xxyy[pnum * 2 + 1 ]= yy;
+        xxyy[pnum * 2] = xx;
+        xxyy[pnum * 2 + 1] = yy;
 
         pnum++;
     }
@@ -1980,7 +1986,7 @@ internal class GxShad2
 /* Calculate shortest combined path length through a col point.
    Return true if shortest path is side 1/2,3/4, else false.  */
 
-/*  THIS IS THE SAME AS IN GXCNTR, except the contour level is 
+/*  THIS IS THE SAME AS IN GXCNTR, except the contour level is
      passed as an arg. THIS NEEDS TO BE THE SAME AS THE VERSION IN GXCNTR
      SO THE SHADE BOUNDARIES ALIGN WITH LINE CONTOURS. */
 
@@ -2013,11 +2019,11 @@ internal class GxShad2
             {
                 offset = jg * isize + ig;
 
-                if (pflg[offset]>0) _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
+                if (pflg[offset] > 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(1);
                 else _drawingContext.GradsDrawingInterface.SetDrawingColor(2);
                 _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.0, (double)jg + 1.0, out xxx, out yyy, 3);
                 _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
-                if (s1flg[offset]>0)
+                if (s1flg[offset] > 0)
                 {
                     _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /*       if (*(s1flg+offset)>7) gxcolr(12);
@@ -2030,46 +2036,50 @@ internal class GxShad2
                         sz = 0.06;
                     }
 
-                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.1, (double)jg + 1.5, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.1, (double)jg + 1.5, out xxx, out yyy,
+                        3);
                     _drawingContext.GradsDrawingInterface.gxmark(mk, xxx, yyy, sz);
                 }
 
-                if (s2flg[offset]>0)
+                if (s2flg[offset] > 0)
                 {
                     _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /* if (*(s2flg+offset)>7) gxcolr(12);
                     if (*(s2flg+offset)>10 && *(s2flg+offset)<20) gxcolr(6); */
                     if (s2flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
-                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.9, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.9, out xxx, out yyy,
+                        3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
-                if (s3flg[offset]>0)
+                if (s3flg[offset] > 0)
                 {
                     _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /* if (*(s3flg+offset)>7) gxcolr(12);
                     if (*(s3flg+offset)>90) gxcolr(7);
                     if (*(s3flg+offset)>10 && *(s3flg+offset)<20) gxcolr(6); */
                     if (s3flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
-                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.9, (double)jg + 1.5, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.9, (double)jg + 1.5, out xxx, out yyy,
+                        3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
 
-                if (s4flg[offset]>0)
+                if (s4flg[offset] > 0)
                 {
                     _drawingContext.GradsDrawingInterface.SetDrawingColor(3);
                     /* if (*(s4flg+offset)>7) gxcolr(12);
                     if (*(s4flg+offset)>90) gxcolr(7);
                     if (*(s4flg+offset)>10 && *(s4flg+offset)<20) gxcolr(6); */
                     if (s4flg[offset] > 9) _drawingContext.GradsDrawingInterface.SetDrawingColor(6);
-                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.1, out xxx, out yyy, 3);
+                    _drawingContext.GradsDrawingInterface.gxconv((double)ig + 1.5, (double)jg + 1.1, out xxx, out yyy,
+                        3);
                     _drawingContext.GradsDrawingInterface.gxmark(3, xxx, yyy, sz);
                 }
             }
         }
     }
 
-/* When polygon buffering is requested, put the current polygon into 
+/* When polygon buffering is requested, put the current polygon into
    the s2pbuf chain */
 
     int s2bufpoly(int pcnt)
@@ -2079,19 +2089,18 @@ internal class GxShad2
 
         if (s2pbufanch == null)
         {
-
             s2pbufanch = new List<s2pbuf>();
             s2pbufanch.Add(ppbuf);
             bufcnt = 0;
         }
-        else s2pbufanch.Add( ppbuf);
+        else s2pbufanch.Add(ppbuf);
 
         /* Allocate space for the poly points */
 
         ppbuf.len = pcnt;
         sz = pcnt * 2;
         ppbuf.xy = new double[sz];
-        
+
         /* Copy the poly points and info */
 
         for (i = 0; i < pcnt * 2; i++) ppbuf.xy[i] = xxyy[i];
@@ -2107,34 +2116,34 @@ internal class GxShad2
 
 /* Free the polygon buffer */
 
-    void s2frepbuf()
+    public void s2frepbuf()
     {
         s2pbufanch = null;
     }
 
 /* Turn buffering on/off */
 
-    void s2setbuf(bool flg)
+    public void s2setbuf(bool flg)
     {
         bufopt = flg;
     }
 
 /* Turn drawing of polygons on/off. If 1, polygons are not drawn */
 
-    void s2setdraw(bool flg)
+    public void s2setdraw(bool flg)
     {
         nodraw = flg;
     }
 
 
-/* When gxout shape is in use, this routine is called 
+/* When gxout shape is in use, this routine is called
    to dump all the polygon vertices to the shapefile.
-   For each polygon in the buffer: 
-     - get the vertex x/y coordinates 
-     - convert them to lon/lat 
+   For each polygon in the buffer:
+     - get the vertex x/y coordinates
+     - convert them to lon/lat
      - write out the vertices ('measured' value for each polygon is color #)
-     - write out the attributes (clev1 and clev2 are the dynamic values) 
-   The polygon buffer is released in gagx, inside the gashpwrt() routine. 
+     - write out the attributes (clev1 and clev2 are the dynamic values)
+   The polygon buffer is released in gagx, inside the gashpwrt() routine.
 
    Returns -1 on error, otherwise returns number of shapes written to file.
 */
@@ -2279,176 +2288,87 @@ internal class GxShad2
 //     }
 // #endif
 
-/* Routine to write out polygon vertices to a KML file. 
-   For each polygon in the buffer: 
-     get the vertex x/y coordinates, 
-     convert them to lon/lat, 
+/* Routine to write out polygon vertices to a KML file.
+   For each polygon in the buffer:
+     get the vertex x/y coordinates,
+     convert them to lon/lat,
      write out the coordinates to the kmlfile,
-     release storage and return. 
-   Returns -1 on error, otherwise the number of polygons written. 
+     release storage and return.
+   Returns -1 on error, otherwise the number of polygons written.
 */
-    int s2polyvert(string kmlfp)
+    public int s2polyvert(FileStream kmlfp)
     {
-        // struct s2pbuf* pbuf = NULL;
-        // double lon, lat, x, y;
-        // int i, j, c, err;
-        //
-        // err = 0;
-        // c = 0;
-        // pbuf = s2pbufanch;
-        // if (pbuf == NULL)
-        // {
-        //     _drawingContext.Logger?.LogInformation($"Error in s2polyvert: polygon buffer is empty\n");
-        //     err = 1;
-        //     goto cleanup;
-        // }
-        //
-        // while (pbuf)
-        // {
-        //     if (pbuf.xy)
-        //     {
-        //         /* write out headers for each polygon */
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "    <Placemark>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      <styleUrl>#%d</styleUrl>\n", pbuf.color);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 2;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      <name>%g to %g</name>\n", pbuf.clev1, pbuf.clev2);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 3;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      <Polygon>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 4;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        <altitudeMode>clampToGround</altitudeMode>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 5;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        <tessellate>1</tessellate>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 6;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        <outerBoundaryIs>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 7;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "          <LinearRing>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 8;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "            <coordinates>\n              ");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 9;
-        //             goto cleanup;
-        //         }
-        //
-        //         /* get x,y values and convert them to lon,lat */
-        //         j = 1;
-        //         for (i = 0; i < pbuf.len; i++)
-        //         {
-        //             x = *(pbuf.xy + (2 * i));
-        //             y = *(pbuf.xy + (2 * i + 1));
-        //             gxxy2w(x, y, &lon, &lat);
-        //             if (lat > 90) lat = 90;
-        //             if (lat < -90) lat = -90;
-        //
-        //             sn_drawingContext.Logger?.LogInformation($pout, 511, "%g,%g,0 ", lon, lat);
-        //             if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //             {
-        //                 err = 10;
-        //                 goto cleanup;
-        //             }
-        //
-        //             if (j == 6 || i == (pbuf.len - 1))
-        //             {
-        //                 if (j == 6) sn_drawingContext.Logger?.LogInformation($pout, 511, "\n              ");
-        //                 else sn_drawingContext.Logger?.LogInformation($pout, 511, "\n");
-        //                 if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //                 {
-        //                     err = 11;
-        //                     goto cleanup;
-        //                 }
-        //
-        //                 j = 0;
-        //             }
-        //
-        //             j++;
-        //         }
-        //
-        //         /* write out footers for each polygon */
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "            </coordinates>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 12;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "          </LinearRing>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 13;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "        </outerBoundaryIs>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 14;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "      </Polygon>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 15;
-        //             goto cleanup;
-        //         }
-        //
-        //         sn_drawingContext.Logger?.LogInformation($pout, 511, "    </Placemark>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout))
-        //         {
-        //             err = 16;
-        //             goto cleanup;
-        //         }
-        //
-        //         c++;
-        //     }
-        //
-        //     pbuf = pbuf.fpbuf;
-        // }
-        //
-        // cleanup:
-        // if (err) return (-1);
-        // else
-        return (0);
+        double lon, lat, x, y;
+        int i, j, c, err;
+        string pout = "";
+        
+        err = 0;
+        c = 0;
+        if (s2pbufanch == null)
+        {
+            _drawingContext.Logger?.LogInformation($"Error in s2polyvert: polygon buffer is empty\n");
+            err = 1;
+            goto cleanup;
+        }
+
+        foreach (var pbuf in s2pbufanch)
+        {
+            if (pbuf.xy != null)
+            {
+                /* write out headers for each polygon */
+                
+                kmlfp.WriteLine("    <Placemark>");
+                kmlfp.Write($"      <styleUrl>#{pbuf.color}</styleUrl>\n");
+                kmlfp.Write($"      <name>{pbuf.clev1} to {pbuf.clev2}</name>\n");
+                kmlfp.Write("      <Polygon>\n");
+
+                kmlfp.Write("        <altitudeMode>clampToGround</altitudeMode>\n");
+
+                kmlfp.Write("        <tessellate>1</tessellate>\n");
+
+                kmlfp.Write("        <outerBoundaryIs>\n");
+
+                kmlfp.Write("          <LinearRing>\n");
+
+                kmlfp.Write("            <coordinates>\n              ");
+
+                j = 1;
+                for (i = 0; i < pbuf.len; i++)
+                {
+                    x = pbuf.xy[2 * i];
+                    y = pbuf.xy[2 * i + 1];
+                    _drawingContext.GradsDrawingInterface.gxxy2w(x, y, out lon, out lat);
+                    if (lat > 90) lat = 90;
+                    if (lat < -90) lat = -90;
+
+                    kmlfp.Write($"{lon},{lat},0 ");
+
+                    if (j == 6 || i == (pbuf.len - 1))
+                    {
+                        if (j == 6) pout = "\n              ";
+                        else pout = "\n";
+                        kmlfp.Write(pout);
+                        j = 0;
+                    }
+
+                    j++;
+                }
+
+                kmlfp.Write("            </coordinates>\n");
+
+                kmlfp.Write("          </LinearRing>\n");
+
+                kmlfp.Write("        </outerBoundaryIs>\n");
+
+                kmlfp.Write("      </Polygon>\n");
+
+                kmlfp.Write("    </Placemark>\n");
+                c++;
+            }
+        }
+
+        cleanup:
+        if (err > 0) return (-1);
+        else return (0);
     }
 }
