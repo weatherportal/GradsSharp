@@ -46,7 +46,7 @@ public class KmlTests
         var outputStream = File.OpenRead(outputFile);
         
         
-        Helpers.CompareFiles(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.t2m.kml") ,outputStream);
+        Helpers.CompareXmlFiles(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.t2m.kml") ,outputStream);
         
         outputStream.Close();
         

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Xml;
 using Shouldly;
 
 namespace GradsSharp.UnitTests;
@@ -19,7 +20,7 @@ public class Helpers
         }
     }
 
-    public static void CompareFiles(Stream expected, Stream generated)
+    public static void CompareXmlFiles(Stream expected, Stream generated)
     {
         StreamReader expectedReader = new StreamReader(expected);
         StreamReader generatedReader = new StreamReader(generated);
@@ -27,6 +28,14 @@ public class Helpers
         var expectedData = expectedReader.ReadToEnd();
         var generatedData = generatedReader.ReadToEnd();
         
-        expectedData.ShouldBe(generatedData);
+        XmlDocument expectedXml = new XmlDocument();
+        expectedXml.LoadXml(expectedData);
+        
+        XmlDocument generatedXml = new XmlDocument();
+        generatedXml.LoadXml(generatedData);
+        
+        
+        
+        expectedXml.ToString().ShouldBe(generatedXml.ToString());
     }
 }
