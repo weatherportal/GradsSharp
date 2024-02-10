@@ -1,0 +1,12 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>GradsSharp.DrawingEngine.Cairo</id>
+        <version>0.0.29</version>
+        <authors>Bart Devriendt</authors>
+        <description>Cairo Drawing Engine for GradsSharp</description>
+    </metadata>
+    <files>
+        <file src="libcairo-2.dll" target="runtimes/win-x64/native/" />
+    </files>
+</package>

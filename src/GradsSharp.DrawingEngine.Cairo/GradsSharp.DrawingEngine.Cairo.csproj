@@ -19,8 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="lib\cairo.dll" />
-      <Content Include="lib\cairo.dll">
+      <None Remove="lib\libcairo-2.dll" />
+      <Content Include="lib\libcairo-2.dll">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <Link>%(FileName)%(Extension)</Link>
           <Pack>true</Pack>
