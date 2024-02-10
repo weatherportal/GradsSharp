@@ -2547,6 +2547,12 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.CommonData.ysiz = ysize;
     }
 
+    public void SetKmlOutput(KmlOutputFlag flag, string filename)
+    {
+        _drawingContext.CommonData.kmlflg = (int)flag;
+        _drawingContext.CommonData.kmlname = filename;
+    }
+
     public DimensionInfo? QueryDimensionInfo()
     {
         var pcm = _drawingContext.CommonData;

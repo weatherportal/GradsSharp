@@ -1,5 +1,6 @@
 ﻿using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -282,7 +283,7 @@ internal class GaGx
                         else if (pcm.gout2a == 10) gacntr(2, 0); /* grfill */
                         else if (pcm.gout2a == 12) gagtif(0); /* geotiff */
                         // else if (pcm.gout2a == 13 && pcm.kmlflg == 1) gagtif(1); /* kml image output */
-                        // else if (pcm.gout2a == 13 && pcm.kmlflg > 1) gakml(); /* kml contours or polygons */
+                        else if (pcm.gout2a == 13 && pcm.kmlflg > 1) gakml(); /* kml contours or polygons */
                         else if (pcm.gout2a == 14) gacntr(3, 0); /* imap */
                         else if (pcm.gout2a == 15) gashpwrt(); /* shapefile */
                         else if (pcm.gout2a == 16) gacntr(4, 0); /* gxshad2   */
@@ -5306,224 +5307,195 @@ internal class GaGx
 
     void gakml()
     {
-        // FILE *kmlfp = NULL;
-        // struct gagrid *pgr;
-        // struct gxdbquery dbq;
-        // int r, g, b, a, err = 0, i, rc;
-        //
-        // /* Determine if output is a grid or a station result */
-        // if (pcm.type[0] != 1) {
-        //     _drawingContext.Logger?.LogInformation("Error in gakml: expression is not a grid \n");
-        //     goto cleanup;
-        // }
-        //
-        // /* Make sure projection is latlon */
-        // if (pcm.mproj != 2) {
-        //     _drawingContext.Logger?.LogInformation("Error in gakml: mproj latlon required for gxout kml\n");
-        //     goto cleanup;
-        // }
-        //
-        // /* Make sure we have an X-Y plot */
-        // pgr = pcm.result[0].pgr;
-        // if (pgr.idim != 0 || pgr.jdim != 1) {
-        //     _drawingContext.Logger?.LogInformation("Error in gakml: Grid is not varying in X and Y \n");
-        //     goto cleanup;
-        // }
-        //
-        // /* set up scaling without the map */
-        // gas2d(pcm, pgr, 0);
-        //
-        // /* Determine data min/max, make sure grid is not undefined */
-        // gamnmx(pgr);
-        // if (pgr.umin == 0) {
-        //     _drawingContext.Logger?.LogInformation("Error in gakml: Entire grid is undefined \n");
-        //     goto cleanup;
-        // }
-        //
-        // /* open the output file */
-        // if (pcm.kmlname)
-        //     kmlfp = fopen(pcm.kmlname, "wb");
-        // else
-        //     kmlfp = fopen("grads.kml", "wb");
-        // if (kmlfp == NULL) {
-        //     if (pcm.kmlname)
-        //         snprintf(pout, 1255, "Error: fopen failed for KML text output file %s\n", pcm.kmlname);
-        //     else
-        //         snprintf(pout, 1255, "Error: fopen failed for KML text output file grads.kml\n");
-        //     _drawingContext.Logger?.LogInformation(pout);
-        //     goto cleanup;
-        // }
-        //
-        // if (pcm.kmlflg == 2) {
-        //     rc = gacntr(pcm, 0, 1);     /* Call gacntr() to create buffered contour lines for KML file */
-        //     if (rc) goto cleanup;
-        // } else if (pcm.kmlflg == 3) {
-        //     s2setbuf(1);                 /* turn on polygon buffering */
-        //     s2setdraw(1);                /* disable drawing polygons to display */
-        //     rc = gacntr(pcm, 4, 1);     /* Call gacntr() to create buffered polygons for KML file */
-        //     if (rc) goto cleanup;
-        //
-        // } else {
-        //     gaprnt(9, "logic errror in subroutine gakml\n");
-        //     goto cleanup;
-        // }
-        //
-        //
-        //
-        // /* write out KML headers */
-        // snprintf(pout, 1255, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        // if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //     err = 1;
-        //     goto cleanup;
-        // }
-        // snprintf(pout, 1255, "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n");
-        // if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //     err = 1;
-        //     goto cleanup;
-        // }
-        // snprintf(pout, 1255, "  <Document id=\"Created by GrADS-"
-        // GRADS_VERSION
-        // "\">\n");
-        // if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //     err = 1;
-        //     goto cleanup;
-        // }
-        //
-        // /* Contours */
-        // if (pcm.kmlflg == 2) {
-        //     /* write out the contour colors as a set of Style tags with LineStyle */
-        //     for (i = 0; i < pcm.cntrcnt; i++) {
-        //         snprintf(pout, 1255, "    <Style id=\"%d\">\n      <LineStyle>\n", pcm.cntrcols[i]);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         /* get rgb values for this color */
-        //         gxdbqcol(pcm.cntrcols[i], &dbq);
-        //         r = dbq.red;
-        //         g = dbq.green;
-        //         b = dbq.blue;
-        //         a = dbq.alpha;
-        //         snprintf(pout, 1255, "        <color>%02x%02x%02x%02x</color>\n", a, b, g, r);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "        <width>%d</width>\n", pcm.cthick);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "      </LineStyle>\n    </Style>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //     }
-        //     /* write out the locations of the contour vertices */
-        //     rc = gxclvert(kmlfp);
-        //     if (rc > 0) {
-        //         if (pcm.kmlname)
-        //             snprintf(pout, 1255, "%d contours written to KML file %s\n", rc, pcm.kmlname);
-        //         else
-        //             snprintf(pout, 1255, "%d contours written to KML file grads.kml\n", rc);
-        //         _drawingContext.Logger?.LogInformation(pout);
-        //     } else err = 1;
-        // }
-        //     /* Polygons */
-        // else {
-        //     /* write out the polygon colors as a set of Style tags with LineStyle and PolyStyle */
-        //     for (i = 0; i < pcm.shdcnt; i++) {
-        //         snprintf(pout, 1255, "    <Style id=\"%d\">\n", pcm.shdcls[i]);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "      <LineStyle>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         /* get rgb values for this color */
-        //         gxdbqcol(pcm.shdcls[i], &dbq);
-        //         r = dbq.red;
-        //         g = dbq.green;
-        //         b = dbq.blue;
-        //         a = dbq.alpha;
-        //         snprintf(pout, 1255, "        <color>%02x%02x%02x%02x</color>\n", a, b, g, r);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "        <width>0</width>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "      </LineStyle>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "      <PolyStyle>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "        <color>%02x%02x%02x%02x</color>\n", a, b, g, r);
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "        <fill>1</fill>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "      </PolyStyle>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //         snprintf(pout, 1255, "    </Style>\n");
-        //         if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //             err = 1;
-        //             goto cleanup;
-        //         }
-        //     }
-        //
-        //     /* write out the locations of the polygon vertices */
-        //     /* call routine in gxshad2.c to write out polygon vertices and values */
-        //     rc = s2polyvert(kmlfp);
-        //     if (rc > 0) {
-        //         if (pcm.kmlname)
-        //             snprintf(pout, 1255, "%d polygons written to KML file %s\n", rc, pcm.kmlname);
-        //         else
-        //             snprintf(pout, 1255, "%d polygons written to KML file grads.kml\n", rc);
-        //         _drawingContext.Logger?.LogInformation(pout);
-        //     } else err = 1;
-        //
-        // }
-        //
-        // /* write out footers */
-        // snprintf(pout, 1255, "  </Document>\n</kml>\n");
-        // if ((fwrite(pout, sizeof(char), strlen(pout), kmlfp)) != strlen(pout)) {
-        //     err = 1;
-        //     goto cleanup;
-        // }
-        // /* set the last graphic code */
-        // gagsav(24, pcm, NULL);
-        //
-        // cleanup:
-        // if (pcm.kmlflg == 2) {
-        //     gxcrel();       /* release storage used by the contouring package */
-        // } else {
-        //     s2frepbuf();    /* release the polygon buffer from memory */
-        //     s2setbuf(0);    /* turn off polygon buffering */
-        //     s2setdraw(0);   /* restore drawing of polygons */
-        // }
-        // if (kmlfp) fclose(kmlfp);    /* close the file */
-        // if (err) _drawingContext.Logger?.LogInformation("Error from fwrite when writing KML file\n");
+        var pcm = _drawingContext.CommonData;
+        
+        FileStream? kmlfp = null;
+        GradsGrid pgr;
+        
+        int r, g, b, a, err = 0, i, rc;
+
+// Determine if output is a grid or a station result
+        if (pcm.type[0] != 1)
+        {
+            _drawingContext.Logger?.LogInformation("Error in gakml: expression is not a grid \n");
+            goto cleanup;
+        }
+        
+        /* Make sure projection is latlon */
+        if (pcm.mproj != 2) {
+            _drawingContext.Logger?.LogInformation("Error in gakml: mproj latlon required for gxout kml\n");
+            goto cleanup;
+        }
+        
+        /* Make sure we have an X-Y plot */
+        pgr = pcm.result[0].pgr;
+        if (pgr.IDimension != 0 || pgr.JDimension != 1) {
+            _drawingContext.Logger?.LogInformation("Error in gakml: Grid is not varying in X and Y \n");
+            goto cleanup;
+        }
+        
+        /* set up scaling without the map */
+        gas2d(pgr, false);
+        
+        /* Determine data min/max, make sure grid is not undefined */
+        GaUtil.gamnmx(pgr);
+        if (pgr.umin == 0) {
+            _drawingContext.Logger?.LogInformation("Error in gakml: Entire grid is undefined \n");
+            goto cleanup;
+        }
+        
+        /* open the output file */
+        //TODO convert to try/catch
+        if (!String.IsNullOrEmpty(pcm.kmlname))
+            kmlfp = File.OpenWrite(pcm.kmlname);
+        else
+            kmlfp = File.OpenWrite("grads.kml");
+        if (kmlfp == null)
+        {
+            if (!String.IsNullOrEmpty(pcm.kmlname))
+                _drawingContext.Logger?.LogInformation($"Error: fopen failed for KML text output file {pcm.kmlname}\n");
+            else
+                _drawingContext.Logger?.LogInformation("Error: fopen failed for KML text output file grads.kml\n");
+            goto cleanup;
+        }
+        
+        if (pcm.kmlflg == 2) {
+            rc = gacntr(0, 1);     /* Call gacntr() to create buffered contour lines for KML file */
+            if (rc != 0) goto cleanup;
+        } else if (pcm.kmlflg == 3) {
+            _drawingContext.GxShad2.s2setbuf(true);                 /* turn on polygon buffering */
+            _drawingContext.GxShad2.s2setdraw(true);                /* disable drawing polygons to display */
+            rc = gacntr(4, 1);     /* Call gacntr() to create buffered polygons for KML file */
+            if (rc>0) goto cleanup;
+        
+        } else {
+            _drawingContext.Logger?.LogInformation("logic errror in subroutine gakml\n");
+            goto cleanup;
+        }
+        
+        
+        
+        // write out KML headers
+        string pout = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+        pout = "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n";
+        kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+        pout = $"  <Document id=\"Created by GradsSharp\">\n";
+        kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+        
+        /* Contours */
+        if (pcm.kmlflg == 2)
+        {
+            // write out the contour colors as a set of Style tags with LineStyle
+            for (i = 0; i < pcm.cntrcnt; i++)
+            {
+                pout = $"    <Style id=\"{pcm.cntrcols[i]}\">\n      <LineStyle>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                // get rgb values for this color
+                
+                var dbq = _drawingContext.GradsDatabase.gxdbqcol(pcm.cntrcols[i]);
+                r = dbq.Item1;
+                g = dbq.Item2;
+                b = dbq.Item3;
+                a = dbq.Item4;
+                pout = $"        <color>{a:x2}{b:x2}{g:x2}{r:x2}</color>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = $"        <width>{pcm.cthick}</width>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "      </LineStyle>\n    </Style>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+            }
+            // write out the locations of the contour vertices
+            rc = _drawingContext.GxContour.gxclvert(kmlfp);
+            if (rc > 0)
+            {
+                if (!String.IsNullOrEmpty(pcm.kmlname))
+                    _drawingContext.Logger?.LogInformation($"{rc} contours written to KML file {pcm.kmlname}\n");
+                else
+                    _drawingContext.Logger?.LogInformation($"{rc} contours written to KML file grads.kml\n");
+            }
+            else err = 1;
+        }
+            /* Polygons */
+        else {
+            /* write out the polygon colors as a set of Style tags with LineStyle and PolyStyle */
+            for (i = 0; i < pcm.shdcnt; i++)
+            {
+                pout = $"    <Style id=\"{pcm.shdcls[i]}\">\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "      <LineStyle>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                // get rgb values for this color
+                var dbq = _drawingContext.GradsDatabase.gxdbqcol(pcm.cntrcols[i]);
+                r = dbq.Item1;
+                g = dbq.Item2;
+                b = dbq.Item3;
+                a = dbq.Item4;
+                pout = $"        <color>{a:x2}{b:x2}{g:x2}{r:x2}</color>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "        <width>0</width>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "      </LineStyle>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "      <PolyStyle>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = $"        <color>{a:x2}{b:x2}{g:x2}{r:x2}</color>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "        <fill>1</fill>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "      </PolyStyle>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+                pout = "    </Style>\n";
+                kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
+            }
+        
+            /* write out the locations of the polygon vertices */
+            /* call routine in gxshad2.c to write out polygon vertices and values */
+            rc = _drawingContext.GxShad2.s2polyvert(kmlfp);
+            if (rc > 0) 
+            {
+                string message;
+                if (!string.IsNullOrEmpty(pcm.kmlname))
+                    message = $"{rc} polygons written to KML file {pcm.kmlname}\n";
+                else
+                    message = $"{rc} polygons written to KML file grads.kml\n";
+    
+                _drawingContext.Logger?.LogInformation(message);
+            } 
+            else 
+            {
+                err = 1;
+            }
+        
+        }
+        
+        // Write out footers
+        pout = "  </Document>\n</kml>\n";
+        byte[] poutBytes = Encoding.UTF8.GetBytes(pout);
+        kmlfp.Write(poutBytes, 0, poutBytes.Length);
+        
+// Set the last graphic code
+        gagsav(24);
+
+        cleanup:
+        if (pcm.kmlflg == 2)
+        {
+            _drawingContext.GxContour.gxcrel();       // Release storage used by the contouring package
+        }
+        else
+        {
+            _drawingContext.GxShad2.s2frepbuf();    // Release the polygon buffer from memory
+            _drawingContext.GxShad2.s2setbuf(false);    // Turn off polygon buffering
+            _drawingContext.GxShad2.s2setdraw(false);   // Restore drawing of polygons
+        }
+        if (kmlfp != null)
+        {
+            kmlfp.Close();    // Close the file
+        }
+        if (err != 0)
+        {
+            _drawingContext.Logger?.LogInformation("Error from fwrite when writing KML file\n");
+        }
         return;
     }
 

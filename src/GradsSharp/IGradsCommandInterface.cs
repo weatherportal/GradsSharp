@@ -77,6 +77,8 @@ public interface IGradsCommandInterface
 
     void SetPaperSize(double xsize, double ysize);
 
+    void SetKmlOutput(KmlOutputFlag flag, string filename);
+
     DimensionInfo QueryDimensionInfo();
 
     FileInfo QueryFileInfo();

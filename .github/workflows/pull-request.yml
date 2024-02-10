@@ -10,7 +10,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -18,6 +18,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
+#      - name: Install dependencies
+#        run: |
+#          sudo apt update && sudo apt install -y libc6-dev libcairo2-dev libgdiplus libx11-dev
       - name: Bump build version
         id: bump
         uses: vers-one/dotnet-project-version-updater@v1.3
@@ -32,6 +35,8 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore -c Release
+      - name: Test
+        run: dotnet test
       - name: Pack
         if: ${{ success() && !github.base_ref }}
         run: |

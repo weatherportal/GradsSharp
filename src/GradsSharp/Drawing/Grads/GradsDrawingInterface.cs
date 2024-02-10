@@ -635,7 +635,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
    transform map routine, if available, to do level 1 to level
    2 transform.  */
 
-    void gxxy2w(double x, double y, out double s, out double t)
+    public void gxxy2w(double x, double y, out double s, out double t)
     {
         /* Do level 0 to level 1 */
         if (xm == 0.0 || ym == 0.0)
