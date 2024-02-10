@@ -1,4 +1,5 @@
-﻿using GradsSharp.Data.Grads;
+﻿using System.Globalization;
+using GradsSharp.Data.Grads;
 using GradsSharp.Models.Internal;
 using GradsSharp.Utils;
 using Microsoft.Extensions.Logging;
@@ -1106,10 +1107,12 @@ internal class GxContour
                 {
                     x = pclbuf.lxy[2 * i];
                     y = pclbuf.lxy[2 * i + 1];
-                    _drawingContext.GradsDrawingInterface.gxxy2w(x, y, out lat, out lon);
+                    _drawingContext.GradsDrawingInterface.gxxy2w(x, y, out lon, out lat);
                     if (lat > 90) lat = 90;
                     if (lat < -90) lat = -90;
-                    kmlfp.Write($"{lon},{lat},0 ");
+                    var coords = String.Format(CultureInfo.InvariantCulture, "{0},{1},0 ", lon, lat);
+                    
+                    kmlfp.Write(coords);
 
                     if (j == 6 || i == (pclbuf.len - 1))
                     {

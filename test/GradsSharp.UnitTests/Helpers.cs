@@ -18,4 +18,15 @@ public class Helpers
             }
         }
     }
+
+    public static void CompareFiles(Stream expected, Stream generated)
+    {
+        StreamReader expectedReader = new StreamReader(expected);
+        StreamReader generatedReader = new StreamReader(generated);
+
+        var expectedData = expectedReader.ReadToEnd();
+        var generatedData = generatedReader.ReadToEnd();
+        
+        expectedData.ShouldBe(generatedData);
+    }
 }

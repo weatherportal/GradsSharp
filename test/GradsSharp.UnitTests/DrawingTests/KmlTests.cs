@@ -6,9 +6,9 @@ using GradsSharp.DataReader.GFS;
 using GradsSharp.DrawingEngine.Cairo;
 using GradsSharp.Models;
 
-namespace GradsSharp.UnitTests.DrawingTests;
+namespace GradsSharp.UnitTests;
 
-public class ContourTests
+public class KmlTests
 {
     private GradsEngine engine;
     private IGriddedDataReader reader;
@@ -24,7 +24,7 @@ public class ContourTests
     }
 
     [Test]
-    public void ContourTestTemperature2m()
+    public void KmlTestTemperature2m()
     {
         engine.GradsCommandInterface.SetGrads(OnOffSetting.Off);
         engine.GradsCommandInterface.Open("Data//gfs.t00z.pgrb2.0p25.f001", reader);
@@ -34,26 +34,23 @@ public class ContourTests
         engine.GradsCommandInterface.SetLat(47,56);
         engine.GradsCommandInterface.SetLon(-2.9,12);
         engine.GradsCommandInterface.SetT(1);
-        engine.GradsCommandInterface.SetGraphicsOut(GxOutSetting.Contour);
+        engine.GradsCommandInterface.SetGraphicsOut(GxOutSetting.Kml);
+        
         SetTemp2m();
-        engine.GradsCommandInterface.Display("t2m");
-
+        
         var outputFile = Path.GetTempFileName();
         
-        engine.GradsCommandInterface.printim(outputFile, horizontalSize:1024, verticalSize:768, format: OutputFormat.PNG);
+        engine.GradsCommandInterface.SetKmlOutput(KmlOutputFlag.Contour, outputFile);
+        engine.GradsCommandInterface.Display("t2m");
+
+        var outputStream = File.OpenRead(outputFile);
         
-        var generated = Bitmap.FromFile(outputFile) as Bitmap;
-        var expected = Bitmap.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.contour-test.png")) as Bitmap;
         
-        // compare the bitmaps and assert they are equal
-        Helpers.CompareBitmaps(generated, expected);
+        Helpers.CompareFiles(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.t2m.kml") ,outputStream);
         
-        generated.Dispose();
-        expected.Dispose();
+        outputStream.Close();
         
         File.Delete(outputFile);
-        
-
         
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using GradsSharp.Utils;
 using Microsoft.Extensions.Logging;
 namespace GradsSharp.Drawing.Grads;
@@ -2341,7 +2342,9 @@ internal class GxShad2
                     if (lat > 90) lat = 90;
                     if (lat < -90) lat = -90;
 
-                    kmlfp.Write($"{lon},{lat},0 ");
+                    var coords = String.Format(CultureInfo.InvariantCulture, "{0},{1},0 ", lon, lat);
+                    
+                    kmlfp.Write(coords);
 
                     if (j == 6 || i == (pbuf.len - 1))
                     {

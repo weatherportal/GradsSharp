@@ -33,6 +33,8 @@
       </Content>
       <None Remove="Data\Expected\contourfill-test.png" />
       <EmbeddedResource Include="Data\Expected\contourfill-test.png" />
+      <None Remove="Data\Expected\t2m.kml" />
+      <EmbeddedResource Include="Data\Expected\t2m.kml" />
     </ItemGroup>
 
     <ItemGroup>
