@@ -20,7 +20,7 @@ jobs:
           dotnet-version: 7.0.x
       - name: Install dependencies
         run: |
-          sudo apt update && sudo apt install -y libc-dev libcairo2-dev
+          sudo apt update && sudo apt install -y libc6-dev libcairo2-dev libgdiplus libx11-dev
       - name: Bump build version
         id: bump
         uses: vers-one/dotnet-project-version-updater@v1.3
