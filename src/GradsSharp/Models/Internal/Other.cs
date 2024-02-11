@@ -31,7 +31,7 @@ internal class gastat {
     public int idim,jdim;           /* Varying dimensions                    */
 };
 
-class gxcntr {
+internal class gxcntr {
     public double labsiz;             /* Size of contour label, plotting inches */
     public int spline;                /* Spline fit flag - 0 no, 1 yes */
     public int ltype;                 /* Label type (off, on, masked, forced */
@@ -45,14 +45,14 @@ class gxcntr {
     public int shpflg;                /* flag for shapfiles */
 };
 
-class gxclbuf {
+internal class gxclbuf {
     public int len;                     /* Number of contour points */
     public int color, style, width, sfit;  /* Output options for this line */
     public double[]? lxy;                 /* Line points, x,y number len */
     public double val;                  /* contour level value */
 };
 
-class gaindx
+internal class gaindx
 {
     int type; /* Indexing file type */
     int hinum; /* Number of header ints */
@@ -65,14 +65,14 @@ class gaindx
     float[] fltpnt; /* Pointer to index float values */
 };
 
-class gaindxb
+internal class gaindxb
 {
     int bignum; /* Number of off_t values */
     long[] bigpnt; /* Pointer to off_t values */
 };
 
 /* classures for GRIB2 data */
-class gag2indx
+internal class gag2indx
 {
     int version; /* Version number: 
 				   1: int offsets  
@@ -87,7 +87,7 @@ class gag2indx
     long[] g2bigpnt; /* Pointer to record offsets when off_t offsets in use */
 }
 
-class gaattr
+internal class gaattr
 {
     public string varname; /* Name of variable or 'global' */
     public string name; /* Name of attribute -- e.g. "units" */
@@ -99,7 +99,7 @@ class gaattr
 };
 
 /* classure for ensemble metadata */
-class gaens
+internal class gaens
 {
     string name; /* name of ensemble */
     int length; /* length of time axis */
@@ -108,14 +108,14 @@ class gaens
     int[] grbcode; /* grib2 codes */
 };
 
-class gachsub
+internal class gachsub
 {
     int t1; /* First time for this substitution */
     int t2; /* Last time.  -99 indicates open ended */
     char[] ch; /* Substitution string */
 };
 
-class gabufr_varinf
+internal class gabufr_varinf
 {
     int scale;
     int offset;
@@ -124,7 +124,7 @@ class gabufr_varinf
     string description;
 }
 
-class gabufr_val
+internal class gabufr_val
 {
     int x; /* BUFR ID (F,X,Y) */
     int y; /* BUFR ID (F,X,Y) */
@@ -134,7 +134,7 @@ class gabufr_val
     string sval; /* data value when datatype is STR, or NULL otherwise*/
 }
 
-class gabufr_tbl_inf
+internal class gabufr_tbl_inf
 {
     int bufr_edition;
     int master_tbl_num;
@@ -142,7 +142,7 @@ class gabufr_tbl_inf
     int local_tbl_version;
 }
 
-class gabufr_msg
+internal class gabufr_msg
 {
     int year; /* base time for entire message */
     int month;
@@ -169,7 +169,7 @@ class gabufr_msg
 }
 
 /* classure that contains the x,y pairs for bufr time values */
-class bufrtimeinfo
+internal class bufrtimeinfo
 {
     int[] yrxy;
     int[] moxy;
@@ -180,7 +180,7 @@ class bufrtimeinfo
 };
 
 /* classure that contains the x,y pairs for file-wide bufr variables */
-class bufrinfo
+internal class bufrinfo
 {
     int[] lonxy;
     int[] latxy;
@@ -189,7 +189,7 @@ class bufrinfo
     bufrtimeinfo s_base, s_offset; /* classures for base and offset time values */
 };
 
-class gabufr_dset
+internal class gabufr_dset
 {
     gabufr_msg[] msgs; /* linked list of decoded messages 
 			(some may be missing if parsing failed */
@@ -201,7 +201,7 @@ class gabufr_dset
     int len;
 };
 
-class garpt
+internal class garpt
 {
     string stid; /* Station id                           */
     double lat, lon, lev, tim; /* Location of station                  */
@@ -210,7 +210,7 @@ class garpt
     char umask; /* Undef mask                           */
 };
 
-class gavar
+internal class gavar
 {
     string varnm; /* Variable description.                */
     public string abbrv; /* Variable abbreviation.               */
@@ -288,7 +288,7 @@ class gavar
 // #endif
 };
 
-class gastn
+internal class gastn
 {
     garpt rpt; /* Address of start of link list        */
     int rnum; /* Number of reports.                   */
@@ -338,7 +338,7 @@ class gastn
     int rptcnt, blkcnt;
 };
 
-class gadata
+internal class gadata
 {
     public GradsGrid? pgr;
     public gastn stn;
@@ -352,7 +352,7 @@ internal class mapopt
     public string mpdset; /* Map data set name */
 }
 
-class gadefn {
+internal class gadefn {
     public GradsFile pfi;          /* File Structure containing the data   */
     public string abbrv;              /* Abbreviation assigned to this        */
 };
@@ -375,7 +375,7 @@ internal class mapprj
     public double axmn, axmx, aymn, aymx; /* Actual page area used by proj. */
 }
 
-class cxclock
+internal class cxclock
 {
     public int year;
     public int month;
