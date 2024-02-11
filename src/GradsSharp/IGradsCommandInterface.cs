@@ -50,6 +50,18 @@ public interface IGradsCommandInterface
     /// <param name="color">The color of the grid lines. If <see cref="GradsSharp.Models.GridLine.Color"/> is used</param>
     void SetGridLine(GridLine gridLine, int color = -1);
     
+    /// <summary>
+    /// This command defines a "virtual page" that fits within the specified limits of the real page. All graphics output will be drawn into this "virtual page" until another set SetVpage command is entered. A clear command clears the physical page (and any virtual pages drawn on it).
+    /// When GradsEngine is first initialized, it prompts for landscape or portrait mode. This defines the size of the real page (11x8.5 or 8.5x11), and the dimensions for the virtual page must fit within this real page.
+    /// The SetVpage command will define virtual page limits in terms of inches (virtual page inches), which are the coordinates that will be used in the various commands that require inches to be used. The new page limits are printed when the SetVpage command completes.
+    /// To return to the default state where the real page equals the virtual page, enter:
+    /// 
+    /// </summary>
+    /// <param name="page">VPage on or off</param>
+    /// <param name="xlo"></param>
+    /// <param name="xhi"></param>
+    /// <param name="ylo"></param>
+    /// <param name="yhi"></param>
     void SetVpage(OnOffSetting page, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0);
     
     /// <summary>
