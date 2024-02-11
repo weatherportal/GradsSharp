@@ -50,9 +50,15 @@ jobs:
         git commit -m "[ci skip] Update project version to ${{ steps.update.outputs.newVersion }}"
         git push
 
+    
+
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
     - uses: mattnotmitt/doxygen-action@v1.9.5
       with:
-        doxyfile-path: 'docs/doxygen'
+        working-directory: 'docs/doxygen'
 
     - name: Publish
       if: github.event_name == 'push'
