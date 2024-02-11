@@ -59,6 +59,21 @@ public class CairoDrawingEngine : IDrawingEngine
     public CairoDrawingEngine(GradsEngine engine)
     {
         _gradsEngine = engine;
+        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+        {
+            
+            if (!File.Exists("libcairo-2.dll"))
+            {
+                
+                if (File.Exists("runtimes/win-x64/native/libcairo-2.dll"))
+                {
+                    File.Copy("runtimes/win-x64/native/libcairo-2.dll", "libcairo-2.dll");
+                    File.Copy("runtimes/win-x64/native/libcairo-2.dll",  Environment.CurrentDirectory + "libcairo-2.dll");
+                }
+                else
+                    throw new Exception("Unable to find libcairo-2.dll");
+            }
+        }
     }
 
     public void gxpcfg()

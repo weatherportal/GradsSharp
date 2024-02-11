@@ -19,15 +19,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="lib\libcairo-2.dll" />
-      <Content Include="lib\libcairo-2.dll">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-          <Link>%(FileName)%(Extension)</Link>
-          <Pack>true</Pack>
-          <PackagePath>runtimes\$(RuntimeIdentifier)\native\%(Filename)%(Extension)</PackagePath>
-      </Content>
+      
+      <None Include="lib\libcairo-2.dll" Pack="true" PackagePath="runtimes/win-x64/native">
+      </None>
+        <None Include="lib\libcairo-2.dll" Pack="true" PackagePath="runtimes/win-x86/native">
+        </None>
+        <Content Include="build\net7.0\GradsSharp.DrawingEngine.Cairo.targets" PackagePath="build\net7.0">
+            
+        </Content>
     </ItemGroup>
-
+    
     <ItemGroup>
       <ProjectReference Include="..\GradsSharp\GradsSharp.csproj" />
     </ItemGroup>
