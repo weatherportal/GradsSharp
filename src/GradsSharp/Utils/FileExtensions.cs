@@ -1,7 +1,7 @@
 ﻿namespace GradsSharp.Utils;
 using System.Text;
 
-public static class FileExtensions
+internal static class FileExtensions
 {
     public static void WriteLine(this FileStream file, string line)
     {

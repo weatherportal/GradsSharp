@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Data;
+using GradsSharp.Exceptions;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
@@ -511,7 +512,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         if (colorNr < 16 || colorNr > 2048)
         {
             _drawingContext.Logger?.LogInformation("SET RGB Error:  Color number must be between 16 and 2048 \n");
-            throw new Exception("SET RGB Error:  Color number must be between 16 and 2048");
+            throw new InvalidColorException("SET RGB Error:  Color number must be between 16 and 2048");
         }
 
         if (red < 0 || red > 255 ||
@@ -519,13 +520,13 @@ internal class GradsCommandInterface : IGradsCommandInterface
             blue < 0 || blue > 255)
         {
             _drawingContext.Logger?.LogInformation("SET RGB Error:  RGB values must be between 0 and 255 \n");
-            throw new Exception("SET RGB Error:  RGB values must be between 0 and 255");
+            throw new InvalidColorException("SET RGB Error:  RGB values must be between 0 and 255");
         }
 
         if (alpha < -255 || alpha > 255)
         {
             _drawingContext.Logger?.LogInformation("SET RGB Error:  Alpha value must be between -255 and 255 \n");
-            throw new Exception("SET RGB Error:  Alpha value must be between -255 and 255");
+            throw new InvalidColorException("SET RGB Error:  Alpha value must be between -255 and 255");
         }
 
         _drawingContext.GradsDrawingInterface.gxacol(colorNr, red, green, blue, alpha);

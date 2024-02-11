@@ -18,10 +18,7 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
-      - name: Setup DocFX
-        run:
-          dotnet tool update -g docfx
-#      - name: Install dependencies
+      - name: Install dependencies
 #        run: |
 #          sudo apt update && sudo apt install -y libc6-dev libcairo2-dev libgdiplus libx11-dev
       - name: Bump build version
@@ -47,12 +44,8 @@ jobs:
           dotnet pack src/GradsSharp.DrawingEngine.Cairo/GradsSharp.DrawingEngine.Cairo.csproj --no-build --verbosity normal -c Release -o artifacts/        
           dotnet pack src/GradsSharp.DataReader.GFS/GradsSharp.DataReader.GFS.csproj --no-build --verbosity normal -c Release -o artifacts/        
 
-      - name: DocFX Build
-        working-directory: docs/docfx_project
-        run: docfx
-        continue-on-error: false
-        
-      - uses: actions/upload-artifact@v4
+      - uses: mattnotmitt/doxygen-action@v1.9.5
         with:
-          name: GradsSharp
-          path: ./*
+          doxyfile-path: 'docs/doxygen'
+        
+      
