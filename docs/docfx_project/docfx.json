@@ -4,17 +4,18 @@
       "src": [
         {
           "files": [
-            "**/bin/Debug/**.dll"
+            "**/bin/Debug/**GradsSharp.dll"
           ],
           "src": "../../"
         }
+        
       ],
-      "dest": "api",
+      "dest": "api/gradssharp",
       "includePrivateMembers": false,
       "disableGitFeatures": false,
       "disableDefaultFilter": false,
       "noRestore": false,
-      "namespaceLayout": "flattened",
+      "namespaceLayout": "nested",
       "memberLayout": "samePage",
       "allowCompilationErrors": false
     }
@@ -29,8 +30,8 @@
       },
       {
         "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
+          "documentation/**.md",
+          "documentation/**/toc.yml",
           "toc.yml",
           "*.md"
         ]

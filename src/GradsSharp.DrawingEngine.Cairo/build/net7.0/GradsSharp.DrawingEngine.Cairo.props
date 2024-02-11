@@ -1,0 +1,13 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+   
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\libcairo-2.dll">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <Link>runtimes\win-x64\native\libcairo-2.dll</Link>
+        </Content>
+        <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x86\native\libcairo-2.dll">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <Link>runtimes\win-x86\native\libcairo-2.dll</Link>
+        </Content>
+    </ItemGroup>
+</Project>

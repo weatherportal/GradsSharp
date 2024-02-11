@@ -7,6 +7,6 @@
         <description>Cairo Drawing Engine for GradsSharp</description>
     </metadata>
     <files>
-        <file src="libcairo-2.dll" target="runtimes/win-x64/native/" />
+        <file src="lib\libcairo-2.dll" target="runtimes\win-x64\native\" />
     </files>
 </package>
