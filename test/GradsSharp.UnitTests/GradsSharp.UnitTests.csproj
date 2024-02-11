@@ -35,10 +35,19 @@
       <EmbeddedResource Include="Data\Expected\contourfill-test.png" />
       <None Remove="Data\Expected\t2m.kml" />
       <EmbeddedResource Include="Data\Expected\t2m.kml" />
+      <None Remove="lib\libcairo-2.dll" />
+      <Content Include="lib\libcairo-2.dll">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+          <Link>libcairo-2.dll</Link>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Data\Expected\contour-test.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="lib\" />
     </ItemGroup>
 
 </Project>

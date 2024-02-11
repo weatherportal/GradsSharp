@@ -21,6 +21,7 @@
     <ItemGroup>
       
       <None Include="lib\libcairo-2.dll" Pack="true" PackagePath="runtimes/win-x64/native">
+          
       </None>
         <None Include="lib\libcairo-2.dll" Pack="true" PackagePath="runtimes/win-x86/native">
         </None>
