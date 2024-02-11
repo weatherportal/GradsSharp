@@ -16,6 +16,8 @@
         <FileVersion>0.0.35.0</FileVersion>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,4 +28,8 @@
       <ProjectReference Include="..\GradsSharp\GradsSharp.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+
+    </ItemGroup>
 </Project>

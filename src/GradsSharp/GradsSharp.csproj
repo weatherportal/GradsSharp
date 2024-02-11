@@ -47,5 +47,8 @@
       <EmbeddedResource Include="Data\font5.dat" />
     </ItemGroup>
 
-    
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+        
+    </ItemGroup>
 </Project>
