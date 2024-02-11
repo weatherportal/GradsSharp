@@ -43,9 +43,11 @@ jobs:
           dotnet pack src/GradsSharp/GradsSharp.csproj --no-build --verbosity normal -c Release -o artifacts/
           dotnet pack src/GradsSharp.DrawingEngine.Cairo/GradsSharp.DrawingEngine.Cairo.csproj --no-build --verbosity normal -c Release -o artifacts/        
           dotnet pack src/GradsSharp.DataReader.GFS/GradsSharp.DataReader.GFS.csproj --no-build --verbosity normal -c Release -o artifacts/        
-
+        
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - uses: mattnotmitt/doxygen-action@v1.9.5
         with:
           doxyfile-path: 'docs/doxygen'
-        
-      
