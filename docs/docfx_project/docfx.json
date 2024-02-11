@@ -4,7 +4,8 @@
       "src": [
         {
           "files": [
-            "**/bin/Debug/**GradsSharp.dll"
+            "**/bin/Debug/**GradsSharp.dll",
+            "**/bin/Release/**GradsSharp.dll"
           ],
           "src": "../../"
         }
