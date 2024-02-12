@@ -1,10 +1,14 @@
 ﻿using GradsSharp.Data;
+using GradsSharp.Enums;
 using GradsSharp.Exceptions;
 using GradsSharp.Models;
 using FileInfo = GradsSharp.Models.FileInfo;
 
 namespace GradsSharp;
 
+/// <summary>
+/// Interface for sending commands to the Grads engine
+/// </summary>
 public interface IGradsCommandInterface
 {
     void stack();
@@ -13,12 +17,12 @@ public interface IGradsCommandInterface
     /// <summary>
     /// Close the the last opened file
     /// </summary>
-    void close();
+    void Close();
     
     /// <summary>
     /// Issued without parameters, the clear command does pretty heavy duty clearing of many of the GradsSharp internal settings. Parameters can be added to limit what is cleared when using more advanced features.
     /// </summary>
-    void clear(ClearAction? action);
+    void Clear(ClearAction? action);
 
     /// <summary>
     /// The printim command will produce a PNG, GIF, or JPG formatted image file based on the current contents of the metabuffer.
@@ -45,7 +49,7 @@ public interface IGradsCommandInterface
     void reinit();
     void gacln(int flg);
     
-    /// <summary>Used with <see cref="GradsSharp.IGradsCommandInterface.SetGraphicsOut"/> with <see cref="GradsSharp.Models.GxOutSetting.Grid"/> option to control the presence and appearance of the grid lines.</summary>
+    /// <summary>Used with <see cref="SetGraphicsOutputMode"/> with <sGraphicsOutputModeutSetting.Grid"/> option to control the presence and appearance of the grid lines.</summary>
     /// <param name="gridLine">Controls the gridline setting</param>
     /// <param name="color">The color of the grid lines. If <see cref="GradsSharp.Models.GridLine.Color"/> is used</param>
     void SetGridLine(GridLine gridLine, int color = -1);
@@ -74,25 +78,87 @@ public interface IGradsCommandInterface
     /// <param name="alpha">Transparency value. Number between -255 and 255</param>
     /// <exception cref="InvalidColorException">Throws an exception when trying to define an invalid color</exception>
     void SetColor(int colorNr, int red, int green, int blue, int alpha = 255);
-    void SetPArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0);
+    void SetPrintingArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0);
     
     /// <summary>
-    /// Sets the contour interval to the specified value. Reset by <see cref="GradsSharp.IGradsCommandInterface.clear">clear</see> or <see cref="GradsSharp.IGradsCommandInterface.Display">Display</see>.
+    /// Sets the contour interval to the specified value. Reset by <see cref="Clear">Clear</see> or <see cref="GradsSharp.IGradsCommandInterface.Display">Display</see>.
     /// </summary>
     /// <param name="val">Contour interval value</param>
-    void SetCInt(double val);
+    void SetContourInterval(double val);
 
-    void SetMPVals(OnOffSetting onOff, double lonmin = 0.0, double lonmax = 0.0, double latmin = 0.0,
+    
+    /*
+     * set mpvals
+     */
+    /// <summary>
+    /// Sets reference longitudes and latitudes for polar stereographic plots. By default, these are set to the current dimension environment limits. This command overrides that, and allows the data-reference to be decoupled with the map display. The polar plot will be drawn such that the region bounded by these longitudes and latitudes will be entirely included in the plot.
+    /// <br/><br/>
+    /// GradsSharp will plot lat/lon lines on polar plots with no labels as yet. To turn this off, set grid off.
+    /// </summary>
+    /// <param name="onOff">Set polar stereographic on or off</param>
+    /// <param name="lonmin">Minimum longitude</param>
+    /// <param name="lonmax">Maximum longitude</param>
+    /// <param name="latmin">Minimum latitude</param>
+    /// <param name="latmax">Maximum latitude</param>
+    void SetPolarStereoValues(OnOffSetting onOff, double lonmin = 0.0, double lonmax = 0.0, double latmin = 0.0,
         double latmax = 0.0);
 
-    void SetCLevs(double[] levels);
-    void SetCCols(int[] cols);
-    void SetCMin(double cmin);
-    void SetCMax(double cmax);
+    /// <summary>
+    /// Sets specific contour levels.<br/>
+    ///
+    /// Usage notes:
+    /// </summary>
+    /// <remarks>
+    /// <list type="number">
+    /// <item><description>Contour levels are reset by <see cref="Clear">Clear</see> or <see cref="GradsSharp.IGradsCommandInterface.Display">Display</see>.</description></item>
+    /// <item><description>Often used in conjunction with <see cref="GradsSharp.IGradsCommandInterface.SetContourColors">SetContourColors</see> to override the default settings and specify exact contour levels and the colors that go with them.</description></item>
+    /// </list>
+    /// </remarks>
+    /// <param name="levels">Array of levels</param>
+    void SetContourLevels(double[] levels);
+    
+    /// <summary>
+    /// Sets specific color numbers for contour levels specified by <see cref="GradsSharp.IGradsCommandInterface.SetContourLevels">SetContourLevels</see>.
+    /// </summary>
+    /// <param name="cols">Array of color numbers</param>
+    void SetContourColors(int[] cols);
+    
+    
+    /// <summary>
+    /// Contours not drawn below this value. reset by <see cref="Clear">Clear</see> or <see cref="GradsSharp.IGradsCommandInterface.Display">Display</see>.
+    /// </summary>
+    /// <param name="cmin">Minimum contour level</param>
+    void SetContourMinimum(double cmin);
+    
+    /// <summary>
+    /// Contours not drawn above this value. reset by <see cref="Clear">Clear</see> or <see cref="GradsSharp.IGradsCommandInterface.Display">Display</see>.
+    /// </summary>
+    /// <param name="cmax">Maximum contour level</param>
+    void SetContourMaximum(double cmax);
+    
+    
     void SetCMark(double cmark);
-    void SetMProjection(Projection projection);
+    
+    
+    /// <summary>
+    /// Sets current map projection. See <see cref="Projection"/> for a list of available projections.
+    /// </summary>
+    /// <param name="projection">Projection mode</param>
+    void SetMapProjection(Projection projection);
+    
+    /// <summary>
+    /// Set map resolution. See <see cref="MapResolution"/> for a list of available resolutions.
+    /// </summary>
+    /// <param name="mapResolution">Map resolution</param>
     void SetMapResolution(MapResolution mapResolution);
-    void SetGraphicsOut(GxOutSetting setting);
+    
+    /// <summary>
+    /// Set output mode for graphics. See <see cref="GraphicsOutputMode"/> for a list of available output modes.
+    /// </summary>
+    /// <param name="mode">Output mode</param>
+    void SetGraphicsOutputMode(GraphicsOutputMode mode);
+    
+    
     void SetCLab(LabelOption option, string format = "");
     void SetXLab(LabelOption option, string format = "");
     void SetYLab(LabelOption option, string format = "");

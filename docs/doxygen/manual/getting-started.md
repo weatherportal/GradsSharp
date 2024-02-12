@@ -15,11 +15,15 @@ dotnet add package GradsSharp
 
 Next install a drawing engine, e.g. Cairo:
 
-```dotnet add package GradsSharp.DrawingEngine.Cairo```
+```
+dotnet add package GradsSharp.DrawingEngine.Cairo
+```
 
 Next install the GFS data reader:
 
-```dotnet add package GradsSharp.DataReader.GFS```
+```
+dotnet add package GradsSharp.DataReader.GFS
+```
 
 ## Plotting a weather chart
 

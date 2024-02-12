@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Data;
+using GradsSharp.Enums;
 using GradsSharp.Exceptions;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
@@ -111,7 +112,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.GradsDrawingInterface.gxfrme(1);
     }
 
-    public void close()
+    public void Close()
     {
         int fnum = pcm.pfi1.Count;
         var file = pcm.pfi1.LastOrDefault();
@@ -137,7 +138,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void clear(ClearAction? action)
+    public void Clear(ClearAction? action)
     {
         int iAc = 0;
         
@@ -532,7 +533,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.GradsDrawingInterface.gxacol(colorNr, red, green, blue, alpha);
     }
 
-    public void SetPArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0)
+    public void SetPrintingArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0)
     {
         if (onOff == OnOffSetting.Off)
         {
@@ -556,7 +557,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCInt(double val)
+    public void SetContourInterval(double val)
     {
         if (val <= 0)
         {
@@ -569,7 +570,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetMPVals(OnOffSetting onOff, double lonmin = 0.0, double lonmax = 0.0, double latmin = 0.0,
+    public void SetPolarStereoValues(OnOffSetting onOff, double lonmin = 0.0, double lonmax = 0.0, double latmin = 0.0,
         double latmax = 0.0)
     {
         if (onOff == OnOffSetting.Off)
@@ -588,7 +589,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCLevs(double[] levels)
+    public void SetContourLevels(double[] levels)
     {
         if (levels.Length > 254)
         {
@@ -610,7 +611,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCCols(int[] cols)
+    public void SetContourColors(int[] cols)
     {
         if (cols.Length > 255)
         {
@@ -627,13 +628,13 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCMin(double cmin)
+    public void SetContourMinimum(double cmin)
     {
         pcm.cmin = cmin;
         _drawingContext.Logger?.LogInformation($"cmin = {cmin}");
     }
 
-    public void SetCMax(double cmax)
+    public void SetContourMaximum(double cmax)
     {
         pcm.cmax = cmax;
         _drawingContext.Logger?.LogInformation($"cmax = {cmax}");
@@ -645,7 +646,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.Logger?.LogInformation($"cmark = {cmark}");
     }
 
-    public void SetMProjection(Projection projection)
+    public void SetMapProjection(Projection projection)
     {
         pcm.mproj = (int)projection;
     }
@@ -666,66 +667,66 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetGraphicsOut(GxOutSetting setting)
+    public void SetGraphicsOutputMode(GraphicsOutputMode mode)
     {
-        if (setting == GxOutSetting.Contour) pcm.gout2a = 1;
-        if (setting == GxOutSetting.Shaded) pcm.gout2a = 16;
-        if (setting == GxOutSetting.Shade1) pcm.gout2a = 2;
-        if (setting == GxOutSetting.Shade2) pcm.gout2a = 16;
-        if (setting == GxOutSetting.Shade2b) pcm.gout2a = 17;
-        if (setting == GxOutSetting.Grid)
+        if (mode == GraphicsOutputMode.Contour) pcm.gout2a = 1;
+        if (mode == GraphicsOutputMode.Shaded) pcm.gout2a = 16;
+        if (mode == GraphicsOutputMode.Shade1) pcm.gout2a = 2;
+        if (mode == GraphicsOutputMode.Shade2) pcm.gout2a = 16;
+        if (mode == GraphicsOutputMode.Shade2b) pcm.gout2a = 17;
+        if (mode == GraphicsOutputMode.Grid)
         {
             pcm.gout2a = 3;
             pcm.gout2b = 3;
         }
 
-        if (setting == GxOutSetting.Vector)
+        if (mode == GraphicsOutputMode.Vector)
         {
             pcm.gout2b = 4;
             pcm.goutstn = 6;
             pcm.gout1a = 1;
         }
 
-        if (setting == GxOutSetting.Scatter) pcm.gout2b = 5;
-        if (setting == GxOutSetting.FGrid) pcm.gout2a = 6;
-        if (setting == GxOutSetting.FWrite) pcm.gout2a = 7;
-        if (setting == GxOutSetting.Stream) pcm.gout2b = 8;
-        if (setting == GxOutSetting.GridFill) pcm.gout2a = 10;
-        if (setting == GxOutSetting.GeoTiff) pcm.gout2a = 12;
-        if (setting == GxOutSetting.Kml) pcm.gout2a = 13;
-        if (setting == GxOutSetting.Imap) pcm.gout2a = 14;
-        if (setting == GxOutSetting.Shape)
+        if (mode == GraphicsOutputMode.Scatter) pcm.gout2b = 5;
+        if (mode == GraphicsOutputMode.FGrid) pcm.gout2a = 6;
+        if (mode == GraphicsOutputMode.FWrite) pcm.gout2a = 7;
+        if (mode == GraphicsOutputMode.Stream) pcm.gout2b = 8;
+        if (mode == GraphicsOutputMode.GridFill) pcm.gout2a = 10;
+        if (mode == GraphicsOutputMode.GeoTiff) pcm.gout2a = 12;
+        if (mode == GraphicsOutputMode.Kml) pcm.gout2a = 13;
+        if (mode == GraphicsOutputMode.Imap) pcm.gout2a = 14;
+        if (mode == GraphicsOutputMode.Shape)
         {
             pcm.gout2a = 15;
             pcm.goutstn = 9;
         }
 
-        if (setting == GxOutSetting.StationValues) pcm.goutstn = 1;
-        if (setting == GxOutSetting.Barb)
+        if (mode == GraphicsOutputMode.StationValues) pcm.goutstn = 1;
+        if (mode == GraphicsOutputMode.Barb)
         {
             pcm.goutstn = 2;
             pcm.gout2b = 9;
             pcm.gout1a = 2;
         }
 
-        if (setting == GxOutSetting.FindStation) pcm.goutstn = 3;
-        if (setting == GxOutSetting.Model) pcm.goutstn = 4;
-        if (setting == GxOutSetting.WXSymbol) pcm.goutstn = 5;
-        if (setting == GxOutSetting.StationMark) pcm.goutstn = 7;
-        if (setting == GxOutSetting.StationWrt) pcm.goutstn = 8;
-        if (setting == GxOutSetting.Line)
+        if (mode == GraphicsOutputMode.FindStation) pcm.goutstn = 3;
+        if (mode == GraphicsOutputMode.Model) pcm.goutstn = 4;
+        if (mode == GraphicsOutputMode.WXSymbol) pcm.goutstn = 5;
+        if (mode == GraphicsOutputMode.StationMark) pcm.goutstn = 7;
+        if (mode == GraphicsOutputMode.StationWrt) pcm.goutstn = 8;
+        if (mode == GraphicsOutputMode.Line)
         {
             pcm.gout1 = 1;
             pcm.tser = 0;
         }
 
-        if (setting == GxOutSetting.Bar) pcm.gout1 = 2;
-        if (setting == GxOutSetting.ErrorBar) pcm.gout1 = 3;
-        if (setting == GxOutSetting.LineFill) pcm.gout1 = 4;
-        if (setting == GxOutSetting.Stat) pcm.gout0 = 1;
-        if (setting == GxOutSetting.Print) pcm.gout0 = 2;
-        if (setting == GxOutSetting.TimeSeriesWeatherSymbols) pcm.tser = 1;
-        if (setting == GxOutSetting.TimeSeriesBarb) pcm.tser = 2;
+        if (mode == GraphicsOutputMode.Bar) pcm.gout1 = 2;
+        if (mode == GraphicsOutputMode.ErrorBar) pcm.gout1 = 3;
+        if (mode == GraphicsOutputMode.LineFill) pcm.gout1 = 4;
+        if (mode == GraphicsOutputMode.Stat) pcm.gout0 = 1;
+        if (mode == GraphicsOutputMode.Print) pcm.gout0 = 2;
+        if (mode == GraphicsOutputMode.TimeSeriesWeatherSymbols) pcm.tser = 1;
+        if (mode == GraphicsOutputMode.TimeSeriesBarb) pcm.tser = 2;
 
         if (pcm.gout0 == 9) pcm.gout0 = 0;
     }

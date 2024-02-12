@@ -159,70 +159,33 @@ public enum DataVariable
 }
 
 
+/// <summary>
+/// Map resolution options
+/// </summary>
 public enum MapResolution
 {
+    /// <summary>
+    /// Defaults to low resolution
+    /// </summary>
     Undefined = 0,
+    /// <summary>
+    /// Low resolution map (default)
+    /// </summary>
     LowResolution = 1,
+    /// <summary>
+    /// Medium resolution: includes state and country lines
+    /// </summary>
     MediumResolution = 2,
+    /// <summary>
+    /// High resolution: includes state and country lines
+    /// </summary>
     HighResolution = 3
-    
 }
 
 public enum Orientation
 {
     Landscape = 1,
     Portrait = 2
-}
-
-public enum ClearAction
-{
-    NoReset = 1,
-    Events = 2,
-    Graphics = 3,
-    HBuff = 4,
-    Rband = 6,
-    SdfWrite = 8,
-    Mask = 9,
-    Shp = 10
-}
-
-/// <summary>
-/// Output image format
-/// </summary>
-public enum OutputFormat
-{
-    /// <summary>
-    /// Not defined. The output format will be determined by the file extension of the path parameter.
-    /// </summary>
-    Undefined = 0,
-    /// <summary>
-    /// EPS Output format
-    /// </summary>
-    EPS = 1,
-    /// <summary>
-    /// PS Output format
-    /// </summary>
-    PS = 2,
-    /// <summary>
-    /// PDF output format
-    /// </summary>
-    PDF = 3,
-    /// <summary>
-    /// SVG output format
-    /// </summary>
-    SVG = 4,
-    /// <summary>
-    /// PNG output format
-    /// </summary>
-    PNG = 5,
-    /// <summary>
-    /// GIF output format
-    /// </summary>
-    GIF = 6,
-    /// <summary>
-    /// JPEG output format
-    /// </summary>
-    JPEG = 7
 }
 
 public enum BackgroundColor
@@ -244,60 +207,6 @@ public enum KmlOutputFlag
     Image = 1,
     Contour = 2,
     Polygon = 3
-}
-
-public enum OnOffSetting
-{
-    On,
-    Off
-}
-
-public enum Projection
-{
-    Off = 0,
-    Scaled = 1,
-    Latlon = 2,
-    Nps = 3,
-    Sps = 4,
-    Robinson = 5,
-    Mollweide = 6,
-    Ortographic = 7,
-    Lambert = 13
-}
-
-public enum GxOutSetting
-{
-    Contour = 1,
-    Shaded = 2,
-    Shade1 = 3,
-    Shade2 = 4,
-    Shade2b = 5,
-    Grid = 6,
-    Vector = 7,
-    Scatter = 8,
-    FGrid = 9,
-    FWrite = 10,
-    Stream = 11,
-    GridFill = 12,
-    GeoTiff = 13,
-    Kml = 14,
-    Imap = 15,
-    Shape = 16,
-    StationValues=17,
-    Barb = 18,
-    FindStation = 19,
-    Model = 20,
-    WXSymbol = 21,
-    StationMark = 22,
-    StationWrt = 23,
-    Line = 24,
-    Stat = 25,
-    Print = 26,
-    TimeSeriesWeatherSymbols = 27,
-    TimeSeriesBarb = 28,
-    Bar = 29,
-    ErrorBar = 30,
-    LineFill = 31,
 }
 
 public enum LabelOption {
