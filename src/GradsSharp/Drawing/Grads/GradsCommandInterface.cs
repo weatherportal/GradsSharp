@@ -1328,8 +1328,8 @@ internal class GradsCommandInterface : IGradsCommandInterface
                 pfiv.ubuf = pgr1.UndefinedMask;
             }
 
-            pgr1.GridData = null;
-            pgr1.UndefinedMask = null;
+            // pgr1.GridData = null;
+            // pgr1.UndefinedMask = null;
         }
         
         
