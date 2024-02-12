@@ -5347,9 +5347,9 @@ internal class GaGx
         /* open the output file */
         //TODO convert to try/catch
         if (!String.IsNullOrEmpty(pcm.kmlname))
-            kmlfp = File.OpenWrite(pcm.kmlname);
+            kmlfp = File.Create(pcm.kmlname);
         else
-            kmlfp = File.OpenWrite("grads.kml");
+            kmlfp = File.Create("grads.kml");
         if (kmlfp == null)
         {
             if (!String.IsNullOrEmpty(pcm.kmlname))
