@@ -196,8 +196,6 @@ public interface IGradsCommandInterface
     int DrawString(double x, double y, string text);
     void SetMapOptions(int color, LineStyle? style, int? thickness);
 
-    void SetDataAction(Action<IDataAdapter> dataAction);
-
     void SetPaperSize(double xsize, double ysize);
 
     void SetKmlOutput(KmlOutputFlag flag, string filename);

@@ -2538,11 +2538,6 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetDataAction(Action<IDataAdapter> dataAction)
-    {
-        _drawingContext.CommonData.DataAction = dataAction;
-    }
-
     public void SetPaperSize(double xsize, double ysize)
     {
         _drawingContext.CommonData.xsiz = xsize;

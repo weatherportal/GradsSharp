@@ -4,6 +4,9 @@ using GradsSharp.Models.Internal;
 
 namespace GradsSharp.Data.GridFunctions;
 
+/// <summary>
+/// Math functions for grids
+/// </summary>
 public static class GridMathFunctions
 {
 

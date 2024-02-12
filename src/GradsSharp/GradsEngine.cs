@@ -109,4 +109,6 @@ public class GradsEngine
     /// Entry to the in memory database of colors, line widths, ...
     /// </summary>
     public IGradsDatabase GradsDatabase => _drawingContext.GradsDatabase;
+    
+    internal DrawingContext DrawingContext => _drawingContext;
 }
