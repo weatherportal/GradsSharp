@@ -1,6 +1,7 @@
 ﻿using GradsSharp.Data.Grads;
 using GradsSharp.Drawing;
 using GradsSharp.Drawing.Grads;
+using GradsSharp.Enums;
 using GradsSharp.Models;
 using Microsoft.Extensions.Logging;
 

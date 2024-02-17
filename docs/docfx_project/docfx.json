@@ -23,13 +23,8 @@
   ],
   "build": {
     "globalMetadata": {
-      "_appTitle": "GradsSharp API Docs",
-      "_appName": "GradsSharp",
-      "_appLogoPath": "images/logo.png",
-      "_appFaviconPath": "images/favicon.png",
-      "_copyrightFooter": "© Weatherportal. All rights reserved.",
-      "_enableSearch": true,
-      "_enableNewTab": true
+      
+      "_enableSearch": true
     },
     "content": [
       {
@@ -59,9 +54,11 @@
     "fileMetadataFiles": [],
     "template": [
       
-      "default"
+      "default",
+      "modern",
+      "templates/material"
     ],
-    "postProcessors": [],
+    "postProcessors": ["ExtractSearchIndex"],
     "keepFileLink": false,
     "markdownEngineName": "markdig",
     "disableGitFeatures": false

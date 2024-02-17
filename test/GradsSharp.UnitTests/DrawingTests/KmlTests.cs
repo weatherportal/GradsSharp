@@ -32,8 +32,8 @@ public class KmlTests
         engine.GradsCommandInterface.SetPolarStereoValues(OnOffSetting.On, -2.9,12,47,56);
         engine.GradsCommandInterface.SetMapResolution(MapResolution.HighResolution);
         engine.GradsCommandInterface.SetGridOptions(GridOption.On);
-        engine.GradsCommandInterface.SetLat(47,56);
-        engine.GradsCommandInterface.SetLon(-2.9,12);
+        engine.GradsCommandInterface.SetLatitude(47,56);
+        engine.GradsCommandInterface.SetLongitude(-2.9,12);
         engine.GradsCommandInterface.SetT(1);
         engine.GradsCommandInterface.SetGraphicsOutputMode(GraphicsOutputMode.Kml);
         

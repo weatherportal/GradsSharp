@@ -26,7 +26,7 @@ public enum Projection
     /// </summary>
     Sps = 4,
     /// <summary>
-    /// Robinson projection, requires <see cref="GradsSharp.IGradsCommandInterface.SetLon"/> -180 180, <see cref="GradsSharp.IGradsCommandInterface.SetLat"/> -90 90
+    /// Robinson projection, requires <see cref="IGradsCommandInterface.SetLongitude"/> -180 180, <see cref="IGradsCommandInterface.SetLatitude"/> -90 90
     /// </summary>
     Robinson = 5,
     /// <summary>

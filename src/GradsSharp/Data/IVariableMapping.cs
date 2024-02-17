@@ -1,4 +1,5 @@
-﻿using GradsSharp.Models;
+﻿using GradsSharp.Enums;
+using GradsSharp.Models;
 
 namespace GradsSharp.Data;
 

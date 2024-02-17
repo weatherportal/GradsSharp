@@ -33,8 +33,8 @@ public class ContourFillTests
         engine.GradsCommandInterface.SetPolarStereoValues(OnOffSetting.On, -2.9,12,47,56);
         engine.GradsCommandInterface.SetMapResolution(MapResolution.HighResolution);
         engine.GradsCommandInterface.SetGridOptions(GridOption.On);
-        engine.GradsCommandInterface.SetLat(47,56);
-        engine.GradsCommandInterface.SetLon(-2.9,12);
+        engine.GradsCommandInterface.SetLatitude(47,56);
+        engine.GradsCommandInterface.SetLongitude(-2.9,12);
         engine.GradsCommandInterface.SetT(1);
         engine.GradsCommandInterface.SetGraphicsOutputMode(GraphicsOutputMode.Shade2b);
         SetTemp2m();
@@ -42,7 +42,7 @@ public class ContourFillTests
 
         var outputFile = Path.GetTempFileName();
         
-        engine.GradsCommandInterface.printim(outputFile, horizontalSize:1024, verticalSize:768, format: OutputFormat.PNG);
+        engine.GradsCommandInterface.ExportImage(outputFile, horizontalSize:1024, verticalSize:768, format: OutputFormat.PNG);
 
         
         var generated = Bitmap.FromFile(outputFile) as Bitmap;

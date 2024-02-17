@@ -1,12 +1,36 @@
-﻿namespace GradsSharp.Models;
+﻿using GradsSharp.Enums;
 
+namespace GradsSharp.Models;
+
+/// <summary>
+/// This class is used to supply information about the opened file to GradsEngine.
+/// </summary>
 public class InputFile
 {
+    
+    /// <summary>
+    /// Path to the file
+    /// </summary>
     public string FileName { get; set; }
+    
+    /// <summary>
+    /// Type of the file
+    /// </summary>
     public FileType FileType { get; set; } = FileType.Gridded;
 
+    /// <summary>
+    /// Preprojected type
+    /// </summary>
     public PreprojectedType PreprojectedType { get; set; } = PreprojectedType.None;
+    
+    /// <summary>
+    /// Horizontal size of the preprojected grid
+    /// </summary>
     public int PreprojectedISize { get; set; }
+    
+    /// <summary>
+    /// Vertical size of the preprojected grid
+    /// </summary>
     public int PreprojectedJSize { get; set; }
     
     /// <summary>
@@ -60,8 +84,14 @@ public class InputFile
     
     public double[]? PreProjectionValues { get; set; }
     
+    /// <summary>
+    /// Time step of the file
+    /// </summary>
     public DateTime ReferenceTime { get; set; }
 
+    /// <summary>
+    /// List of variables in the file
+    /// </summary>
     public List<InputVariable> Variables { get; set; } = new();
     
     public int TimeStepIntervalMinutes { get; set; }

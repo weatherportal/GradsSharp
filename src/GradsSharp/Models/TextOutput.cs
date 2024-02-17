@@ -1,5 +1,7 @@
 
 
+using GradsSharp.Enums;
+
 namespace GradsSharp.Models;
 
 public class TextOutput

@@ -1,6 +1,10 @@
 using GradsSharp.Data.GridFunctions;
 using GradsSharp.Models;
 
+
+/// <summary>
+/// Contains methods for performing mathematical operations on grids
+/// </summary>
 public class GridMath
 {
     /// <summary>

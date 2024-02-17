@@ -32,8 +32,8 @@ public class ContourTests
         engine.GradsCommandInterface.SetPolarStereoValues(OnOffSetting.On, -2.9,12,47,56);
         engine.GradsCommandInterface.SetMapResolution(MapResolution.HighResolution);
         engine.GradsCommandInterface.SetGridOptions(GridOption.On);
-        engine.GradsCommandInterface.SetLat(47,56);
-        engine.GradsCommandInterface.SetLon(-2.9,12);
+        engine.GradsCommandInterface.SetLatitude(47,56);
+        engine.GradsCommandInterface.SetLongitude(-2.9,12);
         engine.GradsCommandInterface.SetT(1);
         engine.GradsCommandInterface.SetGraphicsOutputMode(GraphicsOutputMode.Contour);
         SetTemp2m();
@@ -41,7 +41,7 @@ public class ContourTests
 
         var outputFile = Path.GetTempFileName();
         
-        engine.GradsCommandInterface.printim(outputFile, horizontalSize:1024, verticalSize:768, format: OutputFormat.PNG);
+        engine.GradsCommandInterface.ExportImage(outputFile, horizontalSize:1024, verticalSize:768, format: OutputFormat.PNG);
         
         var generated = Bitmap.FromFile(outputFile) as Bitmap;
         var expected = Bitmap.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.contour-test.png")) as Bitmap;

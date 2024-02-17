@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Drawing.Grads;
+using GradsSharp.Enums;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 

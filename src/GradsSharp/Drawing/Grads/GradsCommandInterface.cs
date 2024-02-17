@@ -63,7 +63,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             pcm.pfid = pcm.pfi1.First();
             pcm.dfnum = 1;
             var pfi = pcm.pfi1.First();
-            if (pfi.type == 2 || pfi.wrap > 0) SetLon(0, 360);
+            if (pfi.type == 2 || pfi.wrap > 0) SetLongitude(0, 360);
             else
             {
                 SetX(1, pfi.dnum[0]);
@@ -71,8 +71,8 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
             if (pfi.type == 2)
             {
-                SetLat(-90, 90);
-                SetLev(500);
+                SetLatitude(-90, 90);
+                SetLevel(500);
             }
             else
             {
@@ -203,7 +203,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void printim(string path, OutputFormat format = OutputFormat.Undefined, string backgroundImage = "",
+    public void ExportImage(string path, OutputFormat format = OutputFormat.Undefined, string backgroundImage = "",
         string foregroundImage = "",
         BackgroundColor backColor = BackgroundColor.Default, int transparentColor = -1,
         int horizontalSize = -999, int verticalSize = -999, double borderWidth = -1.0)
@@ -640,7 +640,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.Logger?.LogInformation($"cmax = {cmax}");
     }
 
-    public void SetCMark(double cmark)
+    public void SetMarkerType(double cmark)
     {
         pcm.cmax = cmark;
         _drawingContext.Logger?.LogInformation($"cmark = {cmark}");
@@ -731,7 +731,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         if (pcm.gout0 == 9) pcm.gout0 = 0;
     }
 
-    public void SetCLab(LabelOption option, string format = "")
+    public void SetContourLabelOptions(LabelOption option, string format = "")
     {
         string str = pcm.clstr;
         int i1 = pcm.clab;
@@ -766,7 +766,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pcm.clab = i1;
     }
 
-    public void SetXLab(LabelOption option, string format = "")
+    public void SetXAxisLabelOptions(LabelOption option, string format = "")
     {
         string str = pcm.xlstr;
         int i1 = pcm.xlab;
@@ -801,7 +801,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pcm.xlab = i1;
     }
 
-    public void SetYLab(LabelOption option, string format = "")
+    public void SetYAxisLabelOptions(LabelOption option, string format = "")
     {
         string str = pcm.ylstr;
         int i1 = pcm.ylab;
@@ -883,7 +883,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetContourLabelOptions(int color = -1, int thickness = -1, int size = -1)
+    public void SetContourLabelStyle(int color = -1, int thickness = -1, double size = 0.09)
     {
         if (size > 0)
         {
@@ -948,25 +948,25 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCThick(int cthck)
+    public void SetContourLineThickness(int cthck)
     {
         pcm.cthick = cthck;
         _drawingContext.Logger?.LogInformation($"cthick = {pcm.cthick}");
     }
 
-    public void SetCStyle(LineStyle style)
+    public void SetContourLineStyle(LineStyle style)
     {
         pcm.cstyle = (int)style;
         _drawingContext.Logger?.LogInformation($"cstyle = {pcm.cstyle}");
     }
 
-    public void SetCColor(int color)
+    public void SetContourLineColor(int color)
     {
         pcm.ccolor = color;
         _drawingContext.Logger?.LogInformation($"ccolor = {pcm.ccolor}");
     }
 
-    public void SetCSmooth(SmoothOption option)
+    public void SetContourLineSmoothing(SmoothOption option)
     {
         pcm.csmth = (int)option;
         _drawingContext.Logger?.LogInformation($"csmth = {pcm.csmth}");
@@ -1000,17 +1000,17 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetLon(double min, double max = Double.MaxValue)
+    public void SetLongitude(double min, double max = Double.MaxValue)
     {
         SetDimensionData(0, min, max);
     }
 
-    public void SetLat(double min, double max = Double.MaxValue)
+    public void SetLatitude(double min, double max = Double.MaxValue)
     {
         SetDimensionData(1, min, max);
     }
 
-    public void SetLev(double lev)
+    public void SetLevel(double lev)
     {
         SetDimensionData(2, lev);
     }
@@ -2828,7 +2828,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             }
         }
 
-        SetLev(abs);
+        SetLevel(abs);
 
         IGradsGrid pgr1 = GetVariable(new VariableDefinition()
         {
@@ -2932,7 +2932,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             }
         }
         
-        SetLev(abs);
+        SetLevel(abs);
 
         IGradsGrid pgr2 = GetVariable(new VariableDefinition()
         {
@@ -3121,7 +3121,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             }
         }
 
-        SetLev(abs);
+        SetLevel(abs);
         IGradsGrid pgr = GetVariable(new VariableDefinition()
         {
             HeightType = FixedSurfaceType.IsobaricSurface,
