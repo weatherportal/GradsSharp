@@ -4,6 +4,7 @@ using GradsSharp.Data;
 using GradsSharp.Data.GridFunctions;
 using GradsSharp.DataReader.GFS;
 using GradsSharp.DrawingEngine.Cairo;
+using GradsSharp.Enums;
 using GradsSharp.Models;
 
 namespace GradsSharp.UnitTests.DrawingTests;
@@ -28,19 +29,19 @@ public class ContourTests
     {
         engine.GradsCommandInterface.SetGrads(OnOffSetting.Off);
         engine.GradsCommandInterface.Open("Data//gfs.t00z.pgrb2.0p25.f001", reader);
-        engine.GradsCommandInterface.SetMPVals(OnOffSetting.On, -2.9,12,47,56);
+        engine.GradsCommandInterface.SetPolarStereoValues(OnOffSetting.On, -2.9,12,47,56);
         engine.GradsCommandInterface.SetMapResolution(MapResolution.HighResolution);
         engine.GradsCommandInterface.SetGridOptions(GridOption.On);
-        engine.GradsCommandInterface.SetLat(47,56);
-        engine.GradsCommandInterface.SetLon(-2.9,12);
+        engine.GradsCommandInterface.SetLatitude(47,56);
+        engine.GradsCommandInterface.SetLongitude(-2.9,12);
         engine.GradsCommandInterface.SetT(1);
-        engine.GradsCommandInterface.SetGraphicsOut(GxOutSetting.Contour);
+        engine.GradsCommandInterface.SetGraphicsOutputMode(GraphicsOutputMode.Contour);
         SetTemp2m();
         engine.GradsCommandInterface.Display("t2m");
 
         var outputFile = Path.GetTempFileName();
         
-        engine.GradsCommandInterface.printim(outputFile, horizontalSize:1024, verticalSize:768, format: OutputFormat.PNG);
+        engine.GradsCommandInterface.ExportImage(outputFile, horizontalSize:1024, verticalSize:768, format: OutputFormat.PNG);
         
         var generated = Bitmap.FromFile(outputFile) as Bitmap;
         var expected = Bitmap.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.contour-test.png")) as Bitmap;

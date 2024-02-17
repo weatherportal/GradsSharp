@@ -1,6 +1,7 @@
 ﻿using GradsSharp.Data.Grads;
 using GradsSharp.Drawing;
 using GradsSharp.Drawing.Grads;
+using GradsSharp.Enums;
 using GradsSharp.Models;
 using Microsoft.Extensions.Logging;
 
@@ -109,4 +110,6 @@ public class GradsEngine
     /// Entry to the in memory database of colors, line widths, ...
     /// </summary>
     public IGradsDatabase GradsDatabase => _drawingContext.GradsDatabase;
+    
+    internal DrawingContext DrawingContext => _drawingContext;
 }

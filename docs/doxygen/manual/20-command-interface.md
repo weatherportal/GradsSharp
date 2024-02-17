@@ -1,7 +1,7 @@
 # Command Interface
 
 The command interface is the primary way of interacting with the GradsEngine.
-After initializing the engine you can use the methods defined in the [IGradsCommandInterface](/api/gradssharp/GradsSharp.IGradsCommandInterface.html) to interact with the engine.
+After initializing the engine you can use the methods defined in the [IGradsCommandInterface](/interface_grads_sharp_1_1_i_grads_command_interface.html) to interact with the engine.
 
 
 Some sample code:

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using GradsSharp.Enums;
+using Microsoft.VisualBasic;
 
 namespace GradsSharp.Models;
 

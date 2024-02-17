@@ -4,6 +4,7 @@ using GradsSharp.Data;
 using GradsSharp.Data.GridFunctions;
 using GradsSharp.DataReader.GFS;
 using GradsSharp.DrawingEngine.Cairo;
+using GradsSharp.Enums;
 using GradsSharp.Models;
 
 namespace GradsSharp.UnitTests;
@@ -28,13 +29,13 @@ public class KmlTests
     {
         engine.GradsCommandInterface.SetGrads(OnOffSetting.Off);
         engine.GradsCommandInterface.Open("Data//gfs.t00z.pgrb2.0p25.f001", reader);
-        engine.GradsCommandInterface.SetMPVals(OnOffSetting.On, -2.9,12,47,56);
+        engine.GradsCommandInterface.SetPolarStereoValues(OnOffSetting.On, -2.9,12,47,56);
         engine.GradsCommandInterface.SetMapResolution(MapResolution.HighResolution);
         engine.GradsCommandInterface.SetGridOptions(GridOption.On);
-        engine.GradsCommandInterface.SetLat(47,56);
-        engine.GradsCommandInterface.SetLon(-2.9,12);
+        engine.GradsCommandInterface.SetLatitude(47,56);
+        engine.GradsCommandInterface.SetLongitude(-2.9,12);
         engine.GradsCommandInterface.SetT(1);
-        engine.GradsCommandInterface.SetGraphicsOut(GxOutSetting.Kml);
+        engine.GradsCommandInterface.SetGraphicsOutputMode(GraphicsOutputMode.Kml);
         
         SetTemp2m();
         

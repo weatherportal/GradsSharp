@@ -1,4 +1,6 @@
-﻿namespace GradsSharp.Models;
+﻿using GradsSharp.Enums;
+
+namespace GradsSharp.Models;
 
 public class ColorBarSettings
 {

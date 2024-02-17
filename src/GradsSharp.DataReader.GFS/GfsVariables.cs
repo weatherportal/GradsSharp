@@ -1,5 +1,6 @@
 ﻿using GradsSharp.Data;
 using GradsSharp.Data.Grib;
+using GradsSharp.Enums;
 using GradsSharp.Models;
 
 namespace GradsSharp.DataReader.GFS;

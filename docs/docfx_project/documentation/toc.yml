@@ -2,3 +2,5 @@
   href: getting-started.md
 - name: Command Interface
   href: command-interface.md
+- name: Creating a reader
+  href: creating-a-reader.md

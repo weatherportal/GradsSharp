@@ -1,4 +1,5 @@
 ﻿using GradsSharp.Data;
+using GradsSharp.Enums;
 using GradsSharp.Exceptions;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
@@ -62,7 +63,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             pcm.pfid = pcm.pfi1.First();
             pcm.dfnum = 1;
             var pfi = pcm.pfi1.First();
-            if (pfi.type == 2 || pfi.wrap > 0) SetLon(0, 360);
+            if (pfi.type == 2 || pfi.wrap > 0) SetLongitude(0, 360);
             else
             {
                 SetX(1, pfi.dnum[0]);
@@ -70,8 +71,8 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
             if (pfi.type == 2)
             {
-                SetLat(-90, 90);
-                SetLev(500);
+                SetLatitude(-90, 90);
+                SetLevel(500);
             }
             else
             {
@@ -111,7 +112,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.GradsDrawingInterface.gxfrme(1);
     }
 
-    public void close()
+    public void Close()
     {
         int fnum = pcm.pfi1.Count;
         var file = pcm.pfi1.LastOrDefault();
@@ -137,7 +138,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void clear(ClearAction? action)
+    public void Clear(ClearAction? action)
     {
         int iAc = 0;
         
@@ -202,7 +203,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void printim(string path, OutputFormat format = OutputFormat.Undefined, string backgroundImage = "",
+    public void ExportImage(string path, OutputFormat format = OutputFormat.Undefined, string backgroundImage = "",
         string foregroundImage = "",
         BackgroundColor backColor = BackgroundColor.Default, int transparentColor = -1,
         int horizontalSize = -999, int verticalSize = -999, double borderWidth = -1.0)
@@ -532,7 +533,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.GradsDrawingInterface.gxacol(colorNr, red, green, blue, alpha);
     }
 
-    public void SetPArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0)
+    public void SetPrintingArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0)
     {
         if (onOff == OnOffSetting.Off)
         {
@@ -556,7 +557,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCInt(double val)
+    public void SetContourInterval(double val)
     {
         if (val <= 0)
         {
@@ -569,7 +570,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetMPVals(OnOffSetting onOff, double lonmin = 0.0, double lonmax = 0.0, double latmin = 0.0,
+    public void SetPolarStereoValues(OnOffSetting onOff, double lonmin = 0.0, double lonmax = 0.0, double latmin = 0.0,
         double latmax = 0.0)
     {
         if (onOff == OnOffSetting.Off)
@@ -588,7 +589,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCLevs(double[] levels)
+    public void SetContourLevels(double[] levels)
     {
         if (levels.Length > 254)
         {
@@ -610,7 +611,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCCols(int[] cols)
+    public void SetContourColors(int[] cols)
     {
         if (cols.Length > 255)
         {
@@ -627,25 +628,25 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCMin(double cmin)
+    public void SetContourMinimum(double cmin)
     {
         pcm.cmin = cmin;
         _drawingContext.Logger?.LogInformation($"cmin = {cmin}");
     }
 
-    public void SetCMax(double cmax)
+    public void SetContourMaximum(double cmax)
     {
         pcm.cmax = cmax;
         _drawingContext.Logger?.LogInformation($"cmax = {cmax}");
     }
 
-    public void SetCMark(double cmark)
+    public void SetMarkerType(double cmark)
     {
         pcm.cmax = cmark;
         _drawingContext.Logger?.LogInformation($"cmark = {cmark}");
     }
 
-    public void SetMProjection(Projection projection)
+    public void SetMapProjection(Projection projection)
     {
         pcm.mproj = (int)projection;
     }
@@ -666,71 +667,71 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetGraphicsOut(GxOutSetting setting)
+    public void SetGraphicsOutputMode(GraphicsOutputMode mode)
     {
-        if (setting == GxOutSetting.Contour) pcm.gout2a = 1;
-        if (setting == GxOutSetting.Shaded) pcm.gout2a = 16;
-        if (setting == GxOutSetting.Shade1) pcm.gout2a = 2;
-        if (setting == GxOutSetting.Shade2) pcm.gout2a = 16;
-        if (setting == GxOutSetting.Shade2b) pcm.gout2a = 17;
-        if (setting == GxOutSetting.Grid)
+        if (mode == GraphicsOutputMode.Contour) pcm.gout2a = 1;
+        if (mode == GraphicsOutputMode.Shaded) pcm.gout2a = 16;
+        if (mode == GraphicsOutputMode.Shade1) pcm.gout2a = 2;
+        if (mode == GraphicsOutputMode.Shade2) pcm.gout2a = 16;
+        if (mode == GraphicsOutputMode.Shade2b) pcm.gout2a = 17;
+        if (mode == GraphicsOutputMode.Grid)
         {
             pcm.gout2a = 3;
             pcm.gout2b = 3;
         }
 
-        if (setting == GxOutSetting.Vector)
+        if (mode == GraphicsOutputMode.Vector)
         {
             pcm.gout2b = 4;
             pcm.goutstn = 6;
             pcm.gout1a = 1;
         }
 
-        if (setting == GxOutSetting.Scatter) pcm.gout2b = 5;
-        if (setting == GxOutSetting.FGrid) pcm.gout2a = 6;
-        if (setting == GxOutSetting.FWrite) pcm.gout2a = 7;
-        if (setting == GxOutSetting.Stream) pcm.gout2b = 8;
-        if (setting == GxOutSetting.GridFill) pcm.gout2a = 10;
-        if (setting == GxOutSetting.GeoTiff) pcm.gout2a = 12;
-        if (setting == GxOutSetting.Kml) pcm.gout2a = 13;
-        if (setting == GxOutSetting.Imap) pcm.gout2a = 14;
-        if (setting == GxOutSetting.Shape)
+        if (mode == GraphicsOutputMode.Scatter) pcm.gout2b = 5;
+        if (mode == GraphicsOutputMode.FGrid) pcm.gout2a = 6;
+        if (mode == GraphicsOutputMode.FWrite) pcm.gout2a = 7;
+        if (mode == GraphicsOutputMode.Stream) pcm.gout2b = 8;
+        if (mode == GraphicsOutputMode.GridFill) pcm.gout2a = 10;
+        if (mode == GraphicsOutputMode.GeoTiff) pcm.gout2a = 12;
+        if (mode == GraphicsOutputMode.Kml) pcm.gout2a = 13;
+        if (mode == GraphicsOutputMode.Imap) pcm.gout2a = 14;
+        if (mode == GraphicsOutputMode.Shape)
         {
             pcm.gout2a = 15;
             pcm.goutstn = 9;
         }
 
-        if (setting == GxOutSetting.StationValues) pcm.goutstn = 1;
-        if (setting == GxOutSetting.Barb)
+        if (mode == GraphicsOutputMode.StationValues) pcm.goutstn = 1;
+        if (mode == GraphicsOutputMode.Barb)
         {
             pcm.goutstn = 2;
             pcm.gout2b = 9;
             pcm.gout1a = 2;
         }
 
-        if (setting == GxOutSetting.FindStation) pcm.goutstn = 3;
-        if (setting == GxOutSetting.Model) pcm.goutstn = 4;
-        if (setting == GxOutSetting.WXSymbol) pcm.goutstn = 5;
-        if (setting == GxOutSetting.StationMark) pcm.goutstn = 7;
-        if (setting == GxOutSetting.StationWrt) pcm.goutstn = 8;
-        if (setting == GxOutSetting.Line)
+        if (mode == GraphicsOutputMode.FindStation) pcm.goutstn = 3;
+        if (mode == GraphicsOutputMode.Model) pcm.goutstn = 4;
+        if (mode == GraphicsOutputMode.WXSymbol) pcm.goutstn = 5;
+        if (mode == GraphicsOutputMode.StationMark) pcm.goutstn = 7;
+        if (mode == GraphicsOutputMode.StationWrt) pcm.goutstn = 8;
+        if (mode == GraphicsOutputMode.Line)
         {
             pcm.gout1 = 1;
             pcm.tser = 0;
         }
 
-        if (setting == GxOutSetting.Bar) pcm.gout1 = 2;
-        if (setting == GxOutSetting.ErrorBar) pcm.gout1 = 3;
-        if (setting == GxOutSetting.LineFill) pcm.gout1 = 4;
-        if (setting == GxOutSetting.Stat) pcm.gout0 = 1;
-        if (setting == GxOutSetting.Print) pcm.gout0 = 2;
-        if (setting == GxOutSetting.TimeSeriesWeatherSymbols) pcm.tser = 1;
-        if (setting == GxOutSetting.TimeSeriesBarb) pcm.tser = 2;
+        if (mode == GraphicsOutputMode.Bar) pcm.gout1 = 2;
+        if (mode == GraphicsOutputMode.ErrorBar) pcm.gout1 = 3;
+        if (mode == GraphicsOutputMode.LineFill) pcm.gout1 = 4;
+        if (mode == GraphicsOutputMode.Stat) pcm.gout0 = 1;
+        if (mode == GraphicsOutputMode.Print) pcm.gout0 = 2;
+        if (mode == GraphicsOutputMode.TimeSeriesWeatherSymbols) pcm.tser = 1;
+        if (mode == GraphicsOutputMode.TimeSeriesBarb) pcm.tser = 2;
 
         if (pcm.gout0 == 9) pcm.gout0 = 0;
     }
 
-    public void SetCLab(LabelOption option, string format = "")
+    public void SetContourLabelOptions(LabelOption option, string format = "")
     {
         string str = pcm.clstr;
         int i1 = pcm.clab;
@@ -765,7 +766,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pcm.clab = i1;
     }
 
-    public void SetXLab(LabelOption option, string format = "")
+    public void SetXAxisLabelOptions(LabelOption option, string format = "")
     {
         string str = pcm.xlstr;
         int i1 = pcm.xlab;
@@ -800,7 +801,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pcm.xlab = i1;
     }
 
-    public void SetYLab(LabelOption option, string format = "")
+    public void SetYAxisLabelOptions(LabelOption option, string format = "")
     {
         string str = pcm.ylstr;
         int i1 = pcm.ylab;
@@ -882,7 +883,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetContourLabelOptions(int color = -1, int thickness = -1, int size = -1)
+    public void SetContourLabelStyle(int color = -1, int thickness = -1, double size = 0.09)
     {
         if (size > 0)
         {
@@ -947,25 +948,25 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetCThick(int cthck)
+    public void SetContourLineThickness(int cthck)
     {
         pcm.cthick = cthck;
         _drawingContext.Logger?.LogInformation($"cthick = {pcm.cthick}");
     }
 
-    public void SetCStyle(LineStyle style)
+    public void SetContourLineStyle(LineStyle style)
     {
         pcm.cstyle = (int)style;
         _drawingContext.Logger?.LogInformation($"cstyle = {pcm.cstyle}");
     }
 
-    public void SetCColor(int color)
+    public void SetContourLineColor(int color)
     {
         pcm.ccolor = color;
         _drawingContext.Logger?.LogInformation($"ccolor = {pcm.ccolor}");
     }
 
-    public void SetCSmooth(SmoothOption option)
+    public void SetContourLineSmoothing(SmoothOption option)
     {
         pcm.csmth = (int)option;
         _drawingContext.Logger?.LogInformation($"csmth = {pcm.csmth}");
@@ -999,17 +1000,17 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetLon(double min, double max = Double.MaxValue)
+    public void SetLongitude(double min, double max = Double.MaxValue)
     {
         SetDimensionData(0, min, max);
     }
 
-    public void SetLat(double min, double max = Double.MaxValue)
+    public void SetLatitude(double min, double max = Double.MaxValue)
     {
         SetDimensionData(1, min, max);
     }
 
-    public void SetLev(double lev)
+    public void SetLevel(double lev)
     {
         SetDimensionData(2, lev);
     }
@@ -2537,11 +2538,6 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
-    public void SetDataAction(Action<IDataAdapter> dataAction)
-    {
-        _drawingContext.CommonData.DataAction = dataAction;
-    }
-
     public void SetPaperSize(double xsize, double ysize)
     {
         _drawingContext.CommonData.xsiz = xsize;
@@ -2832,7 +2828,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             }
         }
 
-        SetLev(abs);
+        SetLevel(abs);
 
         IGradsGrid pgr1 = GetVariable(new VariableDefinition()
         {
@@ -2936,7 +2932,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             }
         }
         
-        SetLev(abs);
+        SetLevel(abs);
 
         IGradsGrid pgr2 = GetVariable(new VariableDefinition()
         {
@@ -3125,7 +3121,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
             }
         }
 
-        SetLev(abs);
+        SetLevel(abs);
         IGradsGrid pgr = GetVariable(new VariableDefinition()
         {
             HeightType = FixedSurfaceType.IsobaricSurface,

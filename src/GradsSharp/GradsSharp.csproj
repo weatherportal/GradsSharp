@@ -18,6 +18,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        
     </PropertyGroup>
 
     <PropertyGroup>
@@ -28,6 +29,10 @@
       <PackageReference Include="NGrib" Version="0.8.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="GradsSharp.UnitTests" />
+    </ItemGroup>
+    
     <ItemGroup>
       <None Remove="Data\hires" />
       <EmbeddedResource Include="Data\hires" />
