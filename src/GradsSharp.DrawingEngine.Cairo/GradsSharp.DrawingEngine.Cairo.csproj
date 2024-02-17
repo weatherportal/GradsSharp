@@ -4,7 +4,6 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>0.0.39</Version>
         <Title>Cairo DrawingEngine for GradsSharp</Title>
         <Authors>Chase2Be</Authors>
         <Description>Cairo DrawingEngine for GradsSharp</Description>

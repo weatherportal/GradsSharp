@@ -4,7 +4,6 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>0.0.39</Version>
         <Title>GradsSharp.DataReader.GFS</Title>
         <Authors>Chase2be</Authors>
         <Description>GFS DataReader for GradsSharp</Description>
