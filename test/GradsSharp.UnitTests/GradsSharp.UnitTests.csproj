@@ -42,12 +42,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Data\Expected\contour-test.png" />
-      <EmbeddedResource Include="Data\Expected\contour-test.png" />
-      <None Remove="Data\Expected\contourfill-test.png" />
-      <EmbeddedResource Include="Data\Expected\contourfill-test.png" />
       <None Remove="Data\Expected\t2m.kml" />
       <EmbeddedResource Include="Data\Expected\t2m.kml" />
+      <None Remove="Data\Expected\contourfill-test.png" />
+      <EmbeddedResource Include="Data\Expected\contourfill-test.png" />
+      <None Remove="Data\Expected\contour-test.png" />
+      <EmbeddedResource Include="Data\Expected\contour-test.png" />
     </ItemGroup>
 
 </Project>
