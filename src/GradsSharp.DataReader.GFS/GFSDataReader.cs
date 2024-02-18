@@ -118,6 +118,16 @@ public class GFSDataReader : IGriddedDataReader
                     ds.ProductDefinitionSection.ProductDefinition.ParameterNumber)
             };
             gv.Abbreviation = gv.Definition.VariableName;
+
+            if (sfcType == FixedSurfaceType.IsobaricSurface)
+            {
+                gv.Abbreviation += "prs";
+            }
+            else if (sfcType == FixedSurfaceType.PotentialVorticitySurface)
+            {
+                gv.Abbreviation += "pvu";
+            }
+            
             inputFile.Variables.Add(gv);
         }
         
