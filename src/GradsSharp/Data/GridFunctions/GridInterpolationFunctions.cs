@@ -59,7 +59,6 @@ public static class GridInterpolationFunctions
             pgr[i+1] = cmd.GetVariable(new VariableDefinition
             {
                 HeightType = fncs[i].HeightType,
-                VariableType = fncs[i].VariableType,
                 HeightValue = clev,
                 VariableName = fncs[i].VariableName
             }) as GradsGrid;
@@ -148,7 +147,6 @@ returnGrid=1;
 			var grid = cmd.GetVariable(new VariableDefinition
 			{
 				HeightType = fncs[i].HeightType,
-				VariableType = fncs[i].VariableType,
 				HeightValue = clev,
 				VariableName = fncs[i].VariableName
 			}) as GradsGrid;

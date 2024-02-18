@@ -113,12 +113,11 @@ public class GFSDataReader : IGriddedDataReader
             {
                 HeightType = sfcType,
                 HeightValue = heightValue ?? Double.MinValue,
-                VariableName = "",
-                VariableType = _variableMapping.GetGrib2VarType((int)ds.Message.IndicatorSection.Discipline, 
+                VariableName = _variableMapping.GetGrib2VarType((int)ds.Message.IndicatorSection.Discipline, 
                     ds.ProductDefinitionSection.ProductDefinition.ParameterCategory,
                     ds.ProductDefinitionSection.ProductDefinition.ParameterNumber)
             };
-            gv.Abbreviation = gv.Definition.GetVarName();
+            gv.Abbreviation = gv.Definition.VariableName;
             inputFile.Variables.Add(gv);
         }
         
@@ -138,7 +137,7 @@ public class GFSDataReader : IGriddedDataReader
 
         if (_inputFile == null) throw new Exception("No file open yet");
         
-        GribDataSetInfo info = (GribDataSetInfo)_variableMapping.GetVariableInfo(definition.VariableType);
+        GribDataSetInfo info = (GribDataSetInfo)_variableMapping.GetVariableInfo(definition.VariableName);
 
         double[] dmin = grid.WorldDimensionMinimum;
         double[] dmax = grid.WorldDimensionMaximum;

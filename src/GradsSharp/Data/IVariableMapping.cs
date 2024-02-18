@@ -5,6 +5,6 @@ namespace GradsSharp.Data;
 
 public interface IVariableMapping
 {
-    object GetVariableInfo(DataVariable variable);
-    DataVariable GetGrib2VarType(int disciple, int paramCategory, int paramNumber);
+    object GetVariableInfo(string variable);
+    string GetGrib2VarType(int disciple, int paramCategory, int paramNumber);
 }

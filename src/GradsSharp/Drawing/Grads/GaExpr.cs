@@ -100,7 +100,7 @@ internal class GaExpr
                         pos = ptr ?? int.MaxValue;
                     }
                 }
-                else if (expression[pos] >= 'a' && expression[pos] <= 'z')
+                else if ((expression[pos] >= 'a' && expression[pos] <= 'z') || (expression[pos] >= 'A' && expression[pos] <= 'Z'))
                 {
                     /* Handle variable        */
                     if ((ptr = varprs(expression, pos, pst)) == null)
@@ -1010,7 +1010,7 @@ internal class GaExpr
         /* Get the variable or function name.  It must start with a
            letter, and consist of letters or numbers or underscore.  */
         i = 0;
-        while (i < ch.Length && ((ch[ipos] >= 'a' && ch[ipos] <= 'z') || (ch[ipos] >= '0' && ch[ipos] <= '9') || (ch[ipos] == '_')))
+        while (i < ch.Length && ((ch[ipos] >= 'a' && ch[ipos] <= 'z') || (ch[ipos] >= '0' && ch[ipos] <= '9') || (ch[ipos] == '_') || (ch[ipos] >= 'A' && ch[ipos] <= 'Z')) )
         {
             name[i] = ch[ipos];
             vnam[i] = ch[ipos];
