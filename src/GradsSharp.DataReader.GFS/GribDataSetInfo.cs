@@ -1,4 +1,4 @@
-namespace GradsSharp.Data.Grib;
+namespace GradsSharp.DataReader.GFS;
 
 public class GribDataSetInfo
 {

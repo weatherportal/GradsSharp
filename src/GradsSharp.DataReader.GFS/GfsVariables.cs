@@ -1,7 +1,4 @@
 ﻿using GradsSharp.Data;
-using GradsSharp.Data.Grib;
-using GradsSharp.Enums;
-using GradsSharp.Models;
 
 namespace GradsSharp.DataReader.GFS;
 
@@ -141,16 +138,5 @@ new GribDataSetInfo { Discipline = 10, ParameterCategory = 2, ParameterNumber = 
 
         return "";
         //throw new Exception("Variable not found");
-    }
-
-
-    public string GetVarType(string name)
-    {
-        foreach (var map in _mapping)
-        {
-            if (map.Value.ParameterName == name) return map.Key;
-        }
-
-        throw new Exception($"Variable name {name} not mapped");
     }
 }
