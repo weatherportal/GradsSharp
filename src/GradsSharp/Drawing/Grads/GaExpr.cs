@@ -1001,7 +1001,6 @@ internal class GaExpr
         double[] cvals;
         int toff = 0;
         int size, j, dotest, defined;
-        char[] name = new char[20], vnam = new char[20];
         string sName = "", sVName = "";
         int ru, r2u;
         int? pos;
@@ -1012,15 +1011,11 @@ internal class GaExpr
         i = 0;
         while (i < ch.Length && ((ch[ipos] >= 'a' && ch[ipos] <= 'z') || (ch[ipos] >= '0' && ch[ipos] <= '9') || (ch[ipos] == '_') || (ch[ipos] >= 'A' && ch[ipos] <= 'Z')) )
         {
-            name[i] = ch[ipos];
-            vnam[i] = ch[ipos];
+            sName += ch[ipos];
+            sVName += ch[ipos];
             ipos++;
             i++;
-            if (i > 16) break;
         }
-
-        name = name.Take(i).ToArray();
-        vnam = vnam.Take(i).ToArray(); /* Save 'i' for next loop */
 
         /* Check for the data set number in the variable name.  If there,
            then this has to be a variable name.                            */
@@ -1038,20 +1033,15 @@ internal class GaExpr
                 return (null);
             }
 
-            vnam[i] = '.';
+            sVName += '.';
             i++;
             while (ipos < pos)
             {
-                vnam[i] = ch[ipos];
+                sVName += ch[ipos];
                 ipos++;
                 i++;
             }
-
-            vnam[i] = '\0';
         }
-
-        sName = new string(name);
-        sVName = new string(vnam);
 
         /* Check for a predefined data object. */
         pfi = null;

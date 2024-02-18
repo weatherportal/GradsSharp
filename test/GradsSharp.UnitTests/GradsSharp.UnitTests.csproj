@@ -27,27 +27,27 @@
 
     <ItemGroup>
       <None Remove="Data\gfs.t00z.pgrb2.0p25.f001" />
-      <EmbeddedResource Include="Data\Expected\contour-test.png" />
-      <Content Include="Data\gfs.t00z.pgrb2.0p25.f001">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Data\Expected\contourfill-test.png" />
-      <EmbeddedResource Include="Data\Expected\contourfill-test.png" />
-      <None Remove="Data\Expected\t2m.kml" />
-      <EmbeddedResource Include="Data\Expected\t2m.kml" />
       <None Remove="lib\libcairo-2.dll" />
       <Content Include="lib\libcairo-2.dll">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
           <Link>libcairo-2.dll</Link>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Data\Expected\contour-test.png" />
+      <None Update="Data\gfs.t06z.pgrb2.0p25.f001">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="lib\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Data\Expected\contour-test.png" />
+      <EmbeddedResource Include="Data\Expected\contour-test.png" />
+      <None Remove="Data\Expected\contourfill-test.png" />
+      <EmbeddedResource Include="Data\Expected\contourfill-test.png" />
+      <None Remove="Data\Expected\t2m.kml" />
+      <EmbeddedResource Include="Data\Expected\t2m.kml" />
     </ItemGroup>
 
 </Project>

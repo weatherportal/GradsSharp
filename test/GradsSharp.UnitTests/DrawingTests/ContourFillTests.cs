@@ -29,7 +29,7 @@ public class ContourFillTests
     public void ContourFillTestTemperature2m()
     {
         engine.GradsCommandInterface.SetGrads(OnOffSetting.Off);
-        engine.GradsCommandInterface.Open("Data//gfs.t00z.pgrb2.0p25.f001", reader);
+        engine.GradsCommandInterface.Open("Data//gfs.t06z.pgrb2.0p25.f001", reader);
         engine.GradsCommandInterface.SetPolarStereoValues(OnOffSetting.On, -2.9,12,47,56);
         engine.GradsCommandInterface.SetMapResolution(MapResolution.HighResolution);
         engine.GradsCommandInterface.SetGridOptions(GridOption.On);
