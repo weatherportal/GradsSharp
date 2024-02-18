@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using CSJ2K.j2k.image;
 
 namespace GradsSharp.Drawing.Grads;
 
