@@ -40,11 +40,10 @@ engine.InitEngine();
 engine.GradsCommandInterface.Open("gfs.t00z.pgrb2.0p25.f001", new GFSDataReader());
 
 // setup the environment with the available methods in the command interface
-engine.GradsCommandInterface.SetPArea(OnOffSetting.On, 0, 11, 0, 8);
-engine.GradsCommandInterface.SetMPVals(OnOffSetting.On, -3, 12, 42, 55);
-engine.GradsCommandInterface.SetLat(42,55);
-engine.GradsCommandInterface.SetLon(-3,12);
-engine.GradsCommandInterface.SetGraphicsOut(GxOutSetting.Shaded);
+engine.GradsCommandInterface.SetPrintingArea(OnOffSetting.On, 0, 11, 0, 8);
+engine.GradsCommandInterface.SetLatitude(42,55);
+engine.GradsCommandInterface.SetLongitude(-3,12);
+engine.GradsCommandInterface.SetGraphicsOutputMode(GraphicsOutputMode.Shaded);
 engine.GradsCommandInterface.SetT(1);
 engine.GradsCommandInterface.SetMapResolution(MapResolution.HighResolution);
 
@@ -52,17 +51,17 @@ IGradsGrid data = engine.GradsCommandInterface.GetVariable(new VariableDefinitio
 {
     HeightType = FixedSurfaceType.SpecifiedHeightLevelAboveGround,
     HeightValue = 2,
-    VariableType = DataVariable.Temperature
+    VariableName = "Temperature"
 });
 
-data = data.Subtract(273.15);
+data = data - 273.15;
 
 engine.GradsCommandInterface.Define("t2m", data);
 
 engine.GradsCommandInterface.Display("t2m");
 
 // now output the image to output.png
-engine.GradsCommandInterface.printim("t2m.png", OutputFormat.PNG, horizontalSize: 1024, verticalSize: 768);
+engine.GradsCommandInterface.ExportImage("t2m.png", OutputFormat.PNG, horizontalSize: 1024, verticalSize: 768);
 
 engine.EndDrawing();
  

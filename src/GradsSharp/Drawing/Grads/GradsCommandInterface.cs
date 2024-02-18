@@ -2673,16 +2673,16 @@ internal class GradsCommandInterface : IGradsCommandInterface
             pst.dmin[2] = definition.HeightValue;
         }
         
-        var expression = definition.GetVarName();
+        var expression = definition.VariableName;
         if (definition.HeightType == FixedSurfaceType.IsobaricSurface)
         {
             expression += $"(lev={definition.HeightValue:0})";
         }
 
-        if (!String.IsNullOrEmpty(definition.VariableName))
-        {
-            expression = definition.VariableName;
-        }
+        // if (!String.IsNullOrEmpty(definition.VariableName))
+        // {
+        //     expression = definition.VariableName;
+        // }
         
         _drawingContext.GaExpr.gaexpr(expression, pst);
 
@@ -2692,6 +2692,16 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
         
         return pst.result.pgr;
+    }
+
+    public IGradsGrid GetVariable(string name, FixedSurfaceType surfaceType, double heightValue = 0, int file = 1)
+    {
+        return GetVariable(new VariableDefinition()
+        {
+            VariableName = name,
+            HeightType = surfaceType,
+            HeightValue = heightValue
+        });
     }
 
     public IGradsGrid? GetMultiLevelData(VariableDefinition definition, double startLevel, double endLevel,
@@ -2833,7 +2843,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         IGradsGrid pgr1 = GetVariable(new VariableDefinition()
         {
             HeightType = FixedSurfaceType.IsobaricSurface,
-            VariableType = definition.VariableType,
+            VariableName = definition.VariableName,
             HeightValue = abs
         });
 
@@ -2937,7 +2947,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         IGradsGrid pgr2 = GetVariable(new VariableDefinition()
         {
             HeightType = FixedSurfaceType.IsobaricSurface,
-            VariableType = definition.VariableType,
+            VariableName = definition.VariableName,
             HeightValue = abs
         });
 
@@ -3125,7 +3135,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         IGradsGrid pgr = GetVariable(new VariableDefinition()
         {
             HeightType = FixedSurfaceType.IsobaricSurface,
-            VariableType = definition.VariableType,
+            VariableName = definition.VariableName,
             HeightValue = abs
         });
         int val = 0;

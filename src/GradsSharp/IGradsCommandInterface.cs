@@ -433,6 +433,18 @@ public interface IGradsCommandInterface
     /// <returns><see cref="IGradsGrid">Grid</see> with meta information and the actual data</returns>
     IGradsGrid GetVariable(VariableDefinition definition, int file = 1);
 
+    
+
+    /// <summary>
+    /// Return the data for a variable stored in a file
+    /// </summary>
+    /// <param name="name">Variable name</param>
+    /// <param name="surfaceType">Surface type</param>
+    /// <param name="heightValue">Height value</param>
+    /// <param name="file">File number to read the info from</param>
+    /// <returns><see cref="IGradsGrid">Grid</see> with meta information and the actual data</returns>
+    IGradsGrid GetVariable(string name, FixedSurfaceType surfaceType, double heightValue = 0, int file = 1);
+    
     /// <summary>
     ///  Returns data from multiple levels for a specific variable
     /// </summary>

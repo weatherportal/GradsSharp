@@ -65,7 +65,7 @@ public class ContourTests
         {
             HeightType = FixedSurfaceType.SpecifiedHeightLevelAboveGround,
             HeightValue = 2,
-            VariableType = DataVariable.Temperature
+            VariableName = "Temperature"
         });
 
         data = data.Subtract(273.15);
