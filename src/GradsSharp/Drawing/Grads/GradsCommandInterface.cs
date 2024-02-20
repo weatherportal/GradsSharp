@@ -599,13 +599,13 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pcm.cflag = levels.Length;
         pcm.clevs = levels;
 
-        _drawingContext.Logger?.LogInformation($"Number of clevs = {pcm.cflag}");
+        _drawingContext.Logger?.LogDebug($"Number of clevs = {pcm.cflag}");
         for (int i = 1; i < pcm.cflag; i++)
         {
             if (pcm.clevs[i] <= pcm.clevs[i - 1])
             {
-                _drawingContext.Logger?.LogInformation("Warning: Contour levels are not strictly increasing");
-                _drawingContext.Logger?.LogInformation("         This may lead to errors or undesired results");
+                _drawingContext.Logger?.LogWarning("Warning: Contour levels are not strictly increasing");
+                _drawingContext.Logger?.LogWarning("         This may lead to errors or undesired results");
                 break;
             }
         }
@@ -621,29 +621,29 @@ internal class GradsCommandInterface : IGradsCommandInterface
         pcm.ccflg = cols.Length;
         pcm.ccols = cols;
 
-        _drawingContext.Logger?.LogInformation($"Number of ccols = {pcm.ccflg}");
+        _drawingContext.Logger?.LogDebug($"Number of ccols = {pcm.ccflg}");
         if (pcm.cflag == 0)
         {
-            _drawingContext.Logger?.LogInformation("ccols won't take effect unless clevs are set.");
+            _drawingContext.Logger?.LogWarning("ccols won't take effect unless clevs are set.");
         }
     }
 
     public void SetContourMinimum(double cmin)
     {
         pcm.cmin = cmin;
-        _drawingContext.Logger?.LogInformation($"cmin = {cmin}");
+        _drawingContext.Logger?.LogDebug($"cmin = {cmin}");
     }
 
     public void SetContourMaximum(double cmax)
     {
         pcm.cmax = cmax;
-        _drawingContext.Logger?.LogInformation($"cmax = {cmax}");
+        _drawingContext.Logger?.LogDebug($"cmax = {cmax}");
     }
 
     public void SetMarkerType(double cmark)
     {
         pcm.cmax = cmark;
-        _drawingContext.Logger?.LogInformation($"cmark = {cmark}");
+        _drawingContext.Logger?.LogDebug($"cmark = {cmark}");
     }
 
     public void SetMapProjection(Projection projection)
@@ -951,25 +951,25 @@ internal class GradsCommandInterface : IGradsCommandInterface
     public void SetContourLineThickness(int cthck)
     {
         pcm.cthick = cthck;
-        _drawingContext.Logger?.LogInformation($"cthick = {pcm.cthick}");
+        _drawingContext.Logger?.LogDebug($"cthick = {pcm.cthick}");
     }
 
     public void SetContourLineStyle(LineStyle style)
     {
         pcm.cstyle = (int)style;
-        _drawingContext.Logger?.LogInformation($"cstyle = {pcm.cstyle}");
+        _drawingContext.Logger?.LogDebug($"cstyle = {pcm.cstyle}");
     }
 
     public void SetContourLineColor(int color)
     {
         pcm.ccolor = color;
-        _drawingContext.Logger?.LogInformation($"ccolor = {pcm.ccolor}");
+        _drawingContext.Logger?.LogDebug($"ccolor = {pcm.ccolor}");
     }
 
     public void SetContourLineSmoothing(SmoothOption option)
     {
         pcm.csmth = (int)option;
-        _drawingContext.Logger?.LogInformation($"csmth = {pcm.csmth}");
+        _drawingContext.Logger?.LogDebug($"csmth = {pcm.csmth}");
     }
 
     private void SetDimensionData(int dim, double min, double max = Double.MaxValue)

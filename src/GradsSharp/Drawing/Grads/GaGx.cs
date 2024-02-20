@@ -6711,19 +6711,19 @@ internal class GaGx
 
         if (pcm.cflag > 0)
         {
-            _drawingContext.Logger?.LogInformation("Contouring at clevs = ");
+            _drawingContext.Logger?.LogDebug("Contouring at clevs = ");
             for (i = 0; i < pcm.cflag; i++)
             {
                 //snprintf(pout, 1255, " %g", pcm.clevs[i]);
-                _drawingContext.Logger?.LogInformation($" {pcm.clevs[i]}");
+                _drawingContext.Logger?.LogDebug($" {pcm.clevs[i]}");
             }
 
-            _drawingContext.Logger?.LogInformation("");
+            _drawingContext.Logger?.LogDebug("");
         }
         else
         {
             //snprintf(pout, 1255, "Contouring: %g to %g interval %g \n", cmin, cmax, cint);
-            _drawingContext.Logger?.LogInformation($"Contouring: {cmin} to {cmax} interval {cint}");
+            _drawingContext.Logger?.LogDebug($"Contouring: {cmin} to {cmax} interval {cint}");
         }
 
         _drawingContext.GradsDrawingInterface.gxclip(pcm.xsiz1, pcm.xsiz2, pcm.ysiz1, pcm.ysiz2);
