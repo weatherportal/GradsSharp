@@ -1921,7 +1921,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         {
             gavar gv = new gavar();
             gv.abbrv = inputVar.Abbreviation;
-            gv.variableDefinition = inputVar.Definition;
+            gv.VariableDefinition = inputVar.Definition;
             gf.pvar1.Add(gv);
         }
         
@@ -2673,18 +2673,18 @@ internal class GradsCommandInterface : IGradsCommandInterface
             pst.dmin[2] = definition.HeightValue;
         }
         
-        var expression = definition.VariableName;
-        if (definition.HeightType == FixedSurfaceType.IsobaricSurface)
-        {
-            expression += $"(lev={definition.HeightValue:0})";
-        }
+        // var expression = definition.VariableName;
+        // if (definition.HeightType == FixedSurfaceType.IsobaricSurface)
+        // {
+        //     expression += $"(lev={definition.HeightValue:0})";
+        // }
 
         // if (!String.IsNullOrEmpty(definition.VariableName))
         // {
         //     expression = definition.VariableName;
         // }
         
-        _drawingContext.GaExpr.gaexpr(expression, pst);
+        _drawingContext.GaExpr.gaexpr(definition, pst);
 
         if (pst.result.pgr == null)
         {

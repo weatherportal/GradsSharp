@@ -26,4 +26,25 @@ public class VariableDefinition
     {
         return $"{VariableName}-{HeightType}-{HeightValue}";
     }
+    
+    
+    public override bool Equals(object? obj)
+    {
+        if (obj is VariableDefinition other)
+        {
+            return VariableName == other.VariableName && HeightType == other.HeightType && HeightValue == other.HeightValue;
+        }
+
+        return false;
+    }
+    
+    public static bool operator ==(VariableDefinition a, VariableDefinition b)
+    {
+        return a.Equals(b);
+    }
+
+    public static bool operator !=(VariableDefinition a, VariableDefinition b)
+    {
+        return !(a == b);
+    }
 }

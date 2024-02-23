@@ -1,4 +1,5 @@
-﻿using GradsSharp.Models.Internal;
+﻿using GradsSharp.Models;
+using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace GradsSharp.Drawing.Grads;
@@ -310,6 +311,13 @@ internal class GaExpr
         return (err ? 1 : 0);
     }
 
+    
+    public int gaexpr(VariableDefinition definition, gastat pst)
+    {
+        int? result = varprs(definition, 0, pst);
+
+        return result ?? -1;
+    }
 
 /* Evaluate the stack.  If the state is zero, then don't go
    past an addition operation unless enclosed in parens.
@@ -1236,6 +1244,478 @@ internal class GaExpr
 
             ipos++;
         }
+
+        /* If request from a defined grid, ignore fixed dimensions
+           in the defined grid */
+
+        if (pfi.type == 4)
+        {
+            for (i = 0; i < 5; i++)
+            {
+                if (pfi.dnum[i] == 1)
+                {
+                    dmin[i] = 0.0;
+                    dmax[i] = 0.0;
+                }
+            }
+        }
+
+        /* All the grid level coordinates are set.  Insure they
+           are integral values, otherwise we can't do it.   The varying
+           dimensions will be integral (since we forced them to be
+           earlier) so this is only relevent for fixed dimensions. */
+
+        for (i = 0; i < 5; i++)
+        {
+            if (dmin[i] < 0.0)
+                ii = (int)(dmin[i] - 0.1);
+            else
+                ii = (int)(dmin[i] + 0.1);
+            d1 = ii;
+            if (dmax[i] < 0.0)
+                ii = (int)(dmax[i] - 0.1);
+            else
+                ii = (int)(dmax[i] + 0.1);
+            d2 = ii;
+            /* ignore z test if variable has no levels */
+            dotest = 1;
+            if (pvar != null)
+            {
+                if (pvar.levels == 0 && i == 2) dotest = 0;
+            }
+
+            if ((GaUtil.dequal(dmin[i], d1, 1e-8) != 0 || GaUtil.dequal(dmax[i], d2, 1e-8) != 0) && dotest == 1)
+            {
+                _drawingContext.Logger?.LogInformation("Data Request Error: Invalid grid coordinates");
+                _drawingContext.Logger?.LogInformation("  World coordinates convert to non-integer");
+                _drawingContext.Logger?.LogInformation("  grid coordinates");
+                _drawingContext.Logger?.LogInformation($"    Variable = {sVName}  Dimension = {i} ");
+                return (null);
+            }
+        }
+        /* Variable has been parsed and is valid, and the ch pointer is
+           set to the first character past it.  We now need to set up
+           the grid requestor block and get the grid.  */
+
+        pgr = new GradsGrid();
+
+        pgr.DataReader = pfi.DataReader;
+        /* Fill in gagrid variables */
+
+        idim = pst.idim;
+        jdim = pst.jdim;
+        pgr.alocf = 0;
+        pgr.pfile = pfi;
+        pgr.Undef = pfi.undef;
+        pgr.pvar = pvar;
+        pgr.IDimension = idim;
+        pgr.JDimension = jdim;
+        pgr.iwrld = 0;
+        pgr.jwrld = 0;
+        pgr.toff = toff;
+        for (i = 0; i < 5; i++)
+        {
+            if (dmin[i] < 0.0)
+            {
+                pgr.DimensionMinimum[i] = (int)(dmin[i] - 0.1);
+            }
+            else
+            {
+                pgr.DimensionMinimum[i] = (int)(dmin[i] + 0.1);
+            }
+
+            if (dmax[i] < 0.0)
+            {
+                pgr.DimensionMaximum[i] = (int)(dmax[i] - 0.1);
+            }
+            else
+            {
+                pgr.DimensionMaximum[i] = (int)(dmax[i] + 0.1);
+            }
+        }
+
+        pgr.WorldDimensionMaximum = pst.dmax;
+        pgr.WorldDimensionMinimum = pst.dmin;
+
+        pgr.exprsn = null;
+        pgr.ilinr = 1;
+        pgr.jlinr = 1;
+        if (idim > -1 && idim != 3)
+        {
+            pgr.igrab = pfi.gr2ab[idim];
+            pgr.iabgr = pfi.ab2gr[idim];
+        }
+
+        if (jdim > -1 && jdim != 3)
+        {
+            pgr.jgrab = pfi.gr2ab[jdim];
+            pgr.jabgr = pfi.ab2gr[jdim];
+        }
+
+        if (idim > -1 && jdim <= 4)
+        {
+            /* qqqqq xxxxx fix this later ? */
+            pgr.ivals = pfi.grvals[idim];
+            pgr.iavals = pfi.abvals[idim];
+            pgr.ilinr = pfi.linear[idim];
+        }
+
+        if (jdim > -1 && jdim <= 4)
+        {
+            /* qqqqq xxxxx fix this later ? */
+            pgr.jvals = pfi.grvals[jdim];
+            pgr.javals = pfi.abvals[jdim];
+            pgr.jlinr = pfi.linear[jdim];
+        }
+
+        pgr.GridData = null;
+
+        if (pfi != null && pvar != null && pfi.ppflag > 0 && pfi.ppwrot > 0 && pvar.vecpair > 0)
+        {
+            pgr2 = (GradsGrid)pgr.Clone();
+        }
+
+        /* Get grid */
+        rc = _drawingContext.GaIO.gaggrd(pgr);
+        if (rc > 0)
+        {
+            _drawingContext.Logger?.LogInformation($"Data Request Error:  Error for variable '{sVName}'\n");
+            return (null);
+        }
+
+        if (rc < 0)
+        {
+            _drawingContext.Logger?.LogInformation($"  Warning issued for variable = {sVName}");
+        }
+
+        /* Special test for auto-interpolated data, when the
+           data requested is U or V.  User MUST indicate variable unit
+           number in the descriptor file for auto-rotation to take place */
+
+        if (pfi != null && pvar != null && pfi.ppflag > 0 && pfi.ppwrot > 0 && pvar.vecpair > 0)
+        {
+            /* Find the matching vector component */
+            if (pvar.isu > 0) sbu = 0; /* if pvar is u, then matching component should not be u */
+            else sbu = 1; /* pvar is v, so matching component should be u */
+            pvar2 = pfi.pvar1.FirstOrDefault(x => x.vecpair == pvar.vecpair && x.isu == sbu);
+            if (pvar2 == null)
+            {
+                /* didn't find a match */
+                ru = 0;
+                size = pgr.ISize * pgr.JSize;
+                for (i = 0; i < size; i++)
+                {
+                    pgr.UndefinedMask[ru] = 0;
+                    ru++;
+                }
+            }
+            else
+            {
+                /* get the 2nd grid */
+                pgr2.pvar = pvar2;
+                rc = _drawingContext.GaIO.gaggrd(pgr2);
+                if (rc > 0)
+                {
+                    _drawingContext.Logger?.LogInformation($"Data Request Error:  Error for variable '{sVName}'\n");
+                    return (null);
+                }
+
+                /* r is u component, r2 is v component */
+                ii = pgr.DimensionMinimum[0];
+                jj = pgr.DimensionMinimum[1];
+                if (pvar2.isu > 0)
+                {
+                    r = 0;
+                    r2 = 0;
+                    ru = 0;
+                    r2u = 0;
+
+                    for (j = 0; j < pgr.JSize; j++)
+                    {
+                        if (pgr.IDimension == 0) ii = pgr.DimensionMinimum[0];
+                        if (pgr.IDimension == 1) jj = pgr.DimensionMinimum[1];
+                        for (i = 0; i < pgr.ISize; i++)
+                        {
+                            if (pgr2.UndefinedMask[ru] == 0 || pgr.UndefinedMask[r2u] == 0)
+                            {
+                                /* u or v is undefined */
+                                pgr2.UndefinedMask[ru] = 0;
+                                pgr.UndefinedMask[r2u] = 0;
+                            }
+                            else
+                            {
+                                if (ii < 1 || ii > pfi.dnum[0] ||
+                                    jj < 1 || jj > pfi.dnum[1])
+                                {
+                                    /* outside file's grid dimensions */
+                                    pgr2.UndefinedMask[ru] = 0;
+                                    pgr.UndefinedMask[r2u] = 0;
+                                }
+                                else
+                                {
+                                    /* get wrot value for grid element */
+                                    wrot = (float)pfi.ppw[(jj - 1) * pfi.dnum[0] + ii - 1];
+                                    if (wrot < -900.0)
+                                    {
+                                        pgr.UndefinedMask[ru] = 0;
+                                        pgr2.UndefinedMask[r2u] = 0;
+                                    }
+                                    else if (wrot != 0.0)
+                                    {
+                                        if (pvar2.isu > 0)
+                                        {
+                                            pgr.GridData[r2] = (pgr2.GridData[r]) * Math.Sin(wrot) +
+                                                           (pgr.GridData[r2]) * Math.Cos(wrot); /* display variable is v */
+                                            pgr2.UndefinedMask[r2u] = 1;
+                                        }
+                                        else
+                                        {
+                                            pgr2.GridData[r] = (pgr2.GridData[r]) * Math.Cos(wrot) -
+                                                           (pgr.GridData[r2]) * Math.Sin(wrot); /* display variable is u */
+                                            pgr.UndefinedMask[ru] = 1;
+                                        }
+                                    }
+                                }
+                            }
+
+                            r++;
+                            r2++;
+                            ru++;
+                            r2u++;
+                            if (pgr.IDimension == 0) ii++;
+                            if (pgr.IDimension == 1) jj++;
+                        }
+
+                        if (pgr.JDimension == 1) jj++;
+                    }
+                }
+                else
+                {
+                    r = 0;
+                    r2 = 0;
+                    ru = 0;
+                    r2u = 0;
+                    for (j = 0; j < pgr.JSize; j++)
+                    {
+                        if (pgr.IDimension == 0) ii = pgr.DimensionMinimum[0];
+                        if (pgr.IDimension == 1) jj = pgr.DimensionMinimum[1];
+                        for (i = 0; i < pgr.ISize; i++)
+                        {
+                            if (pgr.UndefinedMask[ru] == 0 || pgr2.UndefinedMask[r2u] == 0)
+                            {
+                                /* u or v is undefined */
+                                pgr.UndefinedMask[ru] = 0;
+                                pgr2.UndefinedMask[r2u] = 0;
+                            }
+                            else
+                            {
+                                if (ii < 1 || ii > pfi.dnum[0] ||
+                                    jj < 1 || jj > pfi.dnum[1])
+                                {
+                                    /* outside file's grid dimensions */
+                                    pgr.UndefinedMask[ru] = 0;
+                                    pgr2.UndefinedMask[r2u] = 0;
+                                }
+                                else
+                                {
+                                    /* get wrot value for grid element */
+                                    wrot = (float)pfi.ppw[(jj - 1) * pfi.dnum[0] + ii - 1];
+                                    if (wrot < -900.0)
+                                    {
+                                        pgr.UndefinedMask[ru] = 0;
+                                        pgr2.UndefinedMask[r2u] = 0;
+                                    }
+                                    else if (wrot != 0.0)
+                                    {
+                                        if (pvar2.isu > 0)
+                                        {
+                                            pgr2.GridData[r2] = (pgr.GridData[r]) * Math.Sin(wrot) +
+                                                            (pgr2.GridData[r2]) *
+                                                            Math.Cos(wrot); /* display variable is v */
+                                            pgr2.UndefinedMask[r2u] = 1;
+                                        }
+                                        else
+                                        {
+                                            pgr.GridData[r] = (pgr.GridData[r]) * Math.Cos(wrot) -
+                                                          (pgr2.GridData[r2]) * Math.Sin(wrot); /* display variable is u */
+                                            pgr.UndefinedMask[ru] = 1;
+                                        }
+                                    }
+                                }
+                            }
+
+                            r++;
+                            r2++;
+                            ru++;
+                            r2u++;
+                            if (pgr.IDimension == 0) ii++;
+                            if (pgr.IDimension == 1) jj++;
+                        }
+
+                        if (pgr.JDimension == 1) jj++;
+                    }
+                }
+            }
+        }
+
+        pst.result.pgr = pgr;
+        pst.type = 1;
+        return (ipos);
+    }
+    
+    int? varprs(VariableDefinition definition, int ipos, gastat pst)
+    {
+        GradsGrid? pgr, pgr2 = null;
+        GradsFile? pfi;
+        gavar? pvar, pvar2, vfake = new gavar();
+
+        Func<double[], double, double>? conv;
+
+        double[] dmin = new double[5], dmax = new double[5];
+        double d1, d2;
+        int r, r2;
+        float wrot;
+        int i, fnum, ii, jj, rc, dotflg, idim, jdim, dim, sbu;
+        int[] id = new int [5];
+        double[] cvals;
+        int toff = 0;
+        int size, j, dotest, defined;
+        string sName = "", sVName = "";
+        int ru, r2u;
+        int? pos;
+        long sz;
+
+       
+        /* Check for a predefined data object. */
+        pfi = null;
+        pvar = null;
+        defined = 0;
+       
+       
+        pfi = pst.pfid;
+   
+        /* Check here for predefined variable name: lat,lon,lev */
+       
+        /* See if this is a variable name.
+       If not, give an error message (if a file number was specified)
+       or check for a function call via rtnprs.   */
+
+        pvar = (from gavar v in pfi.pvar1
+                where v.VariableDefinition == definition
+                select v).FirstOrDefault();
+            
+        
+        
+        if (pvar == null)
+        {
+            //pos = rtnprs(ch, sName, pst); /* Handle function call */
+            throw new Exception("Function calls not implemented yet");
+            return (pos);
+        }
+    
+        /* It wasn't a function call (or we would have returned).
+           If the variable is to a stn type file, call the parser
+           routine that handles stn requests.                         */
+        if (pfi.type == 2 || pfi.type == 3)
+        {
+            // ch = stnvar(ch, sVName, pfi, pvar, pst);
+            // return (ch);
+            throw new NotImplementedException();
+        }
+
+        /* We are dealing with a grid data request.  We handle this inline.
+           Our default dimension limits are defined in gastat.  These
+           may be modified by the user (by specifying the new settings
+           in parens).  First get grid coordinates of the limits, then
+           figure out if user modifies these.        */
+
+        /* Convert world coordinates in the status block to grid
+           dimensions using the file scaling for this variable.  */
+
+        for (i = 0; i < 5; i++)
+        {
+            if (i == 3)
+            {
+                dmin[i] = GaUtil.t2gr(pfi.abvals[i], pst.tmin);
+                dmax[i] = GaUtil.t2gr(pfi.abvals[i], pst.tmax);
+            }
+            else
+            {
+                conv = pfi.ab2gr[i];
+                cvals = pfi.abvals[i];
+                dmin[i] = conv(cvals, pst.dmin[i]);
+                dmax[i] = conv(cvals, pst.dmax[i]);
+            }
+        }
+
+        /* Round varying dimensions 'outwards' to integral grid units. */
+        for (i = 0; i < 5; i++)
+        {
+            if (i == pst.idim || i == pst.jdim)
+            {
+                dmin[i] = Math.Floor(dmin[i] + 0.0001);
+                dmax[i] = Math.Ceiling(dmax[i] - 0.0001);
+                if (dmax[i] <= dmin[i])
+                {
+                    _drawingContext.Logger?.LogInformation("Data Request Error: Invalid grid coordinates");
+                    _drawingContext.Logger?.LogInformation($"  Varying dimension {i} decreases: {dmin[i]} to {dmax[i]}");
+                    _drawingContext.Logger?.LogInformation($"  Error ocurred getting variable '{sVName}'");
+                    return (null);
+                }
+            }
+        }
+
+        // /* Check for user provided dimension expressions */
+        // if (ipos < ch.Length && ch[ipos] == '(')
+        // {
+        //     ipos++;
+        //     for (i = 0; i < 5; i++) id[i] = 0;
+        //     while (ch[ipos] != ')')
+        //     {
+        //         pos = GaUtil.dimprs(ch, ipos, pst, pfi, out dim, out d1, 1, out rc);
+        //         if (pos == null)
+        //         {
+        //             _drawingContext.Logger?.LogInformation($"  Variable name = {sVName}");
+        //             return (null);
+        //         }
+        //
+        //         if (id[dim]>0)
+        //         {
+        //             _drawingContext.Logger?.LogInformation("Syntax Error: Invalid dimension expression\n");
+        //             _drawingContext.Logger?.LogInformation("  Same dimension specified multiple times ");
+        //             _drawingContext.Logger?.LogInformation($"for variable = {sVName}\n");
+        //             return (null);
+        //         }
+        //
+        //         id[dim] = 1;
+        //         if (dim == pst.idim || dim == pst.jdim)
+        //         {
+        //             _drawingContext.Logger?.LogInformation("Data Request Error: Invalid dimension expression\n");
+        //             _drawingContext.Logger?.LogInformation("  Attempt to set or modify varying dimension\n");
+        //             _drawingContext.Logger?.LogInformation($"  Variable = {sVName}, Dimension = {dim} \n");
+        //             return (null);
+        //         }
+        //
+        //         dmin[dim] = d1;
+        //         dmax[dim] = d1;
+        //         /* check if we need to set flag for time offset */
+        //         if (rc > 1)
+        //         {
+        //             if (defined == 1)
+        //             {
+        //                 _drawingContext.Logger?.LogInformation("Error: The \"offt\" dimension expression is ");
+        //                 _drawingContext.Logger?.LogInformation("       not supported for defined variables. ");
+        //                 return (null);
+        //             }
+        //             else toff = 1;
+        //         }
+        //
+        //         ipos = pos ?? int.MaxValue;
+        //         if (ch[ipos] == ',') ipos++;
+        //     }
+        //
+        //     ipos++;
+        // }
 
         /* If request from a defined grid, ignore fixed dimensions
            in the defined grid */
