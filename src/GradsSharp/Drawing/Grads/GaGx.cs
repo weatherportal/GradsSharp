@@ -1164,7 +1164,7 @@ internal class GaGx
         // _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
         // _drawingContext.GaSubs.gxcolr(pcm.anncol);
         // _drawingContext.GaSubs.gxwide(4);
-        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         // if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         // _drawingContext.GaSubs.gxstyl(1);
         // gaaxpl(0, 1);
@@ -1273,7 +1273,7 @@ internal class GaGx
         // _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
         // _drawingContext.GaSubs.gxcolr(pcm.anncol);
         // _drawingContext.GaSubs.gxwide(4);
-        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         // if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         // _drawingContext.GaSubs.gxstyl(1);
         // gaaxpl(0, 1);
@@ -1518,7 +1518,7 @@ internal class GaGx
         // _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
         // _drawingContext.GaSubs.gxcolr(pcm.anncol);
         // _drawingContext.GaSubs.gxwide(4);
-        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         // if (pcm.pass == 0 && pcm.timelabflg) gatmlb(pcm);
         // _drawingContext.GaSubs.gxstyl(1);
         // gaaxpl(pcm, 0, 1);
@@ -1756,7 +1756,7 @@ internal class GaGx
         // _drawingContext.GaSubs.gxclip(0.0, pcm.xsiz, 0.0, pcm.ysiz);
         // _drawingContext.GaSubs.gxcolr(pcm.anncol);
         // _drawingContext.GaSubs.gxwide(4);
-        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         // if (pcm.pass == 0 && pcm.timelabflg) gatmlb(pcm);
         // _drawingContext.GaSubs.gxstyl(1);
         // gaaxpl(pcm, 0, 1);
@@ -2400,7 +2400,7 @@ internal class GaGx
 //
 //         _drawingContext.GaSubs.gxwide(4);
 //         _drawingContext.GaSubs.gxcolr(pcm.anncol);
-//         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+//         if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
 //         if (pcm.pass == 0 && pcm.timelabflg) gatmlb(pcm);
 //         gagsav(13, pcm, NULL);
 //     }
@@ -2515,7 +2515,7 @@ internal class GaGx
     //         gaaxpl(pcm, 5, 2);
     //     _drawingContext.GaSubs.gxcolr(pcm.anncol);
     //     _drawingContext.GaSubs.gxwide(4);
-    //     if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+    //     if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
     //     if (pcm.pass == 0 && pcm.timelabflg) gatmlb(pcm);
     //     gagsav(13, pcm, NULL);
     // }
@@ -3514,7 +3514,7 @@ internal class GaGx
         //     gaaxpl(pcm, pgr1.idim, 5); /* hard coded 4's changed to 5's */
         // _drawingContext.GaSubs.gxwide(4);
         // _drawingContext.GaSubs.gxcolr(pcm.anncol);
-        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         // if (pcm.pass == 0 && pcm.timelabflg) gatmlb(pcm);
         // gagsav(17, pcm, pgr1);
     }
@@ -3992,7 +3992,7 @@ internal class GaGx
         //     gaaxpl(pcm, pgr.idim, 5); /* hard coded 4 changed to 5 */
         // _drawingContext.GaSubs.gxwide(4);
         // _drawingContext.GaSubs.gxcolr(pcm.anncol);
-        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+        // if (pcm.pass == 0 && pcm.grdsflg) _drawingContext.GaSubs.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         // if (pcm.pass == 0 && pcm.timelabflg) gatmlb(pcm);
         // if (barflg) gagsav(8, pcm, pgr);
         // else gagsav(6, pcm, pgr);
@@ -4100,7 +4100,7 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.gxwide(4);
         _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         if (pcm.pass == 0 && pcm.grdsflg)
-            _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+            _drawingContext.GradsDrawingInterface.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgru.IDimension, pgru.JDimension);
         gagsav(9);
@@ -4339,7 +4339,7 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.gxwide(4);
         _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         if (pcm.pass == 0 && pcm.grdsflg)
-            _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+            _drawingContext.GradsDrawingInterface.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgru.IDimension, pgru.JDimension);
         if (brbflg) gagsav(15);
@@ -4604,7 +4604,7 @@ internal class GaGx
         }
 
         if (pcm.pass == 0 && pcm.grdsflg)
-            _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+            _drawingContext.GradsDrawingInterface.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gagsav(7);
         pcm.gpass[3]++;
@@ -4766,7 +4766,7 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         _drawingContext.GradsDrawingInterface.gxwide(4);
         if (pcm.pass == 0 && pcm.grdsflg)
-            _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+            _drawingContext.GradsDrawingInterface.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgr.IDimension, pgr.JDimension);
         gagsav(4);
@@ -6475,7 +6475,7 @@ internal class GaGx
         _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.anncol);
         _drawingContext.GradsDrawingInterface.gxwide(4);
         if (pcm.pass == 0 && pcm.grdsflg)
-            _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+            _drawingContext.GradsDrawingInterface.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
         if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
         gaaxpl(pgr.IDimension, pgr.JDimension);
         gafram();
@@ -7051,7 +7051,7 @@ internal class GaGx
         if (shpflg == 0)
         {
             if (pcm.pass == 0 && pcm.grdsflg)
-                _drawingContext.GradsDrawingInterface.gxchpl("GrADS/COLA", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
+                _drawingContext.GradsDrawingInterface.gxchpl("GradsSharp", 10, 0.05, 0.05, 0.1, 0.09, 0.0);
             if (pcm.pass == 0 && pcm.timelabflg) gatmlb();
             gaaxpl(pgr.IDimension, pgr.JDimension);
             gafram();
