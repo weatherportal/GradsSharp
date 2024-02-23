@@ -105,7 +105,12 @@ public class GFSDataReader : IGriddedDataReader
             FixedSurfaceType sfcType = (FixedSurfaceType)ps.FirstFixedSurfaceType;
             var heightValue = ps.FirstFixedSurfaceValue;
         
-        
+            if (sfcType == FixedSurfaceType.IsobaricSurface)
+            {
+                heightValue /= 100;
+            }
+            
+            
             InputVariable gv = new();
         
             gv.Definition = new VariableDefinition
@@ -118,15 +123,6 @@ public class GFSDataReader : IGriddedDataReader
             };
             gv.Abbreviation = gv.Definition.VariableName;
 
-            if (sfcType == FixedSurfaceType.IsobaricSurface)
-            {
-                gv.Abbreviation += "prs";
-            }
-            else if (sfcType == FixedSurfaceType.PotentialVorticitySurface)
-            {
-                gv.Abbreviation += "pvu";
-            }
-            
             inputFile.Variables.Add(gv);
         }
         

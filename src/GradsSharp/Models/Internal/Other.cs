@@ -255,7 +255,7 @@ internal class gavar
     int nh5vardims; /* Number of variable dimensions for hdf5 */
     int[] vardimids = new int[100]; /* Variable dimension IDs. 	       */
     
-    public VariableDefinition? variableDefinition { get; set; }
+    public VariableDefinition? VariableDefinition { get; set; }
 
     public gavar()
     {

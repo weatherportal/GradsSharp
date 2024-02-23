@@ -19,7 +19,7 @@ public class GetVariableTests
         engine.GradsCommandInterface.SetLatitude(47,56);
         engine.GradsCommandInterface.SetLongitude(-2.9,12);
         engine.GradsCommandInterface.SetT(1);
-        var data = engine.GradsCommandInterface.GetVariable("RelativeHumidityprs",  FixedSurfaceType.IsobaricSurface, 850);
+        var data = engine.GradsCommandInterface.GetVariable("RelativeHumidity",  FixedSurfaceType.IsobaricSurface, 850);
 
         data.GridData.Length.ShouldBeGreaterThan(0);
 

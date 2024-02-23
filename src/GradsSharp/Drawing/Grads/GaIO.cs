@@ -263,7 +263,7 @@ internal class GaIO
                 _drawingContext.CommonData.pfid.gr2ab[1](_drawingContext.CommonData.pfid.grvals[1],
                     pgr.DimensionMaximum[1]);
 
-            var vardef = pgrid.pvar.variableDefinition;
+            var vardef = pgrid.pvar.VariableDefinition;
             if (vardef.HeightType == FixedSurfaceType.IsobaricSurface)
             {
                 vardef.HeightValue = _drawingContext.CommonData.pfid.gr2ab[2](_drawingContext.CommonData.pfid.grvals[2],
@@ -276,7 +276,7 @@ internal class GaIO
             pgr.DimensionSize[0] = pgr.pfile.dnum[0];
             pgr.DimensionSize[1] = pgr.pfile.dnum[1];
 
-            pgr.DataReader.ReadData(pgr, pgrid.pvar.variableDefinition);
+            pgr.DataReader.ReadData(pgr, pgrid.pvar.VariableDefinition);
 
             if (pgr.pfile.ppflag > 0)
             {
