@@ -1580,7 +1580,7 @@ internal class GaExpr
         double[] cvals;
         int toff = 0;
         int size, j, dotest, defined;
-        string sName = "", sVName = "";
+        string sName = definition.VariableName, sVName = "";
         int ru, r2u;
         int? pos;
         long sz;
@@ -1591,40 +1591,71 @@ internal class GaExpr
         pvar = null;
         defined = 0;
        
-        pfi = getdfn(definition.VariableName, pst);
+        pfi = getdfn(sName, pst);
        
-        if(pfi != null) defined = 1;
-
         if (pfi == null)
         {
             pfi = pst.pfid;    
-        }
-        
-   
-        /* Check here for predefined variable name: lat,lon,lev */
-       
-        /* See if this is a variable name.
-       If not, give an error message (if a file number was specified)
-       or check for a function call via rtnprs.   */
-
-        if (defined == 0)
-        {
-            pvar = (from gavar v in pfi.pvar1
-                where v.VariableDefinition == definition
-                select v).FirstOrDefault();
             
-        
-        
-            if (pvar == null)
+            /* Check here for predefined variable name: lat,lon,lev */
+
+            
+            if (sName == "lat" ||
+                sName == "lon" ||
+                sName == "lev")
             {
-                //pos = rtnprs(ch, sName, pst); /* Handle function call */
-                throw new Exception($"Variable {definition.VariableName} not found");
+                pvar = vfake;
+                vfake.levels = -999;
+                vfake.vecpair = -999;
+                if (sName == "lon")
+                {
+                    vfake.offset = 0;
+                    vfake.abbrv = "lon";
+                }
+
+                if (sName == "lat")
+                {
+                    vfake.offset = 1;
+                    vfake.abbrv = "lat";
+                }
+
+                if (sName == "lev")
+                {
+                    vfake.offset = 2;
+                    vfake.abbrv = "lev";
+                }
+
+                if (pfi.type == 2 || pfi.type == 3)
+                {
+                    // snprintf(pout, 1255, "Data Request Error:  Predefined variable %s\n", sVName);
+                    // _drawingContext.Logger?.LogInformation(pout);
+                    // _drawingContext.Logger?.LogInformation("   is only defined for grid type files\n");
+                    // snprintf(pout, 1255, "   File %i is a station file\n", fnum);
+                    // _drawingContext.Logger?.LogInformation(pout);
+                    return (null);
+                }
             }
-
-        }
-
+            else
+            {
+                
+                /* See if this is a variable name.
+                   If not, give an error message (if a file number was specified)
+                   or check for a function call via rtnprs.   */
+                
+                pvar = (from gavar v in pfi.pvar1
+                    where v.VariableDefinition == definition
+                    select v).FirstOrDefault();
         
-        /* It wasn't a function call (or we would have returned).
+    
+                if (pvar == null)
+                {
+                    //pos = rtnprs(ch, sName, pst); /* Handle function call */
+                    throw new Exception($"Variable {definition.VariableName} not found");
+                }
+            }
+        }
+        
+       /* It wasn't a function call (or we would have returned).
            If the variable is to a stn type file, call the parser
            routine that handles stn requests.                         */
         if (pfi.type == 2 || pfi.type == 3)
