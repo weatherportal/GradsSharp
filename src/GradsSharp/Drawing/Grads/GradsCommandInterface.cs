@@ -1874,7 +1874,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
         if (inputFile.ZDimensionType == InputFileDimensionType.Levels)
         {
-            gf.dnum[2] = inputFile.ZLevels.Length;
+            gf.dnum[2] = (int)inputFile.Dz;
             gf.abvals[2] =  inputFile.ZLevels;
             gf.grvals[2] =  inputFile.ZLevels;
             gf.ab2gr[2] = GaUtil.lev2gr;
