@@ -1591,8 +1591,15 @@ internal class GaExpr
         pvar = null;
         defined = 0;
        
+        pfi = getdfn(definition.VariableName, pst);
        
-        pfi = pst.pfid;
+        if(pfi != null) defined = 1;
+
+        if (pfi == null)
+        {
+            pfi = pst.pfid;    
+        }
+        
    
         /* Check here for predefined variable name: lat,lon,lev */
        
@@ -1600,19 +1607,23 @@ internal class GaExpr
        If not, give an error message (if a file number was specified)
        or check for a function call via rtnprs.   */
 
-        pvar = (from gavar v in pfi.pvar1
+        if (defined == 0)
+        {
+            pvar = (from gavar v in pfi.pvar1
                 where v.VariableDefinition == definition
                 select v).FirstOrDefault();
             
         
         
-        if (pvar == null)
-        {
-            //pos = rtnprs(ch, sName, pst); /* Handle function call */
-            throw new Exception("Function calls not implemented yet");
-            return (pos);
+            if (pvar == null)
+            {
+                //pos = rtnprs(ch, sName, pst); /* Handle function call */
+                throw new Exception($"Variable {definition.VariableName} not found");
+            }
+
         }
-    
+
+        
         /* It wasn't a function call (or we would have returned).
            If the variable is to a stn type file, call the parser
            routine that handles stn requests.                         */
