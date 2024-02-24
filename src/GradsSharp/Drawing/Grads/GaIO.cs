@@ -263,12 +263,12 @@ internal class GaIO
                 _drawingContext.CommonData.pfid.gr2ab[1](_drawingContext.CommonData.pfid.grvals[1],
                     pgr.DimensionMaximum[1]);
 
-            var vardef = pgrid.pvar.VariableDefinition;
-            if (vardef.HeightType == FixedSurfaceType.IsobaricSurface)
-            {
-                vardef.HeightValue = _drawingContext.CommonData.pfid.gr2ab[2](_drawingContext.CommonData.pfid.grvals[2],
-                    pgr.DimensionMinimum[2]);
-            }
+            // var vardef = pgrid.pvar.VariableDefinition;
+            //  if (vardef.HeightType == FixedSurfaceType.IsobaricSurface)
+            //  {
+            //      vardef.HeightValue = _drawingContext.CommonData.pfid.gr2ab[2](_drawingContext.CommonData.pfid.grvals[2],
+            //          pgr.DimensionMinimum[2]);
+            //  }
 
             
             pgr.WorldDimensionMinimum[3] = pgr.DimensionMinimum[3];

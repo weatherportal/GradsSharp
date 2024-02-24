@@ -58,7 +58,6 @@ public class ContourTests
         
     }
 
-
     private void SetTemp2m()
     {
         IGradsGrid data = engine.GradsCommandInterface.GetVariable(new VariableDefinition()
