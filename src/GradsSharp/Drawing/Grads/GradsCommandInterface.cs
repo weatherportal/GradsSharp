@@ -1874,9 +1874,20 @@ internal class GradsCommandInterface : IGradsCommandInterface
 
         if (inputFile.ZDimensionType == InputFileDimensionType.Levels)
         {
+            if(inputFile.ZLevels == null) throw new Exception("ZLevels must be set for Levels dimension type");
+
+            double[] levels = new double[inputFile.ZLevels.Length + 5];
+            
+            levels[0] = inputFile.ZLevels.Length;
+            for (int i = 0; i < inputFile.ZLevels.Length; i++)
+            {
+                levels[i + 1] = inputFile.ZLevels[i];
+            }
+            levels[inputFile.ZLevels.Length + 1] = -999.9;
+            
             gf.dnum[2] = (int)inputFile.Dz;
-            gf.abvals[2] =  inputFile.ZLevels;
-            gf.grvals[2] =  inputFile.ZLevels;
+            gf.abvals[2] =  levels;
+            gf.grvals[2] =  levels;
             gf.ab2gr[2] = GaUtil.lev2gr;
             gf.gr2ab[2] = GaUtil.gr2lev;
             gf.linear[2] = 0;
