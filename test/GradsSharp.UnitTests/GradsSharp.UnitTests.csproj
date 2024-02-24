@@ -35,6 +35,9 @@
       <None Update="Data\gfs.t06z.pgrb2.0p25.f001">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Data\gfs.iso.t00z.pgrb2.0p25.f001">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -48,6 +51,8 @@
       <EmbeddedResource Include="Data\Expected\contourfill-test.png" />
       <None Remove="Data\Expected\contour-test.png" />
       <EmbeddedResource Include="Data\Expected\contour-test.png" />
+      <None Remove="Data\Expected\t850-contour-fill.png" />
+      <EmbeddedResource Include="Data\Expected\t850-contour-fill.png" />
     </ItemGroup>
 
 </Project>
