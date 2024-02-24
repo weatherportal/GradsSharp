@@ -32,7 +32,7 @@ public class VariableDefinition
     {
         if (obj is VariableDefinition other)
         {
-            return VariableName == other.VariableName && HeightType == other.HeightType && HeightValue == other.HeightValue;
+            return VariableName == other.VariableName && HeightType == other.HeightType && Math.Abs(HeightValue - other.HeightValue) < 0.0001;
         }
 
         return false;
