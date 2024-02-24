@@ -54,11 +54,7 @@ public class GFSDataReader : IGriddedDataReader
 
 
         levels = levels.OrderByDescending(x => x).ToList();
-        levels.Insert(0, levels.Count);
-        levels.Add(-999.9);
-        levels.Add(0);
-        levels.Add(0);
-        levels.Add(0);
+        
         if (dataset.GridDefinitionSection.GridDefinition is LatLonGridDefinition gd)
         {
             var lonMin = gd.Lo1;
