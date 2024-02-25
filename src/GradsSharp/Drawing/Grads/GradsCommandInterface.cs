@@ -474,7 +474,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         if (gridLine == GridLine.Color) pcm.gridln = color;
     }
 
-    public void SetVpage(OnOffSetting page, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0)
+    public void SetVpage(OnOffSetting page, double xlo = 0, double xhi = 0, double ylo = 0, double yhi = 0)
     {
         if (page == OnOffSetting.Off)
         {
@@ -533,7 +533,7 @@ internal class GradsCommandInterface : IGradsCommandInterface
         _drawingContext.GradsDrawingInterface.gxacol(colorNr, red, green, blue, alpha);
     }
 
-    public void SetPrintingArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0)
+    public void SetPrintingArea(OnOffSetting onOff, double xlo = 0, double xhi = 0, double ylo = 0, double yhi = 0)
     {
         if (onOff == OnOffSetting.Off)
         {
