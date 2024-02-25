@@ -53,6 +53,10 @@
       <EmbeddedResource Include="Data\Expected\contour-test.png" />
       <None Remove="Data\Expected\t850-contour-fill.png" />
       <EmbeddedResource Include="Data\Expected\t850-contour-fill.png" />
+      <None Remove="Data\Expected\grid-fill-with-lines.png" />
+      <EmbeddedResource Include="Data\Expected\grid-fill-with-lines.png" />
+      <None Remove="Data\Expected\grid-fill-without-lines.png" />
+      <EmbeddedResource Include="Data\Expected\grid-fill-without-lines.png" />
     </ItemGroup>
 
 </Project>

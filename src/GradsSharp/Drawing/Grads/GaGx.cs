@@ -4744,7 +4744,11 @@ internal class GaGx
                     }
 
                     _drawingContext.GradsDrawingInterface.gxconv((double)i, (double)j, out xlo, out ylo, 3);
-                    String.Format("{0:" + pcm.dignum + "f}", (float)r[rcnt]);
+
+                    string fmt = "0.";
+                    for (int k = 0; k < pcm.dignum; k++) fmt += "0";
+                    
+                    lab = String.Format("{0:" + fmt + "}", (float)r[rcnt]);
                     len = lab.Length;
                     cwid = pcm.digsiz * (double)len;
                     _drawingContext.GxChpl.gxchln(lab, len, pcm.digsiz, out cwid);

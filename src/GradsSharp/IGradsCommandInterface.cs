@@ -212,6 +212,13 @@ public interface IGradsCommandInterface
     /// <param name="color">Line color for the grid.  This may be one of the default colors or a new color defined with <see cref="SetColor"/></param>
     /// <param name="thickness">Thickness for the grid lines.  Must be an integer between 1 and 256</param>
     void SetGridOptions(GridOption option, int style = -1, int color = -1, int thickness = -1);
+
+    /// <summary>
+    /// Used with <see cref="SetGraphicsOutputMode"/> with option <see cref="GraphicsOutputMode.Grid"/> to control the presence and appearance of the grid lines. The options are as follows:
+    /// </summary>
+    /// <param name="option">Control the presence</param>
+    /// <param name="color">Color number if selecting the color mode</param>
+    void SetGridLineOptions(GridLineOption option, int? color = 0);
     
     /// <summary>
     /// Set the style of the contour labels
