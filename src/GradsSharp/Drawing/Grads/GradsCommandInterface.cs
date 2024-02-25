@@ -883,6 +883,22 @@ internal class GradsCommandInterface : IGradsCommandInterface
         }
     }
 
+    public void SetGridLineOptions(GridLineOption option, int? color)
+    {
+        if (option == GridLineOption.Auto)
+        {
+            pcm.gridln = -9;
+        }
+        else if (option == GridLineOption.Off)
+        {
+            pcm.gridln = -1;
+        }
+        else if (option == GridLineOption.Color)
+        {
+            pcm.gridln = color ?? 0;
+        }
+    }
+
     public void SetContourLabelStyle(int color = -1, int thickness = -1, double size = 0.09)
     {
         if (size > 0)
