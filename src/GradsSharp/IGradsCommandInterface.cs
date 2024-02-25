@@ -68,7 +68,7 @@ public interface IGradsCommandInterface
     /// <param name="xhi"></param>
     /// <param name="ylo"></param>
     /// <param name="yhi"></param>
-    void SetVpage(OnOffSetting page, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0);
+    void SetVpage(OnOffSetting page, double xlo = 0, double xhi = 0, double ylo = 0, double yhi = 0);
     
     /// <summary>
     /// Define a new color or update an existing color
@@ -80,7 +80,9 @@ public interface IGradsCommandInterface
     /// <param name="alpha">Transparency value. Number between -255 and 255</param>
     /// <exception cref="InvalidColorException">Throws an exception when trying to define an invalid color</exception>
     void SetColor(int colorNr, int red, int green, int blue, int alpha = 255);
-    void SetPrintingArea(OnOffSetting onOff, int xlo = 0, int xhi = 0, int ylo = 0, int yhi = 0);
+    
+    
+    void SetPrintingArea(OnOffSetting onOff, double xlo = 0, double xhi = 0, double ylo = 0, double yhi = 0);
     
     /// <summary>
     /// Sets the contour interval to the specified value. Reset by <see cref="Clear">Clear</see> or <see cref="GradsSharp.IGradsCommandInterface.Display">Display</see>.
