@@ -37,6 +37,7 @@ public class VariableDefinition
     /// </summary>
     public int File { get; set; } = 1;
     
+    
     public override string ToString()
     {
         return $"{VariableName}-{HeightType}-{SecondHeightType}-{HeightValue}-{SecondHeightValue}";
