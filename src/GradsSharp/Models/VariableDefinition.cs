@@ -26,6 +26,11 @@ public class VariableDefinition
     /// Height
     /// </summary>
     public double HeightValue { get; set; } = Double.NaN;
+    
+    /// <summary>
+    /// Second Height
+    /// </summary>
+    public double SecondHeightValue { get; set; } = Double.NaN;
 
     /// <summary>
     /// Current file
@@ -34,7 +39,7 @@ public class VariableDefinition
     
     public override string ToString()
     {
-        return $"{VariableName}-{HeightType}-{SecondHeightType}-{HeightValue}";
+        return $"{VariableName}-{HeightType}-{SecondHeightType}-{HeightValue}-{SecondHeightValue}";
     }
     
     
@@ -42,7 +47,7 @@ public class VariableDefinition
     {
         if (obj is VariableDefinition other)
         {
-            return VariableName == other.VariableName && HeightType == other.HeightType && SecondHeightType == other.SecondHeightType && Math.Abs(HeightValue - other.HeightValue) < 0.0001;
+            return VariableName == other.VariableName && HeightType == other.HeightType && SecondHeightType == other.SecondHeightType && Math.Abs(HeightValue - other.HeightValue) < 0.0001 && Math.Abs(SecondHeightValue - other.SecondHeightValue) < 0.0001;
         }
 
         return false;
