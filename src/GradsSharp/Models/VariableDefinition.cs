@@ -48,7 +48,10 @@ public class VariableDefinition
     {
         if (obj is VariableDefinition other)
         {
-            return VariableName == other.VariableName && HeightType == other.HeightType && SecondHeightType == other.SecondHeightType && Math.Abs(HeightValue - other.HeightValue) < 0.0001 && Math.Abs(SecondHeightValue - other.SecondHeightValue) < 0.0001;
+            if(double.IsNaN(other.SecondHeightValue) && double.IsNaN(SecondHeightValue))
+                return VariableName == other.VariableName && HeightType == other.HeightType && Math.Abs(HeightValue - other.HeightValue) < 0.0001;
+            if(!double.IsNaN(other.SecondHeightValue) && !double.IsNaN(SecondHeightValue))
+                return VariableName == other.VariableName && HeightType == other.HeightType && SecondHeightType == other.SecondHeightType && Math.Abs(HeightValue - other.HeightValue) < 0.0001 && Math.Abs(SecondHeightValue - other.SecondHeightValue) < 0.0001;
         }
 
         return false;
