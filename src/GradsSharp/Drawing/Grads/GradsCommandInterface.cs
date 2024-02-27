@@ -1058,7 +1058,6 @@ internal class GradsCommandInterface : IGradsCommandInterface
         var vals = _drawingContext.CommonData.pfid.grvals[3];
         GaUtil.gr2t(vals, tMin, out _drawingContext.CommonData.tmin);
         _drawingContext.CommonData.tmax = _drawingContext.CommonData.tmin;
-        Console.Write("TMIN=");
     }
 
     public void SetE(double eMin)
