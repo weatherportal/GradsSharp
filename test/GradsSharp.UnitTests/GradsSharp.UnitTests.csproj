@@ -57,6 +57,8 @@
       <EmbeddedResource Include="Data\Expected\grid-fill-with-lines.png" />
       <None Remove="Data\Expected\grid-fill-without-lines.png" />
       <EmbeddedResource Include="Data\Expected\grid-fill-without-lines.png" />
+      <None Remove="Data\Expected\plottext-test.png" />
+      <EmbeddedResource Include="Data\Expected\plottext-test.png" />
     </ItemGroup>
 
 </Project>
