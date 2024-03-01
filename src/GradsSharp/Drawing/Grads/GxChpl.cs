@@ -9,7 +9,7 @@ internal class GxChpl
     private byte[][] fch = new byte[10][]; /* Pointers to font data once it is read in */
     private int[][] foff = new int[10][]; /* Pointers to character offsets */
     private int[][] flen = new int[10][]; /* Pointers to character lengths */
-    private int dfont = 15; /* Default font */
+    private int dfont = 0; /* Default font */
 
     public GxChpl(DrawingContext drawingContext)
     {
@@ -55,28 +55,28 @@ internal class GxChpl
                 {
                     /* get 1-digit font number */
                     fn = (int)chrs[idx + 1] - 48;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'a')
                 {
                     /* superscript */
                     supsub = 1;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'b')
                 {
                     /* subscript */
                     supsub = 2;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'n')
                 {
                     /* normal */
                     supsub = 0;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'f')
@@ -88,13 +88,13 @@ internal class GxChpl
                         if (nfn >= 0 && nfn < 100) fn = nfn;
                     }
 
-                    chrs += 4;
+                    idx += 4;
                     len -= 4;
                 }
                 else break;
             }
 
-            if (chrs[idx] != '\0' && len > 0)
+            if (idx < chrs.Length && len > 0)
             {
                 if (supsub>0)
                 {
@@ -227,25 +227,25 @@ internal class GxChpl
                 if (chrs[idx + 1] >= '0' && chrs[idx + 1] <= '9')
                 {
                     fn = (int)chrs[idx + 1] - 48;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'a')
                 {
                     supsub = 1;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'b')
                 {
                     supsub = 2;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'n')
                 {
                     supsub = 0;
-                    chrs += 2;
+                    idx += 2;
                     len -= 2;
                 }
                 else if (chrs[idx + 1] == 'f')
@@ -256,13 +256,13 @@ internal class GxChpl
                         if (nfn >= 0 && nfn < 100) fn = nfn;
                     }
 
-                    chrs += 4;
+                    idx += 4;
                     len -= 4;
                 }
                 else break;
             }
 
-            if (chrs[idx] != '\0' && len > 0)
+            if (idx < chrs.Length && len > 0)
             {
                 if (supsub>0)
                 {
