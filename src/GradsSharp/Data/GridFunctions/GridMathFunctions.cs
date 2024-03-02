@@ -68,19 +68,33 @@ public static class GridMathFunctions
     }
     public static IGradsGrid Multiply(this IGradsGrid grid1, IGradsGrid grid2)
     {
+        if(grid2.JSize == 1 && grid2.ISize == 1) {
+            return Multiply(grid1, grid2.GridData[0]);
+        }
         return TwoGridOperation(grid1, grid2, (a, b) => a * b);
     }
     public static IGradsGrid Subtract(this IGradsGrid grid1, IGradsGrid grid2)
     {
+        if(grid2.JSize == 1 && grid2.ISize == 1) {
+            return Subtract(grid1, grid2.GridData[0]);
+        }
+        
+        
         return TwoGridOperation(grid1, grid2, (a, b) => a - b);
     }
 
     public static IGradsGrid Add(this IGradsGrid grid1, IGradsGrid grid2)
     {
+        if(grid2.JSize == 1 && grid2.ISize == 1) {
+            return Add(grid1, grid2.GridData[0]);
+        }
         return TwoGridOperation(grid1, grid2, (a, b) => a + b);
     }
     public static IGradsGrid Divide(this IGradsGrid grid1, IGradsGrid grid2)
     {
+        if(grid2.JSize == 1 && grid2.ISize == 1) {
+            return Divide(grid1, grid2.GridData[0]);
+        }
         return TwoGridOperation(grid1, grid2, (a, b) => a / b);
     }
 
