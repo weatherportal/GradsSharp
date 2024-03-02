@@ -54,12 +54,26 @@ public class GridMath
     /// <summary>
     /// Calculate the average of a set of grids
     /// </summary>
-    /// <param name="grid1">First grid</param>
+    /// <param name="grid">First grid</param>
     /// <param name="otherGrids">Other grids</param>
     /// <returns>Average of all grids</returns>
-    public static IGradsGrid Avg(IGradsGrid grid1, params IGradsGrid[] otherGrids)
+    public static IGradsGrid Avg(IGradsGrid grid, params IGradsGrid[] otherGrids)
     {
-        return grid1.Average(otherGrids);
+        return grid.Average(otherGrids);
+    }
+
+    /// <summary>
+    /// Performs a centered difference operation on a grid in the direction specified by dimension. The difference is done in the grid space, and no adjustment is performed for unequally spaced grids. The result value at each grid point is the value at the grid point plus one minus the value at the grid point minus one.
+    /// The dimension argument specifies the dimension over which the difference is to be taken.
+    ///
+    /// Result values at the grid boundaries are set to missing.
+    /// </summary>
+    /// <param name="grid">Grid to operate on</param>
+    /// <param name="dimension">Direction to differentiate</param>
+    /// <returns>Differentiated grid</returns>
+    public static IGradsGrid CDiff(IGradsGrid grid, Dimension dimension)
+    {
+        return grid.CDiff(dimension);
     }
 
 

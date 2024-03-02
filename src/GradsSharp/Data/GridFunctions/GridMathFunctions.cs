@@ -220,7 +220,7 @@ public static class GridMathFunctions
                             }
                             else
                             {
-                                res[gr] = res[gr + 1] - res[gr - 1];
+                                res[gr] = pgr.GridData[gr + 1] - pgr.GridData[gr - 1];
                                 resundef[gr] = 1;
                             }
                         }
@@ -239,7 +239,7 @@ public static class GridMathFunctions
                             }
                             else
                             {
-                                res[gr] = res[gr + 1] - res[gr];
+                                res[gr] = pgr.GridData[gr + 1] - pgr.GridData[gr];
                                 resundef[gr] = 1;
                             }
                         }
@@ -258,7 +258,7 @@ public static class GridMathFunctions
                             }
                             else
                             {
-                                res[gr] = res[gr] - res[gr - 1];
+                                res[gr] = pgr.GridData[gr] - pgr.GridData[gr - 1];
                                 resundef[gr] = 1;
                             }
                         }
