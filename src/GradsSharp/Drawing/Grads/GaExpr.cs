@@ -955,7 +955,7 @@ internal class GaExpr
    some point to have three data types (grid, stn, constant) but
    for now it is easier to keep the constant grid concept.     */
 
-    GradsGrid gagrvl(double val)
+    public static GradsGrid gagrvl(double val)
     {
         GradsGrid pgr;
         int i;

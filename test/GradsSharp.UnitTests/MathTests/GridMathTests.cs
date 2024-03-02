@@ -1,4 +1,6 @@
 ﻿using GradsSharp.Data.GridFunctions;
+using GradsSharp.Drawing.Grads;
+using GradsSharp.Enums;
 using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 using Shouldly;
@@ -15,7 +17,22 @@ public class GridMathTests
     {
         grid1 = new GradsGrid();
         grid1.GridData = new double[] { 1, 2, 3, 4 };
+        grid1.UndefinedMask = new byte[] { 1, 1, 1, 1 };
         grid1.Undef = -9999;
+        
+        var gr = (GradsGrid)grid1;
+        
+        gr.JSize = 2;
+        gr.ISize = 2;
+        gr.jabgr = GaUtil.liconv;
+        gr.iabgr = GaUtil.liconv;
+        gr.igrab = GaUtil.liconv;
+        gr.jgrab = GaUtil.liconv;
+        
+        gr.ivals = new double[] { 1, 0, -999.9 };
+        gr.jvals = new double[] { 1, 0, -999.9 };
+        
+
         
         grid2 = new GradsGrid();
         grid2.GridData = new double[] { 5, 6, 7, 8 };
@@ -254,4 +271,43 @@ public class GridMathTests
         result.GridData[2].ShouldBe(5);
         result.GridData[3].ShouldBe(6);
     }
+    
+    [Test]
+    public void ArealSumTest()
+    {
+        var result = GridMath.AreaCalculation(grid1, AreaFunction.Sum);
+        
+        result.GridData[0].ShouldBe(10);
+    }
+    
+    [Test]
+    public void ArealAvgTest()
+    {
+        var result = GridMath.AreaCalculation(grid1, AreaFunction.Average);
+        
+        Math.Round(result.GridData[0], 1).ShouldBe(2.5);
+    }
+    
+    [Test]
+    public void ArealMeanTest()
+    {
+        var result = GridMath.AreaCalculation(grid1, AreaFunction.Mean);
+        
+        Math.Round(result.GridData[0], 1).ShouldBe(2.5);
+    }
+
+    [Test]
+    public void SubtractConstantGrid_Test()
+    {
+        var result = GridMath.AreaCalculation(grid1, AreaFunction.Average);
+
+
+        var result2 = grid2 - result;
+        
+        Math.Round(result2.GridData[0], 1).ShouldBe(2.5);
+        Math.Round(result2.GridData[1], 1).ShouldBe(3.5);
+        Math.Round(result2.GridData[2], 1).ShouldBe(4.5);
+        Math.Round(result2.GridData[3], 1).ShouldBe(5.5);
+    }
+    
 }
