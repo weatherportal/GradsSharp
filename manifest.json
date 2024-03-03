@@ -1,0 +1,761 @@
+{
+  "source_base_path": "D:/a/GradsSharp/GradsSharp/docs/docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.Grads.IGradsDatabase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.Grads.IGradsDatabase.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.Grads.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.Grads.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridInterpolationFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridInterpolationFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMaskFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMaskFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMathFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMathFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridSmoothFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridSmoothFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.IGridFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.IGridFunctions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.IGriddedDataReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.IGriddedDataReader.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.IVariableMapping.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.IVariableMapping.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.Gx.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.Gx.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.IDrawingEngine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.IDrawingEngine.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.AreaFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.AreaFunction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Axis.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Axis.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.AxisLabelOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.AxisLabelOption.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.BackgroundColor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.BackgroundColor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.ClearAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.ClearAction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.ColorBarDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.ColorBarDirection.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.ConstMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.ConstMode.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Dimension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Dimension.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.DimensionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.DimensionType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.FileType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.FileType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.FixedSurfaceType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.FixedSurfaceType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GraphicsOutputMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GraphicsOutputMode.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GridLine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GridLine.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GridLineOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GridLineOption.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GridOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GridOption.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.InputFileDimensionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.InputFileDimensionType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.InterpolationMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.InterpolationMode.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.IntervalType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.IntervalType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.KmlOutputFlag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.KmlOutputFlag.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.LabelOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.LabelOption.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.LineStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.LineStyle.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.MapResolution.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.MapResolution.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.MultiLevelFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.MultiLevelFunction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.OnOffSetting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.OnOffSetting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Orientation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Orientation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.OutputFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.OutputFormat.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.PreprojectedType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.PreprojectedType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Projection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Projection.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.SmoothOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.SmoothOption.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.StringJustification.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.StringJustification.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Exceptions.InvalidColorException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Exceptions.InvalidColorException.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Exceptions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.GradsEngine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.GradsEngine.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.IGradsCommandInterface.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.IGradsCommandInterface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.IGradsDrawingInterface.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.IGradsDrawingInterface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.ColorBarSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.ColorBarSettings.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.ColorDefinition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.ColorDefinition.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.DimensionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.DimensionInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.FileInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.FileInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.IGradsGrid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.IGradsGrid.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.InputFile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.InputFile.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.InputVariable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.InputVariable.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.TextOutput.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.TextOutput.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.VariableDefinition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.VariableDefinition.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Utils.StringToDouble.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Utils.StringToDouble.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Utils.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/gradssharp/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/gradssharp/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "documentation/command-interface.md",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/command-interface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "documentation/creating-a-reader.md",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/creating-a-reader.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "documentation/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "documentation/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/toc.html"
+        },
+        ".json": {
+          "relative_path": "documentation/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/t2m.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/t2m.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
