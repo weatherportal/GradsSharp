@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using GradsSharp.Data.Grads;
+using GradsSharp.Models;
+using GradsSharp.Models.Internal;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -10,9 +12,9 @@ namespace GradsSharp.Drawing.Grads;
 
 internal class GradsDrawingInterface : IGradsDrawingInterface
 {
-    private Func<double, double, Tuple<double, double>>? fconv;
-    private Func<double, double, Tuple<double, double>>? gconv;
-    private Func<double, double, Tuple<double, double>>? bconv;
+    private Func<double, double, GradsPoint>? fconv;
+    private Func<double, double, GradsPoint>? gconv;
+    private Func<double, double, GradsPoint>? bconv;
 
     private double xsize, ysize; /* Virtual page size  */
     private double rxsize, rysize; /* Real page size     */
@@ -615,14 +617,14 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 
     public void gxconv(double s, double t, out double x, out double y, int level)
     {
-        Tuple<double, double> tu = new Tuple<double, double>(s, t);
+        GradsPoint tu = new GradsPoint(s, t);
 
         if (level > 2 && gconv != null) tu = gconv(s, t);
-        if (level > 1 && fconv != null) tu = fconv(tu.Item1, tu.Item2);
+        if (level > 1 && fconv != null) tu = fconv(tu.x, tu.y);
         if (level > 0)
         {
-            s = tu.Item1 * xm + xb;
-            t = tu.Item2 * ym + yb;
+            s = tu.x * xm + xb;
+            t = tu.y * ym + yb;
         }
 
         x = s;
@@ -649,15 +651,15 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
         t = (y - yb) / ym;
 
         /* Do level 1 to level 2 */
-        Tuple<double, double> tu = new Tuple<double, double>(s, t);
+        GradsPoint tu = new GradsPoint(s, t);
         if (bconv != null) tu = bconv(s, t);
-        s = tu.Item1;
-        t = tu.Item2;
+        s = tu.x;
+        t = tu.y;
     }
 
 /* Allow caller to specify a routine to do the back transform from
    level 1 to level 2 coordinates. */
-    public void gxback(Func<double, double, Tuple<double, double>> fproj)
+    public void gxback(Func<double, double, GradsPoint> fproj)
     {
         bconv = fproj;
     }
@@ -667,7 +669,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
    is provided.  This is scaling level 2, and is the level that
    mapping is done. */
 
-    public void gxproj(Func<double, double, Tuple<double, double>>? fproj)
+    public void gxproj(Func<double, double, GradsPoint>? fproj)
     {
         fconv = fproj;
     }
@@ -678,7 +680,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
    the possibly non-linear scaling.  This is scaling level 3, and
    is the level that contouring is done.  */
 
-    public void gxgrid(Func<double, double, Tuple<double, double>> fproj)
+    public void gxgrid(Func<double, double, GradsPoint> fproj)
     {
         gconv = fproj;
     }
@@ -687,10 +689,10 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
 /* Convert from grid coordinates to map coordinates (level 3 to level 2) */
     public void gxgrmp(double s, double t, out double x, out double y)
     {
-        Tuple<double, double> result = new Tuple<double, double>(0, 0);
+        GradsPoint result = new GradsPoint(0, 0);
         if (gconv != null) result = gconv(s, t);
-        x = result.Item1;
-        y = result.Item2;
+        x = result.x;
+        y = result.y;
     }
 
 /* Convert an array of higher level coordinates to level 0 coordinates.
@@ -710,8 +712,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
             for (i = 0; i < num; i++)
             {
                 var tuple = gconv(coords[xy], coords[xy + 1]);
-                result[xy] = tuple.Item1;
-                result[xy + 1] = tuple.Item2;
+                result[xy] = tuple.x;
+                result[xy + 1] = tuple.y;
                 xy += 2;
             }
         }
@@ -722,8 +724,8 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
             for (i = 0; i < num; i++)
             {
                 var tuple = fconv(result[xy], result[xy + 1]);
-                result[xy] = tuple.Item1;
-                result[xy + 1] = tuple.Item2;
+                result[xy] = tuple.x;
+                result[xy + 1] = tuple.y;
                 xy += 2;
             }
         }

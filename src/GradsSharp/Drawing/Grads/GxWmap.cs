@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Reflection.Metadata;
+using GradsSharp.Models;
 using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
 
@@ -493,11 +494,11 @@ internal class GxWmap
         return (0);
     }
 
-    public Tuple<double, double> gxnpst(double rlon, double rlat)
+    public GradsPoint gxnpst(double rlon, double rlat)
     {
         double x, y;
         gxnpst(rlon, rlat, out x, out y);
-        return new Tuple<double, double>(x, y);
+        return new GradsPoint(x, y);
     }
     void gxnpst(double rlon, double rlat, out double x, out double y)
     {
@@ -510,11 +511,11 @@ internal class GxWmap
     }
 
 /* Routine for back transform for npst */
-    public Tuple<double, double> gxnrev(double x, double y )
+    public GradsPoint gxnrev(double x, double y )
     {
         double rlon, rlat;
         gxnrev(x, y, out rlon, out rlat);
-        return new Tuple<double, double>(rlon, rlat);
+        return new GradsPoint(rlon, rlat);
     }
     void gxnrev(double x, double y, out double rlon, out double rlat)
     {
@@ -624,12 +625,12 @@ internal class GxWmap
         return (0);
     }
 
-    public Tuple<double, double> gxspst(double rlon, double rlat)
+    public GradsPoint gxspst(double rlon, double rlat)
     {
         double x=0;
         double y = 0;
         gxspst(rlon, rlat, out x, out y);
-        return new Tuple<double, double>(x, y);
+        return new GradsPoint(x, y);
     }
     public void gxspst(double rlon, double rlat, out double x, out double y)
     {
@@ -642,12 +643,12 @@ internal class GxWmap
     }
 
 /* Routine for back transform for spst */
-    public Tuple<double, double> gxsrev(double x, double y)
+    public GradsPoint gxsrev(double x, double y)
     {
         double rlon = 0;
         double rlat = 0;
         gxsrev(x, y, out rlon, out rlat);
-        return new Tuple<double, double>(rlon, rlat);
+        return new GradsPoint(rlon, rlat);
     }
     public void gxsrev(double x, double y, out double rlon, out double rlat)
     {
@@ -819,12 +820,12 @@ internal class GxWmap
         2.356, 2.281, 2.195, 2.099, 1.997, 1.889, 1.769, 1.633, 1.504, 1.399
     };
 
-    public Tuple<double, double> gxrobp(double rlon, double rlat)
+    public GradsPoint gxrobp(double rlon, double rlat)
     {
         double x = 0;
         double y = 0;
         gxrobp(rlon, rlat, out x, out y);
-        return new Tuple<double, double>(x, y);
+        return new GradsPoint(x, y);
     }
     public void gxrobp(double rlon, double rlat, out double x, out double y)
     {
@@ -851,9 +852,9 @@ internal class GxWmap
 
 /* Back Transform for Robinson Projection */
 
-    public Tuple<double, double> gxrobb(double x, double y)
+    public GradsPoint gxrobb(double x, double y)
     {
-        return new Tuple<double, double>(-999.9, -999.9);
+        return new GradsPoint(-999.9, -999.9);
     }
 
 /*------------------------------------------------------------------
@@ -940,11 +941,11 @@ internal class GxWmap
         return (0);
     }
 
-    public Tuple<double, double> gxmollp(double rlon, double rlat)
+    public GradsPoint gxmollp(double rlon, double rlat)
     {
         double x, y;
         gxmollp(rlon, rlat, out x, out y);
-        return new Tuple<double, double>(x, y);
+        return new GradsPoint(x, y);
     }
     void gxmollp(double rlon, double rlat, out double x, out double y)
     {
@@ -967,9 +968,9 @@ internal class GxWmap
     }
 
 /* Back Transform for Mollweide Projection */
-    public Tuple<double, double> gxmollb(double x, double y)
+    public GradsPoint gxmollb(double x, double y)
     {
-        return new Tuple<double, double>(-999.9, -999.9);
+        return new GradsPoint(-999.9, -999.9);
     }
     void gxmollb(double x, double y, out double rlon, out double rlat)
     {
@@ -1112,11 +1113,11 @@ internal class GxWmap
         return (0);
     }
 
-    public Tuple<double, double> gxortgp(double rlon, double rlat)
+    public GradsPoint gxortgp(double rlon, double rlat)
     {
         double x, y;
         gxortgp(rlon, rlat, out x, out y);
-        return new Tuple<double, double>(x, y);
+        return new GradsPoint(x, y);
     }
 
     void gxortgp(double rlon, double rlat, out double x, out double y)
@@ -1139,9 +1140,9 @@ internal class GxWmap
     }
 
 /* Back Transform for Orthographic Projection */
-    public Tuple<double, double> gxortgb(double x, double y)
+    public GradsPoint gxortgb(double x, double y)
     {
-        return new Tuple<double, double>(-999.9, -999.9);
+        return new GradsPoint(-999.9, -999.9);
     }
     void gxortgb(double x, double y, out double rlon, out double rlat)
     {
@@ -1326,11 +1327,11 @@ internal class GxWmap
 
 /*--- transform routine for lambert conformal conic projection  ---*/
 
-    Tuple<double, double> gxlamcp(double rlon, double rlat)
+    GradsPoint gxlamcp(double rlon, double rlat)
     {
         double x, y;
         gxlamcp(rlon, rlat, out x, out y);
-        return new Tuple<double, double>(x, y);
+        return new GradsPoint(x, y);
     }
     void gxlamcp(double rlon, double rlat, out double x, out double y)
     {
@@ -1368,7 +1369,7 @@ internal class GxWmap
 
 /*--- Back Transform for Lambert conformal Projection ---*/
 
-    Tuple<double, double> gxlamcb(double x, double y) => new Tuple<double, double>(-999.9, -999.9);
+    GradsPoint gxlamcb(double x, double y) => new GradsPoint(-999.9, -999.9);
     
     void gxlamcb(double x, double y, out double rlon, out double rlat)
     {
