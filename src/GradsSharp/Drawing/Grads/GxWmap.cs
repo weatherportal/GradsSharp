@@ -28,20 +28,127 @@ internal class GxWmap
 
     private int mcpos; /* current position in cached file */
     private int mclen; /* length of the data in current cache */
-    private Stream mfile; /* for file i/o instead of caching */
+    private Stream? mfile; /* for file i/o instead of caching */
     private int cflag; /* indicate if i/o from cache or file */
+
+    private Dictionary<string, MapData> _mapDataCache = new();
 
     public GxWmap(DrawingContext drawingContext)
     {
         _drawingContext = drawingContext;
     }
 
-    public void gxrsmapt()
+    public void ResetMapType()
     {
         adjtyp = 0;
     }
 
-    public void gxdmap(mapopt mopt)
+
+    private MapData? ReadMapData(MapOptions mopt)
+    {
+    
+        string fname;
+        
+        if (_mapDataCache.ContainsKey(mopt.DataSet)) return _mapDataCache[mopt.DataSet];
+    
+        _mapDataCache[mopt.DataSet] = new MapData();
+
+        _mapDataCache[mopt.DataSet].FileName = mopt.DataSet;
+        
+        if (mopt.DataSet[0] == '/' || mopt.DataSet[0] == '\\')
+        {
+            imap = gxwopen(mopt.DataSet, "rb");
+            if (imap == 0)
+            {
+                _drawingContext.Logger?.LogInformation($"Open Error on Map Data Set: {mopt.DataSet}");
+                return null;
+            }
+        }
+        else
+        {
+            fname = mopt.DataSet;
+            imap = gxwopen(fname, "rb");
+            if (imap == 0)
+            {
+                imap = gxwopen(mopt.DataSet, "rb", true);
+                if (imap == 0)
+                {
+                    throw new FileNotFoundException($"Open Error on Map Data Set: {fname}");
+                    return null;
+                }
+            }
+        }
+        
+        int rnum = 0, rc = 0, i = 0, flag = 0;
+        
+        byte[] hdr = new byte[3], rec = new byte[1530];
+        double[] lon = new double[255], lat = new double[255];
+        int currPos = 0;
+        
+        while (true)
+        {
+
+            if (cflag > 0) currPos = mcpos;
+            else currPos = (int)mfile.Position;
+            
+            if (cflag > 0) rc = gxwread(out hdr, 3);
+            else rc = mfile.Read(hdr, 0, 3);
+            
+            if (rc != 3) break;
+            rnum++;
+    
+            MapDataRecord record = new MapDataRecord();
+            
+            
+            i = record.Header[0] = ConvertByteArrayToInteger(hdr, 0, 1);
+            record.Header[1] = ConvertByteArrayToInteger(hdr, 1, 1);
+            record.Header[2] = ConvertByteArrayToInteger(hdr, 2, 1);
+            
+            if (i < 1 || i > 3)
+            {
+                throw new Exception($"Map file format error: Invalid rec type {i} rec num {rnum}");
+            }
+    
+            _mapDataCache[mopt.DataSet].Records.Add(record);
+
+            record.FilePos = currPos;
+    
+            if (i == 2)
+            {
+                if (cflag>0) gxwread(out rec, 16);
+                else mfile.Read(rec, 0, 16);
+                
+                record.Data[0] = ConvertByteArrayToInteger(rec, 0, 4);
+                record.Data[1] = ConvertByteArrayToInteger(rec, 4, 3);
+                record.Data[2] = ConvertByteArrayToInteger(rec, 7, 3);
+                record.Data[3] = ConvertByteArrayToInteger(rec, 10, 3);
+                record.Data[4] = ConvertByteArrayToInteger(rec, 13, 3);
+                
+                continue;
+            }
+            
+            
+            
+            var num = record.Header[2];
+            
+            if (cflag > 0) gxwread(out rec, num * 6);
+            else mfile.Read(rec, 0, num * 6);
+            
+            for (i = 0; i < num; i++)
+            {
+                record.Data[i*2] = ConvertByteArrayToInteger(rec, i * 6, 3);
+                record.Data[i*2 + 1] = ConvertByteArrayToInteger(rec, i * 6 + 3, 3);
+            }
+            
+        }
+        
+        if (cflag > 0) gxwclose(imap);
+        else mfile.Close();
+    
+        return _mapDataCache[mopt.DataSet];
+    }
+    
+    public void DrawMap(MapOptions mapOptions)
     {
         double[] lon = new double[255], lat = new double[255];
         double xx, yy, lnmin, lnmax, ltmin, ltmax, lnfact;
@@ -51,83 +158,67 @@ internal class GxWmap
         string fname;
         byte[] hdr = new byte[3], rec = new byte[1530];
 
-        llinc = (float)GaUtil.hypot(mopt.lnmax - mopt.lnmin, mopt.ltmax - mopt.ltmin);
+        llinc = (float)GaUtil.hypot(mapOptions.LonMax - mapOptions.LonMin, mapOptions.LatMax - mapOptions.LatMin);
         llinc = llinc / 200;
         if (llinc < 0.0001) llinc = 0.0001f;
 
         /* Open the map data set */
 
-        if (mopt.mpdset[0] == '/' || mopt.mpdset[0] == '\\')
+        MapData mapData = ReadMapData(mapOptions);
+
+        if (mapData == null)
         {
-            imap = gxwopen(mopt.mpdset, "rb");
-            if (imap == 0)
-            {
-                _drawingContext.Logger?.LogInformation($"Open Error on Map Data Set: {mopt.mpdset}");
-                return;
-            }
-        }
-        else
-        {
-            fname = mopt.mpdset;
-            imap = gxwopen(fname, "rb");
-            if (imap == 0)
-            {
-                imap = gxwopen(mopt.mpdset, "rb", true);
-                if (imap == 0)
-                {
-                    throw new FileNotFoundException($"Open Error on Map Data Set: {fname}");
-                    return;
-                }
-            }
+            return; 
         }
 
-        /* Read and process each record */
+        int recNum = 0;
+
 
         rnum = 0;
-        while (true)
+        while(recNum < mapData.Records.Count)
         {
-            if (cflag>0) rc = gxwread(out hdr, 3);
-            else rc = mfile.Read(hdr, 0, 3);
-            if (rc != 3) break;
+            var record = mapData.Records[recNum++];
+            
+            i = record.Header[0];
             rnum++;
-            i = ConvertByteArrayToInteger(hdr, 0, 1);
-            if (i < 1 || i > 3)
-            {
-                throw new Exception("Map file format error: Invalid rec type {i} rec num {rnum}");
-            }
 
             if (i == 2)
             {
-                st1 = ConvertByteArrayToInteger(hdr, 1, 1);
-                st2 = ConvertByteArrayToInteger(hdr, 2, 1);
-                if (cflag>0) gxwread(out rec, 16);
-                else mfile.Read(rec, 0, 16);
-                spos = ConvertByteArrayToInteger(rec, 0, 4);
-                ilon = ConvertByteArrayToInteger(rec, 4, 3);
+                st1 = record.Header[1];
+                st2 = record.Header[2];
+                spos = record.Data[0];
+                ilon = record.Data[1];
                 sln1 = (float)(((float)ilon) / 1e4);
-                ilon = ConvertByteArrayToInteger(rec, 7, 3);
+                ilon = record.Data[2];
                 sln2 = (float)(((float)ilon) / 1e4);
-                ilat = ConvertByteArrayToInteger(rec, 10, 3);
+                ilat = record.Data[3];
                 slt1 = (float)(((float)ilat) / 1e4 - 90.0);
-                ilat = ConvertByteArrayToInteger(rec, 13, 3);
+                ilat = record.Data[4];
                 slt2 = (float)(((float)ilat) / 1e4 - 90.0);
                 flag = 0;
                 for (i = 0; i < 256; i++)
                 {
-                    if (mopt.mcol[i] != -9 && i >= st1 && i <= st2) flag = 1;
+                    if (mapOptions.MapColors[i] != -9 && i >= st1 && i <= st2) flag = 1;
                 }
 
                 if (flag == 0)
                 {
                     if (spos == 0)
                     {
-                        if (cflag>0) gxwclose(imap);
-                        else mfile.Close();
+                        
                         return;
                     }
 
-                    if (cflag > 0) gxwseek(spos);
-                    else mfile.Seek(spos, SeekOrigin.Begin);
+                    while (true)
+                    {
+                        if (mapData.Records[recNum].FilePos == spos)
+                        {
+                            break;
+                        }
+
+                        recNum++;
+                    }
+                    
                     continue;
                 }
 
@@ -135,13 +226,13 @@ internal class GxWmap
                 if (sln1 > 360.0) flag = 1;
                 else
                 {
-                    if (slt2 <= mopt.ltmin || slt1 >= mopt.ltmax) flag = 0;
+                    if (slt2 <= mapOptions.LatMin || slt1 >= mapOptions.LatMax) flag = 0;
                     else
                     {
                         lnfact = 0.0;
-                        while (sln2 + lnfact > mopt.lnmin) lnfact -= 360.0;
+                        while (sln2 + lnfact > mapOptions.LonMin) lnfact -= 360.0;
                         lnfact += 360.0;
-                        if (sln1 + lnfact >= mopt.lnmax) flag = 0;
+                        if (sln1 + lnfact >= mapOptions.LonMax) flag = 0;
                         else flag = 1;
                     }
                 }
@@ -150,20 +241,28 @@ internal class GxWmap
                 {
                     if (spos == 0)
                     {
-                        if (cflag > 0) gxwclose(imap);
-                        else mfile.Close();
+                        
                         return;
                     }
 
-                    if (cflag > 0) gxwseek(spos);
-                    else mfile.Seek(spos, SeekOrigin.Begin);
+                    while (true)
+                    {
+                        
+                        if (mapData.Records[recNum].FilePos == spos)
+                        {
+                            break;
+                        }
+
+                        recNum++;
+                    }
                 }
+                
 
                 continue;
             }
-
-            type = ConvertByteArrayToInteger(hdr, 1, 1);
-            num = ConvertByteArrayToInteger(hdr, 2, 1);
+            
+            type = record.Header[1];
+            num = record.Header[2];
 
             /* The lowres map has only one type:
              1 -- coastlines.
@@ -177,20 +276,18 @@ internal class GxWmap
             /* Read the next record; convert the data points;
            and get the lat/lon bounds for this line segment */
 
-            if (cflag > 0) gxwread(out rec, num * 6);
-            else mfile.Read(rec, 0, num * 6);
-            if (mopt.mcol[type] == -9) continue;
-            if (mopt.mcol[type] == -1)
+            if (mapOptions.MapColors[type] == -9) continue;
+            if (mapOptions.MapColors[type] == -1)
             {
-                _drawingContext.GradsDrawingInterface.SetDrawingColor(mopt.dcol);
-                _drawingContext.GradsDrawingInterface.gxstyl(mopt.dstl);
-                _drawingContext.GradsDrawingInterface.gxwide(mopt.dthk);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(mapOptions.DefaultColor);
+                _drawingContext.GradsDrawingInterface.gxstyl(mapOptions.DefaultStyle);
+                _drawingContext.GradsDrawingInterface.gxwide(mapOptions.DefaultThickness);
             }
             else
             {
-                _drawingContext.GradsDrawingInterface.SetDrawingColor(mopt.mcol[type]);
-                _drawingContext.GradsDrawingInterface.gxstyl(mopt.mstl[type]);
-                _drawingContext.GradsDrawingInterface.gxwide(mopt.mthk[type]);
+                _drawingContext.GradsDrawingInterface.SetDrawingColor(mapOptions.MapColors[type]);
+                _drawingContext.GradsDrawingInterface.gxstyl(mapOptions.MapStyles[type]);
+                _drawingContext.GradsDrawingInterface.gxwide(mapOptions.MapThicknesses[type]);
             }
 
             lnmin = 9999.9;
@@ -199,8 +296,8 @@ internal class GxWmap
             ltmax = -9999.9;
             for (i = 0; i < num; i++)
             {
-                ilon = ConvertByteArrayToInteger(rec, i * 6, 3);
-                ilat = ConvertByteArrayToInteger(rec, i * 6 + 3, 3);
+                ilon = record.Data[2*i];
+                ilat = record.Data[2*i+1];
                 lat[i] = ((float)ilat) / 1e4 - 90.0;
                 lon[i] = ((float)ilon) / 1e4;
                 if (lat[i] < ltmin) ltmin = lat[i];
@@ -212,16 +309,16 @@ internal class GxWmap
             /* Plot this line segment if it falls within the
            appropriate lat/lon bounds */
 
-            if (ltmax < mopt.ltmin) continue;
-            if (ltmin > mopt.ltmax) continue;
+            if (ltmax < mapOptions.LatMin) continue;
+            if (ltmin > mapOptions.LatMax) continue;
 
             lnfact = 0.0;
-            while (lnmax + lnfact > mopt.lnmin) lnfact -= 360.0;
+            while (lnmax + lnfact > mapOptions.LonMin) lnfact -= 360.0;
             lnfact += 360.0;
 
-            while (lnmin + lnfact < mopt.lnmax)
+            while (lnmin + lnfact < mapOptions.LonMax)
             {
-                if (lnmax + lnfact < mopt.lnmin)
+                if (lnmax + lnfact < mapOptions.LonMin)
                 {
                     lnfact += 360.0;
                     continue;
@@ -280,9 +377,9 @@ internal class GxWmap
                             }
                         }
 
-                        if (lntmp + lnfact < mopt.lnmin ||
-                            lntmp + lnfact > mopt.lnmax ||
-                            lttmp < mopt.ltmin || lttmp > mopt.ltmax)
+                        if (lntmp + lnfact < mapOptions.LonMin ||
+                            lntmp + lnfact > mapOptions.LonMax ||
+                            lttmp < mapOptions.LatMin || lttmp > mapOptions.LatMax)
                         {
                             if (ipen == 2)
                             {
@@ -313,11 +410,11 @@ internal class GxWmap
 
                 lnfact += 360.0;
             }
-        }
 
-        if (cflag > 0) gxwclose(imap);
-        else mfile.Close();
+            
+        }
     }
+
 
 /* Routine to set up scaling for lat-lon projection.  The aspect
    ratio is *not* maintained.                                   */
