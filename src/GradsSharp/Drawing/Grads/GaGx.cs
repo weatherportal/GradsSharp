@@ -2992,7 +2992,7 @@ internal class GaGx
 
         d2r = Math.PI / 180;
         _drawingContext.GradsDrawingInterface.gxrset(3); /* Reset all scaling */
-        _drawingContext.GxWmap.gxrsmapt(); /* Reset map type */
+        _drawingContext.GxWmap.ResetMapType(); /* Reset map type */
 
         /* Set up linear level scaling (level 1) and map level scaling
          (level 2).  If no map drawn, just do linear level scaling.  */
@@ -7747,7 +7747,7 @@ internal class GaGx
     public void gawmap(bool iflg)
     {
         var pcm = _drawingContext.CommonData;
-        mapopt mopt = new();
+        MapOptions mopt = new();
         int i;
 
         if (pcm.mproj == 0 || (pcm.pass > 0 && iflg)) return;
@@ -7758,39 +7758,39 @@ internal class GaGx
             /* set default map color, style, thickness */
             if (iflg)
             {
-                mopt.dcol = pcm.mcolor;
-                mopt.dstl = 1;
-                mopt.dthk = 3;
+                mopt.DefaultColor = pcm.mcolor;
+                mopt.DefaultStyle = 1;
+                mopt.DefaultThickness = 3;
             }
             else
             {
-                mopt.dcol = 1;
-                mopt.dstl = 1;
-                mopt.dthk = 3;
+                mopt.DefaultColor = 1;
+                mopt.DefaultStyle = 1;
+                mopt.DefaultThickness = 3;
             }
         }
         else
         {
             /* user has invoked 'set map' */
-            mopt.dcol = pcm.mapcol;
-            mopt.dstl = pcm.mapstl;
-            mopt.dthk = pcm.mapthk;
+            mopt.DefaultColor = pcm.mapcol;
+            mopt.DefaultStyle = pcm.mapstl;
+            mopt.DefaultThickness = pcm.mapthk;
         }
 
         /* set boundaries */
-        mopt.lnmin = pcm.dmin[0];
-        mopt.lnmax = pcm.dmax[0];
-        mopt.ltmin = pcm.dmin[1];
-        mopt.ltmax = pcm.dmax[1];
+        mopt.LonMin = pcm.dmin[0];
+        mopt.LonMax = pcm.dmax[0];
+        mopt.LatMin = pcm.dmin[1];
+        mopt.LatMax = pcm.dmax[1];
         /* arrays of map line attributes */
-        mopt.mcol = pcm.mpcols;
-        mopt.mstl = pcm.mpstls;
-        mopt.mthk = pcm.mpthks;
+        mopt.MapColors = pcm.mpcols;
+        mopt.MapStyles = pcm.mpstls;
+        mopt.MapThicknesses = pcm.mpthks;
         i = 0;
         while (pcm.mpdset[i] != null)
         {
-            mopt.mpdset = pcm.mpdset[i];
-            _drawingContext.GxWmap.gxdmap(mopt);
+            mopt.DataSet = pcm.mpdset[i];
+            _drawingContext.GxWmap.DrawMap(mopt);
             i++;
         }
 

@@ -344,12 +344,21 @@ internal class gadata
     public gastn stn;
 };
 
-internal class mapopt
+internal struct MapOptions
 {
-    public double lnmin, lnmax, ltmin, ltmax; /* Plot bounds */
-    public int dcol, dstl, dthk; /* Default color, style, thickness */
-    public int[] mcol, mstl, mthk; /* Arrays of map line attributes */
-    public string mpdset; /* Map data set name */
+    public double LonMin { get; set; }
+    public double LonMax { get; set; }
+    public double LatMin { get; set; }
+    public double LatMax { get; set; }
+
+    public int DefaultColor { get; set; }
+    public int DefaultStyle { get; set; }
+    public int DefaultThickness { get; set; }
+
+    public int[] MapColors { get; set; }
+    public int[] MapStyles { get; set; }
+    public int[] MapThicknesses { get; set; }
+    public string DataSet { get; set; }
 }
 
 internal class gadefn {
