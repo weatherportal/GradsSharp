@@ -7092,7 +7092,7 @@ internal class GaGx
 /* Routine to perform grid level scaling.  The address of this
    routine is passed to gxgrid.  */
 
-    Tuple<double, double> gaconv(double s, double t)
+    GradsPoint gaconv(double s, double t)
     {
         double x, y;
 
@@ -7104,7 +7104,7 @@ internal class GaGx
         if (jconv == null) y = t + joffset;
         else y = jconv(jvars, (t + joffset));
 
-        return new Tuple<double, double>(x, y);
+        return new GradsPoint(x, y);
     }
 
 /* Draw axis labels.  axis = 1 is x axis, axis = 0 is y axis */
@@ -8751,77 +8751,77 @@ internal class GaGx
 
 /* Log axis scaling */
 
-    Tuple<double, double> galnx(double xin, double yin)
+    GradsPoint galnx(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Log(xin), yin);
+        return new GradsPoint(Math.Log(xin), yin);
     }
 
-    Tuple<double, double> galny(double xin, double yin)
+    GradsPoint galny(double xin, double yin)
     {
-        return new Tuple<double, double>(xin, Math.Log(yin));
+        return new GradsPoint(xin, Math.Log(yin));
     }
 
-    Tuple<double, double> gaalnx(double xin, double yin)
+    GradsPoint gaalnx(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Pow(2.71829, xin), yin);
+        return new GradsPoint(Math.Pow(2.71829, xin), yin);
     }
 
-    Tuple<double, double> gaalny(double xin, double yin)
+    GradsPoint gaalny(double xin, double yin)
     {
-        return new Tuple<double, double>(xin, Math.Pow(2.71829, yin));
+        return new GradsPoint(xin, Math.Pow(2.71829, yin));
     }
 
-    Tuple<double, double> galogx(double xin, double yin)
+    GradsPoint galogx(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Log10(xin), yin);
+        return new GradsPoint(Math.Log10(xin), yin);
     }
 
-    Tuple<double, double> galogy(double xin, double yin)
+    GradsPoint galogy(double xin, double yin)
     {
-        return new Tuple<double, double>(xin, Math.Log10(yin));
+        return new GradsPoint(xin, Math.Log10(yin));
     }
 
-    Tuple<double, double> galog2(double xin, double yin)
+    GradsPoint galog2(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Log10(xin), Math.Log10(yin));
+        return new GradsPoint(Math.Log10(xin), Math.Log10(yin));
     }
 
-    Tuple<double, double> gaalogx(double xin, double yin)
+    GradsPoint gaalogx(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Pow(10.0, xin), yin);
+        return new GradsPoint(Math.Pow(10.0, xin), yin);
     }
 
-    Tuple<double, double> gaalogy(double xin, double yin)
+    GradsPoint gaalogy(double xin, double yin)
     {
-        return new Tuple<double, double>(xin, Math.Pow(10.0, yin));
+        return new GradsPoint(xin, Math.Pow(10.0, yin));
     }
 
-    Tuple<double, double> gaalog2(double xin, double yin)
+    GradsPoint gaalog2(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Pow(10.0, xin), Math.Pow(10.0, yin));
+        return new GradsPoint(Math.Pow(10.0, xin), Math.Pow(10.0, yin));
     }
 
 
 /* cos lat scaling */
 
-    Tuple<double, double> gaclx(double xin, double yin)
+    GradsPoint gaclx(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Sin(xin * Math.PI / 180), yin);
+        return new GradsPoint(Math.Sin(xin * Math.PI / 180), yin);
     }
 
-    Tuple<double, double> gacly(double xin, double yin)
+    GradsPoint gacly(double xin, double yin)
     {
-        return new Tuple<double, double>(xin, Math.Sin(yin * Math.PI / 180));
+        return new GradsPoint(xin, Math.Sin(yin * Math.PI / 180));
     }
 
-    Tuple<double, double> gaaclx(double xin, double yin)
+    GradsPoint gaaclx(double xin, double yin)
     {
-        return new Tuple<double, double>(Math.Asin(xin) * 180 / Math.PI, yin);
+        return new GradsPoint(Math.Asin(xin) * 180 / Math.PI, yin);
     }
 
-    Tuple<double, double> gaacly(double xin, double yin)
+    GradsPoint gaacly(double xin, double yin)
     {
-        return new Tuple<double, double>(xin, Math.Asin(yin) * 180 / Math.PI);
+        return new GradsPoint(xin, Math.Asin(yin) * 180 / Math.PI);
     }
 
 
@@ -8830,7 +8830,7 @@ internal class GaGx
    is provided.  This is scaling level 2, and is the level that
    mapping is done. */
 
-    // void gxproj(Func<double, double, Tuple<double, double>> fproj)
+    // void gxproj(Func<double, double, GradsPoint> fproj)
     // {
     //     fconv = fproj;
     // }
@@ -8841,14 +8841,14 @@ internal class GaGx
    the possibly non-linear scaling.  This is scaling level 3, and
    is the level that contouring is done.  */
 
-    // void gxgrid(Func<double, double, Tuple<double, double>> fproj)
+    // void gxgrid(Func<double, double, GradsPoint> fproj)
     // {
     //     gconv = fproj;
     // }
 
     /* Allow caller to specify a routine to do the back transform from
    level 1 to level 2 coordinates. */
-    // void gxback(Func<double, double, Tuple<double, double>> fproj)
+    // void gxback(Func<double, double, GradsPoint> fproj)
     // {
     //     bconv = fproj;
     // }
