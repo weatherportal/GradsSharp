@@ -146,11 +146,6 @@ public class GFSDataReader : IGriddedDataReader
 
         double[] dmin = grid.WorldDimensionMinimum;
         double[] dmax = grid.WorldDimensionMaximum;
-        
-        // dmin[0] = Math.Floor(dmin[0] + 0.0001);
-        // dmax[0] = Math.Ceiling(dmax[0] - 0.0001);
-        // dmin[1] = Math.Floor(dmin[1] + 0.0001);
-        // dmax[1] = Math.Ceiling(dmax[1] - 0.0001);
 
         double heightValue = Double.IsNaN(definition.HeightValue) ? dmin[2] : definition.HeightValue;
 
@@ -173,23 +168,17 @@ public class GFSDataReader : IGriddedDataReader
                     if (ps.FirstFixedSurfaceValue == heightValue)
                     {
 
-                        List<double> result = new();
-                        var valueEnum = rdr.ReadDataSetValues(ds);
-                        foreach (var val in valueEnum)
-                        {
-                            if (val.Key.Latitude >= dmin[1] && val.Key.Latitude <= dmax[1] &&
-                                val.Key.Longitude >= dmin[0] && val.Key.Longitude <= dmax[0])
-                            {
-                                result.Add((double)(val.Value ?? grid.Undef));
-                            }
-                        }
+                        grid.GridData = 
+                            rdr.ReadDataSetValues(ds)
+                                .Where(kvp => kvp.Key.Latitude >= dmin[1] && kvp.Key.Latitude <= dmax[1] &&
+                                              kvp.Key.Longitude >= dmin[0] && kvp.Key.Longitude <= dmax[0])
+                                .Select(kvp => kvp.Value ?? grid.Undef).ToArray();
 
-                        grid.GridData = result.ToArray();
-                        grid.UndefinedMask = new byte[grid.GridData.Length];
-                        for (int j = 0; j < grid.GridData.Length; j++)
-                        {
-                            grid.UndefinedMask[j] = 1;
-                        }
+
+                        byte[] gridUndefinedMask = new byte[grid.GridData.Length];
+                        System.Runtime.CompilerServices.Unsafe.InitBlock(ref gridUndefinedMask[0], 1, (uint)grid.GridData.Length);
+                        grid.UndefinedMask = gridUndefinedMask;
+                        return;
                     }
                 }
 
