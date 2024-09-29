@@ -1,3 +1,13 @@
 ﻿namespace GradsSharp.Models.Internal;
 
-public record GradsPoint(double x, double y);
+internal struct GradsPoint
+{
+    public GradsPoint(double x, double y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double x { get; }
+    public double y { get; }
+}

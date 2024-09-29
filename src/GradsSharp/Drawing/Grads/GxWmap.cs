@@ -90,7 +90,7 @@ internal class GxWmap
             else rc = mfile.Read(hdr, 0, 3);
             if (rc != 3) break;
             rnum++;
-            i = gagby(hdr, 0, 1);
+            i = ConvertByteArrayToInteger(hdr, 0, 1);
             if (i < 1 || i > 3)
             {
                 throw new Exception("Map file format error: Invalid rec type {i} rec num {rnum}");
@@ -98,18 +98,18 @@ internal class GxWmap
 
             if (i == 2)
             {
-                st1 = gagby(hdr, 1, 1);
-                st2 = gagby(hdr, 2, 1);
+                st1 = ConvertByteArrayToInteger(hdr, 1, 1);
+                st2 = ConvertByteArrayToInteger(hdr, 2, 1);
                 if (cflag>0) gxwread(out rec, 16);
                 else mfile.Read(rec, 0, 16);
-                spos = gagby(rec, 0, 4);
-                ilon = gagby(rec, 4, 3);
+                spos = ConvertByteArrayToInteger(rec, 0, 4);
+                ilon = ConvertByteArrayToInteger(rec, 4, 3);
                 sln1 = (float)(((float)ilon) / 1e4);
-                ilon = gagby(rec, 7, 3);
+                ilon = ConvertByteArrayToInteger(rec, 7, 3);
                 sln2 = (float)(((float)ilon) / 1e4);
-                ilat = gagby(rec, 10, 3);
+                ilat = ConvertByteArrayToInteger(rec, 10, 3);
                 slt1 = (float)(((float)ilat) / 1e4 - 90.0);
-                ilat = gagby(rec, 13, 3);
+                ilat = ConvertByteArrayToInteger(rec, 13, 3);
                 slt2 = (float)(((float)ilat) / 1e4 - 90.0);
                 flag = 0;
                 for (i = 0; i < 256; i++)
@@ -162,8 +162,8 @@ internal class GxWmap
                 continue;
             }
 
-            type = gagby(hdr, 1, 1);
-            num = gagby(hdr, 2, 1);
+            type = ConvertByteArrayToInteger(hdr, 1, 1);
+            num = ConvertByteArrayToInteger(hdr, 2, 1);
 
             /* The lowres map has only one type:
              1 -- coastlines.
@@ -199,8 +199,8 @@ internal class GxWmap
             ltmax = -9999.9;
             for (i = 0; i < num; i++)
             {
-                ilon = gagby(rec, i * 6, 3);
-                ilat = gagby(rec, i * 6 + 3, 3);
+                ilon = ConvertByteArrayToInteger(rec, i * 6, 3);
+                ilat = ConvertByteArrayToInteger(rec, i * 6 + 3, 3);
                 lat[i] = ((float)ilat) / 1e4 - 90.0;
                 lon[i] = ((float)ilon) / 1e4;
                 if (lat[i] < ltmin) ltmin = lat[i];
@@ -1626,36 +1626,31 @@ internal class GxWmap
         mclen = 0;
     }
 
-    private int gagby(byte[] data, int offset, int len)
+    /// <summary>
+    /// Converts a byte array to a 32-bit integer
+    /// Input array should contain bytes in big endian order
+    /// Optimized by profiling
+    ///
+    /// Original OpenGrads name: gagby
+    /// </summary>
+    /// <param name="data">byte array to convert</param>
+    /// <param name="offset">offset in the array to convert</param>
+    /// <param name="len">number of bytes to take from array</param>
+    /// <returns></returns>
+    private int ConvertByteArrayToInteger(byte[] data, int offset, int len)
     {
-
-        byte[] toConvert = {0,0,0,0};
-
-        if (len == 1)
+        switch (len)
         {
-            toConvert = new byte[] { data[0+offset], 0, 0, 0 };
+            case 1:
+                return BitConverter.ToInt32(stackalloc byte[] { data[0+offset], 0, 0, 0 } );
+            case 2:
+                return BitConverter.ToInt32(stackalloc byte[] { data[1+offset], data[0+offset],0,0 });
+            case 3:
+                return BitConverter.ToInt32(stackalloc byte[] { data[2+offset], data[1+offset], data[0+offset], 0 });
+            case > 3:
+                return BitConverter.ToInt32(stackalloc byte[] { data[3+offset], data[2+offset], data[1+offset], data[0+offset] });
         }
 
-        if (len == 2)
-        {
-            toConvert = new byte[] { data[1+offset], data[0+offset],0,0 };
-        }
-
-        if (len == 3)
-        {
-            toConvert = new byte[] { data[2+offset], data[1+offset], data[0+offset], 0 };
-        }
-
-        if (len > 3)
-        {
-            toConvert = new byte[] { data[3+offset], data[2+offset], data[1+offset], data[0+offset] };
-        }
-        
-        if (BitConverter.IsLittleEndian)
-        {
-            //Array.Reverse(toConvert);
-        }
-
-        return BitConverter.ToInt32(toConvert);
+        return 0;
     }
 }

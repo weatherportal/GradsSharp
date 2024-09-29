@@ -315,7 +315,7 @@ internal class GxChpl
         if (ch < 32 || ch > 127) ch = 32;
         ch = ch - 32;
         cnt = clen[ch];
-        return fdat.Skip(coff[ch]).ToArray();
+        return fdat[coff[ch]..];
     }
 
 /* Read in a font file */
