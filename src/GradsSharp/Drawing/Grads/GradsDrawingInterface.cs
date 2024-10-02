@@ -884,7 +884,7 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
                 for (i = 8; i < 14; i++) xy[i] = xy[i + 18];
                 xy[14] = xy[2];
                 xy[15] = xy[3];
-                gxfill(xy.Skip(2).ToArray(), 7);
+                gxfill(xy[2..], 7);
             }
             else if (mtype == 11)
             {
@@ -903,10 +903,10 @@ internal class GradsDrawingInterface : IGradsDrawingInterface
                 for (i = 13; i < 17; i++) DrawLineToPoint(xy[i * 2], xy[i * 2 + 1]);
                 xy[26] = xy[8];
                 xy[27] = xy[9];
-                gxfill(xy.Skip(8).ToArray(), 10);
+                gxfill(xy[8..], 10);
                 xy[50] = xy[0];
                 xy[51] = xy[1];
-                gxfill(xy.Skip(32).ToArray(), 10);
+                gxfill(xy[32..], 10);
             }
 
             return;

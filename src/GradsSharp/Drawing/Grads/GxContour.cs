@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using GradsSharp.Data.Grads;
 using GradsSharp.Models.Internal;
 using GradsSharp.Utils;
@@ -447,7 +448,7 @@ internal class GxContour
         {
             nump = xyend - xystrt;
             nump = (nump + 2) / 2;
-            var result = _drawingContext.GradsDrawingInterface.gxcord(fwk.Skip(xystrt).ToArray(), nump, 3);
+            var result = _drawingContext.GradsDrawingInterface.gxcord(fwk[xystrt..], nump, 3);
             for (int k = 0; k < result.Length; k++)
             {
                 fwk[xystrt + k] = result[k];
@@ -1086,6 +1087,13 @@ internal class GxContour
 */
     public int gxclvert(FileStream kmlfp)
     {
+
+        var culture = System.Threading.Thread.CurrentThread.CurrentCulture;
+        
+        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+        StringBuilder sb = new StringBuilder();
+        
         gxclbuf p2;
         double lon = 0, lat = 0, x, y;
         int i, j, c, err;
@@ -1094,13 +1102,13 @@ internal class GxContour
         foreach(var pclbuf in clbufanch) 
         {
             if (pclbuf.lxy != null) {
-                kmlfp.WriteLine("    <Placemark>");
-                kmlfp.WriteLine($"      <styleUrl>#{pclbuf.color}</styleUrl>");
-                kmlfp.WriteLine($"      <name>{pclbuf.val}</name>");
-                kmlfp.WriteLine("      <LineString>");
-                kmlfp.WriteLine("        <altitudeMode>clampToGround</altitudeMode>");
-                kmlfp.WriteLine("        <tessellate>1</tessellate>");
-                kmlfp.WriteLine("        <coordinates>");
+                sb.AppendLine("    <Placemark>");
+                sb.AppendLine($"      <styleUrl>#{pclbuf.color}</styleUrl>");
+                sb.AppendLine($"      <name>{pclbuf.val}</name>");
+                sb.AppendLine("      <LineString>");
+                sb.AppendLine("        <altitudeMode>clampToGround</altitudeMode>");
+                sb.AppendLine("        <tessellate>1</tessellate>");
+                sb.AppendLine("        <coordinates>");
 
                 j = 1;
                 for (i = 0; i < pclbuf.len; i++)
@@ -1110,32 +1118,38 @@ internal class GxContour
                     _drawingContext.GradsDrawingInterface.gxxy2w(x, y, out lon, out lat);
                     if (lat > 90) lat = 90;
                     if (lat < -90) lat = -90;
-                    var coords = String.Format(CultureInfo.InvariantCulture, "{0},{1},0 ", lon, lat);
+                    var coords = lon + "," + lat + ",0 ";
                     
-                    kmlfp.Write(coords);
+                    sb.Append(coords);
 
                     if (j == 6 || i == (pclbuf.len - 1))
                     {
-                        if (j == 6) kmlfp.Write("\n          ");
-                        else kmlfp.Write("\n");
+                        if (j == 6) sb.Append("\n          ");
+                        else sb.Append("\n");
                         j = 0;
                     }
                     j++;
                 }
 
-                kmlfp.WriteLine("        </coordinates>");
-                kmlfp.WriteLine("      </LineString>");
-                kmlfp.WriteLine("    </Placemark>");
+                sb.AppendLine("        </coordinates>");
+                sb.AppendLine("      </LineString>");
+                sb.AppendLine("    </Placemark>");
                 c++;
             }
             
         }
         cleanup:
         /* release the memory in the contour buffer */
+
+        kmlfp.Write(sb.ToString());
+        
+        Thread.CurrentThread.CurrentCulture = culture;
         
         clbufanch = null;
         if (err>0) return (-1);
         else return (c);
+        
+        
     }
 
 
