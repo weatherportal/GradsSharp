@@ -16,6 +16,7 @@ public enum FixedSurfaceType
     [Description("Tropopause")] Tropopause = 7,
     [Description("Nominal top of the atmosphere")] NominalTopOfTheAtmosphere = 8,
     [Description("Sea bottom")] SeaBottom = 9,
+    [Description("Departure level of the most unstable parcel of air (MUDL)")] MostUnstableParcelLevel = 17, // 0x00000017
     [Description("Isothermal level")] IsothermalLevel = 20, // 0x00000014
     [Description("Isobaric surface")] IsobaricSurface = 100, // 0x00000064
     [Description("Mean sea level")] MeanSeaLevel = 101, // 0x00000065
@@ -29,6 +30,7 @@ public enum FixedSurfaceType
     [Description("Potential vorticity surface")] PotentialVorticitySurface = 109, // 0x0000006D
     [Description("Eta* level")] EtaLevel = 111, // 0x0000006F
     [Description("Mixed layer depth")] MixedLayerDepth = 117, // 0x00000075
+    [Description("Soil Level numeric")] SoilLevelNumeric = 151, 
     [Description("Depth below sea  level")] DepthBelowSeaLevel = 160, // 0x000000A0
     [Description("Missing ")] Missing = 255, // 0x000000FF
 }
