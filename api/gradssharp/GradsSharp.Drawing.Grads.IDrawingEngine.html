@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IDrawingEngine </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IDrawingEngine ">
+      
+      <meta name="description" content="This interface can be used to implement a new drawing engine for Grads.  See all methods for more information on the different functions">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="GradsSharp.Drawing.Grads.IDrawingEngine">
+
+
+
+  <h1 id="GradsSharp_Drawing_Grads_IDrawingEngine" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine" class="text-break">
+Interface IDrawingEngine  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="GradsSharp.html">GradsSharp</a>.<a class="xref" href="GradsSharp.Drawing.html">Drawing</a>.<a class="xref" href="GradsSharp.Drawing.Grads.html">Grads</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>GradsSharp.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>This interface can be used to implement a new drawing engine for Grads.  See all methods for more information on the different functions</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IDrawingEngine</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpacol_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpacol*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpacol_System_Int32_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpacol(System.Int32)">
+  gxpacol(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpacol(int col)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>col</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpbpoly_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpbpoly*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpbpoly" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpbpoly">
+  gxpbpoly()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpbpoly()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpcfg_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpcfg*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpcfg" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpcfg">
+  gxpcfg()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpcfg()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpch_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpch*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpch_System_Char_System_Int32_System_Double_System_Double_System_Double_System_Double_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpch(System.Char,System.Int32,System.Double,System.Double,System.Double,System.Double,System.Double)">
+  gxpch(char, int, double, double, double, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">double gxpch(char ch, int fn, double x, double y, double w, double h, double rot)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ch</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+    <dt><code>fn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>x</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>y</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>w</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>h</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>rot</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpckfont_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpckfont*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpckfont" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpckfont">
+  gxpckfont()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool gxpckfont()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpclip_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpclip*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpclip_System_Double_System_Double_System_Double_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpclip(System.Double,System.Double,System.Double,System.Double)">
+  gxpclip(double, double, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpclip(double x1, double x2, double y1, double y2)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>x1</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>x2</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>y1</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>y2</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpcol_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpcol*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpcol_System_Int32_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpcol(System.Int32)">
+  gxpcol(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpcol(int col)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>col</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpdrw_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpdrw*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpdrw_System_Double_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpdrw(System.Double,System.Double)">
+  gxpdrw(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpdrw(double xpos, double ypos)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xpos</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>ypos</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpend_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpend*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpend" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpend">
+  gxpend()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpend()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpepoly_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpepoly*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpepoly_System_Double___System_Int32_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpepoly(System.Double[],System.Int32)">
+  gxpepoly(double[], int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpepoly(double[] xybuf, int xyc)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xybuf</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>[]</dt>
+    <dd></dd>
+    <dt><code>xyc</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpflush_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpflush*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpflush_System_Int32_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpflush(System.Int32)">
+  gxpflush(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpflush(int opt)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>opt</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpinit_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpinit*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpinit_System_Double_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpinit(System.Double,System.Double)">
+  gxpinit(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initialize the drawing</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpinit(double xsz, double ysz)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xsz</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>ysz</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpmov_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpmov*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpmov_System_Double_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpmov(System.Double,System.Double)">
+  gxpmov(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpmov(double xpos, double ypos)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xpos</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>ypos</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpqchl_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpqchl*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpqchl_System_Char_System_Int32_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpqchl(System.Char,System.Int32,System.Double)">
+  gxpqchl(char, int, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">double gxpqchl(char ch, int fn, double w)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ch</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd></dd>
+    <dt><code>fn</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>w</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxprec_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxprec*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxprec_System_Double_System_Double_System_Double_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxprec(System.Double,System.Double,System.Double,System.Double)">
+  gxprec(double, double, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxprec(double x1, double x2, double y1, double y2)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>x1</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>x2</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>y1</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>y2</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxprint_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxprint*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxprint_System_String_System_Int32_System_Int32_System_Int32_System_Int32_System_String_System_String_System_Int32_System_Double_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxprint(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.Int32,System.Double)">
+  gxprint(string, int, int, int, int, string, string, int, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">int gxprint(string fnout, int xin, int yin, int bwin, int fmtflg, string bgImage, string fgImage, int tcolor, double border)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fnout</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>xin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>yin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>bwin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>fmtflg</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>bgImage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>fgImage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>tcolor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>border</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpsignal_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpsignal*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpsignal_System_Int32_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpsignal(System.Int32)">
+  gxpsignal(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpsignal(int sig)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sig</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpwid_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpwid*"></a>
+
+  <h3 id="GradsSharp_Drawing_Grads_IDrawingEngine_gxpwid_System_Int32_" data-uid="GradsSharp.Drawing.Grads.IDrawingEngine.gxpwid(System.Int32)">
+  gxpwid(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gxpwid(int wid)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>wid</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/Drawing/Grads/IDrawingEngine.cs" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

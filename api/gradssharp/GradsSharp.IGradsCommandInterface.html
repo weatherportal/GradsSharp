@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IGradsCommandInterface </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IGradsCommandInterface ">
+      
+      <meta name="description" content="Interface for sending commands to the Grads engine">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="GradsSharp.IGradsCommandInterface">
+
+
+
+  <h1 id="GradsSharp_IGradsCommandInterface" data-uid="GradsSharp.IGradsCommandInterface" class="text-break">
+Interface IGradsCommandInterface  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="GradsSharp.html">GradsSharp</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>GradsSharp.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Interface for sending commands to the Grads engine</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IGradsCommandInterface</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="GradsSharp_IGradsCommandInterface_Clear_" data-uid="GradsSharp.IGradsCommandInterface.Clear*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_Clear_System_Nullable_GradsSharp_Enums_ClearAction__" data-uid="GradsSharp.IGradsCommandInterface.Clear(System.Nullable{GradsSharp.Enums.ClearAction})">
+  Clear(ClearAction?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Issued without parameters, the clear command does pretty heavy duty clearing of many of the GradsSharp internal settings. Parameters can be added to limit what is cleared when using more advanced features.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Clear(ClearAction? action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>action</code> <a class="xref" href="GradsSharp.Enums.ClearAction.html">ClearAction</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_Close_" data-uid="GradsSharp.IGradsCommandInterface.Close*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_Close" data-uid="GradsSharp.IGradsCommandInterface.Close">
+  Close()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Close the the last opened file</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Close()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_Define_" data-uid="GradsSharp.IGradsCommandInterface.Define*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_Define_System_String_GradsSharp_Models_IGradsGrid_" data-uid="GradsSharp.IGradsCommandInterface.Define(System.String,GradsSharp.Models.IGradsGrid)">
+  Define(string, IGradsGrid)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Define a new variable</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Define(string varName, IGradsGrid data)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>varName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Name of the variable.  This name can be passed to the <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Display_System_String_">Display</a> command to execute the plotting</p>
+</dd>
+    <dt><code>data</code> <a class="xref" href="GradsSharp.Models.IGradsGrid.html">IGradsGrid</a></dt>
+    <dd><p>Data for the variable</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_GetVariable_GradsSharp_Models_VariableDefinition_System_Int32_">GetVariable(VariableDefinition, int)</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="GradsSharp_IGradsCommandInterface_Display_" data-uid="GradsSharp.IGradsCommandInterface.Display*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_Display_System_String_" data-uid="GradsSharp.IGradsCommandInterface.Display(System.String)">
+  Display(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draw data for a variable</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">int Display(string variable)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>variable</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Name of a <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Define_System_String_GradsSharp_Models_IGradsGrid_">defined</a> variable.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>0 if everything went fine. 1 when an error occurred</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_DrawString_" data-uid="GradsSharp.IGradsCommandInterface.DrawString*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_DrawString_System_Double_System_Double_System_String_" data-uid="GradsSharp.IGradsCommandInterface.DrawString(System.Double,System.Double,System.String)">
+  DrawString(double, double, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draw a string on the plot</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">int DrawString(double x, double y, string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>x</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>X-coordinate in virtual page units</p>
+</dd>
+    <dt><code>y</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Y-coordinate in virtual page units</p>
+</dd>
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Text to plot</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>0 if everything went fine. 1 when an error occurred</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetStringOptions_System_Int32_GradsSharp_Enums_StringJustification_System_Int32_System_Double_">SetStringOptions(int, StringJustification, int, double)</a></div>
+    <div><a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetStringSize_System_Double_System_Double_">SetStringSize(double, double)</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="GradsSharp_IGradsCommandInterface_ExportImage_" data-uid="GradsSharp.IGradsCommandInterface.ExportImage*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_ExportImage_System_String_GradsSharp_Enums_OutputFormat_System_String_System_String_GradsSharp_Enums_BackgroundColor_System_Int32_System_Int32_System_Int32_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.ExportImage(System.String,GradsSharp.Enums.OutputFormat,System.String,System.String,GradsSharp.Enums.BackgroundColor,System.Int32,System.Int32,System.Int32,System.Double)">
+  ExportImage(string, OutputFormat, string, string, BackgroundColor, int, int, int, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The ExportImage command will produce a PNG, GIF, or JPG formatted image file based on the current contents of the metabuffer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void ExportImage(string path, OutputFormat format = OutputFormat.Undefined, string backgroundImage = &quot;&quot;, string foregroundImage = &quot;&quot;, BackgroundColor backColor = BackgroundColor.Default, int transparentColor = -1, int horizontalSize = -999, int verticalSize = -999, double borderWidth = -1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the output file. If this file exists, it will be replaced.<br>
+If the filename ends with &quot;.png&quot; or &quot;.PNG&quot; then GradsSharp will automatically create the image in PNG format<br>
+If the filename ends with &quot;.gif&quot; or &quot;.GIF&quot; then GradsSharp will automatically create the image in GIF format<br>
+If the filename ends with &quot;.jpg&quot; or &quot;.JPG&quot; then GradsSharp will automatically create the image in JPEG format</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="GradsSharp.Enums.OutputFormat.html">OutputFormat</a></dt>
+    <dd><p>The format of the output file. If not specified, the format will be determined by the file extension of the path parameter.</p>
+</dd>
+    <dt><code>backgroundImage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the background image file.</p>
+</dd>
+    <dt><code>foregroundImage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the foreground image file.</p>
+</dd>
+    <dt><code>backColor</code> <a class="xref" href="GradsSharp.Enums.BackgroundColor.html">BackgroundColor</a></dt>
+    <dd><p>The background color of the image. If not specified, the default background color will be used.</p>
+</dd>
+    <dt><code>transparentColor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The color number to be treated as transparent.</p>
+</dd>
+    <dt><code>horizontalSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The horizontal size of the image in pixels. If not specified, the default size will be calculated.</p>
+</dd>
+    <dt><code>verticalSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The vertical size of the image in pixels. If not specified, the default size will be calculated.</p>
+</dd>
+    <dt><code>borderWidth</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The width of the border.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_GetMultiLevelData_" data-uid="GradsSharp.IGradsCommandInterface.GetMultiLevelData*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_GetMultiLevelData_GradsSharp_Models_VariableDefinition_System_Double_System_Double_GradsSharp_Enums_MultiLevelFunction_" data-uid="GradsSharp.IGradsCommandInterface.GetMultiLevelData(GradsSharp.Models.VariableDefinition,System.Double,System.Double,GradsSharp.Enums.MultiLevelFunction)">
+  GetMultiLevelData(VariableDefinition, double, double, MultiLevelFunction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns data from multiple levels for a specific variable</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IGradsGrid? GetMultiLevelData(VariableDefinition definition, double startLevel, double endLevel, MultiLevelFunction function)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>definition</code> <a class="xref" href="GradsSharp.Models.VariableDefinition.html">VariableDefinition</a></dt>
+    <dd><p>Definition of the variable</p>
+</dd>
+    <dt><code>startLevel</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Start level to fetch data</p>
+</dd>
+    <dt><code>endLevel</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>End level to fetch data</p>
+</dd>
+    <dt><code>function</code> <a class="xref" href="GradsSharp.Enums.MultiLevelFunction.html">MultiLevelFunction</a></dt>
+    <dd><p>Function to apply on the data</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="GradsSharp.Models.IGradsGrid.html">IGradsGrid</a></dt>
+    <dd><p><a class="xref" href="GradsSharp.Models.IGradsGrid.html">Grid</a> with meta information and the actual data</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_GetVariable_" data-uid="GradsSharp.IGradsCommandInterface.GetVariable*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_GetVariable_GradsSharp_Models_VariableDefinition_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.GetVariable(GradsSharp.Models.VariableDefinition,System.Int32)">
+  GetVariable(VariableDefinition, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Return the data for a variable stored in a file</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IGradsGrid GetVariable(VariableDefinition definition, int file = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>definition</code> <a class="xref" href="GradsSharp.Models.VariableDefinition.html">VariableDefinition</a></dt>
+    <dd><p>Definition of the variable</p>
+</dd>
+    <dt><code>file</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>File number to read the info from</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="GradsSharp.Models.IGradsGrid.html">IGradsGrid</a></dt>
+    <dd><p><a class="xref" href="GradsSharp.Models.IGradsGrid.html">Grid</a> with meta information and the actual data</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_GetVariable_" data-uid="GradsSharp.IGradsCommandInterface.GetVariable*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_GetVariable_System_String_GradsSharp_Enums_FixedSurfaceType_System_Double_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.GetVariable(System.String,GradsSharp.Enums.FixedSurfaceType,System.Double,System.Int32)">
+  GetVariable(string, FixedSurfaceType, double, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Return the data for a variable stored in a file</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IGradsGrid GetVariable(string name, FixedSurfaceType surfaceType, double heightValue = 0, int file = 1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Variable name</p>
+</dd>
+    <dt><code>surfaceType</code> <a class="xref" href="GradsSharp.Enums.FixedSurfaceType.html">FixedSurfaceType</a></dt>
+    <dd><p>Surface type</p>
+</dd>
+    <dt><code>heightValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Height value</p>
+</dd>
+    <dt><code>file</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>File number to read the info from</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="GradsSharp.Models.IGradsGrid.html">IGradsGrid</a></dt>
+    <dd><p><a class="xref" href="GradsSharp.Models.IGradsGrid.html">Grid</a> with meta information and the actual data</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_Open_" data-uid="GradsSharp.IGradsCommandInterface.Open*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_Open_System_String_GradsSharp_Data_IGriddedDataReader_" data-uid="GradsSharp.IGradsCommandInterface.Open(System.String,GradsSharp.Data.IGriddedDataReader)">
+  Open(string, IGriddedDataReader)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Open a new file for reading</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Open(string dataFile, IGriddedDataReader dataReader)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dataFile</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Path to the file</p>
+</dd>
+    <dt><code>dataReader</code> <a class="xref" href="GradsSharp.Data.IGriddedDataReader.html">IGriddedDataReader</a></dt>
+    <dd><p>Data reader implementation to read the file</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_QueryDimensionInfo_" data-uid="GradsSharp.IGradsCommandInterface.QueryDimensionInfo*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_QueryDimensionInfo" data-uid="GradsSharp.IGradsCommandInterface.QueryDimensionInfo">
+  QueryDimensionInfo()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Get information about the current dimensions in use</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">DimensionInfo QueryDimensionInfo()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="GradsSharp.Models.DimensionInfo.html">DimensionInfo</a></dt>
+    <dd><p>Information about the dimensions in use</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_QueryFileInfo_" data-uid="GradsSharp.IGradsCommandInterface.QueryFileInfo*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_QueryFileInfo" data-uid="GradsSharp.IGradsCommandInterface.QueryFileInfo">
+  QueryFileInfo()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Get information about the current open file</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">FileInfo QueryFileInfo()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="GradsSharp.Models.FileInfo.html">FileInfo</a></dt>
+    <dd><p>Information about the current file</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetAxisLabels_" data-uid="GradsSharp.IGradsCommandInterface.SetAxisLabels*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetAxisLabels_GradsSharp_Enums_Axis_GradsSharp_Enums_AxisLabelOption_System_String_" data-uid="GradsSharp.IGradsCommandInterface.SetAxisLabels(GradsSharp.Enums.Axis,GradsSharp.Enums.AxisLabelOption,System.String)">
+  SetAxisLabels(Axis, AxisLabelOption, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set axis labels for the x-axis or y-axis</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetAxisLabels(Axis axis, AxisLabelOption option, string? format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>axis</code> <a class="xref" href="GradsSharp.Enums.Axis.html">Axis</a></dt>
+    <dd><p>X or Y axis</p>
+</dd>
+    <dt><code>option</code> <a class="xref" href="GradsSharp.Enums.AxisLabelOption.html">AxisLabelOption</a></dt>
+    <dd><p>Axis label option</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Axis label format</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetColor_" data-uid="GradsSharp.IGradsCommandInterface.SetColor*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetColor_System_Int32_System_Int32_System_Int32_System_Int32_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.SetColor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+  SetColor(int, int, int, int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Define a new color or update an existing color</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetColor(int colorNr, int red, int green, int blue, int alpha = 255)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>colorNr</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Integer number between 16 and 2048</p>
+</dd>
+    <dt><code>red</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Red value. Number between 0 and 255</p>
+</dd>
+    <dt><code>green</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Green value. Number between 0 and 255</p>
+</dd>
+    <dt><code>blue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Blue value. Number between 0 and 255</p>
+</dd>
+    <dt><code>alpha</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Transparency value. Number between -255 and 255</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="GradsSharp.Exceptions.InvalidColorException.html">InvalidColorException</a></dt>
+    <dd><p>Throws an exception when trying to define an invalid color</p>
+</dd>
+  </dl>
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourColors_" data-uid="GradsSharp.IGradsCommandInterface.SetContourColors*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourColors_System_Int32___" data-uid="GradsSharp.IGradsCommandInterface.SetContourColors(System.Int32[])">
+  SetContourColors(int[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets specific color numbers for contour levels specified by <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetContourLevels_System_Double___">SetContourLevels</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourColors(int[] cols)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cols</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>[]</dt>
+    <dd><p>Array of color numbers</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourInterval_" data-uid="GradsSharp.IGradsCommandInterface.SetContourInterval*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourInterval_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetContourInterval(System.Double)">
+  SetContourInterval(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the contour interval to the specified value. Reset by <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Clear_System_Nullable_GradsSharp_Enums_ClearAction__">Clear</a> or <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Display_System_String_">Display</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourInterval(double val)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>val</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Contour interval value</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourLabelOptions_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLabelOptions*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourLabelOptions_GradsSharp_Enums_LabelOption_System_String_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLabelOptions(GradsSharp.Enums.LabelOption,System.String)">
+  SetContourLabelOptions(LabelOption, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the options for the contour labels.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourLabelOptions(LabelOption option, string format = &quot;&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>option</code> <a class="xref" href="GradsSharp.Enums.LabelOption.html">LabelOption</a></dt>
+    <dd><p>Contour label mode</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Format of the labels.  Formatting is done with <a href="https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-string-format#get-started-with-the-stringformat-method">standard c# string formatting</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="GradsSharp_IGradsCommandInterface_SetContourLabelOptions_GradsSharp_Enums_LabelOption_System_String__examples">Examples</h4>
+  <p>Example format: {0:0.0} will format the label to one decimal place</p>
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourLabelStyle_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLabelStyle*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourLabelStyle_System_Int32_System_Int32_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLabelStyle(System.Int32,System.Int32,System.Double)">
+  SetContourLabelStyle(int, int, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the style of the contour labels</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourLabelStyle(int color = -1, int thickness = -1, double size = 0.09)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>color</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Color number of the labels.  Default of -1 indicates the same color as the contour lines</p>
+</dd>
+    <dt><code>thickness</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Thickness for the contour labels.  Default of -1 indicates the same thickness as the contour lines</p>
+</dd>
+    <dt><code>size</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Size of the labels.  Default is 0.09</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourLevels_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLevels*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourLevels_System_Double___" data-uid="GradsSharp.IGradsCommandInterface.SetContourLevels(System.Double[])">
+  SetContourLevels(double[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets specific contour levels.<br></p>
+<p>Usage notes:
+<remarks></remarks></p>
+<ol><li>Contour levels are reset by <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Clear_System_Nullable_GradsSharp_Enums_ClearAction__">Clear</a> or <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Display_System_String_">Display</a>.</li><li>Often used in conjunction with <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetContourColors_System_Int32___">SetContourColors</a> to override the default settings and specify exact contour levels and the colors that go with them.</li></ol>
+
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourLevels(double[] levels)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>levels</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>[]</dt>
+    <dd><p>Array of levels</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourLineColor_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineColor*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourLineColor_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineColor(System.Int32)">
+  SetContourLineColor(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the color of the contour lines</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourLineColor(int color)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>color</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Color of the contour line.  This may be one of the default colors or a new color defined with <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetColor_System_Int32_System_Int32_System_Int32_System_Int32_System_Int32_">SetColor(int, int, int, int, int)</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourLineSmoothing_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineSmoothing*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourLineSmoothing_GradsSharp_Enums_SmoothOption_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineSmoothing(GradsSharp.Enums.SmoothOption)">
+  SetContourLineSmoothing(SmoothOption)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>If on, the grid is interpolated to a finer grid using cubic interpolation before contouring. &quot;Sticks&quot;.
+<remarks>
+This option will result in contour values below and above the min and max of the un-interpolated grid. This may result in physically invalid values such as in the case of negative rainfall
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourLineSmoothing(SmoothOption option)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>option</code> <a class="xref" href="GradsSharp.Enums.SmoothOption.html">SmoothOption</a></dt>
+    <dd><p>Smoothing option</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourLineStyle_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineStyle*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourLineStyle_GradsSharp_Enums_LineStyle_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineStyle(GradsSharp.Enums.LineStyle)">
+  SetContourLineStyle(LineStyle)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set style of contour lines</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourLineStyle(LineStyle style)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>style</code> <a class="xref" href="GradsSharp.Enums.LineStyle.html">LineStyle</a></dt>
+    <dd><p>0 = no contours<br>
+1 = solid<br>
+2 = long dash<br>
+3 = short dash<br>
+4 = long dash short dash<br>
+5 = dotted<br>
+6 = dot dash<br>
+7 = dot dot dash<br></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourLineThickness_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineThickness*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourLineThickness_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.SetContourLineThickness(System.Int32)">
+  SetContourLineThickness(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set thickness for the contour lines</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourLineThickness(int cthck)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cthck</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Value between 1 and 256</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourMaximum_" data-uid="GradsSharp.IGradsCommandInterface.SetContourMaximum*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourMaximum_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetContourMaximum(System.Double)">
+  SetContourMaximum(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Contours not drawn above this value. reset by <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Clear_System_Nullable_GradsSharp_Enums_ClearAction__">Clear</a> or <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Display_System_String_">Display</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourMaximum(double cmax)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cmax</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Maximum contour level</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetContourMinimum_" data-uid="GradsSharp.IGradsCommandInterface.SetContourMinimum*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetContourMinimum_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetContourMinimum(System.Double)">
+  SetContourMinimum(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Contours not drawn below this value. reset by <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Clear_System_Nullable_GradsSharp_Enums_ClearAction__">Clear</a> or <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_Display_System_String_">Display</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetContourMinimum(double cmin)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cmin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Minimum contour level</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetE_" data-uid="GradsSharp.IGradsCommandInterface.SetE*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetE_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetE(System.Double)">
+  SetE(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetE(double eMin)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>eMin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetGrads_" data-uid="GradsSharp.IGradsCommandInterface.SetGrads*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetGrads_GradsSharp_Enums_OnOffSetting_" data-uid="GradsSharp.IGradsCommandInterface.SetGrads(GradsSharp.Enums.OnOffSetting)">
+  SetGrads(OnOffSetting)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draw logo and timestamp on the plot</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetGrads(OnOffSetting onOffSetting)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>onOffSetting</code> <a class="xref" href="GradsSharp.Enums.OnOffSetting.html">OnOffSetting</a></dt>
+    <dd><p>Turn the logo and timestamp on or off.  Default is on</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetGraphicsOutputMode_" data-uid="GradsSharp.IGradsCommandInterface.SetGraphicsOutputMode*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetGraphicsOutputMode_GradsSharp_Enums_GraphicsOutputMode_" data-uid="GradsSharp.IGradsCommandInterface.SetGraphicsOutputMode(GradsSharp.Enums.GraphicsOutputMode)">
+  SetGraphicsOutputMode(GraphicsOutputMode)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set output mode for graphics. See <a class="xref" href="GradsSharp.Enums.GraphicsOutputMode.html">GraphicsOutputMode</a> for a list of available output modes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetGraphicsOutputMode(GraphicsOutputMode mode)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mode</code> <a class="xref" href="GradsSharp.Enums.GraphicsOutputMode.html">GraphicsOutputMode</a></dt>
+    <dd><p>Output mode</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetGridLine_" data-uid="GradsSharp.IGradsCommandInterface.SetGridLine*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetGridLine_GradsSharp_Enums_GridLine_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.SetGridLine(GradsSharp.Enums.GridLine,System.Int32)">
+  SetGridLine(GridLine, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetGridLine(GridLine gridLine, int color = -1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>gridLine</code> <a class="xref" href="GradsSharp.Enums.GridLine.html">GridLine</a></dt>
+    <dd></dd>
+    <dt><code>color</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetGridLineOptions_" data-uid="GradsSharp.IGradsCommandInterface.SetGridLineOptions*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetGridLineOptions_GradsSharp_Enums_GridLineOption_System_Nullable_System_Int32__" data-uid="GradsSharp.IGradsCommandInterface.SetGridLineOptions(GradsSharp.Enums.GridLineOption,System.Nullable{System.Int32})">
+  SetGridLineOptions(GridLineOption, int?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Used with <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetGraphicsOutputMode_GradsSharp_Enums_GraphicsOutputMode_">SetGraphicsOutputMode(GraphicsOutputMode)</a> with option <a class="xref" href="GradsSharp.Enums.GraphicsOutputMode.html#GradsSharp_Enums_GraphicsOutputMode_Grid">Grid</a> to control the presence and appearance of the grid lines. The options are as follows:</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetGridLineOptions(GridLineOption option, int? color = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>option</code> <a class="xref" href="GradsSharp.Enums.GridLineOption.html">GridLineOption</a></dt>
+    <dd><p>Control the presence</p>
+</dd>
+    <dt><code>color</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>Color number if selecting the color mode</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetGridOptions_" data-uid="GradsSharp.IGradsCommandInterface.SetGridOptions*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetGridOptions_GradsSharp_Enums_GridOption_System_Int32_System_Int32_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.SetGridOptions(GradsSharp.Enums.GridOption,System.Int32,System.Int32,System.Int32)">
+  SetGridOptions(GridOption, int, int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Control the grid options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetGridOptions(GridOption option, int style = -1, int color = -1, int thickness = -1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>option</code> <a class="xref" href="GradsSharp.Enums.GridOption.html">GridOption</a></dt>
+    <dd><p>Grid option</p>
+</dd>
+    <dt><code>style</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Line style for the grid<br>
+Options for line style are:<br>
+1 = solid<br>
+2 = long dash<br>
+3 = short dash<br>
+4 = long dash short dash<br>
+5 = dotted<br>
+6 = dot dash<br>
+7 = dot dot dash<br></p>
+</dd>
+    <dt><code>color</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Line color for the grid.  This may be one of the default colors or a new color defined with <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetColor_System_Int32_System_Int32_System_Int32_System_Int32_System_Int32_">SetColor(int, int, int, int, int)</a></p>
+</dd>
+    <dt><code>thickness</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Thickness for the grid lines.  Must be an integer between 1 and 256</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetKmlOutput_" data-uid="GradsSharp.IGradsCommandInterface.SetKmlOutput*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetKmlOutput_GradsSharp_Enums_KmlOutputFlag_System_String_" data-uid="GradsSharp.IGradsCommandInterface.SetKmlOutput(GradsSharp.Enums.KmlOutputFlag,System.String)">
+  SetKmlOutput(KmlOutputFlag, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set KML output options</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetKmlOutput(KmlOutputFlag flag, string filename)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>flag</code> <a class="xref" href="GradsSharp.Enums.KmlOutputFlag.html">KmlOutputFlag</a></dt>
+    <dd><p>KML output format</p>
+</dd>
+    <dt><code>filename</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Filename to write the KML data to</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetLatitude_" data-uid="GradsSharp.IGradsCommandInterface.SetLatitude*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetLatitude_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetLatitude(System.Double,System.Double)">
+  SetLatitude(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the latitude dimension of the dimension environment using world coordinates.
+<remarks>
+A file needs to be open before this command can be used
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetLatitude(double min, double max = 1.7976931348623157E+308)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Low value</p>
+</dd>
+    <dt><code>max</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>High value (optional)</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetLevel_" data-uid="GradsSharp.IGradsCommandInterface.SetLevel*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetLevel_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetLevel(System.Double)">
+  SetLevel(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the level dimension of the dimension environment using world coordinates.
+<remarks>
+A file needs to be open before this command can be used
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetLevel(double lev)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lev</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetLongitude_" data-uid="GradsSharp.IGradsCommandInterface.SetLongitude*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetLongitude_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetLongitude(System.Double,System.Double)">
+  SetLongitude(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the longitude dimension of the dimension environment using world coordinates.
+<remarks>
+A file needs to be open before this command can be used
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetLongitude(double min, double max = 1.7976931348623157E+308)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Low value</p>
+</dd>
+    <dt><code>max</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>High value (optional)</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetMapOptions_" data-uid="GradsSharp.IGradsCommandInterface.SetMapOptions*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetMapOptions_System_Int32_System_Nullable_GradsSharp_Enums_LineStyle__System_Nullable_System_Int32__" data-uid="GradsSharp.IGradsCommandInterface.SetMapOptions(System.Int32,System.Nullable{GradsSharp.Enums.LineStyle},System.Nullable{System.Int32})">
+  SetMapOptions(int, LineStyle?, int?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This command controls the appearance of the map lines.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetMapOptions(int color, LineStyle? style, int? thickness)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>color</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Color of the map lines.  This may be one of the default colors or a new color defined with <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetColor_System_Int32_System_Int32_System_Int32_System_Int32_System_Int32_">SetColor(int, int, int, int, int)</a></p>
+</dd>
+    <dt><code>style</code> <a class="xref" href="GradsSharp.Enums.LineStyle.html">LineStyle</a>?</dt>
+    <dd><p>Line style for the map<br>
+Options for line style are:<br>
+1 = solid<br>
+2 = long dash<br>
+3 = short dash<br>
+4 = long dash short dash<br>
+5 = dotted<br>
+6 = dot dash<br>
+7 = dot dot dash<br></p>
+</dd>
+    <dt><code>thickness</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>Thickness for the map lines.  Must be an integer between 1 and 256</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetMapProjection_" data-uid="GradsSharp.IGradsCommandInterface.SetMapProjection*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetMapProjection_GradsSharp_Enums_Projection_" data-uid="GradsSharp.IGradsCommandInterface.SetMapProjection(GradsSharp.Enums.Projection)">
+  SetMapProjection(Projection)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets current map projection. See <a class="xref" href="GradsSharp.Enums.Projection.html">Projection</a> for a list of available projections.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetMapProjection(Projection projection)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>projection</code> <a class="xref" href="GradsSharp.Enums.Projection.html">Projection</a></dt>
+    <dd><p>Projection mode</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetMapResolution_" data-uid="GradsSharp.IGradsCommandInterface.SetMapResolution*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetMapResolution_GradsSharp_Enums_MapResolution_" data-uid="GradsSharp.IGradsCommandInterface.SetMapResolution(GradsSharp.Enums.MapResolution)">
+  SetMapResolution(MapResolution)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set map resolution. See <a class="xref" href="GradsSharp.Enums.MapResolution.html">MapResolution</a> for a list of available resolutions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetMapResolution(MapResolution mapResolution)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mapResolution</code> <a class="xref" href="GradsSharp.Enums.MapResolution.html">MapResolution</a></dt>
+    <dd><p>Map resolution</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetMarkerType_" data-uid="GradsSharp.IGradsCommandInterface.SetMarkerType*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetMarkerType_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetMarkerType(System.Double)">
+  SetMarkerType(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the style of the marker for line plots, or for the gxout option 'stnmark'</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetMarkerType(double cmark)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cmark</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetPaperSize_" data-uid="GradsSharp.IGradsCommandInterface.SetPaperSize*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetPaperSize_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetPaperSize(System.Double,System.Double)">
+  SetPaperSize(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Override the default paper size.  The default paper size is 8.5x11 inches</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetPaperSize(double xsize, double ysize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xsize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>X-size in inches</p>
+</dd>
+    <dt><code>ysize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Y-size in inches</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetPolarStereoValues_" data-uid="GradsSharp.IGradsCommandInterface.SetPolarStereoValues*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetPolarStereoValues_GradsSharp_Enums_OnOffSetting_System_Double_System_Double_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetPolarStereoValues(GradsSharp.Enums.OnOffSetting,System.Double,System.Double,System.Double,System.Double)">
+  SetPolarStereoValues(OnOffSetting, double, double, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets reference longitudes and latitudes for polar stereographic plots. By default, these are set to the current dimension environment limits. This command overrides that, and allows the data-reference to be decoupled with the map display. The polar plot will be drawn such that the region bounded by these longitudes and latitudes will be entirely included in the plot.
+<br><br>
+GradsSharp will plot lat/lon lines on polar plots with no labels as yet. To turn this off, set grid off.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetPolarStereoValues(OnOffSetting onOff, double lonmin = 0, double lonmax = 0, double latmin = 0, double latmax = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>onOff</code> <a class="xref" href="GradsSharp.Enums.OnOffSetting.html">OnOffSetting</a></dt>
+    <dd><p>Set polar stereographic on or off</p>
+</dd>
+    <dt><code>lonmin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Minimum longitude</p>
+</dd>
+    <dt><code>lonmax</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Maximum longitude</p>
+</dd>
+    <dt><code>latmin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Minimum latitude</p>
+</dd>
+    <dt><code>latmax</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Maximum latitude</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetPrintingArea_" data-uid="GradsSharp.IGradsCommandInterface.SetPrintingArea*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetPrintingArea_GradsSharp_Enums_OnOffSetting_System_Double_System_Double_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetPrintingArea(GradsSharp.Enums.OnOffSetting,System.Double,System.Double,System.Double,System.Double)">
+  SetPrintingArea(OnOffSetting, double, double, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetPrintingArea(OnOffSetting onOff, double xlo = 0, double xhi = 0, double ylo = 0, double yhi = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>onOff</code> <a class="xref" href="GradsSharp.Enums.OnOffSetting.html">OnOffSetting</a></dt>
+    <dd></dd>
+    <dt><code>xlo</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>xhi</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>ylo</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>yhi</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetStreamDensity_" data-uid="GradsSharp.IGradsCommandInterface.SetStreamDensity*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetStreamDensity_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.SetStreamDensity(System.Int32)">
+  SetStreamDensity(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This command controls the appearance of the streamlines</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetStreamDensity(int density)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>density</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>An integer between -10 and 10. Negative values are for high-res grids. The default value is 5.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetStringOptions_" data-uid="GradsSharp.IGradsCommandInterface.SetStringOptions*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetStringOptions_System_Int32_GradsSharp_Enums_StringJustification_System_Int32_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetStringOptions(System.Int32,GradsSharp.Enums.StringJustification,System.Int32,System.Double)">
+  SetStringOptions(int, StringJustification, int, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the options for drawing strings</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetStringOptions(int color, StringJustification justification = StringJustification.BottomLeft, int thickness = -1, double rotation = -1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>color</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Color of the string to be printed.  This may be one of the default colors or a new color defined with <a class="xref" href="GradsSharp.IGradsCommandInterface.html#GradsSharp_IGradsCommandInterface_SetColor_System_Int32_System_Int32_System_Int32_System_Int32_System_Int32_">SetColor(int, int, int, int, int)</a></p>
+</dd>
+    <dt><code>justification</code> <a class="xref" href="GradsSharp.Enums.StringJustification.html">StringJustification</a></dt>
+    <dd><p>Justification</p>
+</dd>
+    <dt><code>thickness</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Integer between 1 and 12</p>
+</dd>
+    <dt><code>rotation</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Desired string rotation in degrees. The center of rotation is the justification point. Rotation is counter-clockwise. Defaut rotation is 0.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetStringSize_" data-uid="GradsSharp.IGradsCommandInterface.SetStringSize*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetStringSize_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetStringSize(System.Double,System.Double)">
+  SetStringSize(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set the size of the string</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetStringSize(double hsize, double vsize = -1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hsize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>width of the characters in virtual page inches</p>
+</dd>
+    <dt><code>vsize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>height of the characters in virtual page inches. If vsize is not defined it will be set the same as the hsize parameter</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetT_" data-uid="GradsSharp.IGradsCommandInterface.SetT*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetT_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetT(System.Double)">
+  SetT(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the time dimension of the dimension environment using grid coordinates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetT(double tMin)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tMin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Low value</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetVpage_" data-uid="GradsSharp.IGradsCommandInterface.SetVpage*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetVpage_GradsSharp_Enums_OnOffSetting_System_Double_System_Double_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetVpage(GradsSharp.Enums.OnOffSetting,System.Double,System.Double,System.Double,System.Double)">
+  SetVpage(OnOffSetting, double, double, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This command defines a &quot;virtual page&quot; that fits within the specified limits of the real page. All graphics output will be drawn into this &quot;virtual page&quot; until another set SetVpage command is entered. A clear command clears the physical page (and any virtual pages drawn on it).
+When GradsEngine is first initialized, it prompts for landscape or portrait mode. This defines the size of the real page (11x8.5 or 8.5x11), and the dimensions for the virtual page must fit within this real page.
+The SetVpage command will define virtual page limits in terms of inches (virtual page inches), which are the coordinates that will be used in the various commands that require inches to be used. The new page limits are printed when the SetVpage command completes.
+To return to the default state where the real page equals the virtual page, enter:</p>
+<pre><code class="lang-csharp">SetVpage(OnOffSetting.Off);</code></pre>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetVpage(OnOffSetting page, double xlo = 0, double xhi = 0, double ylo = 0, double yhi = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="GradsSharp.Enums.OnOffSetting.html">OnOffSetting</a></dt>
+    <dd><p>VPage on or off</p>
+</dd>
+    <dt><code>xlo</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>xhi</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>ylo</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>yhi</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetX_" data-uid="GradsSharp.IGradsCommandInterface.SetX*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetX_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetX(System.Double,System.Double)">
+  SetX(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the x dimension of the dimension environment using grid coordinates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetX(double xMin, double xMax)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>xMin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Low value</p>
+</dd>
+    <dt><code>xMax</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>High value</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetXAxisLabelOptions_" data-uid="GradsSharp.IGradsCommandInterface.SetXAxisLabelOptions*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetXAxisLabelOptions_GradsSharp_Enums_LabelOption_System_String_" data-uid="GradsSharp.IGradsCommandInterface.SetXAxisLabelOptions(GradsSharp.Enums.LabelOption,System.String)">
+  SetXAxisLabelOptions(LabelOption, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set label options for the x-axis labels</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetXAxisLabelOptions(LabelOption option, string format = &quot;&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>option</code> <a class="xref" href="GradsSharp.Enums.LabelOption.html">LabelOption</a></dt>
+    <dd><p>Label option</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Format of the labels.  Formatting is done with <a href="https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-string-format#get-started-with-the-stringformat-method">standard c# string formatting</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetXFlip_" data-uid="GradsSharp.IGradsCommandInterface.SetXFlip*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetXFlip_System_Boolean_" data-uid="GradsSharp.IGradsCommandInterface.SetXFlip(System.Boolean)">
+  SetXFlip(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Flips the order of the horizontal axis</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetXFlip(bool flip)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>flip</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetY_" data-uid="GradsSharp.IGradsCommandInterface.SetY*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetY_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetY(System.Double,System.Double)">
+  SetY(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the y dimension of the dimension environment using grid coordinates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetY(double yMin, double yMax)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>yMin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Low value</p>
+</dd>
+    <dt><code>yMax</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>High value</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetYAxisLabelOptions_" data-uid="GradsSharp.IGradsCommandInterface.SetYAxisLabelOptions*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetYAxisLabelOptions_GradsSharp_Enums_LabelOption_System_String_" data-uid="GradsSharp.IGradsCommandInterface.SetYAxisLabelOptions(GradsSharp.Enums.LabelOption,System.String)">
+  SetYAxisLabelOptions(LabelOption, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Set label options for the y-axis labels</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetYAxisLabelOptions(LabelOption option, string format = &quot;&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>option</code> <a class="xref" href="GradsSharp.Enums.LabelOption.html">LabelOption</a></dt>
+    <dd><p>Label option</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Format of the labels.  Formatting is done with <a href="https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-string-format#get-started-with-the-stringformat-method">standard c# string formatting</a></p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetYFlip_" data-uid="GradsSharp.IGradsCommandInterface.SetYFlip*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetYFlip_System_Boolean_" data-uid="GradsSharp.IGradsCommandInterface.SetYFlip(System.Boolean)">
+  SetYFlip(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Flips the order of the vertical axis</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetYFlip(bool flip)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>flip</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetZ_" data-uid="GradsSharp.IGradsCommandInterface.SetZ*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetZ_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetZ(System.Double)">
+  SetZ(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the z dimension of the dimension environment using grid coordinates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetZ(double zMin)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zMin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Low value</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_SetZ_" data-uid="GradsSharp.IGradsCommandInterface.SetZ*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_SetZ_System_Double_System_Double_" data-uid="GradsSharp.IGradsCommandInterface.SetZ(System.Double,System.Double)">
+  SetZ(double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This set command sets the z dimension of the dimension environment using grid coordinates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetZ(double zMin, double zMax)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>zMin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Low value</p>
+</dd>
+    <dt><code>zMax</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>High value</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_gacln_" data-uid="GradsSharp.IGradsCommandInterface.gacln*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_gacln_System_Int32_" data-uid="GradsSharp.IGradsCommandInterface.gacln(System.Int32)">
+  gacln(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void gacln(int flg)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>flg</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_reinit_" data-uid="GradsSharp.IGradsCommandInterface.reinit*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_reinit" data-uid="GradsSharp.IGradsCommandInterface.reinit">
+  reinit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void reinit()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_reset_" data-uid="GradsSharp.IGradsCommandInterface.reset*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_reset_System_Boolean_" data-uid="GradsSharp.IGradsCommandInterface.reset(System.Boolean)">
+  reset(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void reset(bool doReinit = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>doReinit</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_stack_" data-uid="GradsSharp.IGradsCommandInterface.stack*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_stack" data-uid="GradsSharp.IGradsCommandInterface.stack">
+  stack()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void stack()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="GradsSharp_IGradsCommandInterface_swap_" data-uid="GradsSharp.IGradsCommandInterface.swap*"></a>
+
+  <h3 id="GradsSharp_IGradsCommandInterface_swap" data-uid="GradsSharp.IGradsCommandInterface.swap">
+  swap()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void swap()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/weatherportal/GradsSharp/blob/master/src/GradsSharp/IGradsCommandInterface.cs" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

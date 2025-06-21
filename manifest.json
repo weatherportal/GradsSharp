@@ -1,0 +1,1055 @@
+{
+  "source_base_path": "D:/a/GradsSharp/GradsSharp/docs/docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.Grads.IGradsDatabase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.Grads.IGradsDatabase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.Grads.IGradsDatabase",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.Grads.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.Grads.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.Grads",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridInterpolationFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridInterpolationFunctions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.GridFunctions.GridInterpolationFunctions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMaskFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMaskFunctions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.GridFunctions.GridMaskFunctions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMathFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridMathFunctions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.GridFunctions.GridMathFunctions",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Data.GridFunctions.GridMathFunctions.yml\" sourcestartlinenumber=\"1\">Math functions for grids</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridSmoothFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.GridSmoothFunctions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.GridFunctions.GridSmoothFunctions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.GridFunctions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.GridFunctions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.IGridFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.IGridFunctions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.IGridFunctions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.IGriddedDataReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.IGriddedDataReader.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.IGriddedDataReader",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.IVariableMapping.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.IVariableMapping.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data.IVariableMapping",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Data.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Data.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Data",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.Gx.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.Gx.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Drawing.Grads.Gx",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.IDrawingEngine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.IDrawingEngine.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Drawing.Grads.IDrawingEngine",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Drawing.Grads.IDrawingEngine.yml\" sourcestartlinenumber=\"1\">This interface can be used to implement a new drawing engine for Grads.  See all methods for more information on the different functions</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Drawing.Grads.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Drawing.Grads",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.AreaFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.AreaFunction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.AreaFunction",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Axis.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Axis.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.Axis",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.AxisLabelOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.AxisLabelOption.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.AxisLabelOption",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.BackgroundColor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.BackgroundColor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.BackgroundColor",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.ClearAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.ClearAction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.ClearAction",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.ClearAction.yml\" sourcestartlinenumber=\"1\">Clear action options</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.ColorBarDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.ColorBarDirection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.ColorBarDirection",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.ConstMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.ConstMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.ConstMode",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Dimension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Dimension.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.Dimension",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.DimensionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.DimensionType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.DimensionType",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.DimensionType.yml\" sourcestartlinenumber=\"1\">Dimension type</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.FileType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.FileType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.FileType",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.FileType.yml\" sourcestartlinenumber=\"1\">File type</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.FixedSurfaceType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.FixedSurfaceType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.FixedSurfaceType",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.FixedSurfaceType.yml\" sourcestartlinenumber=\"1\">Surface type for data sources</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GraphicsOutputMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GraphicsOutputMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.GraphicsOutputMode",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.GraphicsOutputMode.yml\" sourcestartlinenumber=\"1\">Graphics output mode</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GridLine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GridLine.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.GridLine",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GridLineOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GridLineOption.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.GridLineOption",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.GridLineOption.yml\" sourcestartlinenumber=\"1\">Describes the options for drawing grid lines when using the grid output mode</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.GridOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.GridOption.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.GridOption",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.GridOption.yml\" sourcestartlinenumber=\"1\">Options for drawing grid lines</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.InputFileDimensionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.InputFileDimensionType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.InputFileDimensionType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.InterpolationMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.InterpolationMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.InterpolationMode",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.IntervalType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.IntervalType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.IntervalType",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.KmlOutputFlag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.KmlOutputFlag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.KmlOutputFlag",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.LabelOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.LabelOption.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.LabelOption",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.LabelOption.yml\" sourcestartlinenumber=\"1\">Controls the contour line labeling</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.LineStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.LineStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.LineStyle",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.MapResolution.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.MapResolution.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.MapResolution",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.MapResolution.yml\" sourcestartlinenumber=\"1\">Map resolution options</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.MultiLevelFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.MultiLevelFunction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.MultiLevelFunction",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.MultiLevelFunction.yml\" sourcestartlinenumber=\"1\">Function to apply to a multi-level grid</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.OnOffSetting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.OnOffSetting.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.OnOffSetting",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.OnOffSetting.yml\" sourcestartlinenumber=\"1\">On/Off setting</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Orientation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Orientation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.Orientation",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.OutputFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.OutputFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.OutputFormat",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.OutputFormat.yml\" sourcestartlinenumber=\"1\">Output image format</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.PreprojectedType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.PreprojectedType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.PreprojectedType",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.PreprojectedType.yml\" sourcestartlinenumber=\"1\">Type of preprojected grid</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.Projection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.Projection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.Projection",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.Projection.yml\" sourcestartlinenumber=\"1\">Projection modes available</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.SmoothOption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.SmoothOption.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.SmoothOption",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Enums.SmoothOption.yml\" sourcestartlinenumber=\"1\">Controls the contour line smoothing</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.StringJustification.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.StringJustification.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums.StringJustification",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Enums.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Enums.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Enums",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Exceptions.InvalidColorException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Exceptions.InvalidColorException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Exceptions.InvalidColorException",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Exceptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Exceptions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.GradsEngine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.GradsEngine.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.GradsEngine",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.GradsEngine.yml\" sourcestartlinenumber=\"1\">This class is the basis to start working with the library.  It gives you an interface to send commands to the\ndrawing backend.  It requires registration of a <xref href=\"GradsSharp.Drawing.Grads.IDrawingEngine?text=IDrawingEngine\" data-throw-if-not-resolved=\"false\"></xref> to be able to output the drawings to an outputtype\nof choice</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.IGradsCommandInterface.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.IGradsCommandInterface.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.IGradsCommandInterface",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.IGradsCommandInterface.yml\" sourcestartlinenumber=\"1\">Interface for sending commands to the Grads engine</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.IGradsDrawingInterface.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.IGradsDrawingInterface.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.IGradsDrawingInterface",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.IGradsDrawingInterface.yml\" sourcestartlinenumber=\"1\">Interface that gives direct access to drawing commands</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.ColorBarSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.ColorBarSettings.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.ColorBarSettings",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.ColorDefinition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.ColorDefinition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.ColorDefinition",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.DimensionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.DimensionInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.DimensionInfo",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Models.DimensionInfo.yml\" sourcestartlinenumber=\"1\">Dimension info returned by <xref href=\"GradsSharp.IGradsCommandInterface.QueryDimensionInfo\" data-throw-if-not-resolved=\"false\"></xref></p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.FileInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.FileInfo.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.FileInfo",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.IGradsGrid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.IGradsGrid.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.IGradsGrid",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Models.IGradsGrid.yml\" sourcestartlinenumber=\"1\">Contains data and meta information about gridded data</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.InputFile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.InputFile.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.InputFile",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Models.InputFile.yml\" sourcestartlinenumber=\"1\">This class is used to supply information about the opened file to GradsEngine.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.InputVariable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.InputVariable.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.InputVariable",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Models.InputVariable.yml\" sourcestartlinenumber=\"1\">Information about a variable in the input file</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.Internal.MapData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.Internal.MapData.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.Internal.MapData",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.Internal.MapDataRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.Internal.MapDataRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.Internal.MapDataRecord",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.Internal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.Internal.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.Internal",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.TextOutput.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.TextOutput.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.TextOutput",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.VariableDefinition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.VariableDefinition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models.VariableDefinition",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Models.VariableDefinition.yml\" sourcestartlinenumber=\"1\">This class holds information needed to fetch variabbles from the data.  It is passed on the a <xref href=\"GradsSharp.Data.IGriddedDataReader\" data-throw-if-not-resolved=\"false\"></xref> to fetch the data</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Models.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Models",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Utils.StringToDouble.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Utils.StringToDouble.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Utils.StringToDouble",
+      "Summary": "<p sourcefile=\"api/gradssharp/GradsSharp.Utils.StringToDouble.yml\" sourcestartlinenumber=\"1\">Provides methods to convert a string to a double precision floating\npoint number.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.Utils.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp.Utils",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gradssharp/GradsSharp.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/GradsSharp.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "GradsSharp",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/gradssharp/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gradssharp/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/gradssharp/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "documentation/command-interface.md",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/command-interface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "documentation/creating-a-reader.md",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/creating-a-reader.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "documentation/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "documentation/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "documentation/toc.html"
+        },
+        ".json": {
+          "relative_path": "documentation/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/t2m.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/t2m.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
