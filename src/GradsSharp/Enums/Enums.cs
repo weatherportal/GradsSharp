@@ -5,7 +5,8 @@ public enum InterpolationMode
     Undefined = -1,
     PiecewiseLinear = 0,
     Spline = 1,
-    Polynomnial = 2
+    Polynomnial = 2,
+    Bilinear = 4
 }
 
 public enum ConstMode
