@@ -31,8 +31,6 @@ public static class GridInterpolationFunctions
 		targetGrid.GridData = new double[targetGrid.ISize * targetGrid.JSize];
 		targetGrid.DimensionSize[0] = targetLongitudes.Length;
 		targetGrid.DimensionSize[1] = targetLatitudes.Length;
-		targetGrid.DimensionMaximum[0] = targetColCount;
-		targetGrid.DimensionMaximum[1] = targetRowCount;
 		
 		
 		for (int i = 0; i < targetRowCount; i++)
