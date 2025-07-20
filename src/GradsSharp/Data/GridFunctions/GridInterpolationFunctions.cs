@@ -7,6 +7,146 @@ namespace GradsSharp.Data.GridFunctions;
 
 public static class GridInterpolationFunctions
 {
+
+	public static IGradsGrid Regrid(IGradsGrid grid, double targetResolution, IGradsCommandInterface cmd, InterpolationMode mode)
+	{
+		var gcmd = cmd as GradsCommandInterface;
+		var pcm = gcmd.CommonData;
+		var ctx = gcmd.DrawingContext;
+		
+		GradsGrid targetGrid = grid.CloneGrid() as GradsGrid;
+		
+		
+		var originalLatRange = GetRange(grid.WorldDimensionMaximum[1], grid.WorldDimensionMinimum[1], grid.JSize, inverted: true);
+		var originalLonRange = GetRange(grid.WorldDimensionMinimum[0], grid.WorldDimensionMaximum[0], grid.ISize, inverted: false);;
+		int targetRowCount = (int)((originalLatRange[0] - originalLatRange[^1]) / targetResolution) + 1;
+		int targetColCount = (int)((originalLonRange[^1] - originalLonRange[0]) / targetResolution) + 1;
+
+		var targetLatitudes = GetRange(originalLatRange[0], originalLatRange[^1], targetRowCount, inverted: true);
+		var targetLongitudes = GetRange(originalLonRange[0], originalLonRange[^1], targetColCount, inverted: false);
+
+		
+		targetGrid.ISize = targetColCount;
+		targetGrid.JSize = targetRowCount;;
+		targetGrid.GridData = new double[targetGrid.ISize * targetGrid.JSize];
+
+		for (int i = 0; i < targetRowCount; i++)
+		{
+			for (int j = 0; j < targetColCount; j++)
+			{
+				double newLat = targetLatitudes[i];
+				double newLon = targetLongitudes[j];
+
+				// Find surrounding indices in the original grid
+				int latLow = FindClosestIndex(originalLatRange, newLat, true, inverted: true);
+				int latHigh = Math.Min(latLow + 1, grid.JSize - 1);
+				int lonLow = FindClosestIndex(originalLonRange, newLon, true, inverted: false);
+				int lonHigh = Math.Min(lonLow + 1, grid.ISize - 1);
+
+				// Read values from the original grid
+				double q11 = grid.GridData[GetIndex(latLow, lonLow, grid.ISize)];
+				double q21 = grid.GridData[GetIndex(latHigh, lonLow, grid.ISize)];
+				double q12 = grid.GridData[GetIndex(latLow, lonHigh, grid.ISize)];
+				double q22 = grid.GridData[GetIndex(latHigh, lonHigh, grid.ISize)];
+
+				// Perform bilinear interpolation
+				double interpolatedValue = BilinearInterpolate(
+					newLat, newLon,
+					originalLatRange[latLow], originalLatRange[latHigh],
+					originalLonRange[lonLow], originalLonRange[lonHigh],
+					q11, q21, q12, q22
+				);
+
+				// Assign interpolated value to the target grid
+				targetGrid.GridData[GetIndex(i, j, targetColCount)] = interpolatedValue;
+			}
+		}
+
+			
+		
+		
+		return targetGrid;
+	}
+	
+	/// <summary>
+	/// Generates a range of equally spaced values between start and end.
+	/// </summary>
+	private static double[] GetRange(double start, double end, int stepCount, bool inverted)
+	{
+		double[] range = new double[stepCount];
+		double stepSize = (end - start) / (stepCount - 1);
+
+		if (inverted)
+		{
+			for (int i = 0; i < stepCount; i++)
+			{
+				range[i] = start - i * Math.Abs(stepSize);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < stepCount; i++)
+			{
+				range[i] = start + i * stepSize;
+			}
+		}
+
+		return range;
+	}
+
+	/// <summary>
+	/// Finds the closest index in an array for a given value, optionally rounding down.
+	/// </summary>
+	private static int FindClosestIndex(double[] array, double value, bool floor, bool inverted)
+	{
+		for (int i = 0; i < array.Length - 1; i++)
+		{
+			if (inverted)
+			{
+				if (array[i] >= value && array[i + 1] <= value)
+					return floor ? i : i + 1;
+				
+			}
+			else
+			{
+				if (array[i] <= value && array[i + 1] >= value)
+					return floor ? i : i + 1;
+
+			}
+		}
+		return array.Length - 1;
+	}
+
+	/// <summary>
+	/// Returns the 1D array index for row-major storage of a 2D grid.
+	/// </summary>
+	private static int GetIndex(int row, int col, int totalCols)
+	{
+		return row * totalCols + col;
+	}
+
+	
+	/// <summary>
+	/// Performs bilinear interpolation.
+	/// </summary>
+	private static double BilinearInterpolate(
+		double x, double y,
+		double x1, double x2,
+		double y1, double y2,
+		double q11, double q21,
+		double q12, double q22)
+	{
+		if (double.IsNaN(q11) || double.IsNaN(q21) || double.IsNaN(q12) || double.IsNaN(q22))
+		{
+			return double.NaN;
+		}
+
+		double r1 = ((x2 - x) / (x2 - x1) * q11) + ((x - x1) / (x2 - x1) * q21);
+		double r2 = ((x2 - x) / (x2 - x1) * q12) + ((x - x1) / (x2 - x1) * q22);
+		return ((y2 - y) / (y2 - y1) * r1) + ((y - y1) / (y2 - y1) * r2);
+	}
+
+	
     /// <summary>
     /// function to interpolate within a 3-D grid to a specified
     /// pressure level.  Can also be used on non-pressure level data, such
