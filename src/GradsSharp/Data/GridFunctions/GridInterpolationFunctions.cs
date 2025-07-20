@@ -17,19 +17,22 @@ public static class GridInterpolationFunctions
 		GradsGrid targetGrid = grid.CloneGrid() as GradsGrid;
 		
 		
-		var originalLatRange = GetRange(grid.WorldDimensionMaximum[1], grid.WorldDimensionMinimum[1], grid.JSize, inverted: true);
+		var originalLatRange = GetRange(grid.WorldDimensionMinimum[1], grid.WorldDimensionMaximum[1], grid.JSize, inverted: false);
 		var originalLonRange = GetRange(grid.WorldDimensionMinimum[0], grid.WorldDimensionMaximum[0], grid.ISize, inverted: false);;
-		int targetRowCount = (int)((originalLatRange[0] - originalLatRange[^1]) / targetResolution) + 1;
+		int targetRowCount = (int)((originalLatRange[^1] - originalLatRange[0]) / targetResolution) + 1;
 		int targetColCount = (int)((originalLonRange[^1] - originalLonRange[0]) / targetResolution) + 1;
 
-		var targetLatitudes = GetRange(originalLatRange[0], originalLatRange[^1], targetRowCount, inverted: true);
+		var targetLatitudes = GetRange(originalLatRange[0], originalLatRange[^1], targetRowCount, inverted: false);
 		var targetLongitudes = GetRange(originalLonRange[0], originalLonRange[^1], targetColCount, inverted: false);
 
 		
 		targetGrid.ISize = targetColCount;
-		targetGrid.JSize = targetRowCount;;
+		targetGrid.JSize = targetRowCount;
 		targetGrid.GridData = new double[targetGrid.ISize * targetGrid.JSize];
-
+		targetGrid.DimensionSize[0] = targetLongitudes.Length;
+		targetGrid.DimensionSize[1] = targetLatitudes.Length;
+		
+		
 		for (int i = 0; i < targetRowCount; i++)
 		{
 			for (int j = 0; j < targetColCount; j++)
@@ -38,7 +41,7 @@ public static class GridInterpolationFunctions
 				double newLon = targetLongitudes[j];
 
 				// Find surrounding indices in the original grid
-				int latLow = FindClosestIndex(originalLatRange, newLat, true, inverted: true);
+				int latLow = FindClosestIndex(originalLatRange, newLat, true, inverted: false);
 				int latHigh = Math.Min(latLow + 1, grid.JSize - 1);
 				int lonLow = FindClosestIndex(originalLonRange, newLon, true, inverted: false);
 				int lonHigh = Math.Min(lonLow + 1, grid.ISize - 1);
