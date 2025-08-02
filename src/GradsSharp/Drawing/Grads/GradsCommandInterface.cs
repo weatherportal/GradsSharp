@@ -3257,6 +3257,20 @@ internal class GradsCommandInterface : IGradsCommandInterface
     // gaprnt(0, pout);
     // return (1);
     }
+
+    public void SetSdfWrite(string filename)
+    {
+        _drawingContext.CommonData.sdfwpad = 0;
+        _drawingContext.CommonData.sdfrecdim = 0;
         
-    
+        // set defaults for now
+        _drawingContext.CommonData.sdfwtype = 2;
+        _drawingContext.CommonData.sdfprec = 8;
+        _drawingContext.CommonData.sdfwname = filename;
+    }
+
+    public void SdfWrite(string variable)
+    {
+        _drawingContext.NcWrite.Write(variable);
+    }
 }
