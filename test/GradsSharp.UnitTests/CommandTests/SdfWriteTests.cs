@@ -32,6 +32,7 @@ public class SdfWriteTests
     }
 
     [Test]
+    [Ignore("only on mac and linux")]
     public void TestWriteNetCDF()
     {
         testFilePath = Path.GetTempFileName() + ".nc";
