@@ -174,19 +174,19 @@ internal class GradsCommon
     public string kmlname = "";             /* kml text file name */
     
     public int kmlflg = 0;              /* kml output: 1==img, 2==contours */
-//   char *sdfwname;            /* netcdf/hdf write file name */
-//   int sdfwtype;            /* type of sdf output: 1=classic, 2=nc4 */
-//   int sdfwpad;             /* pad the sdf output with extra dims: 1=4D, 2=5D */
-//   int sdfprec;             /* precision (8==double, 4==float, etc.) */
-//   int sdfchunk;            /* flag to indicate whether or not to chunk */
-//   int sdfzip;              /* flag to indicate whether or not to compress */
-//   int sdfrecdim;           /* flag to indicate record dimensions */
-//   int ncwid;               /* netcdf write file id  */
-//   int xchunk;              /* size of sdfoutput file chunk in X dimension */
-//   int ychunk;              /* size of sdfoutput file chunk in Y dimension */
-//   int zchunk;              /* size of sdfoutput file chunk in Z dimension */
-//   int tchunk;              /* size of sdfoutput file chunk in T dimension */
-//   int echunk;              /* size of sdfoutput file chunk in E dimension */
+    public string sdfwname;            /* netcdf/hdf write file name */
+    public int sdfwtype;            /* type of sdf output: 1=classic, 2=nc4 */
+    public int sdfwpad;             /* pad the sdf output with extra dims: 1=4D, 2=5D */
+    public int sdfprec;             /* precision (8==double, 4==float, etc.) */
+    public int sdfchunk;            /* flag to indicate whether or not to chunk */
+    public int sdfzip;              /* flag to indicate whether or not to compress */
+    public int sdfrecdim;           /* flag to indicate record dimensions */
+    public int ncwid;               /* netcdf write file id  */
+    public int  xchunk;              /* size of sdfoutput file chunk in X dimension */
+    public int  ychunk;              /* size of sdfoutput file chunk in Y dimension */
+    public int  zchunk;              /* size of sdfoutput file chunk in Z dimension */
+    public int  tchunk;              /* size of sdfoutput file chunk in T dimension */
+    public int  echunk;              /* size of sdfoutput file chunk in E dimension */
 //   class gaattr *attr;       /* pointer to link list of user-specified SDF attributes */
 // #if USESHP==1
 //   class dbfld *dbfld;       /* pointer to link list of user-specified data base fields */

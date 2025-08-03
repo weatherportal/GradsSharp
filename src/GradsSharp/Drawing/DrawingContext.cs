@@ -14,15 +14,16 @@ internal class DrawingContext
     public GradsDrawingInterface GradsDrawingInterface { get; set; }
     public GaIO GaIO { get; set; }
     public GradsCommandInterface GradsCommandInterface { get; set; }
-    public GaExpr GaExpr { get; set; }
-    public GxMeta GxMeta { get; set; }
+    public GaExpr GaExpr { get; }
+    public GxMeta GxMeta { get; }
     public GxShad GxShad { get; set; }
     public GxShad2 GxShad2 { get; set; }
-    public GaGx GaGx { get; set; }
+    public GaGx GaGx { get; }
     public GxStrm GxStrm { get; set; }
     public GxChpl GxChpl { get; set; }
     public GxContour GxContour { get; set; }
 
+    public NcWrite NcWrite { get; }
     public GradsDatabase GradsDatabase { get; set; } = new GradsDatabase();
     public GxWmap GxWmap { get; set; }
     
@@ -74,6 +75,7 @@ internal class DrawingContext
         GxMeta = new GxMeta(this);
         GaIO = new GaIO(this);
         GaExpr = new GaExpr(this);
+        NcWrite = new NcWrite(this);
         
         for (int j = 0; j < 256; j++)
         {

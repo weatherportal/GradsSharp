@@ -462,8 +462,18 @@ public interface IGradsCommandInterface
     /// <param name="endLevel">End level to fetch data</param>
     /// <param name="function">Function to apply on the data</param>
     /// <returns><see cref="IGradsGrid">Grid</see> with meta information and the actual data</returns>
-    IGradsGrid? GetMultiLevelData(VariableDefinition definition, double startLevel, double endLevel, MultiLevelFunction function); 
+    IGradsGrid? GetMultiLevelData(VariableDefinition definition, double startLevel, double endLevel, MultiLevelFunction function);
 
+
+    /// <summary>
+    /// Set SDF Write options
+    /// </summary>
+    /// <param name="filename">Filename to output data to</param>
+    void SetSdfWrite(string filename);
     
-    /// void Define(string varName, string formula);
+    
+    /// <summary>
+    /// This command will write out a defined variable varname into a NetCDF formatted data file.
+    /// </summary>
+    void SdfWrite(string variable);
 }
