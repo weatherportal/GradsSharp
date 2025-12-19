@@ -38,4 +38,17 @@ public class Helpers
         
         expectedXml.ToString().ShouldBe(generatedXml.ToString());
     }
+
+    public static void CompareBinaryFiles(Stream expected, Stream generated)
+    {
+        BinaryReader expectedReader = new BinaryReader(expected);
+        BinaryReader generatedReader = new BinaryReader(generated);
+        
+        
+        byte[] expectedBytes = expectedReader.ReadBytes((int)expected.Length);
+        byte[] generatedBytes = generatedReader.ReadBytes((int)generated.Length);
+        
+        generatedBytes.ShouldBe(expectedBytes);
+
+    }
 }

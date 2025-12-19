@@ -5550,7 +5550,7 @@ internal class GaGx
         double xresolution, yresolution, smin, smax;
         uint imagewidth, imagelength, rowsperstrip;
         ushort[] band;
-        ushort[] colormap = null, cm;
+        ushort[] colormap_r = null, colormap_g = null, colormap_b = null, cm;
         ushort bitspersample, samplesperpixel, compression;
         ushort photometric, resolutionunit, sampleformat;
         int depth;
@@ -5861,7 +5861,9 @@ internal class GaGx
             /* create and write out the color map */
             /* palette-color image in TIFF cannot have more than 256 colors */
             CMAX = 256;
-            colormap = new ushort[3 * CMAX];
+            colormap_r = new ushort[CMAX];
+            colormap_g = new ushort[CMAX];
+            colormap_b = new ushort[CMAX];
             for (j = 0; j < CMAX; j++)
             {
                 /* get rgb values for each color */
@@ -5869,19 +5871,19 @@ internal class GaGx
                 r = dbq.Item1;
                 g = dbq.Item2;
                 b = dbq.Item3;
-                colormap[0 * CMAX + j] = (ushort)r;
-                colormap[1 * CMAX + j] = (ushort)g;
-                colormap[2 * CMAX + j] = (ushort)b;
+                colormap_r[j] = (ushort)r;
+                colormap_g[j] = (ushort)g;
+                colormap_b[j] = (ushort)b;
             }
 
-            if (!tif.SetField(TiffTag.COLORMAP, colormap))
+            if (!tif.SetField(TiffTag.COLORMAP, colormap_r, colormap_g, colormap_b))
             {
                 goto cleanup;
             }
 
 
             /* Create the KML text file */
-            if (!(write_kml(tiepoints))) goto cleanup;
+            if ((write_kml(tiepoints))) goto cleanup;
         }
 
         /* convert the data to appropriate format */
@@ -6057,7 +6059,7 @@ internal class GaGx
         pout = "  <GroundOverlay>\n";
         kmlfp.Write(pout);
 
-        pout = $"    <name>{pgr.pvar.VariableDefinition.VariableName}</name>\n";
+        pout = $"    <name>{pgr.pvar?.VariableDefinition?.VariableName ?? "(null)"}</name>\n";
         kmlfp.Write(pout);
 
         pout = "    <Icon>\n";

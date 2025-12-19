@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <GroundOverlay>
+    <name>(null)</name>
+    <Icon>
+      <href>t2m_tif.tif</href>
+    </Icon>
+    <LatLonBox>
+      <west>    -3.125</west>
+      <east>    12.125</east>
+      <south>    46.875</south>
+      <north>    56.125</north>
+      <rotation>0.0</rotation>
+    </LatLonBox>
+  </GroundOverlay>
+</kml>
