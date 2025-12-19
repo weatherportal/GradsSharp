@@ -168,12 +168,12 @@ internal class GradsCommon
     //int[] drvals = new int[15];          /* Attributes for drop menus */
 //   char *shpfname;            /* shapefile write file name */
 //   int shptype;             /* shapefile output type: 1=point, 2=line */
-//   int gtifflg;             /* geotiff data type: 1=float 2=double */
-//   char *gtifname;            /* geotiff write file name */
-//   char *tifname;             /* kml image  file name */
+    public int? gtifflg;             /* geotiff data type: 1=float 2=double */
+    public string? gtifname;            /* geotiff write file name */
+    public string? tifname;             /* kml image  file name */
     public string kmlname = "";             /* kml text file name */
     
-    public int kmlflg = 0;              /* kml output: 1==img, 2==contours */
+    public int kmlflg = 1;              /* kml output: 1==img, 2==contours */
     public string sdfwname;            /* netcdf/hdf write file name */
     public int sdfwtype;            /* type of sdf output: 1=classic, 2=nc4 */
     public int sdfwpad;             /* pad the sdf output with extra dims: 1=4D, 2=5D */

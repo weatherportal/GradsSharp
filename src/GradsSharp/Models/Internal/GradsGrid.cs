@@ -105,6 +105,7 @@ internal class GradsGrid : IGradsGrid
             DimensionMinimum = DimensionMinimum.Clone() as int[],
             GridData = GridData.Clone() as double[],
             iabgr = iabgr,
+            pvar = pvar,
             iavals = iavals.Clone() as double[],
             javals = javals.Clone() as double[],
             IDimension = IDimension,

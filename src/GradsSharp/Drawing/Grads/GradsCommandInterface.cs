@@ -2573,7 +2573,28 @@ internal class GradsCommandInterface : IGradsCommandInterface
     public void SetKmlOutput(KmlOutputFlag flag, string filename)
     {
         _drawingContext.CommonData.kmlflg = (int)flag;
-        _drawingContext.CommonData.kmlname = filename;
+
+        if (flag == KmlOutputFlag.Image)
+        {
+            if (filename.EndsWith(".kml"))
+            {
+                _drawingContext.CommonData.tifname = filename.Replace(".kml", ".tif");
+                _drawingContext.CommonData.kmlname = filename;
+            }
+            else if (filename.EndsWith(".tif"))
+            {
+                _drawingContext.CommonData.kmlname = filename.Replace(".tif", ".kml");
+                _drawingContext.CommonData.tifname = filename;
+            }
+            _drawingContext.CommonData.gtifflg = 1;
+        }
+        else
+        {
+            if(!filename.EndsWith(".kml")) filename += ".kml";
+            _drawingContext.CommonData.kmlname = filename;            
+        }
+        
+
     }
 
     public DimensionInfo? QueryDimensionInfo()

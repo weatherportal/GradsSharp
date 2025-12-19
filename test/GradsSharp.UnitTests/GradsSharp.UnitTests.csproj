@@ -64,6 +64,10 @@
       <EmbeddedResource Include="Data\Expected\plottext-test.png" />
       <None Remove="Data\Expected\tmp2m_world.png" />
       <EmbeddedResource Include="Data\Expected\tmp2m_world.png" />
+      <None Remove="Data\Expected\t2m_tif.kml" />
+      <EmbeddedResource Include="Data\Expected\t2m_tif.kml" />
+      <None Remove="Data\Expected\t2m_tif.tif" />
+      <EmbeddedResource Include="Data\Expected\t2m_tif.tif" />
     </ItemGroup>
 
 </Project>

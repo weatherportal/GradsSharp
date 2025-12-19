@@ -1,6 +1,9 @@
-﻿using GradsSharp.Models.Internal;
+﻿using System.ComponentModel.DataAnnotations;
+using GradsSharp.Models.Internal;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using BitMiracle.LibTiff.Classic;
+using GradsSharp.Models;
 
 namespace GradsSharp.Drawing.Grads;
 
@@ -281,8 +284,8 @@ internal class GaGx
                         else if (pcm.gout2a == 6) gafgrd(); /* fgrid */
                         else if (pcm.gout2a == 7) gafwrt(); /* fwrite */
                         else if (pcm.gout2a == 10) gacntr(2, 0); /* grfill */
-                        else if (pcm.gout2a == 12) gagtif(0); /* geotiff */
-                        // else if (pcm.gout2a == 13 && pcm.kmlflg == 1) gagtif(1); /* kml image output */
+                        else if (pcm.gout2a == 12) gagtif(false); /* geotiff */
+                        else if (pcm.gout2a == 13 && pcm.kmlflg == 1) gagtif(true); /* kml image output */
                         else if (pcm.gout2a == 13 && pcm.kmlflg > 1) gakml(); /* kml contours or polygons */
                         else if (pcm.gout2a == 14) gacntr(3, 0); /* imap */
                         else if (pcm.gout2a == 15) gashpwrt(); /* shapefile */
@@ -4747,7 +4750,7 @@ internal class GaGx
 
                     string fmt = "0.";
                     for (int k = 0; k < pcm.dignum; k++) fmt += "0";
-                    
+
                     lab = String.Format("{0:" + fmt + "}", (float)r[rcnt]);
                     len = lab.Length;
                     cwid = pcm.digsiz * (double)len;
@@ -5312,10 +5315,10 @@ internal class GaGx
     void gakml()
     {
         var pcm = _drawingContext.CommonData;
-        
+
         FileStream? kmlfp = null;
         GradsGrid pgr;
-        
+
         int r, g, b, a, err = 0, i, rc;
 
 // Determine if output is a grid or a station result
@@ -5324,30 +5327,33 @@ internal class GaGx
             _drawingContext.Logger?.LogInformation("Error in gakml: expression is not a grid \n");
             goto cleanup;
         }
-        
+
         /* Make sure projection is latlon */
-        if (pcm.mproj != 2) {
+        if (pcm.mproj != 2)
+        {
             _drawingContext.Logger?.LogInformation("Error in gakml: mproj latlon required for gxout kml\n");
             goto cleanup;
         }
-        
+
         /* Make sure we have an X-Y plot */
         pgr = pcm.result[0].pgr;
-        if (pgr.IDimension != 0 || pgr.JDimension != 1) {
+        if (pgr.IDimension != 0 || pgr.JDimension != 1)
+        {
             _drawingContext.Logger?.LogInformation("Error in gakml: Grid is not varying in X and Y \n");
             goto cleanup;
         }
-        
+
         /* set up scaling without the map */
         gas2d(pgr, false);
-        
+
         /* Determine data min/max, make sure grid is not undefined */
         GaUtil.gamnmx(pgr);
-        if (pgr.umin == 0) {
+        if (pgr.umin == 0)
+        {
             _drawingContext.Logger?.LogInformation("Error in gakml: Entire grid is undefined \n");
             goto cleanup;
         }
-        
+
         /* open the output file */
         //TODO convert to try/catch
         if (!String.IsNullOrEmpty(pcm.kmlname))
@@ -5362,23 +5368,26 @@ internal class GaGx
                 _drawingContext.Logger?.LogInformation("Error: fopen failed for KML text output file grads.kml\n");
             goto cleanup;
         }
-        
-        if (pcm.kmlflg == 2) {
-            rc = gacntr(0, 1);     /* Call gacntr() to create buffered contour lines for KML file */
+
+        if (pcm.kmlflg == 2)
+        {
+            rc = gacntr(0, 1); /* Call gacntr() to create buffered contour lines for KML file */
             if (rc != 0) goto cleanup;
-        } else if (pcm.kmlflg == 3) {
-            _drawingContext.GxShad2.s2setbuf(true);                 /* turn on polygon buffering */
-            _drawingContext.GxShad2.s2setdraw(true);                /* disable drawing polygons to display */
-            rc = gacntr(4, 1);     /* Call gacntr() to create buffered polygons for KML file */
-            if (rc>0) goto cleanup;
-        
-        } else {
+        }
+        else if (pcm.kmlflg == 3)
+        {
+            _drawingContext.GxShad2.s2setbuf(true); /* turn on polygon buffering */
+            _drawingContext.GxShad2.s2setdraw(true); /* disable drawing polygons to display */
+            rc = gacntr(4, 1); /* Call gacntr() to create buffered polygons for KML file */
+            if (rc > 0) goto cleanup;
+        }
+        else
+        {
             _drawingContext.Logger?.LogInformation("logic errror in subroutine gakml\n");
             goto cleanup;
         }
-        
-        
-        
+
+
         // write out KML headers
         string pout = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
@@ -5386,7 +5395,7 @@ internal class GaGx
         kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
         pout = $"  <Document id=\"Created by GradsSharp\">\n";
         kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
-        
+
         /* Contours */
         if (pcm.kmlflg == 2)
         {
@@ -5396,7 +5405,7 @@ internal class GaGx
                 pout = $"    <Style id=\"{pcm.cntrcols[i]}\">\n      <LineStyle>\n";
                 kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
                 // get rgb values for this color
-                
+
                 var dbq = _drawingContext.GradsDatabase.gxdbqcol(pcm.cntrcols[i]);
                 r = dbq.Item1;
                 g = dbq.Item2;
@@ -5409,6 +5418,7 @@ internal class GaGx
                 pout = "      </LineStyle>\n    </Style>\n";
                 kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
             }
+
             // write out the locations of the contour vertices
             rc = _drawingContext.GxContour.gxclvert(kmlfp);
             if (rc > 0)
@@ -5420,8 +5430,9 @@ internal class GaGx
             }
             else err = 1;
         }
-            /* Polygons */
-        else {
+        /* Polygons */
+        else
+        {
             /* write out the polygon colors as a set of Style tags with LineStyle and PolyStyle */
             for (i = 0; i < pcm.shdcnt; i++)
             {
@@ -5452,54 +5463,56 @@ internal class GaGx
                 pout = "    </Style>\n";
                 kmlfp.Write(Encoding.UTF8.GetBytes(pout), 0, pout.Length);
             }
-        
+
             /* write out the locations of the polygon vertices */
             /* call routine in gxshad2.c to write out polygon vertices and values */
             rc = _drawingContext.GxShad2.s2polyvert(kmlfp);
-            if (rc > 0) 
+            if (rc > 0)
             {
                 string message;
                 if (!string.IsNullOrEmpty(pcm.kmlname))
                     message = $"{rc} polygons written to KML file {pcm.kmlname}\n";
                 else
                     message = $"{rc} polygons written to KML file grads.kml\n";
-    
+
                 _drawingContext.Logger?.LogInformation(message);
-            } 
-            else 
+            }
+            else
             {
                 err = 1;
             }
-        
         }
-        
+
         // Write out footers
         pout = "  </Document>\n</kml>\n";
         byte[] poutBytes = Encoding.UTF8.GetBytes(pout);
         kmlfp.Write(poutBytes, 0, poutBytes.Length);
-        
+
 // Set the last graphic code
         gagsav(24);
 
         cleanup:
         if (pcm.kmlflg == 2)
         {
-            _drawingContext.GxContour.gxcrel();       // Release storage used by the contouring package
+            _drawingContext.GxContour.gxcrel(); // Release storage used by the contouring package
         }
         else
         {
-            _drawingContext.GxShad2.s2frepbuf();    // Release the polygon buffer from memory
-            _drawingContext.GxShad2.s2setbuf(false);    // Turn off polygon buffering
-            _drawingContext.GxShad2.s2setdraw(false);   // Restore drawing of polygons
+            _drawingContext.GxShad2.s2frepbuf(); // Release the polygon buffer from memory
+            _drawingContext.GxShad2.s2setbuf(false); // Turn off polygon buffering
+            _drawingContext.GxShad2.s2setdraw(false); // Restore drawing of polygons
         }
+
         if (kmlfp != null)
         {
-            kmlfp.Close();    // Close the file
+            kmlfp.Close(); // Close the file
         }
+
         if (err != 0)
         {
             _drawingContext.Logger?.LogInformation("Error from fwrite when writing KML file\n");
         }
+
         return;
     }
 
@@ -5520,391 +5533,593 @@ internal class GaGx
 
  */
 
-    void gagtif(int kmlflg)
+    void gagtif(bool kmlflg)
     {
-//     var pcm = _drawingContext.CommonData;
-// #if GEOTIFF == 1
-//                                                                                                                             gagrid pgr;
-//  struct gxdbquery dbq;
-//  double *gr,cmin,cmax,cint,pmin,pmax,dval;
-//  double pixelscale[3],tiepoints[24];
-//  gafloat fval;
-//  int i,j,rc,grsize,isize,jsize,color,r,g,b,CMAX;
-//  char *gru;
-//  TIFF *tif=NULL;
-//  GTIF *gtif=NULL;
-//  double xresolution,yresolution,smin,smax;
-//  uint32 imagewidth,imagelength,rowsperstrip;
-//  uint16 *colormap=NULL,*cm;
-//  uint16 bitspersample,samplesperpixel,compression;
-//  uint16 photometric,resolutionunit,sampleformat;
-//  short depth;
-//  unsigned char *cbuf=NULL,*cbuf0=NULL;
-//  gafloat *fbuf=NULL,*fbuf0=NULL;
-//  double *dbuf=NULL,*dbuf0=NULL;
-//
-//
-//  /* set up scaling without the map */
-//  pgr = pcm.result[0].pgr;
-//  gas2d (pcm, pgr, 0);
-//  isize = pgr.isiz;
-//  jsize = pgr.jsiz;
-//  grsize = isize * jsize;
-//  gr  = pgr.grid;
-//  gru = pgr.umask;
-//
-//  /* Make sure we have an X-Y plot */
-//  if (pgr.idim!=0 || pgr.jdim!=1) {
-//    gaprnt(0,"Error: Grid is not varying in X and Y \n");
-//    goto cleanup;
-//  }
-//
-//  /* Make sure projection is latlon */
-//  if (pcm.mproj !=2) {
-//    gaprnt (0,"Error: mproj latlon required for gxout kml\n");
-//    goto cleanup;
-//  }
-//
-//  /* Determine data min/max, make sure grid is not undefined */
-//  gamnmx (pgr);
-//  if (pgr.umin==0) {
-//    gaprnt (0,"Error: Entire grid is undefined \n");
-//    goto cleanup;
-//  }
-//
-//  /* Open output files */
-//  if (kmlflg) {
-//    /* open the file for the image output, we'll open the KML file later */
-//    if (pcm.tifname)
-//      tif = XTIFFOpen(pcm.tifname, "w");
-//    else
-//      tif = XTIFFOpen("grads.tif", "w");
-//    if (tif==NULL) {
-//      if (pcm.tifname)
-//        snprintf(pout,1255,"Error: XTiffOpen failed for KML image output file %s\n",pcm.tifname);
-//      else
-//        snprintf(pout,1255,"Error: XTiffOpen failed for KML image output file grads.tif\n");
-//      gaprnt (0,pout);
-//      goto cleanup;
-//    }
-//    gtif = GTIFNew(tif);
-//    if (gtif==NULL) {
-//      if (pcm.tifname)
-//        snprintf(pout,1255,"Error: GTIFNew failed for KML image output file %s\n",pcm.tifname);
-//      else
-//        snprintf(pout,1255,"Error: GTIFNew failed for KML image output file grads.tif\n");
-//      gaprnt (0,pout);
-//      goto cleanup;
-//    }
-//  }
-//  else {
-//    /* For gxout GeoTIFF, we open only one output file */
-//    if (pcm.gtifname)
-//      tif = XTIFFOpen(pcm.gtifname, "w");
-//    else
-//      tif = XTIFFOpen("gradsgeo.tif", "w");
-//    if (tif==NULL) {
-//      if (pcm.gtifname)
-//        snprintf(pout,1255,"Error: XTiffOpen failed for GeoTIFF output file %s\n",pcm.gtifname);
-//      else
-//        snprintf(pout,1255,"Error: XTiffOpen failed for GeoTIFF output file gradsgeo.tif\n");
-//      gaprnt (0,pout);
-//      goto cleanup;
-//    }
-//    gtif = GTIFNew(tif);
-//    if (gtif==NULL) {
-//      if (pcm.gtifname)
-//        snprintf(pout,1255,"Error: GTIFNew failed for GeoTIFF output file %s\n",pcm.gtifname);
-//      else
-//        snprintf(pout,1255,"Error: GTIFNew failed for GeoTIFF output file gradsgeo.tif\n");
-//      gaprnt (0,pout);
-//      goto cleanup;
-//    }
-//  }
-//
-//  /* Determine the data type of the output */
-//  if (kmlflg) {
-//    depth = TIFFDataWidth(TIFF_BYTE);
-//  }
-//  else {
-//    if (pcm.gtifflg==2)
-//      depth = TIFFDataWidth(TIFF_DOUBLE);
-//    else
-//      depth = TIFFDataWidth(TIFF_FLOAT);
-//  }
-//
-//  /* Set values for required TIFF fields, converted to proper data types */
-//  imagewidth  = (uint32)isize;                /* #cols, #longitudes */
-//  imagelength = (uint32)jsize;                /* #rows, #latitudes */
-//  bitspersample = depth * 8;                  /* number of bits per component */
-//  samplesperpixel = 1;                        /* number of components per pixel */
-//  compression = 1;                            /* no compression used */
-//  if (kmlflg)
-//    photometric = 3;                          /* palette color image */
-//  else
-//    photometric = 1;                          /* grayscale image */
-//  rowsperstrip = 1;                           /* one row per strip */
-//  resolutionunit = 2;                         /* inches */
-//  xresolution = (double)(pcm.xsiz/isize);  /* gridpoints per inch */
-//  yresolution = (double)(pcm.ysiz/jsize);  /* gridpoints per inch */
-//  if (!kmlflg) {
-//    sampleformat = 3;                         /* IEEE floating point data */
-//    smin = pgr.rmin;                         /* minimum value of grid */
-//    smax = pgr.rmax;                         /* maximum value of grid */
-//  }
-//  else {
-//    sampleformat = 1;                         /* unsigned integer */
-//    smin = 0;
-//    smax = 255;
-//  }
-//  /* write out the required TIFF metadata */
-//  if (TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, imagewidth)!=1)  {
-//    gaprnt(0,"Error: TIFFSetField failed for imagewidth\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_IMAGELENGTH, imagelength)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for imagelength\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, bitspersample)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for bitspersample\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, samplesperpixel)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for samplesperpixel\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_COMPRESSION, compression)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for compression\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, photometric)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for photometric\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, rowsperstrip)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for rowsperstrip\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_RESOLUTIONUNIT, resolutionunit)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for resolutionunit\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_XRESOLUTION, xresolution)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for xresolution\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_YRESOLUTION, yresolution)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for yresolution\n"); goto cleanup;
-//  }
-//  if (TIFFSetField(tif, TIFFTAG_SAMPLEFORMAT, sampleformat)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for sampleformat\n"); goto cleanup;
-//  }
-//  if (!kmlflg) {
-//    if (TIFFSetField(tif, TIFFTAG_SMINSAMPLEVALUE, smin)!=1) {
-//      gaprnt(0,"Error: TIFFSetField failed for sminsamplevalue\n"); goto cleanup;
-//    }
-//    if (TIFFSetField(tif, TIFFTAG_SMAXSAMPLEVALUE, smax)!=1) {
-//      gaprnt(0,"Error: TIFFSetField failed for smaxsamplevalue\n"); goto cleanup;
-//    }
-//  }
-//  snprintf(pout,1255,"GrADS version "GRADS_VERSION" ");
-//  if (TIFFSetField(tif, TIFFTAG_SOFTWARE, pout)!=1) {
-//    gaprnt(0,"Error: TIFFSetField failed for software\n"); goto cleanup;
-//  }
-//
-//  /* Get georeferencing info */
-//  getcorners (pcm, pgr, tiepoints);
-//
-//  /* Write georeferencing info to output file */
-//  if (!kmlflg) {
-//    if (pgr.ilinr && pgr.jlinr) {
-//      /* If the grid is linear in both dimensions, write out the ModelPixelScale and 1 tiepoint */
-//      pixelscale[0] = *(pgr.ivals+0);
-//      pixelscale[1] = *(pgr.jvals+0);
-//      pixelscale[2] = 0.0;
-//      if (TIFFSetField(tif, TIFFTAG_GEOPIXELSCALE, 3, pixelscale)!=1) {
-//        gaprnt(0,"Error: TIFFSetField failed for geopixelscale\n"); goto cleanup;
-//      }
-//      /* write out one tie point */
-//      if (TIFFSetField(tif, TIFFTAG_GEOTIEPOINTS, 6, tiepoints)!=1) {
-//        gaprnt(0,"Error: TIFFSetField failed for geotiepoint\n"); goto cleanup;
-//      }
-//    }
-//    else {
-//      /* write out four tie points */
-//      if (TIFFSetField(tif, TIFFTAG_GEOTIEPOINTS, 24, tiepoints)!=1) {
-//        gaprnt(0,"Error: TIFFSetField failed for tiepoints\n"); goto cleanup;
-//      }
-//    }
-//
-//    /* set and write the GeoKeys */
-//    GTIFKeySet(gtif, GTModelTypeGeoKey,    TYPE_SHORT, 1, ModelGeographic);
-//    GTIFKeySet(gtif, GTRasterTypeGeoKey,   TYPE_SHORT, 1, RasterPixelIsArea);
-//    GTIFKeySet(gtif, GeographicTypeGeoKey, TYPE_SHORT, 1, GCS_WGS_84);
-//    GTIFWriteKeys(gtif);
-//  }
-//
-//  /* For KML image output:
-//     get contour info, write the color map, and create the KML text file */
-//  if (kmlflg) {
-//    if (!pcm.cflag) {
-//      /* Determine contour interval */
-//      gacsel (pgr.rmin,pgr.rmax,&(pcm.cint),&cmin,&cmax);
-//      cint = pcm.cint;
-//      /* reject constant fields for now */
-//      if (cint==0.0) {
-//        gaprnt (0,"Error: Grid is a constant \n");
-//        goto cleanup;
-//      }
-//      /* make sure there aren't too many levels */
-//      pmin = cmin;
-//      if (pmin<pcm.cmin) pmin = pcm.cmin;
-//      pmax = cmax;
-//      if (pmax>pcm.cmax) pmax = pcm.cmax;
-//      if ((pmax-pmin)/cint>100.0) {
-//        while ((pmax-pmin)/cint>100.0) cint*=10.0;
-//        pcm.cint = cint;
-//        gacsel (pgr.rmin,pgr.rmax,&cint,&cmin,&cmax);
-//      }
-//    }
-//    if (pcm.ccolor>=0) _drawingContext.GaSubs.gxcolr(pcm.ccolor);
-//    if (pcm.ccolor<0 && pcm.rainmn==0.0 && pcm.rainmx==0.0 && !pcm.cflag) {
-//      pcm.rainmn = cmin;
-//      pcm.rainmx = cmax;
-//    }
-//    gaselc (pcm,pgr.rmin,pgr.rmax);
-//
-//    /* create and write out the color map */
-//    /* palette-color image in TIFF cannot have more than 256 colors */
-//    CMAX = 256;
-//    colormap = (uint16*)_TIFFmalloc(3 * CMAX * sizeof (uint16));
-//    if (colormap==NULL) {
-//      gaprnt(0,"Error: TIFFmalloc failed for colormap\n"); goto cleanup;
-//    }
-//    cm=colormap;
-//    for (j=0;j<CMAX;j++){
-//      /* get rgb values for each color */
-//      gxdbqcol(j, &dbq);
-//      r = dbq.red;
-//      g = dbq.green;
-//      b = dbq.blue;
-//      *(cm+0*CMAX+j) = (uint16)r;
-//      *(cm+1*CMAX+j) = (uint16)g;
-//      *(cm+2*CMAX+j) = (uint16)b;
-//    }
-//    if (TIFFSetField(tif, TIFFTAG_COLORMAP, colormap, colormap+CMAX, colormap+(2*CMAX))!=1) {
-//      gaprnt(0,"Error: TIFFSetField failed for colormap\n"); goto cleanup;
-//    }
-//
-//    /* Create the KML text file */
-//    if ((write_kml(pcm,tiepoints))!=0) goto cleanup;
-//  }
-//
-//  /* convert the data to appropriate format */
-//  if (kmlflg) {
-//    /* color index geotiff (for KML output) */
-//    cbuf = (unsigned char *)_TIFFmalloc(grsize * depth);
-//    if (cbuf==NULL) {
-//      gaprnt(0,"Error: TIFFmalloc failed for color index data buffer\n"); goto cleanup;
-//    }
-//    cbuf0 = cbuf;
-//    for (i=0; i<grsize; i++) {
-//      if (gru[i]!=0) {
-//        color = gashdc (pcm, gr[i]);     /* get the relevent color for grid data value */
-//      }
-//      else {
-//        color = gxdbkq();                /* use the device background for undefined values */
-//      }
-//      cbuf[i] = (unsigned char)color;
-//    }
-//  }
-//  else {
-//    if (pcm.gtifflg==1) {
-//      /* floating point geotiff */
-//      fbuf = (gafloat*)_TIFFmalloc(grsize * depth);
-//      if (fbuf==NULL) {
-//        gaprnt(0,"Error: TIFFmalloc failed for floating point data buffer\n"); goto cleanup;
-//      }
-//      fbuf0 = fbuf;
-//      for (i=0; i<grsize; i++) {
-//        if (gru[i] != 0)
-// 	 fval = (gafloat)gr[i];	         /* convert data value to float */
-//        else
-// 	 fval = (gafloat)pcm.undef;	 /* convert output undef value to float */
-//        fbuf[i] = fval;
-//      }
-//
-//    } else {
-//      /* double precision geotiff */
-//      dbuf = (double*)_TIFFmalloc(grsize * depth);
-//      if (dbuf==NULL) {
-//        gaprnt(0,"Error: TIFFmalloc failed for double precision data buffer\n"); goto cleanup;
-//      }
-//      dbuf0 = dbuf;
-//      for (i=0; i<grsize; i++) {
-//        if (gru[i] != 0)
-// 	 dval = gr[i];	         /* use data value as is */
-//        else
-// 	 dval = pcm.undef;	 /* use output undef value */
-//        dbuf[i] = dval;
-//      }
-//    }
-//  }
-//
-//  /* write the data buffer in strips (one row per strip) */
-//  for (j=0; j<pgr.jsiz; j++) {
-//    /* i points to the beginning of the correct row in the grid */
-//    i = (grsize - (j+1)*pgr.isiz);
-//    if (kmlflg) {
-//      rc = TIFFWriteScanline(tif, cbuf0+i, j, 0);
-//    } else {
-//      if (pcm.gtifflg==1)
-//        rc = TIFFWriteScanline(tif, fbuf0+i, j, 0);
-//      else
-//        rc = TIFFWriteScanline(tif, dbuf0+i, j, 0);
-//    }
-//    if (rc!=1) {
-//      snprintf(pout,1255,"Error: TIFFWriteScanline failed at row %d\n",j);
-//      gaprnt(0,pout); goto cleanup;
-//    }
-//  }
-//
-//  if (kmlflg) {
-//    gagsav (24,pcm,NULL);
-//    if (pcm.tifname)
-//      snprintf(pout,1255,"Created TIFF image file %s\n",pcm.tifname);
-//    else
-//      snprintf(pout,1255,"Created TIFF image file grads.tif\n");
-//    gaprnt (2,pout);
-//    if (pcm.kmlname)
-//      snprintf(pout,1255,"  and complementary KML file %s\n",pcm.kmlname);
-//    else
-//      snprintf(pout,1255,"  and complementary KML file grads.kml\n");
-//    gaprnt (2,pout);
-//  }
-//  else {
-//    gagsav (23,pcm,NULL);
-//    if (pcm.gtifname)
-//      snprintf(pout,1255,"Created GeoTIFF file %s\n",pcm.gtifname);
-//    else
-//      snprintf(pout,1255,"Created GeoTIFF file gradsgeo.tif\n");
-//    gaprnt (2,pout);
-//  }
-//  cleanup:
-//  if (colormap) _TIFFfree(colormap);
-//  if (cbuf) { cbuf = cbuf0; _TIFFfree(cbuf); }
-//  if (fbuf) { fbuf = fbuf0; _TIFFfree(fbuf); }
-//  if (dbuf) { dbuf = dbuf0; _TIFFfree(dbuf); }
-//  if (gtif) GTIFFree(gtif);
-//  if (tif) TIFFClose(tif);
-//  return;
-//
-// #else
-//     if (kmlflg) {
-//         _drawingContext.Logger?.LogInformation("Error: Creating TIFF images for KML output is not supported in this build. \n");
-//         _drawingContext.Logger?.LogInformation("  Try the \'-line\' option with \'set kml\' to output contour lines in KML format instead.\n");
-//     } else
-//         _drawingContext.Logger?.LogInformation("Error: Creating GeoTIFF files is not supported in this build\n");
-// #endif
+        var pcm = _drawingContext.CommonData;
+
+        GradsGrid? pgr;
+        double cmin = 0, cmax = 0, cint, pmin, pmax, dval;
+        double[] pixelscale = new double[3], tiepoints = new double[24];
+        float fval;
+        int i, j, grsize, isize, jsize, color, r, g, b, CMAX;
+        bool rc;
+        double[] gr;
+        byte[] gru;
+        Tiff tif = null;
+        GeoTiff gtif = null;
+        double xresolution, yresolution, smin, smax;
+        uint imagewidth, imagelength, rowsperstrip;
+        ushort[] band;
+        ushort[] colormap_r = null, colormap_g = null, colormap_b = null, cm;
+        ushort bitspersample, samplesperpixel, compression;
+        ushort photometric, resolutionunit, sampleformat;
+        int depth;
+        byte[] cbuf = null, cbuf0 = null;
+        float[] fbuf = null, fbuf0 = null;
+        double[] dbuf = null, dbuf0 = null;
+
+
+        /* set up scaling without the map */
+        pgr = pcm.result[0].pgr;
+        gas2d(pgr, false);
+        isize = pgr.ISize;
+        jsize = pgr.JSize;
+        grsize = isize * jsize;
+        gr = pgr.GridData;
+        gru = pgr.UndefinedMask;
+
+        /* Make sure we have an X-Y plot */
+        if (pgr.IDimension != 0 || pgr.JDimension != 1)
+        {
+            //gaprnt(0, "Error: Grid is not varying in X and Y \n");
+            goto cleanup;
+        }
+
+        /* Make sure projection is latlon */
+        if (pcm.mproj != 2)
+        {
+            //gaprnt(0, "Error: mproj latlon required for gxout kml\n");
+            goto cleanup;
+        }
+
+        /* Determine data min/max, make sure grid is not undefined */
+        GaUtil.gamnmx(pgr);
+        if (pgr.umin == 0)
+        {
+            //gaprnt(0, "Error: Entire grid is undefined \n");
+            goto cleanup;
+        }
+
+        /* Open output files */
+        if (kmlflg)
+        {
+            /* open the file for the image output, we'll open the KML file later */
+            if (!String.IsNullOrEmpty(pcm.tifname))
+                tif = Tiff.Open(pcm.tifname, "w");
+            else
+                tif = Tiff.Open("grads.tif", "w");
+            if (tif == null)
+            {
+                // if ( pcm.tifname)
+                //     snprintf(pout, 1255, "Error: XTiffOpen failed for KML image output file %s\n", pcm.tifname);
+                // else
+                //     snprintf(pout, 1255, "Error: XTiffOpen failed for KML image output file grads.tif\n");
+                // gaprnt(0, pout);
+                goto cleanup;
+            }
+
+            gtif = new GeoTiff(tif);
+            // if (gtif == NULL)
+            // {
+            //     if (pcm.tifname)
+            //         snprintf(pout, 1255, "Error: GTIFNew failed for KML image output file %s\n", pcm.tifname);
+            //     else
+            //         snprintf(pout, 1255, "Error: GTIFNew failed for KML image output file grads.tif\n");
+            //     gaprnt(0, pout);
+            //     goto cleanup;
+            // }
+        }
+        else
+        {
+            /* For gxout GeoTIFF, we open only one output file */
+            if (!String.IsNullOrEmpty(pcm.gtifname))
+                tif = Tiff.Open(pcm.gtifname, "w");
+            else
+                tif = Tiff.Open("gradsgeo.tif", "w");
+            if (tif == null)
+            {
+                // if (pcm.gtifname)
+                //     snprintf(pout, 1255, "Error: XTiffOpen failed for GeoTIFF output file %s\n", pcm.gtifname);
+                // else
+                //     snprintf(pout, 1255, "Error: XTiffOpen failed for GeoTIFF output file gradsgeo.tif\n");
+                // gaprnt(0, pout);
+                goto cleanup;
+            }
+
+            gtif = new GeoTiff(tif);
+            // if (gtif == NULL)
+            // {
+            //     if (pcm.gtifname)
+            //         snprintf(pout, 1255, "Error: GTIFNew failed for GeoTIFF output file %s\n", pcm.gtifname);
+            //     else
+            //         snprintf(pout, 1255, "Error: GTIFNew failed for GeoTIFF output file gradsgeo.tif\n");
+            //     gaprnt(0, pout);
+            //     goto cleanup;
+            // }
+        }
+
+        /* Determine the data type of the output */
+        if (kmlflg)
+        {
+            depth = Tiff.DataWidth(TiffType.BYTE);
+        }
+        else
+        {
+            if (pcm.gtifflg == 2)
+                depth = Tiff.DataWidth(TiffType.DOUBLE);
+            else
+                depth = Tiff.DataWidth(TiffType.FLOAT);
+        }
+
+        /* Set values for required TIFF fields, converted to proper data types */
+        imagewidth = (uint)isize; /* #cols, #longitudes */
+        imagelength = (uint)jsize; /* #rows, #latitudes */
+        bitspersample = (ushort)(depth * 8); /* number of bits per component */
+        samplesperpixel = 1; /* number of components per pixel */
+        compression = 1; /* no compression used */
+        if (kmlflg)
+            photometric = 3; /* palette color image */
+        else
+            photometric = 1; /* grayscale image */
+        rowsperstrip = 1; /* one row per strip */
+        resolutionunit = 2; /* inches */
+        xresolution = (double)(pcm.xsiz / isize); /* gridpoints per inch */
+        yresolution = (double)(pcm.ysiz / jsize); /* gridpoints per inch */
+        if (!kmlflg)
+        {
+            sampleformat = 3; /* IEEE floating point data */
+            smin = pgr.MinimumGridValue; /* minimum value of grid */
+            smax = pgr.MaximumGridValue; /* maximum value of grid */
+        }
+        else
+        {
+            sampleformat = 1; /* unsigned integer */
+            smin = 0;
+            smax = 255;
+        }
+
+        /* write out the required TIFF metadata */
+        if (!tif.SetField(TiffTag.IMAGEWIDTH, imagewidth))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for imagewidth\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.IMAGELENGTH, imagelength))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for imagelength\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.BITSPERSAMPLE, bitspersample))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for bitspersample\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.SAMPLESPERPIXEL, samplesperpixel))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for samplesperpixel\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.COMPRESSION, compression))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for compression\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.PHOTOMETRIC, photometric))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for photometric\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.ROWSPERSTRIP, rowsperstrip))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for rowsperstrip\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.RESOLUTIONUNIT, resolutionunit))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for resolutionunit\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.XRESOLUTION, xresolution))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for xresolution\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.YRESOLUTION, yresolution))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for yresolution\n");
+            goto cleanup;
+        }
+
+        if (!tif.SetField(TiffTag.SAMPLEFORMAT, sampleformat))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for sampleformat\n");
+            goto cleanup;
+        }
+
+        if (!kmlflg)
+        {
+            if (!tif.SetField(TiffTag.SMINSAMPLEVALUE, smin))
+            {
+                //gaprnt(0, "Error: TIFFSetField failed for sminsamplevalue\n");
+                goto cleanup;
+            }
+
+            if (!tif.SetField(TiffTag.SMAXSAMPLEVALUE, smax))
+            {
+                //gaprnt(0, "Error: TIFFSetField failed for smaxsamplevalue\n");
+                goto cleanup;
+            }
+        }
+
+
+        if (!tif.SetField(TiffTag.SOFTWARE, "GradsSharp"))
+        {
+            //gaprnt(0, "Error: TIFFSetField failed for software\n");
+            goto cleanup;
+        }
+
+        /* Get georeferencing info */
+        getcorners(pgr, tiepoints);
+
+        /* Write georeferencing info to output file */
+        if (!kmlflg)
+        {
+            if (pgr.ilinr > 0 && pgr.jlinr > 0)
+            {
+                /* If the grid is linear in both dimensions, write out the ModelPixelScale and 1 tiepoint */
+                pixelscale[0] = pgr.ivals[0];
+                pixelscale[1] = pgr.jvals[0];
+                pixelscale[2] = 0.0;
+                if (!tif.SetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG, pixelscale))
+                {
+                    //gaprnt(0, "Error: TIFFSetField failed for geopixelscale\n");
+                    goto cleanup;
+                }
+
+                /* write out one tie point */
+                if (!tif.SetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG, tiepoints))
+                {
+                    //gaprnt(0, "Error: TIFFSetField failed for geotiepoint\n");
+                    goto cleanup;
+                }
+            }
+            else
+            {
+                /* write out four tie points */
+                if (!tif.SetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG, tiepoints))
+                {
+                    //gaprnt(0, "Error: TIFFSetField failed for tiepoints\n");
+                    goto cleanup;
+                }
+            }
+            
+            
+            /* set and write the GeoKeys */
+            gtif.GTIFKeySet(geokey_t.GTModelTypeGeoKey, modeltype_t.ModelGeographic);
+            gtif.GTIFKeySet(geokey_t.GTRasterTypeGeoKey, rastertype_t.RasterPixelIsArea);
+            gtif.GTIFKeySet(geokey_t.GeographicTypeGeoKey, geographic_t.GCS_WGS_84);
+            gtif.GTIFWriteKeys();
+        }
+
+        /* For KML image output:
+           get contour info, write the color map, and create the KML text file */
+        if (kmlflg)
+        {
+            if (pcm.cflag == 0)
+            {
+                /* Determine contour interval */
+                gacsel(pgr.MinimumGridValue, pgr.MaximumGridValue, ref pcm.cint, out cmin, out cmax);
+                cint = pcm.cint;
+                /* reject constant fields for now */
+                if (cint == 0.0)
+                {
+                    //gaprnt(0, "Error: Grid is a constant \n");
+                    goto cleanup;
+                }
+
+                /* make sure there aren't too many levels */
+                pmin = cmin;
+                if (pmin < pcm.cmin) pmin = pcm.cmin;
+                pmax = cmax;
+                if (pmax > pcm.cmax) pmax = pcm.cmax;
+                if ((pmax - pmin) / cint > 100.0)
+                {
+                    while ((pmax - pmin) / cint > 100.0) cint *= 10.0;
+                    pcm.cint = cint;
+                    gacsel(pgr.MinimumGridValue, pgr.MaximumGridValue, ref cint, out cmin, out cmax);
+                }
+            }
+
+            if (pcm.ccolor >= 0) _drawingContext.GradsDrawingInterface.SetDrawingColor(pcm.ccolor);
+            if (pcm.ccolor < 0 && pcm.rainmn == 0.0 && pcm.rainmx == 0.0 && pcm.cflag == 0)
+            {
+                pcm.rainmn = cmin;
+                pcm.rainmx = cmax;
+            }
+
+            gaselc(pgr.MinimumGridValue, pgr.MaximumGridValue);
+
+            /* create and write out the color map */
+            /* palette-color image in TIFF cannot have more than 256 colors */
+            CMAX = 256;
+            colormap_r = new ushort[CMAX];
+            colormap_g = new ushort[CMAX];
+            colormap_b = new ushort[CMAX];
+            for (j = 0; j < CMAX; j++)
+            {
+                /* get rgb values for each color */
+                var dbq = _drawingContext.GradsDatabase.gxdbqcol(j);
+                r = dbq.Item1;
+                g = dbq.Item2;
+                b = dbq.Item3;
+                colormap_r[j] = (ushort)r;
+                colormap_g[j] = (ushort)g;
+                colormap_b[j] = (ushort)b;
+            }
+
+            if (!tif.SetField(TiffTag.COLORMAP, colormap_r, colormap_g, colormap_b))
+            {
+                goto cleanup;
+            }
+
+
+            /* Create the KML text file */
+            if ((write_kml(tiepoints))) goto cleanup;
+        }
+
+        /* convert the data to appropriate format */
+        if (kmlflg)
+        {
+            /* color index geotiff (for KML output) */
+            cbuf = new byte[grsize * depth];
+            for (i = 0; i < grsize; i++)
+            {
+                if (gru[i] != 0)
+                {
+                    color = gashdc(gr[i]); /* get the relevent color for grid data value */
+                }
+                else
+                {
+                    color = _drawingContext.GradsDatabase.gxdbkq(); /* use the device background for undefined values */
+                }
+
+                cbuf[i] = (byte)color;
+            }
+        }
+        else
+        {
+            if (pcm.gtifflg == 1)
+            {
+                /* floating point geotiff */
+                fbuf = new float[grsize * depth];
+                for (i = 0; i < grsize; i++)
+                {
+                    if (gru[i] != 0)
+                        fval = (float)gr[i]; /* convert data value to float */
+                    else
+                        fval = (float)pcm.undef; /* convert output undef value to float */
+                    fbuf[i] = fval;
+                }
+            }
+            else
+            {
+                /* double precision geotiff */
+                dbuf = new double[grsize * depth];
+                for (i = 0; i < grsize; i++)
+                {
+                    if (gru[i] != 0)
+                        dval = gr[i]; /* use data value as is */
+                    else
+                        dval = pcm.undef; /* use output undef value */
+                    dbuf[i] = dval;
+                }
+            }
+        }
+
+        /* write the data buffer in strips (one row per strip) */
+
+
+        byte[] bytes = null;
+
+        if (kmlflg)
+        {
+            bytes = cbuf;
+        }
+        else if (pcm.gtifflg == 1)
+        {
+            bytes = new byte[fbuf.Length * sizeof(float)];
+            Buffer.BlockCopy(fbuf, 0, bytes, 0, bytes.Length);
+        }
+        else
+        {
+            bytes = new byte[dbuf.Length * sizeof(double)];
+            Buffer.BlockCopy(dbuf, 0, bytes, 0, bytes.Length);
+        }
+
+        for (j = 0; j < pgr.JSize; j++)
+        {
+            /* i points to the beginning of the correct row in the grid */
+            i = (grsize - (j + 1) * pgr.ISize);
+
+            rc = tif.WriteScanline(bytes[i..], j, 0);
+
+            if (!rc)
+            {
+                // snprintf(pout, 1255, "Error: TIFFWriteScanline failed at row %d\n", j);
+                // gaprnt(0, pout);
+                goto cleanup;
+            }
+        }
+
+        if (kmlflg)
+        {
+            gagsav(24);
+            // if ( pcm.tifname)
+            //     snprintf(pout, 1255, "Created TIFF image file %s\n", pcm.tifname);
+            // else
+            //     snprintf(pout, 1255, "Created TIFF image file grads.tif\n");
+            // gaprnt(2, pout);
+            // if (pcm.kmlname)
+            //     snprintf(pout, 1255, "  and complementary KML file %s\n", pcm.kmlname);
+            // else
+            //     snprintf(pout, 1255, "  and complementary KML file grads.kml\n");
+            // gaprnt(2, pout);
+        }
+        else
+        {
+            gagsav(23);
+            // if (pcm.gtifname)
+            //     snprintf(pout, 1255, "Created GeoTIFF file %s\n", pcm.gtifname);
+            // else
+            //     snprintf(pout, 1255, "Created GeoTIFF file gradsgeo.tif\n");
+            // gaprnt(2, pout);
+        }
+
+        cleanup:
+        // if (colormap) _TIFFfree(colormap);
+        // if (cbuf)
+        // {
+        //     cbuf = cbuf0;
+        //     _TIFFfree(cbuf);
+        // }
+        //
+        // if (fbuf)
+        // {
+        //     fbuf = fbuf0;
+        //     _TIFFfree(fbuf);
+        // }
+        //
+        // if (dbuf)
+        // {
+        //     dbuf = dbuf0;
+        //     _TIFFfree(dbuf);
+        // }
+
+
+        //if (gtif) GTIFFree(gtif);
+        if (tif != null) tif.Close();
+        return;
     }
+
+
+    bool write_kml(double[] tpts)
+    {
+        var pcm = _drawingContext.CommonData;
+
+        GradsGrid pgr;
+        bool err = false;
+
+        StreamWriter kmlfp;
+        
+        /* open the file */
+        if (!String.IsNullOrEmpty(pcm.kmlname))
+            kmlfp = new StreamWriter(pcm.kmlname);
+        else
+            kmlfp = new StreamWriter("grads.kml");
+        // if (kmlfp == NULL)
+        // {
+        //     if (pcm->kmlname)
+        //         snprintf(pout, 1255, "Error: fopen failed for KML text output file %s\n", pcm->kmlname);
+        //     else
+        //         snprintf(pout, 1255, "Error: fopen failed for KML text output file grads.kml\n");
+        //     gaprnt(0, pout);
+        //     return (1);
+        // }
+
+        pgr = pcm.result[0].pgr;
+
+        /* write out the KML text */
+        String pout = "";
+
+        pout = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        kmlfp.Write(pout);
+        pout = "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n";
+        kmlfp.Write(pout);
+        
+
+        pout = "  <GroundOverlay>\n";
+        kmlfp.Write(pout);
+
+        pout = $"    <name>{pgr.pvar?.VariableDefinition?.VariableName ?? "(null)"}</name>\n";
+        kmlfp.Write(pout);
+
+        pout = "    <Icon>\n";
+        kmlfp.Write(pout);
+
+        if (!String.IsNullOrEmpty(pcm.tifname))
+            pout = $"      <href>{pcm.tifname}</href>\n";
+        else
+            pout = "      <href>grads.tif</href>\n";
+        kmlfp.Write(pout);
+
+        pout = "    </Icon>\n";
+        kmlfp.Write(pout);
+
+        pout =  "    <LatLonBox>\n";
+        kmlfp.Write(pout);
+
+        if ((tpts[0 + 3] == tpts[6 + 3]) && (tpts[12 + 3] == tpts[18 + 3]))
+        {
+            if (tpts[0 + 3] < tpts[12 + 3])
+                pout = $"      <west>{tpts[0+3],10:G5}</west>\n      <east>{tpts[12+3],10:G5}</east>\n";
+            else
+                pout = $"      <west>{tpts[12+3],10:G5}</west>\n      <east>{tpts[0+3],10:G5}</east>\n";
+            kmlfp.Write(pout);
+        }
+
+        if ((tpts[0 + 4] == tpts[12 + 4]) && (tpts[6 + 4] == tpts[18 + 4]))
+        {
+            if (tpts[0 + 4] < tpts[12 + 4])
+                pout = $"      <south>{tpts[0+4],10:G5}</south>\n      <north>{tpts[6+4],10:G5}</north>\n";
+            else
+                pout = $"      <south>{tpts[6+4],10:G5}</south>\n      <north>{tpts[0+4],10:G5}</north>\n";
+            kmlfp.Write(pout);
+        }
+
+        pout = "      <rotation>0.0</rotation>\n";
+        kmlfp.Write(pout);
+
+        pout = "    </LatLonBox>\n";
+        kmlfp.Write(pout);
+
+        pout = "  </GroundOverlay>\n";
+        kmlfp.Write(pout);
+
+        pout = "</kml>\n";
+        kmlfp.Write(pout);
+
+        cleanup:
+        /* close the file */
+        kmlfp.Close();
+        //if (err) gaprnt(0, "Error from fwrite when writing KML file\n");
+        return (err);
+    }
+
 
 /* This routine gets the georeferencing information for the four corners of the grid */
     void getcorners(GradsGrid pgr, double[] tiepoints)
     {
         /* For GeoTIFF, the raster space is treated as PixelIsArea.
-    
+
       (0,0)
       +-----+-----+. I
       |     |     |        * denotes the center of the grid cell (GrADS uses this)
@@ -5917,7 +6132,7 @@ internal class GaGx
       |-----+-----+
       V
       J
-    
+
       i,j raster values correspond to the corners of the grid cells instead of the centers  */
 
         /* geotiff raster value (0,0) gets upper left corner lat,lon

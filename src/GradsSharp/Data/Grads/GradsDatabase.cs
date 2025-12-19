@@ -89,12 +89,12 @@ internal class GradsDatabase : IGradsDatabase
         }
     }
     
-    public int gxdbkq() {    
+    public int gxdbkq()
+    {
         /* If the output background color is not set, return device background color */
         if (dboutbck != -1) 
             return (dboutbck);
-        else 
-            return (dbdevbck);
+        return (dbdevbck);
     }
     
     public void gxdboutbck (int clr) {    

@@ -24,6 +24,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
+      <PackageReference Include="BitMiracle.LibTiff.NET" Version="2.4.660" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
       <PackageReference Include="SDSLite" Version="3.0.1" />
     </ItemGroup>

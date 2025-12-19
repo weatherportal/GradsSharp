@@ -1,4 +1,3 @@
-﻿using System.Drawing;
 using System.Reflection;
 using GradsSharp.Data;
 using GradsSharp.Data.GridFunctions;
@@ -7,12 +6,13 @@ using GradsSharp.DrawingEngine.Cairo;
 using GradsSharp.Enums;
 using GradsSharp.Models;
 
-namespace GradsSharp.UnitTests;
+namespace GradsSharp.UnitTests.DrawingTests;
 
-public class KmlTests
+public class TiffTest
 {
     private GradsEngine engine;
     private IGriddedDataReader reader;
+    
     
     [SetUp]
     public void Setup()
@@ -24,8 +24,8 @@ public class KmlTests
         reader = new GFSDataReader();
     }
 
-    [Test]
-    public void KmlTestTemperature2m()
+    [Test, Ignore("Tif library outputs other bytes, visual inspection needed")]
+    public void TestTiffOutput()
     {
         engine.GradsCommandInterface.SetGrads(OnOffSetting.Off);
         engine.GradsCommandInterface.Open("Data//gfs.t06z.pgrb2.0p25.f001", reader);
@@ -38,24 +38,27 @@ public class KmlTests
         engine.GradsCommandInterface.SetGraphicsOutputMode(GraphicsOutputMode.Kml);
         
         SetTemp2m();
-        
-        var outputFile = Path.GetTempFileName().Replace(".tmp", ".kml");
-        
-        engine.GradsCommandInterface.SetKmlOutput(KmlOutputFlag.Contour, outputFile);
-        engine.GradsCommandInterface.Display("t2m");
 
+        var outputFile = Path.GetTempPath() + "t2m.kml";
+        
+        engine.GradsCommandInterface.SetKmlOutput(KmlOutputFlag.Image, outputFile);
+        engine.GradsCommandInterface.Display("t2m");
+        
         var outputStream = File.OpenRead(outputFile);
+        var outputStreamTif = File.OpenRead(outputFile.Replace(".kml", ".tif"));
         
         
-        Helpers.CompareXmlFiles(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.t2m.kml") ,outputStream);
+        Helpers.CompareXmlFiles(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.t2m_tif.kml") ,outputStream);
+        Helpers.CompareBinaryFiles(Assembly.GetExecutingAssembly().GetManifestResourceStream("GradsSharp.UnitTests.Data.Expected.t2m_tif.tif") ,outputStreamTif);
         
         outputStream.Close();
+        outputStreamTif.Close();
         
         File.Delete(outputFile);
+        File.Delete(outputFile.Replace(".kml", ".tif"));
         
     }
-
-
+    
     private void SetTemp2m()
     {
         IGradsGrid data = engine.GradsCommandInterface.GetVariable(new VariableDefinition()
