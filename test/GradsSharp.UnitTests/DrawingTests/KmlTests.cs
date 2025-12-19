@@ -39,7 +39,7 @@ public class KmlTests
         
         SetTemp2m();
         
-        var outputFile = Path.GetTempFileName();
+        var outputFile = Path.GetTempFileName().Replace(".tmp", ".kml");
         
         engine.GradsCommandInterface.SetKmlOutput(KmlOutputFlag.Contour, outputFile);
         engine.GradsCommandInterface.Display("t2m");

@@ -15,6 +15,7 @@ public class Helpers
         {
             for (int x = 0; x < bitmap1.Width; x++)
             {
+                Console.WriteLine($"{x},{y}");
                 bitmap1.GetPixel(x, y).ShouldBe(bitmap2.GetPixel(x, y));
             }
         }
