@@ -14,12 +14,15 @@ public class GFSDataReader : IGriddedDataReader
     private InputFile? _inputFile;
     private GfsVariables _variableMapping = new GfsVariables();
     private List<DataSet>? _dataSets = null;
+    
+    private Grib2Reader _reader;
+    
     public InputFile OpenFile(Stream stream, string file)
     {
         var inputFile = new InputFile();
         inputFile.FileName = file;
-        using Grib2Reader rdr = new Grib2Reader(stream);
-        return GetInputFile(rdr, inputFile);
+        _reader = new Grib2Reader(stream);
+        return GetInputFile(_reader, inputFile);
     }
 
     public InputFile OpenFile(string file)
@@ -27,8 +30,8 @@ public class GFSDataReader : IGriddedDataReader
         var inputFile = new InputFile();
         inputFile.FileName = file;
         
-        using Grib2Reader rdr = new Grib2Reader(file);
-        return GetInputFile(rdr, inputFile);
+        _reader = new Grib2Reader(file);
+        return GetInputFile(_reader, inputFile);
     }
 
     private InputFile GetInputFile(Grib2Reader rdr, InputFile inputFile)
@@ -134,7 +137,7 @@ public class GFSDataReader : IGriddedDataReader
 
     public void CloseFile()
     {
-        
+        _reader.Dispose();
     }
 
     public void ReadData(IGradsGrid grid, VariableDefinition definition)
@@ -154,7 +157,7 @@ public class GFSDataReader : IGriddedDataReader
             heightValue *= 100;
         }
         
-        using Grib2Reader rdr = new Grib2Reader(_inputFile.FileName);
+        var rdr = _reader;
         foreach (var ds in _dataSets)
         {
             if (info.Discipline == (int)ds.Message.IndicatorSection.Discipline &&
